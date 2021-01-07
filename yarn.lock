@@ -1071,7 +1071,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
   integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
@@ -2062,7 +2062,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^4.5.0":
+"@typescript-eslint/eslint-plugin@^4.5.0", "@typescript-eslint/eslint-plugin@~4.12.0":
   version "4.12.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.12.0.tgz#00d1b23b40b58031e6d7c04a5bc6c1a30a2e834a"
   integrity sha512-wHKj6q8s70sO5i39H2g1gtpCXCvjVszzj6FFygneNFyIAxRvNSVz9GML7XpqrB9t7hNutXw+MHnLN/Ih6uyB8Q==
@@ -2098,7 +2098,7 @@
     eslint-scope "^5.0.0"
     eslint-utils "^2.0.0"
 
-"@typescript-eslint/parser@^4.5.0":
+"@typescript-eslint/parser@^4.5.0", "@typescript-eslint/parser@~4.12.0":
   version "4.12.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-4.12.0.tgz#e1cf30436e4f916c31fcc962158917bd9e9d460a"
   integrity sha512-9XxVADAo9vlfjfoxnjboBTxYOiNY93/QuvcPgsiKvHxW6tOZx1W4TvkIQ2jB3k5M0pbFP5FlXihLK49TjZXhuQ==
@@ -6012,13 +6012,6 @@ history@^4.9.0:
     tiny-warning "^1.0.0"
     value-equal "^1.0.1"
 
-history@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/history/-/history-5.0.0.tgz#0cabbb6c4bbf835addb874f8259f6d25101efd08"
-  integrity sha512-3NyRMKIiFSJmIPdq7FxkNMJkQ7ZEtVblOQ38VtKaA0zZMW1Eo6Q6W8oDKEflr1kNNTItSnk4JMCO1deeSgbLLg==
-  dependencies:
-    "@babel/runtime" "^7.7.6"
-
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
@@ -9715,6 +9708,11 @@ prettier-bytes@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prettier-bytes/-/prettier-bytes-1.0.4.tgz#994b02aa46f699c50b6257b5faaa7fe2557e62d6"
   integrity sha1-mUsCqkb2mcULYle1+qp/4lV+YtY=
+
+prettier@~2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
+  integrity sha512-PqyhM2yCjg/oKkFPtTGUojv7gnZAoG80ttl45O6x2Ug/rMJw4wcc9k6aaf2hibP7BGVCCM33gZoGjyvt9mm16Q==
 
 pretty-bytes@^5.3.0, pretty-bytes@^5.4.1:
   version "5.5.0"
