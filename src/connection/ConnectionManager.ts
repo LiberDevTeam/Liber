@@ -1,5 +1,10 @@
 import { Dispatch, MiddlewareAPI } from 'redux';
-import { Message, Channel, addMessage, setChannelMessages } from '../features/channel/channelSlice';
+import {
+  Message,
+  Channel,
+  addMessage,
+  setChannelMessages,
+} from '../features/channel/channelSlice';
 import { addChannel } from '../features/me/meSlice';
 import { v4 as uuidv4 } from 'uuid';
 import Peer from 'simple-peer';
@@ -15,8 +20,6 @@ import {
   send,
 } from './actions';
 import { Action } from './types';
-import { downloadTorrent } from '../torrent';
-import { Torrent } from 'webtorrent';
 import { RootState } from '../app/store';
 
 export default class ConnectionManager {
@@ -24,7 +27,7 @@ export default class ConnectionManager {
   private websocket: WebSocket | null = null;
 
   // Keep track of how many times we've attempted to reconnect.
-  private reconnectCount: number = 0;
+  private reconnectCount = 0;
 
   // We'll create an interval to try and reconnect if the socket connection breaks.
   private reconnectionInterval: NodeJS.Timeout | null = null;
@@ -39,11 +42,17 @@ export default class ConnectionManager {
   // Keep track of if the WebSocket connection has ever successfully opened.
   private hasOpened = false;
 
-  private pendingPeers: Record<string, { peer: Peer.Instance, uid: string}> = {};
-  private chanParticipants: Record<string, Record<string, Peer.Instance>> = {}; 
+  private pendingPeers: Record<
+    string,
+    { peer: Peer.Instance; uid: string }
+  > = {};
+  private chanParticipants: Record<string, Record<string, Peer.Instance>> = {};
 
   // WebSocket connect event handler.
-  connect = ({ dispatch, getState }: MiddlewareAPI, { payload }: Action) => {
+  connect = (
+    { dispatch, getState }: MiddlewareAPI,
+    { payload }: Action
+  ): void => {
     this.close();
 
     this.lastConnectPayload = payload;
@@ -54,37 +63,40 @@ export default class ConnectionManager {
     );
     this.websocket.addEventListener('onclose', (event) =>
       console.log('WebSocket is closed now.', event)
-    )
+    );
     this.websocket.addEventListener('error', (event) =>
       this.handleError(dispatch, event)
     );
     this.websocket.addEventListener('open', (event) => {
       this.handleOpen(dispatch, event);
     });
-    this.websocket.addEventListener('message', (event) =>{
+    this.websocket.addEventListener('message', (event) => {
       this.handleMessage({ dispatch, getState }, event);
     });
   };
 
-  broadcastMessage = ({ dispatch }: MiddlewareAPI, { payload }: Action) => {
+  broadcastMessage = (
+    { dispatch }: MiddlewareAPI,
+    { payload }: Action
+  ): void => {
     const { cid, message } = payload;
     dispatch(addMessage({ cid, message }));
     this._broadcastMessage(payload.cid, payload.message);
-  }
+  };
 
-  _broadcastMessage = (cid: string, message: Message) => {
-    (Object.entries(this.chanParticipants[cid]) || []).map(([_, peer]) => {
+  _broadcastMessage = (cid: string, message: Message): void => {
+    (Object.entries(this.chanParticipants[cid]) || []).forEach(([_, peer]) => {
       peer.send(JSON.stringify({ type: 'message_broadcast', message }));
-    })
-  }
+    });
+  };
 
   // WebSocket disconnect event handler.
-  disconnect = () => {
+  disconnect = (): void => {
     this.websocket && this.close();
   };
 
   // WebSocket send event handler.
-  send = (_: MiddlewareAPI, { payload }: Action) => {
+  send = (_: MiddlewareAPI, { payload }: Action): void => {
     if (!this.websocket) return;
     const withRetry = (ws: WebSocket) => {
       if (ws.readyState === WebSocket.OPEN) {
@@ -92,27 +104,32 @@ export default class ConnectionManager {
         return;
       }
       setTimeout(() => withRetry(ws), 500);
-    }
+    };
     withRetry(this.websocket);
   };
 
-  createOffer = async ({ dispatch, getState }: MiddlewareAPI<Dispatch, RootState>, { payload }: Action) => {
-    const peer = new Peer({ initiator: true })
+  createOffer = async (
+    { dispatch, getState }: MiddlewareAPI<Dispatch, RootState>,
+    { payload }: Action
+  ): Promise<void> => {
+    const peer = new Peer({ initiator: true });
     const { cid, me } = payload;
     const tx = uuidv4();
-    peer.on('signal', data => {
+    peer.on('signal', (data) => {
       if (data.renegotiate || data.transceiverRequest) return;
-      dispatch(send({
-        tx,
-        cid,
-        uid: me.id,
-        ...data,
-      }));
+      dispatch(
+        send({
+          tx,
+          cid,
+          uid: me.id,
+          ...data,
+        })
+      );
     });
 
-    peer.on('data', data => {
+    peer.on('data', (data) => {
       this.onMessageReceived({ dispatch, getState }, cid, JSON.parse(data));
-    })
+    });
 
     peer.on('close', () => {
       if (this.pendingPeers[tx]) {
@@ -121,22 +138,22 @@ export default class ConnectionManager {
       if (this.chanParticipants[cid][me.id]) {
         delete this.chanParticipants[cid][me.id];
       }
-    })
+    });
 
     peer.on('error', (err) => {
       console.log(err);
-    })
+    });
 
     peer.on('connect', () => {
       this.chanParticipants[cid][this.pendingPeers[tx].uid] = peer;
       delete this.pendingPeers[tx];
-    })
+    });
 
     if (!this.chanParticipants[cid]) {
       this.chanParticipants[cid] = {};
     }
-    this.pendingPeers[tx] = { peer, uid: "" };
-  }
+    this.pendingPeers[tx] = { peer, uid: '' };
+  };
 
   // Handle a close event.
   private handleClose = (dispatch: Dispatch, event: Event) => {
@@ -150,7 +167,7 @@ export default class ConnectionManager {
 
   // Handle an error event.
   private handleError = (dispatch: Dispatch, event: Event) => {
-    console.log(event)
+    console.log(event);
     dispatch(error(null, new Error(`${event}`)));
     if (this.canAttemptReconnect()) {
       this.handleBrokenConnection(dispatch);
@@ -158,10 +175,7 @@ export default class ConnectionManager {
   };
 
   // Handle an open event.
-  private handleOpen = (
-    dispatch: Dispatch,
-    event: Event
-  ) => {
+  private handleOpen = (dispatch: Dispatch, event: Event) => {
     // Clean up any outstanding reconnection attempts.
     if (this.reconnectionInterval) {
       clearInterval(this.reconnectionInterval);
@@ -184,41 +198,45 @@ export default class ConnectionManager {
   // Handle a message event.
   private handleMessage = async (
     { dispatch, getState }: MiddlewareAPI<Dispatch, RootState>,
-    event: MessageEvent,
+    event: MessageEvent
   ) => {
-    console.log("Message received ", event.data)
+    console.log('Message received ', event.data);
     const data = JSON.parse(event.data);
     const { tx, cid, uid } = data;
     if (!this.pendingPeers[data.tx]) {
       const me = getState().me;
       const peer = new Peer();
       this.pendingPeers[tx] = { peer, uid };
-      peer.on('signal', data => {
+      peer.on('signal', (data) => {
         if (data.renegotiate || data.transceiverRequest) return;
-        dispatch(send({
-          tx,
-          cid,
-          uid: me.id,
-          ...data,
-        }));
-      })
+        dispatch(
+          send({
+            tx,
+            cid,
+            uid: me.id,
+            ...data,
+          })
+        );
+      });
       peer.on('connect', () => {
-        console.log("connected")
+        console.log('connected');
         this.chanParticipants[cid][uid] = peer;
         delete this.pendingPeers[tx];
 
         const messages = getState().channel.messages[cid];
-        peer.send(JSON.stringify({
-          type: 'initial',
-          channel: {
-            ...me.channels[cid],
-            messages,
-          }
-        }));
-      })
+        peer.send(
+          JSON.stringify({
+            type: 'initial',
+            channel: {
+              ...me.channels[cid],
+              messages,
+            },
+          })
+        );
+      });
 
-      peer.on('data', data => {
-        this.onMessageReceived({ dispatch, getState }, cid, JSON.parse(data))
+      peer.on('data', (data) => {
+        this.onMessageReceived({ dispatch, getState }, cid, JSON.parse(data));
       });
 
       peer.on('close', () => {
@@ -228,11 +246,11 @@ export default class ConnectionManager {
         if (this.chanParticipants[cid] && this.chanParticipants[cid][uid]) {
           delete this.chanParticipants[cid][uid];
         }
-      })
+      });
 
       peer.on('error', (err) => {
         console.log(err);
-      })
+      });
     }
 
     if (!this.pendingPeers[tx].uid) {
@@ -242,34 +260,35 @@ export default class ConnectionManager {
     // delete data.tx
     // delete data.cid
     // delete data.uid
-    this.pendingPeers[tx].peer.signal(data)
+    this.pendingPeers[tx].peer.signal(data);
   };
 
   private onMessageReceived = (
     { dispatch, getState }: MiddlewareAPI<Dispatch, RootState>,
     cid: string,
     data: {
-      type: string,
-      channel: Channel & { messages: Message[] },
-      message: Message,
+      type: string;
+      channel: Channel & { messages: Message[] };
+      message: Message;
     }
   ) => {
     const messagesIndex = getState().channel.messagesIndex;
 
-    console.log("Message Received ", data)
+    console.log('Message Received ', data);
     switch (data.type) {
-      case 'initial':
+      case 'initial': {
         dispatch(addChannel(data.channel));
         const messages = data.channel.messages;
         dispatch(setChannelMessages({ cid, messages }));
         break;
-      case 'message_broadcast':
+      }
+      case 'message_broadcast': {
         if (messagesIndex[data.message.id]) {
           return;
         }
-        console.log("Message Broadcast", data)
+        console.log('Message Broadcast', data);
         const message = data.message;
-        dispatch(addMessage({ cid, message }))
+        dispatch(addMessage({ cid, message }));
         this._broadcastMessage(cid, message);
 
         // if (data.message.attachment) {
@@ -280,8 +299,9 @@ export default class ConnectionManager {
         //   })(data.message.attachment)
         // }
         break;
+      }
     }
-  }
+  };
 
   // Close the WebSocket connection.
   private close = () => {

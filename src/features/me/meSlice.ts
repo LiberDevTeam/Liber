@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../channel/channelSlice';
 
 export type Me = {
-  id: string,
-  username: string,
-  channels: Record<string, Channel>,
-}
+  id: string;
+  username: string;
+  channels: Record<string, Channel>;
+};
 
 export type MeState = Me;
 
@@ -23,7 +23,7 @@ export const meSlice = createSlice({
   reducers: {
     addChannel: (state, action: PayloadAction<Channel>) => {
       const { id, name, description } = action.payload;
-      state.channels[action.payload.id] = {id, name, description};
+      state.channels[action.payload.id] = { id, name, description };
     },
     updateUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
@@ -31,10 +31,7 @@ export const meSlice = createSlice({
   },
 });
 
-export const {
-  addChannel,
-  updateUsername,
-} = meSlice.actions;
+export const { addChannel, updateUsername } = meSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -50,6 +47,6 @@ export const {
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
-export const selectMe = (state: RootState) => state.me;
+export const selectMe = (state: RootState): typeof state.me => state.me;
 
 export default meSlice.reducer;

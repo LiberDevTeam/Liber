@@ -8,14 +8,12 @@ import {
   WEBSOCKET_CLOSED,
   WEBSOCKET_ERROR,
   WEBSOCKET_OPEN,
- 
   WEBSOCKET_CONNECT,
   WEBSOCKET_DISCONNECT,
   WEBSOCKET_SEND,
-
   BROADCAST_MESSAGE,
   RTC_CREATE_OFFER,
-} from './actionTypes'
+} from './actionTypes';
 import { Action } from './types';
 
 type BuiltAction<T> = {
@@ -46,34 +44,49 @@ function buildAction<T>(
 }
 
 // Action creators for user dispatched actions. These actions are all optionally
-export const connect = (url: string, me: Me) => buildAction(WEBSOCKET_CONNECT, { url, me });
-export const disconnect = () => buildAction(WEBSOCKET_DISCONNECT);
-export const send = (msg: any) => buildAction(WEBSOCKET_SEND, msg);
+export const connect = (
+  url: string,
+  me: Me
+): BuiltAction<{ url: string; me: Me }> =>
+  buildAction(WEBSOCKET_CONNECT, { url, me });
+export const disconnect = (): BuiltAction<any> =>
+  buildAction(WEBSOCKET_DISCONNECT);
+export const send = (msg: any): BuiltAction<any> =>
+  buildAction(WEBSOCKET_SEND, msg);
 
 // Action creators for actions dispatched by redux-websocket. All of these must
 // take a prefix. The default prefix should be used unless a user has created
 // this middleware with the prefix option set.
-export const beginReconnect = () =>
+export const beginReconnect = (): BuiltAction<any> =>
   buildAction(WEBSOCKET_BEGIN_RECONNECT);
-export const reconnectAttempt = (count: number) =>
+export const reconnectAttempt = (
+  count: number
+): BuiltAction<{ count: number }> =>
   buildAction(WEBSOCKET_RECONNECT_ATTEMPT, { count });
-export const reconnected = () =>
+export const reconnected = (): BuiltAction<any> =>
   buildAction(WEBSOCKET_RECONNECTED);
-export const open = (event: Event) =>
+export const open = (event: Event): BuiltAction<Event> =>
   buildAction(WEBSOCKET_OPEN, event);
-export const broken = () =>
-  buildAction(WEBSOCKET_BROKEN);
-export const closed = (event: Event) =>
+export const broken = (): BuiltAction<any> => buildAction(WEBSOCKET_BROKEN);
+export const closed = (event: Event): BuiltAction<Event> =>
   buildAction(WEBSOCKET_CLOSED, event);
 export const error = (
   originalAction: Action | null,
-  err: Error,
-) =>
+  err: Error
+): BuiltAction<Error> =>
   buildAction(WEBSOCKET_ERROR, err, {
     message: err.message,
     name: err.name,
     originalAction,
   });
 
-export const rtcCreateOffer = (cid: string, me: Me) => buildAction(RTC_CREATE_OFFER, { cid, me });
-export const broadcastMessage = (cid: string, message: Message) => buildAction(BROADCAST_MESSAGE, { cid, message });
+export const rtcCreateOffer = (
+  cid: string,
+  me: Me
+): BuiltAction<{ cid: string; me: Me }> =>
+  buildAction(RTC_CREATE_OFFER, { cid, me });
+export const broadcastMessage = (
+  cid: string,
+  message: Message
+): BuiltAction<{ cid: string; message: Message }> =>
+  buildAction(BROADCAST_MESSAGE, { cid, message });

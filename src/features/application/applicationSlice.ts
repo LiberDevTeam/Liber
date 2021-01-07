@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunk, RootState } from '../../app/store';
+import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 
 interface ApplicationState {
-  showDrawer: boolean
+  showDrawer: boolean;
 }
 
 const initialState: ApplicationState = {
@@ -13,9 +13,9 @@ export const applicationSlice = createSlice({
   name: 'application',
   initialState,
   reducers: {
-    toggleDrawer: state => {
+    toggleDrawer: (state) => {
       state.showDrawer = !state.showDrawer;
-    }
+    },
   },
 });
 
@@ -35,6 +35,7 @@ export const { toggleDrawer } = applicationSlice.actions;
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
-export const selectApplication = (state: RootState) => state.application
+export const selectApplication = (state: RootState): ApplicationState =>
+  state.application;
 
 export default applicationSlice.reducer;
