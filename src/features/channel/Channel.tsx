@@ -4,17 +4,17 @@ import { format, fromUnixTime } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import ColorHash from 'color-hash';
 import { hex } from 'wcag-contrast';
-import { selectMe } from '../me/meSlice';
+import { selectMe } from '~/features/me/meSlice';
 import { selectChannelMessages } from './channelSlice';
 import { useParams } from 'react-router-dom';
-import { rtcCreateOffer, broadcastMessage } from '../../connection/actions';
+import { rtcCreateOffer, broadcastMessage } from '~/connection/actions';
 import {
   downloadTorrent,
   getClient,
   isNotTorrentFile,
   isTorrentFile,
   seed,
-} from '../../torrent';
+} from '~/torrent';
 import { Torrent } from 'webtorrent';
 import prettierBytes from 'prettier-bytes';
 import { nanoid } from 'nanoid';

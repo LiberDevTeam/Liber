@@ -5,9 +5,9 @@ import App from './App';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { PersistGate } from 'redux-persist/integration/react'
-import { persistor } from '../src/app/store';
-import 'webrtc-adapter'
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from '~/app/store';
+import 'webrtc-adapter';
 
 ReactDOM.render(
   <React.StrictMode>

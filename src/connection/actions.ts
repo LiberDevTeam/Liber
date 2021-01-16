@@ -1,5 +1,5 @@
-import { Message } from '../features/channel/channelSlice';
-import { Me } from '../features/me/meSlice';
+import { Message } from '~/features/channel/channelSlice';
+import { Me } from '~/features/me/meSlice';
 import {
   WEBSOCKET_BEGIN_RECONNECT,
   WEBSOCKET_RECONNECT_ATTEMPT,

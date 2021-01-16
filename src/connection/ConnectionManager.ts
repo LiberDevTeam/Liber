@@ -4,8 +4,8 @@ import {
   Channel,
   addMessage,
   setChannelMessages,
-} from '../features/channel/channelSlice';
-import { addChannel } from '../features/me/meSlice';
+} from '~/features/channel/channelSlice';
+import { addChannel } from '~/features/me/meSlice';
 import { v4 as uuidv4 } from 'uuid';
 import Peer from 'simple-peer';
 
@@ -20,7 +20,7 @@ import {
   send,
 } from './actions';
 import { Action } from './types';
-import { RootState } from '../app/store';
+import { RootState } from '~/app/store';
 
 export default class ConnectionManager {
   // WebSocket connection.
