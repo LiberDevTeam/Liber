@@ -6,7 +6,7 @@ import ColorHash from 'color-hash';
 import { hex } from 'wcag-contrast';
 import { selectMe } from '../me/meSlice';
 import { selectChannelMessages } from './channelSlice';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { rtcCreateOffer, broadcastMessage } from '../../connection/actions';
 import {
   downloadTorrent,

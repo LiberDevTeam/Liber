@@ -8,7 +8,7 @@ import {
 } from './features/application/applicationSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import { Switch, Route } from 'react-router';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter, push } from 'connected-react-router';
 import { history, RootState } from './app/store';
 import { Channel } from './features/channel/channelSlice';
@@ -45,7 +45,7 @@ const App: React.FC = () => {
         <ConnectedRouter history={history}>
           <>
             {' '}
-            {/* your usual react-router v4/v5 routing */}
+            {/* your usual react-router-dom v4/v5 routing */}
             <Switch>
               <Route exact path="/channels/new" render={() => <NewChannel />} />
               <Route
