@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import ChannelPage from './features/channel/Channel';
-import NewChannel from './features/channel/NewChannel';
+import ChannelPage from './pages/channels/[cid]';
+import NewChannel from './pages/channels/new';
 import { selectMe } from './features/me/meSlice';
 import {
   selectApplication,
@@ -14,6 +14,7 @@ import { history, RootState } from './app/store';
 import { Channel } from './features/channel/channelSlice';
 import { connect } from './connection';
 import { rtcCreateOffer } from './connection/actions';
+import IndexPage from './pages';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -44,9 +45,9 @@ const App: React.FC = () => {
       <header className="App-header">
         <ConnectedRouter history={history}>
           <>
-            {' '}
             {/* your usual react-router-dom v4/v5 routing */}
             <Switch>
+              <Route exact path="/" render={() => <IndexPage />} />
               <Route exact path="/channels/new" render={() => <NewChannel />} />
               <Route
                 exact
