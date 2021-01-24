@@ -39,6 +39,9 @@ export const ChannelPage: React.FC = () => {
 
   const [downloadSpeed, setDownloadSpeed] = useState<number>(0);
   const [, setUploadSpeed] = useState<number>(0);
+  useEffect(() => {
+    dispatch(rtcCreateOffer(cid, me));
+  }, [dispatch, cid, me]);
 
   function handleFileChanged(event: React.ChangeEvent<HTMLInputElement>) {
     event.preventDefault();

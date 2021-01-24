@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
 import { connect } from '~/connection';
-import { rtcCreateOffer } from '~/connection/actions';
 import Navbar from '~/components/organisms/navbar';
 
 const BaseLayout: React.FC = ({ children }) => {
@@ -18,16 +16,7 @@ const BaseLayout: React.FC = ({ children }) => {
   return (
     <div>
       <header className="App-header">
-        <Navbar
-          channels={me.channels}
-          moveToNewChannel={() => {
-            dispatch(push('/channels/new'));
-          }}
-          moveToChannel={(cid: string) => {
-            dispatch(rtcCreateOffer(cid, me));
-            dispatch(push(`/channels/${cid}`));
-          }}
-        />
+        <Navbar channels={me.channels} />
       </header>
       <main>{children}</main>
     </div>
