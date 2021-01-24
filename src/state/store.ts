@@ -4,7 +4,6 @@ import channelReducer, {
   ChannelState,
 } from '~/state/ducks/channel/channelSlice';
 import meReducer, { MeState } from '~/state/ducks/me/meSlice';
-import applicationReducer from '~/state/ducks/application/applicationSlice';
 // import systemReducer from '~/features/system/systemSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
@@ -57,7 +56,6 @@ const channelPersistConfig = {
 const reducers = combineReducers({
   me: persistReducer<MeState>(mePersistConfig, meReducer),
   channel: persistReducer<ChannelState>(channelPersistConfig, channelReducer),
-  application: applicationReducer,
   router: connectRouter(history),
   // system: systemReducer,
 });

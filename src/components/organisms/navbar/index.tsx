@@ -1,24 +1,26 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Channel } from '~/state/ducks/channel/channelSlice';
-import { RootState } from '~/state/store';
 
 type NavbarProps = {
-  showDrawer: boolean;
-  toggleDrawer: () => void;
   channels: Record<string, Channel>;
   moveToNewChannel: () => void;
   moveToChannel: (cid: string) => void;
 };
 
 const Navbar: React.FC<NavbarProps> = ({
-  showDrawer,
-  toggleDrawer,
   channels,
   moveToNewChannel,
   moveToChannel,
 }) => {
-  const router = useSelector((state: RootState) => state.router);
+  const location = useLocation();
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
+
+  useEffect(() => {
+    setShowDrawer(false);
+  }, [location]);
+
+  const toggleDrawer = () => setShowDrawer(!showDrawer);
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({
               {Object.values(channels).map((channel) => {
                 let className =
                   'block ml-3 px-3 py-2 rounded-md text-base font-semibold ';
-                if (router.location.pathname.includes(channel.id)) {
+                if (location.pathname.includes(channel.id)) {
                   className += 'bg-gray-500 text-white';
                 } else {
                   className +=
