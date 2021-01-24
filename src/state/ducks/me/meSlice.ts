@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '~/app/store';
+import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
-import { Channel } from '~/features/channel/channelSlice';
+import { Channel } from '~/state/ducks/channel/channelSlice';
 
 export type Me = {
   id: string;
