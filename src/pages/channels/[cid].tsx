@@ -18,6 +18,7 @@ import {
 import { Torrent } from 'webtorrent';
 import prettierBytes from 'prettier-bytes';
 import { nanoid } from 'nanoid';
+import BaseLayout from '~/templates';
 
 export const ChannelPage: React.FC = () => {
   const { cid } = useParams<{ cid: string }>();
@@ -176,110 +177,112 @@ export const ChannelPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen pt-2 pb-4 overflow-y-scroll">
-      <div className="px-2 py-2">
-        <div className="">
-          <h1 className="mt-2 mb-6 text-3xl font-semibold leading-6 text-gray-900">
-            {channel.name || channel.id}
-          </h1>
-          <p className="mt-1 text-sm text-gray-600">{channel.description}</p>
+    <BaseLayout>
+      <div className="h-screen pt-2 pb-4 overflow-y-scroll">
+        <div className="px-2 py-2">
+          <div className="">
+            <h1 className="mt-2 mb-6 text-3xl font-semibold leading-6 text-gray-900">
+              {channel.name || channel.id}
+            </h1>
+            <p className="mt-1 text-sm text-gray-600">{channel.description}</p>
+          </div>
         </div>
-      </div>
-      <div className="sticky top-0 px-2 bg-gray-50 bg-opacity-25 pb-2">
-        <input
-          type="file"
-          ref={fileRef}
-          onChange={handleFileChanged}
-          multiple
-        />
-        <div className="pt-0">
-          <textarea
-            ref={textareaRef}
-            id="about"
-            rows={2}
-            className="p-2 shadow-lg focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 border"
-            placeholder="Say Hello 👋"
-          ></textarea>
-        </div>
-        <button
-          type="button"
-          className="my-2 px-4 py-2 border border-gray-300 rounded-md shadow-lg inline-flex items-center justify-center text-base font-medium text-white hover:bg-gray-300 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-700 w-full"
-          onClick={handleSubmit}
-        >
-          Send
-          <svg
-            style={{ transform: 'rotate(90deg)' }}
-            className="ml-2 mr-1 h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="sticky top-0 px-2 bg-gray-50 bg-opacity-25 pb-2">
+          <input
+            type="file"
+            ref={fileRef}
+            onChange={handleFileChanged}
+            multiple
+          />
+          <div className="pt-0">
+            <textarea
+              ref={textareaRef}
+              id="about"
+              rows={2}
+              className="p-2 shadow-lg focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 border"
+              placeholder="Say Hello 👋"
+            ></textarea>
+          </div>
+          <button
+            type="button"
+            className="my-2 px-4 py-2 border border-gray-300 rounded-md shadow-lg inline-flex items-center justify-center text-base font-medium text-white hover:bg-gray-300 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-700 w-full"
+            onClick={handleSubmit}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="px-2 text-grey-700">
-        {messages.map((m) => {
-          const name = m.uid === me.id ? 'you' : m.uid.split('-')[0];
-          const color = colorHash.hex(name);
-          const Progress = () => {
-            if (
-              !m.attachment ||
-              !progresses[m.id] ||
-              progresses[m.id].progress === 1
-            )
-              return null;
+            Send
+            <svg
+              style={{ transform: 'rotate(90deg)' }}
+              className="ml-2 mr-1 h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="px-2 text-grey-700">
+          {messages.map((m) => {
+            const name = m.uid === me.id ? 'you' : m.uid.split('-')[0];
+            const color = colorHash.hex(name);
+            const Progress = () => {
+              if (
+                !m.attachment ||
+                !progresses[m.id] ||
+                progresses[m.id].progress === 1
+              )
+                return null;
 
-            if (progresses[m.id].numPeers === 0) {
-              return <Discovering />;
-            }
+              if (progresses[m.id].numPeers === 0) {
+                return <Discovering />;
+              }
 
-            const { numPeers, progress } = progresses[m.id];
+              const { numPeers, progress } = progresses[m.id];
+              return (
+                <div className="text-gray-500">
+                  Peers: {numPeers} Progress: {(100 * progress).toFixed(1)}%
+                  Download: {prettierBytes(downloadSpeed)}
+                </div>
+              );
+            };
             return (
-              <div className="text-gray-500">
-                Peers: {numPeers} Progress: {(100 * progress).toFixed(1)}%
-                Download: {prettierBytes(downloadSpeed)}
+              <div key={m.id} className="my-3 px-1 pt-3 pb-4">
+                <div className="mb-1">
+                  <span
+                    style={{
+                      color: color,
+                      background: hex('#fff', color) < 2.2 ? '#333' : undefined,
+                    }}
+                    className="mr-1"
+                  >
+                    {name}
+                  </span>
+                  <span className="text-sm text-gray-400">
+                    |{' '}
+                    {format(
+                      fromUnixTime(Math.round(m.timestamp / 1000)),
+                      'yyyy-MM-dd HH:mm:ss'
+                    )}
+                  </span>
+                </div>
+                <div>
+                  {m.text.split('\n').map((str, index) => (
+                    <p key={index}>{str}</p>
+                  ))}
+                </div>
+                <Progress />
+                <div id={`at-${m.id}`}></div>
               </div>
             );
-          };
-          return (
-            <div key={m.id} className="my-3 px-1 pt-3 pb-4">
-              <div className="mb-1">
-                <span
-                  style={{
-                    color: color,
-                    background: hex('#fff', color) < 2.2 ? '#333' : undefined,
-                  }}
-                  className="mr-1"
-                >
-                  {name}
-                </span>
-                <span className="text-sm text-gray-400">
-                  |{' '}
-                  {format(
-                    fromUnixTime(Math.round(m.timestamp / 1000)),
-                    'yyyy-MM-dd HH:mm:ss'
-                  )}
-                </span>
-              </div>
-              <div>
-                {m.text.split('\n').map((str, index) => (
-                  <p key={index}>{str}</p>
-                ))}
-              </div>
-              <Progress />
-              <div id={`at-${m.id}`}></div>
-            </div>
-          );
-        })}
+          })}
+        </div>
       </div>
-    </div>
+    </BaseLayout>
   );
 };
 
