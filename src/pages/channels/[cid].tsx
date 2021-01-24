@@ -4,8 +4,8 @@ import { format, fromUnixTime } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import ColorHash from 'color-hash';
 import { hex } from 'wcag-contrast';
-import { selectMe } from '~/features/me/meSlice';
-import { selectChannelMessages } from '~/features/channel/channelSlice';
+import { selectMe } from '~/state/ducks/me/meSlice';
+import { selectChannelMessages } from '~/state/ducks/channel/channelSlice';
 import { useParams } from 'react-router-dom';
 import { rtcCreateOffer, broadcastMessage } from '~/connection/actions';
 import {

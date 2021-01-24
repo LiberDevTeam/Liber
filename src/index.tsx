@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { store } from './app/store';
+import { store } from './state/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistor } from '~/app/store';
+import { persistor } from '~/state/store';
 import 'webrtc-adapter';
 
 ReactDOM.render(

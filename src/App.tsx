@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import ChannelPage from './pages/channels/[cid]';
 import NewChannel from './pages/channels/new';
-import { selectMe } from './features/me/meSlice';
+import { selectMe } from './state/ducks/me/meSlice';
 import {
   selectApplication,
   toggleDrawer,
-} from './features/application/applicationSlice';
+} from './state/ducks/application/applicationSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter, push } from 'connected-react-router';
-import { history, RootState } from './app/store';
-import { Channel } from './features/channel/channelSlice';
+import { history, RootState } from './state/store';
+import { Channel } from './state/ducks/channel/channelSlice';
 import { connect } from './connection';
 import { rtcCreateOffer } from './connection/actions';
 import IndexPage from './pages';

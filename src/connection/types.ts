@@ -1,5 +1,5 @@
-import { Message } from '~/features/channel/channelSlice';
-import { Me } from '~/features/me/meSlice';
+import { Message } from '~/state/ducks/channel/channelSlice';
+import { Me } from '~/state/ducks/me/meSlice';
 import {
   WEBSOCKET_CLOSED,
   WEBSOCKET_MESSAGE,
@@ -28,11 +28,11 @@ export type Action =
   | { type: typeof WEBSOCKET_SEND; payload: any; meta?: any }
   | {
       type: typeof BROADCAST_MESSAGE;
-      payload: { cid: String; message: Message };
+      payload: { cid: string; message: Message };
       meta?: any;
     }
   | {
       type: typeof RTC_CREATE_OFFER;
-      payload: { cid: String; me: Me };
+      payload: { cid: string; me: Me };
       meta?: any;
     };

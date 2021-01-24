@@ -1,8 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
-import channelReducer, { ChannelState } from '~/features/channel/channelSlice';
-import meReducer, { MeState } from '~/features/me/meSlice';
-import applicationReducer from '~/features/application/applicationSlice';
+import channelReducer, {
+  ChannelState,
+} from '~/state/ducks/channel/channelSlice';
+import meReducer, { MeState } from '~/state/ducks/me/meSlice';
+import applicationReducer from '~/state/ducks/application/applicationSlice';
 // import systemReducer from '~/features/system/systemSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';

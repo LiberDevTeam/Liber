@@ -2,7 +2,7 @@ import { goBack, push } from 'connected-react-router';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { addChannel } from '~/features/me/meSlice';
+import { addChannel } from '~/state/ducks/me/meSlice';
 
 export const NewChannel: React.FC = () => {
   const dispatch = useDispatch();
