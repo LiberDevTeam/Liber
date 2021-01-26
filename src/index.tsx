@@ -6,13 +6,17 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from '~/state/store';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './theme';
 import 'webrtc-adapter';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,

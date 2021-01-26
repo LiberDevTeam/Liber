@@ -8,7 +8,6 @@ import { ConnectedRouter } from 'connected-react-router';
 import { history } from './state/store';
 import { connect } from './connection';
 import IndexPage from './pages';
-
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
