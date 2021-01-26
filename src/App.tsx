@@ -3,7 +3,6 @@ import ChannelPage from './pages/channels/[cid]';
 import NewChannel from './pages/channels/new';
 import { selectMe } from './state/ducks/me/meSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import './App.css';
 import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import { history } from './state/store';
