@@ -81,6 +81,12 @@
   "devDependencies": {
     "@babel/core": "7.12.10",
     "@craco/craco": "^6.0.0",
+    "@storybook/addon-actions": "^6.1.15",
+    "@storybook/addon-essentials": "^6.1.15",
+    "@storybook/addon-links": "^6.1.15",
+    "@storybook/node-logger": "^6.1.15",
+    "@storybook/preset-create-react-app": "^3.1.5",
+    "@storybook/react": "^6.1.15",
     "@types/color-hash": "^1.0.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.20",
@@ -137,6 +143,8 @@
     "build": "craco build",
     "start": "craco start",
     "test": "craco test",
-    "gen": "scaffdog generate"
+    "gen": "scaffdog generate",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   }
 }
