@@ -63,6 +63,7 @@
     "simple-peer": "^9.9.3",
     "style-loader": "2.0.0",
     "styled-components": "^5.2.1",
+    "styled-normalize": "^8.0.7",
     "terser-webpack-plugin": "5.0.3",
     "thunky": "^1.1.0",
     "ts-pnp": "1.2.0",
