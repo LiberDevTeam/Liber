@@ -13,5 +13,13 @@
   "rules": {
     // 2重管理になるのでreact/prop-types側の警告はoff
     "react/prop-types": [0]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.stories.tsx"],
+      "rules": {
+        "import/no-anonymous-default-export": "off"
+      }
+    }
+  ]
 }
