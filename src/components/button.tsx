@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 type ButtonVariant = 'solid' | 'outline';
@@ -36,7 +36,7 @@ export interface ButtonProps {
   text: string;
 }
 
-export const Button: FC<ButtonProps> = memo(function Button({
+export const Button: React.FC<ButtonProps> = React.memo(function Button({
   variant = 'solid',
   text,
   shape,

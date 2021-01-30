@@ -10,11 +10,11 @@ questions:
 # `{{ inputs.name }}.tsx`
 
 ```tsx
-import React, { FC, memo } from 'react';
+import React from 'react';
 
-interface Props {}
+export interface {{ inputs.name | pascal }}Props {}
 
-export const {{ inputs.name | pascal }}: FC<Props> = memo(function {{ inputs.name | pascal }}({}) {
+export const {{ inputs.name | pascal }}: React.FC<Props{{ inputs.name | pascal }}> = React.memo(function {{ inputs.name | pascal }}({}) {
   return <div>Hello</div>;
 });
 ```
@@ -23,7 +23,7 @@ export const {{ inputs.name | pascal }}: FC<Props> = memo(function {{ inputs.nam
 
 ```tsx
 import React from 'react';
-import { {{ inputs.name | pascal }} } from './{{ inputs.name }}';
+import { {{ inputs.name | pascal }}, {{ inputs.name | pascal }}Props } from './{{ inputs.name }}';
 import { Story } from '@storybook/react/types-6-0';
 
 export default {
@@ -31,6 +31,6 @@ export default {
   title: '{{ inputs.name | pascal }}',
 }
 
-const Template = (args) => <{{ inputs.name | pascal }} {...args} />;
-export const Default: Story = Template.bind({});
+const Template: Story<{{ inputs.name | pascal }}Props> = (args) => <{{ inputs.name | pascal }} {...args} />;
+export const Default = Template.bind({});
 ```
