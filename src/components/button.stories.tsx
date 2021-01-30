@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, ButtonProps } from './button';
 import { Story } from '@storybook/react/types-6-0';
+import { InsertPhoto as ImageIcon } from '@material-ui/icons';
 
 export default {
   component: Button,
@@ -32,5 +33,11 @@ export const All: Story = (args) => (
     <Button shape="rounded" variant="solid" text={args.text} />
     <Button shape="square" variant="outline" text={args.text} />
     <Button shape="square" variant="solid" text={args.text} />
+    <Button
+      icon={<ImageIcon />}
+      shape="square"
+      variant="solid"
+      text={args.text}
+    />
   </>
 );
