@@ -17,7 +17,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "downlevelIteration": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin"
+      }
+    ]
   },
   "include": ["src"]
 }
