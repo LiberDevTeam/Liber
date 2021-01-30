@@ -1,10 +1,43 @@
-import 'styled-components';
+import { createGlobalStyle } from 'styled-components';
+
+export const GlobalStyles = createGlobalStyle`
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+  }
+
+  #root {
+    font-family: ${(props) => props.theme.fontFamily.body};
+  }
+
+  /* Remove default margin */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+`;
 
 const colors = {
   primary: '#2e79f6',
   primaryText: '#1a2c58',
   secondaryText: '#a0aabe',
   lightText: '#fcfdfe',
+  lightPrimary: '#75a7ff',
+  darkPrimary: '#004ec2',
   bg: '#fcfdfe',
   bg2: '#f0f5fa',
   bg3: '#f3f3f3',
@@ -73,7 +106,7 @@ export const theme = {
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   shadows: {
     0: 'none',
-    1: '0px 5px 20px rgba(0, 0, 0, 0.2)',
+    1: 'rgba(0, 0, 0, 0.2) 0px 5px 20px',
   },
   radii: {
     medium: 12,
