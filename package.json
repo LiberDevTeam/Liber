@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@giantmachines/redux-websocket": "^1.4.0",
+    "@material-ui/icons": "^4.11.2",
     "@piotr-cz/redux-persist-idb-storage": "^1.1.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@reduxjs/toolkit": "^1.4.0",
