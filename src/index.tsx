@@ -6,10 +6,41 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from '~/state/store';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { theme } from './theme';
 import 'webrtc-adapter';
 import { Normalize } from 'styled-normalize';
+
+const GlobalStyles = createGlobalStyle`
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+  }
+
+  #root {
+    font-family: ${(props) => props.theme.fontFamily.body};
+  }
+
+  /* Remove default margin */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+`;
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,6 +48,7 @@ ReactDOM.render(
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <Normalize />
+          <GlobalStyles />
           <App />
         </ThemeProvider>
       </PersistGate>

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Channel } from '~/state/ducks/channel/channelSlice';
 
-type NavbarProps = {
+export interface NavbarProps {
   channels: Record<string, Channel>;
-};
+}
 
 const Navbar: React.FC<NavbarProps> = ({ channels }) => {
   const location = useLocation();
