@@ -9,12 +9,14 @@ import { persistor } from '~/state/store';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme';
 import 'webrtc-adapter';
+import { Normalize } from 'styled-normalize';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
+          <Normalize />
           <App />
         </ThemeProvider>
       </PersistGate>

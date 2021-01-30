@@ -1,4 +1,4 @@
-import { css } from 'styled-components';
+import 'styled-components';
 
 const colors = {
   primary: '#2e79f6',
@@ -28,6 +28,7 @@ const fontSizes = {
   '8xl': '6rem',
   '9xl': '8rem',
 };
+
 const fontWeights = {
   thin: 100,
   light: 300,
@@ -39,10 +40,17 @@ const fontWeights = {
   black: 900,
 };
 
+const fontFamily = {
+  heading: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+  body: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+  mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`,
+};
+
 export const theme = {
   colors,
   fontWeights,
   fontSizes,
+  fontFamily,
   space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   shadows: {
@@ -54,4 +62,11 @@ export const theme = {
     large: 20,
     round: '50%',
   },
-};
+} as const;
+
+type AppTheme = typeof theme;
+
+declare module 'styled-components' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends AppTheme {}
+}
