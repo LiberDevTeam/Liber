@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input } from '~/components/input';
+import { Input } from '~/components/atoms/input';
 
-type ChatDetailProps = {
+export type ChatDetailProps = {
   cid: string;
 };
 

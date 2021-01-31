@@ -1,5 +1,5 @@
 import React from 'react';
-import { SideNavLink } from '~/components/side-nav-link';
+import { SideNavLink } from '~/components/atoms/side-nav-link';
 import {
   Search as SearchIcon,
   List as ListIcon,
