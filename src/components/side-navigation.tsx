@@ -48,13 +48,13 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
 
       <LinkGroup>
         <SubHeader>PLACE</SubHeader>
-        <SideNavLink icon={<SearchIcon />} to="/">
+        <SideNavLink exact icon={<SearchIcon />} to="/">
           Explore
         </SideNavLink>
-        <SideNavLink icon={<ListIcon />} to="/places">
+        <SideNavLink exact icon={<ListIcon />} to="/places">
           {"You've been to"}
         </SideNavLink>
-        <SideNavLink icon={<AddIcon />} to="/places/new">
+        <SideNavLink exact icon={<AddIcon />} to="/places/new">
           Create new
         </SideNavLink>
         <SideNavLink icon={<MessagesIcon />} to="/chats">
@@ -64,19 +64,19 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
 
       <LinkGroup>
         <SubHeader>OTHERS</SubHeader>
-        <SideNavLink icon={<SettingsIcon />} to="/settings">
+        <SideNavLink exact icon={<SettingsIcon />} to="/settings">
           Settings
         </SideNavLink>
-        <SideNavLink icon={<OtherIcon />} to="/privacy-policy">
+        <SideNavLink exact icon={<OtherIcon />} to="/privacy-policy">
           Privacy Policy
         </SideNavLink>
-        <SideNavLink icon={<OtherIcon />} to="/terms-of-service">
+        <SideNavLink exact icon={<OtherIcon />} to="/terms-of-service">
           Terms of Service
         </SideNavLink>
-        <SideNavLink icon={<OtherIcon />} to="/license">
+        <SideNavLink exact icon={<OtherIcon />} to="/license">
           License
         </SideNavLink>
-        <SideNavLink icon={<ContactIcon />} to="/contact-us">
+        <SideNavLink exact icon={<ContactIcon />} to="/contact-us">
           Contact Us
         </SideNavLink>
       </LinkGroup>

@@ -6,6 +6,7 @@ import { NewPlace } from './pages/places/new';
 import { history } from './state/store';
 import { SideNavigation } from '~/components/side-navigation';
 import styled from 'styled-components';
+import { Chats } from './pages/chats';
 
 const Root = styled.div`
   display: grid;
@@ -19,6 +20,7 @@ const Main = styled.div`
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
   padding: ${(props) => props.theme.space[8]}px;
+  overflow: hidden;
 `;
 
 export const Routes: React.FC = () => (
@@ -30,6 +32,7 @@ export const Routes: React.FC = () => (
         <Switch>
           <Route exact path="/" render={() => <IndexPage />} />
           <Route exact path="/places/new" render={() => <NewPlace />} />
+          <Route path="/chats/:cid?" render={() => <Chats />} />
         </Switch>
       </Main>
     </Root>

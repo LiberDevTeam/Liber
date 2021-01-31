@@ -26,12 +26,13 @@ export interface SideNavLinkProps {
   to: string;
   icon: React.ReactNode;
   children: React.ReactNode;
+  exact?: boolean;
 }
 
 export const SideNavLink: React.FC<SideNavLinkProps> = React.memo(
-  function SideNavLink({ to, icon, children }) {
+  function SideNavLink({ to, icon, children, exact = false }) {
     return (
-      <StyledNavLink exact to={to} activeClassName={activeClassName}>
+      <StyledNavLink exact={exact} to={to} activeClassName={activeClassName}>
         {icon}
         <LinkText>{children}</LinkText>
       </StyledNavLink>

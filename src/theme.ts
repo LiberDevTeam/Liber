@@ -41,6 +41,7 @@ const colors = {
   bg: '#fcfdfe',
   bg2: '#f0f5fa',
   bg3: '#f3f3f3',
+  border: '#f0f5fa',
   green: '#4eeb91',
   yellow: '#e8eb5c',
   red: '#ef4141',

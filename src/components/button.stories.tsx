@@ -5,7 +5,7 @@ import { InsertPhoto as ImageIcon } from '@material-ui/icons';
 
 export default {
   component: Button,
-  title: 'Button',
+  title: 'ui/Button',
   argTypes: {
     text: { control: 'text', defaultValue: 'Liber' },
     shape: {

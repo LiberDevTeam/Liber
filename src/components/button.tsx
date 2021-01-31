@@ -13,6 +13,7 @@ const Root = styled.button<RootProps>`
   min-width: 200px;
   align-items: center;
   justify-content: center;
+  height: 40px;
 
   color: ${(props) => props.theme.colors.primary};
   font-family: ${(props) => props.theme.fontFamily.body};
@@ -20,7 +21,7 @@ const Root = styled.button<RootProps>`
   font-size: ${(props) => props.theme.fontSizes.md};
 
   background: ${(props) => props.theme.colors.bg};
-  padding: 10px 20px;
+  padding: 0px 20px;
 
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-style: solid;
@@ -46,11 +47,11 @@ const Root = styled.button<RootProps>`
 `;
 
 const IconWrapper = styled.span`
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   margin-right: ${(props) => props.theme.space[2]}px;
   & > svg {
-    font-size: ${(props) => props.theme.fontSizes.xl};
+    font-size: ${(props) => props.theme.fontSizes.lg};
   }
 `;
 
