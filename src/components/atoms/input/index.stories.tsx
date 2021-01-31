@@ -1,11 +1,11 @@
 import React from 'react';
-import { Input } from './input';
+import { Input } from '.';
 import { Story } from '@storybook/react/types-6-0';
 import { Search as SearchIcon } from '@material-ui/icons';
 
 export default {
   component: Input,
-  title: 'ui/Input',
+  title: 'atoms/Input',
 };
 
 const Template: Story = (args) => <Input {...args} />;

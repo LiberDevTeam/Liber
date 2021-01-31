@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button, ButtonProps } from './button';
+import { Button, ButtonProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
 import { InsertPhoto as ImageIcon } from '@material-ui/icons';
 
 export default {
   component: Button,
-  title: 'ui/Button',
+  title: 'atoms/Button',
   argTypes: {
     text: { control: 'text', defaultValue: 'Liber' },
     shape: {
