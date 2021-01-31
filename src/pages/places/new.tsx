@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageTitle } from '~/components/page-title';
 import styled from 'styled-components';
+import BaseLayout from '~/templates';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -12,9 +13,9 @@ const Description = styled.p`
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   return (
-    <div>
+    <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
       <Description>Please fill out a form and submit it.</Description>
-    </div>
+    </BaseLayout>
   );
 });

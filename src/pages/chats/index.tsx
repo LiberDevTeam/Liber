@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { Input } from '~/components/input';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { ChatListItem } from '../../components/chat-list-item';
-import { ChatPage } from './[cid]';
+import BaseLayout from '~/templates';
+import { ChatDetail } from '~/components/organisms/chat-detail';
+import { useParams } from 'react-router-dom';
 
 const PAGE_TITLE = 'Chats';
 
@@ -45,20 +47,23 @@ const SearchBox = styled.div`
 const chatIds = [...Array(50).keys()];
 
 export const Chats: React.FC = React.memo(function Chats() {
+  const { cid } = useParams<{ cid: string }>();
   return (
-    <Root>
-      <LeftContainer>
-        <PageTitle>{PAGE_TITLE}</PageTitle>
-        <SearchBox>
-          <Input icon={<SearchIcon />} />
-        </SearchBox>
-        <ChatList>
-          {chatIds.map((id) => (
-            <ChatListItem key={`chat-${id}`} chatId={`${id}`} />
-          ))}
-        </ChatList>
-      </LeftContainer>
-      <ChatPage />
-    </Root>
+    <BaseLayout>
+      <Root>
+        <LeftContainer>
+          <PageTitle>{PAGE_TITLE}</PageTitle>
+          <SearchBox>
+            <Input icon={<SearchIcon />} />
+          </SearchBox>
+          <ChatList>
+            {chatIds.map((id) => (
+              <ChatListItem key={`chat-${id}`} chatId={`${id}`} />
+            ))}
+          </ChatList>
+        </LeftContainer>
+        {cid && <ChatDetail cid={cid} />}
+      </Root>
+    </BaseLayout>
   );
 });
