@@ -4,7 +4,7 @@ import { Story } from '@storybook/react/types-6-0';
 
 export default {
   component: Textarea,
-  title: 'Textarea',
+  title: 'ui/Textarea',
 };
 
 const Template: Story = (args) => <Textarea {...args} />;

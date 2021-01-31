@@ -14,7 +14,7 @@ import React from 'react';
 
 export interface {{ inputs.name | pascal }}Props {}
 
-export const {{ inputs.name | pascal }}: React.FC<Props{{ inputs.name | pascal }}> = React.memo(function {{ inputs.name | pascal }}({}) {
+export const {{ inputs.name | pascal }}: React.FC<{{ inputs.name | pascal }}Props> = React.memo(function {{ inputs.name | pascal }}({}) {
   return <div>Hello</div>;
 });
 ```

@@ -4,7 +4,7 @@ import { Story } from '@storybook/react/types-6-0';
 
 export default {
   component: PageTitle,
-  title: 'PageTitle',
+  title: 'ui/PageTitle',
 };
 
 const Template: Story<PageTitleProps> = (args) => <PageTitle {...args} />;
