@@ -5,6 +5,7 @@ import IndexPage from './pages';
 import { NewPlace } from './pages/places/new';
 import { history } from './state/store';
 import { Chats } from './pages/chats';
+import { NotFoundPage } from './pages/404';
 
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
@@ -13,6 +14,7 @@ export const Routes: React.FC = () => (
       <Route exact path="/" render={() => <IndexPage />} />
       <Route exact path="/places/new" render={() => <NewPlace />} />
       <Route path="/chats/:cid?" render={() => <Chats />} />
+      <Route render={() => <NotFoundPage />} />
     </Switch>
   </ConnectedRouter>
 );
