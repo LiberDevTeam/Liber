@@ -1,9 +1,9 @@
 import React from 'react';
-import { PageTitle } from '~/components/page-title';
+import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
-import { Input } from '~/components/input';
+import { Input } from '~/components/atoms/input';
 import { Search as SearchIcon } from '@material-ui/icons';
-import { ChatListItem } from '../../components/chat-list-item';
+import { ChatListItem } from '~/components/molecules/chat-list-item';
 import BaseLayout from '~/templates';
 import { ChatDetail } from '~/components/organisms/chat-detail';
 import { useParams } from 'react-router-dom';

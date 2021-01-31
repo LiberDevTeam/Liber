@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SideNavigation } from '~/components/side-navigation';
+import { SideNavigation } from '~/components/organisms/side-navigation';
 
 const Root = styled.div`
   display: grid;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageTitle } from '~/components/page-title';
+import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
 import BaseLayout from '~/templates';
 
