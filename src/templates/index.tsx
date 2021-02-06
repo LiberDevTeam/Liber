@@ -1,13 +1,26 @@
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SideNavigation } from '~/components/organisms/side-navigation';
+
+const commonRootStyle = css`
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: ${(props) => props.theme.colors.bg2};
+`;
+
+const SpRoot = styled.div`
+  display: block;
+  ${commonRootStyle};
+`;
 
 const Root = styled.div`
   display: grid;
   grid-template-columns: 220px auto;
   grid-gap: ${(props) => props.theme.space[5]}px;
   padding: ${(props) => props.theme.space[5]}px;
-  height: 100%;
+  ${commonRootStyle};
 `;
 
 const Header = styled.header``;
@@ -20,7 +33,18 @@ const Main = styled.main`
 `;
 
 const BaseLayout: React.FC = ({ children }) => {
-  return (
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+
+  return isMobile ? (
+    <SpRoot>
+      <Header>
+        <SideNavigation />
+      </Header>
+
+      <Main>{children}</Main>
+    </SpRoot>
+  ) : (
     <Root>
       <Header>
         <SideNavigation />
