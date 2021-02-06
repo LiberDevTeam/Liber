@@ -1,13 +1,13 @@
 ---
-name: 'component'
-root: 'src/components/'
+name: 'atoms'
+root: 'src/components/atoms/'
 output: '**/*'
 ignore: []
 questions:
   name: 'Please enter the component name.'
 ---
 
-# `{{ inputs.name }}.tsx`
+# `{{ inputs.name }}/index.tsx`
 
 ```tsx
 import React from 'react';
@@ -19,16 +19,16 @@ export const {{ inputs.name | pascal }}: React.FC<{{ inputs.name | pascal }}Prop
 });
 ```
 
-# `{{ inputs.name }}.stories.tsx`
+# `{{ inputs.name }}/index.stories.tsx`
 
 ```tsx
 import React from 'react';
-import { {{ inputs.name | pascal }}, {{ inputs.name | pascal }}Props } from './{{ inputs.name }}';
+import { {{ inputs.name | pascal }}, {{ inputs.name | pascal }}Props } from './';
 import { Story } from '@storybook/react/types-6-0';
 
 export default {
   component: {{ inputs.name | pascal }},
-  title: '{{ inputs.name | pascal }}',
+  title: 'atoms/{{ inputs.name | pascal }}',
 }
 
 const Template: Story<{{ inputs.name | pascal }}Props> = (args) => <{{ inputs.name | pascal }} {...args} />;
