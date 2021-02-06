@@ -48,5 +48,7 @@ export const { addChannel, updateUsername } = meSlice.actions;
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
 export const selectMe = (state: RootState): typeof state.me => state.me;
+export const selectChannelById = (id: string) => (state: RootState): Channel =>
+  state.me.channels[id];
 
 export default meSlice.reducer;

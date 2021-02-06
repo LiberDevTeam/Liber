@@ -13,7 +13,8 @@ import {
 import styled from 'styled-components';
 
 const Root = styled.div`
-  width: 220px;
+  width: 244px;
+  padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
 // TODO: これは差し替える

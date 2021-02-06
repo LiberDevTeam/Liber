@@ -53,10 +53,11 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 export const Input: React.FC<InputProps> = React.memo(function Input({
   icon,
+  className,
   ...rest
 }) {
   return (
-    <Root>
+    <Root className={className}>
       <IconWrapper>{icon}</IconWrapper>
       <InnerInput {...rest} hasIcon={Boolean(icon)} />
     </Root>

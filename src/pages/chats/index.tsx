@@ -7,6 +7,8 @@ import { ChatListItem } from '~/components/molecules/chat-list-item';
 import BaseLayout from '~/templates';
 import { ChatDetail } from '~/components/organisms/chat-detail';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectMe } from '../../state/ducks/me/meSlice';
 
 const PAGE_TITLE = 'Chats';
 
@@ -28,7 +30,7 @@ const ChatList = styled.div`
   flex: 1;
   margin-top: ${(props) => props.theme.space[8]}px;
   padding: ${(props) => props.theme.space[1]}px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   & > div {
     margin-bottom: ${(props) => props.theme.space[4]}px;
@@ -44,10 +46,10 @@ const SearchBox = styled.div`
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
-const chatIds = [...Array(50).keys()];
-
 export const Chats: React.FC = React.memo(function Chats() {
   const { cid } = useParams<{ cid: string }>();
+  const me = useSelector(selectMe);
+
   return (
     <BaseLayout>
       <Root>
@@ -57,7 +59,7 @@ export const Chats: React.FC = React.memo(function Chats() {
             <Input icon={<SearchIcon />} />
           </SearchBox>
           <ChatList>
-            {chatIds.map((id) => (
+            {Object.keys(me.channels).map((id) => (
               <ChatListItem key={`chat-${id}`} chatId={`${id}`} />
             ))}
           </ChatList>

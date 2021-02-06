@@ -1,8 +1,12 @@
+import ColorHash from 'color-hash';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { selectChannelById } from '~/state/ducks/me/meSlice';
 
 const activeClassName = 'selected-chat';
+const colorHash = new ColorHash();
 
 const Root = styled(NavLink)`
   display: flex;
@@ -29,9 +33,11 @@ const LeftContainer = styled.div`
   position: relative;
   padding: ${(props) => props.theme.space[1]}px;
 `;
-const Image = styled.img`
+// TODO: use image
+const Image = styled.div<{ color: string }>`
   width: 100%;
   height: 100%;
+  background: ${(props) => props.color};
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 const Status = styled.div`
@@ -77,22 +83,23 @@ export interface ChatListItemProps {
 
 export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
   function ChatListItem({ chatId }) {
-    // TODO: chatId chatの情報を取得する
-    const title = 'We Love FC Barcelona!!';
-    const description =
-      'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj';
-    const time = '2 hours ago';
+    const chat = useSelector(selectChannelById(chatId));
+
+    if (!chat) {
+      // TODO: Show error message
+      return null;
+    }
 
     return (
       <Root to={`/chats/${chatId}`} activeClassName={activeClassName}>
         <LeftContainer>
-          <Image src="https://i.pravatar.cc/60" />
+          <Image color={colorHash.hex(chatId)} />
           <Status />
         </LeftContainer>
         <RightContainer>
-          <Title>{title}</Title>
-          <Description>{description}</Description>
-          <Time>{time}</Time>
+          <Title>{chat.name}</Title>
+          <Description>{chat.description}</Description>
+          <Time>{'2 hours ago'}</Time>
         </RightContainer>
       </Root>
     );
