@@ -1,11 +1,13 @@
-import React from 'react';
+import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 const activeClassName = 'selected-chat';
 
 const Root = styled(NavLink)`
-  display: flex;
+  display: inline-flex;
+  width: 100%;
   padding: ${(props) => props.theme.space[1]}px;
   border-radius: ${(props) => props.theme.radii.medium}px;
   border: 2px solid white;
@@ -71,28 +73,35 @@ const Time = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.semibold};
 `;
 
+export type ChatItem = {
+  id: string;
+  title: string;
+  avatarImage: string;
+  description: string;
+  timestamp: number;
+};
+
 export interface ChatListItemProps {
-  chatId: string;
+  chat: ChatItem;
 }
 
 export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
-  function ChatListItem({ chatId }) {
-    // TODO: chatId chatの情報を取得する
-    const title = 'We Love FC Barcelona!!';
-    const description =
-      'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj';
-    const time = '2 hours ago';
+  function ChatListItem({ chat }) {
+    const dispTime = useMemo(() => {
+      const date = fromUnixTime(chat.timestamp);
+      return formatDistanceToNowStrict(date, { addSuffix: true });
+    }, [chat.timestamp]);
 
     return (
-      <Root to={`/chats/${chatId}`} activeClassName={activeClassName}>
+      <Root to={`/chats/${chat.id}`} activeClassName={activeClassName}>
         <LeftContainer>
-          <Image src="https://i.pravatar.cc/60" />
+          <Image src={chat.avatarImage} />
           <Status />
         </LeftContainer>
         <RightContainer>
-          <Title>{title}</Title>
-          <Description>{description}</Description>
-          <Time>{time}</Time>
+          <Title>{chat.title}</Title>
+          <Description>{chat.description}</Description>
+          <Time>{dispTime}</Time>
         </RightContainer>
       </Root>
     );

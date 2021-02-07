@@ -3,10 +3,12 @@ import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
 import { Input } from '~/components/atoms/input';
 import { Search as SearchIcon } from '@material-ui/icons';
-import { ChatListItem } from '~/components/molecules/chat-list-item';
+import { ChatItem } from '~/components/molecules/chat-list-item';
 import BaseLayout from '~/templates';
 import { ChatDetail } from '~/components/organisms/chat-detail';
 import { useParams } from 'react-router-dom';
+import { ChatList } from '~/components/organisms/chat-list';
+import { add, getUnixTime, sub } from 'date-fns';
 
 const PAGE_TITLE = 'Chats';
 
@@ -24,27 +26,26 @@ const LeftContainer = styled.div`
   padding-right: ${(props) => props.theme.space[2]}px;
   overflow: hidden;
 `;
-const ChatList = styled.div`
-  flex: 1;
-  margin-top: ${(props) => props.theme.space[8]}px;
-  padding: ${(props) => props.theme.space[1]}px;
-  overflow-y: scroll;
-
-  & > div {
-    margin-bottom: ${(props) => props.theme.space[4]}px;
-
-    &:last-child {
-      margin-bottom: 0px;
-    }
-  }
-`;
 
 const SearchBox = styled.div`
   margin-top: ${(props) => props.theme.space[8]}px;
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
-const chatIds = [...Array(50).keys()];
+// TODO: chatId chatの情報を取得する
+const chatList: ChatItem[] = [...Array(50)].map((_, index) => {
+  const id = String(index);
+  const yesterday = sub(new Date(), { days: 1 });
+  const time = add(yesterday, { hours: index });
+  return {
+    id,
+    title: 'We Love FC Barcelona!!',
+    avatarImage: `https://i.pravatar.cc/60?u=${id}`,
+    description:
+      'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
+    timestamp: getUnixTime(time),
+  };
+});
 
 export const Chats: React.FC = React.memo(function Chats() {
   const { cid } = useParams<{ cid: string }>();
@@ -56,11 +57,7 @@ export const Chats: React.FC = React.memo(function Chats() {
           <SearchBox>
             <Input icon={<SearchIcon />} />
           </SearchBox>
-          <ChatList>
-            {chatIds.map((id) => (
-              <ChatListItem key={`chat-${id}`} chatId={`${id}`} />
-            ))}
-          </ChatList>
+          <ChatList chatList={chatList} />
         </LeftContainer>
         {cid && <ChatDetail cid={cid} />}
       </Root>
