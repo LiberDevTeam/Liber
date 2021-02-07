@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
-import { Channel } from '~/state/ducks/channel/channelSlice';
+import { place } from '~/state/ducks/place/placeSlice';
 
 export type Me = {
   id: string;
   username: string;
-  channels: Record<string, Channel>;
+  Places: Record<string, place>;
 };
 
 export type MeState = Me;
@@ -14,16 +14,16 @@ export type MeState = Me;
 const initialState: MeState = {
   id: uuidv4(),
   username: 'username',
-  channels: {},
+  Places: {},
 };
 
 export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    addChannel: (state, action: PayloadAction<Channel>) => {
+    addPlace: (state, action: PayloadAction<place>) => {
       const { id, name, description } = action.payload;
-      state.channels[action.payload.id] = { id, name, description };
+      state.Places[action.payload.id] = { id, name, description };
     },
     updateUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
@@ -31,7 +31,7 @@ export const meSlice = createSlice({
   },
 });
 
-export const { addChannel, updateUsername } = meSlice.actions;
+export const { addPlace, updateUsername } = meSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
