@@ -6,7 +6,7 @@ import { place } from '~/state/ducks/place/placeSlice';
 export type Me = {
   id: string;
   username: string;
-  Places: Record<string, place>;
+  places: Record<string, place>;
 };
 
 export type MeState = Me;
@@ -14,7 +14,7 @@ export type MeState = Me;
 const initialState: MeState = {
   id: uuidv4(),
   username: 'username',
-  Places: {},
+  places: {},
 };
 
 export const meSlice = createSlice({
@@ -23,7 +23,7 @@ export const meSlice = createSlice({
   reducers: {
     addPlace: (state, action: PayloadAction<place>) => {
       const { id, name, description } = action.payload;
-      state.Places[action.payload.id] = { id, name, description };
+      state.places[action.payload.id] = { id, name, description };
     },
     updateUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
