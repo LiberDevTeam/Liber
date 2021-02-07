@@ -1,14 +1,15 @@
+import { useFormik } from 'formik';
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from '~/components/atoms/button';
 import { Input } from '~/components/atoms/input';
-
-export type ChatDetailProps = {
-  cid: string;
-};
+import { MessageView } from '~/components/molecules/message-view';
+import { Channel, Message } from '~/state/ducks/channel/channelSlice';
 
 const Root = styled.div`
   display: grid;
-  grid-template-rows: 160px 1fr 40px;
+  grid-template-rows: 80px 1fr 64px;
+  overflow: hidden;
 `;
 
 const Header = styled.div``;
@@ -25,28 +26,77 @@ const Description = styled.div`
   margin-top: ${(props) => props.theme.space[4]}px;
 `;
 
-const Body = styled.div``;
+const Messages = styled.div`
+  & > * {
+    margin-top: ${(props) => props.theme.space[6]}px;
+  }
+  overflow-y: auto;
+`;
 
 const Footer = styled.div`
   display: flex;
+  padding: ${(props) => props.theme.space[1]}px;
+  padding-top: ${(props) => props.theme.space[5]}px;
 `;
 
+export interface FormValues {
+  text: string;
+}
+
+export type ChatDetailProps = {
+  chat: Channel;
+  messages: Message[];
+  onSubmit: (text: string) => void;
+};
+
 export const ChatDetail: React.FC<ChatDetailProps> = React.memo(
-  function ChatPage({ cid }) {
+  function ChatPage({ chat, messages, onSubmit }) {
+    const formik = useFormik<FormValues>({
+      initialValues: {
+        text: '',
+      },
+      async onSubmit({ text }) {
+        onSubmit(text);
+        formik.resetForm();
+      },
+    });
+
     return (
       <Root>
         <Header>
-          <ChatTitle>{`We Love FC Barcelona!! id: ${cid}`}</ChatTitle>
-          <Description>
-            DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescion
-          </Description>
+          <ChatTitle>{chat.name}</ChatTitle>
+          <Description>{chat.description}</Description>
         </Header>
 
-        <Body>body</Body>
+        <Messages>
+          {messages.map((m) => (
+            <MessageView
+              key={m.id}
+              uid={m.uid}
+              timestamp={m.timestamp}
+              text={m.text}
+            />
+          ))}
+        </Messages>
 
-        <Footer>
-          <Input placeholder="Message..." />
-        </Footer>
+        <form onSubmit={formik.handleSubmit}>
+          <Footer>
+            <Input
+              name="text"
+              placeholder="Message..."
+              value={formik.values.text}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+            />
+            <Button
+              text="Send"
+              shape="square"
+              variant="solid"
+              type="submit"
+              disabled={formik.isSubmitting}
+            />
+          </Footer>
+        </form>
       </Root>
     );
   }

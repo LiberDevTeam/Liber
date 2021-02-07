@@ -55,21 +55,22 @@ const IconWrapper = styled.span`
   }
 `;
 
-export interface ButtonProps {
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   shape: 'square' | 'rounded';
   text: string;
   icon?: React.ReactNode;
-}
+};
 
 export const Button: React.FC<ButtonProps> = React.memo(function Button({
   variant = 'solid',
   icon,
   text,
   shape,
+  ...args
 }) {
   return (
-    <Root rounded={shape === 'rounded'} variant={variant}>
+    <Root rounded={shape === 'rounded'} variant={variant} {...args}>
       {icon ? <IconWrapper>{icon}</IconWrapper> : null}
       {text}
     </Root>

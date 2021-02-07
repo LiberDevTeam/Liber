@@ -20,6 +20,9 @@ export default {
         options: ['solid', 'outline'],
       },
     },
+    onClick: {
+      action: 'onClick',
+    },
   },
 };
 
@@ -29,15 +32,36 @@ Default.args = { text: 'hello', shape: 'square', variant: 'solid' };
 
 export const All: Story = (args) => (
   <>
-    <Button shape="rounded" variant="outline" text={args.text} />
-    <Button shape="rounded" variant="solid" text={args.text} />
-    <Button shape="square" variant="outline" text={args.text} />
-    <Button shape="square" variant="solid" text={args.text} />
+    <Button
+      shape="rounded"
+      variant="outline"
+      text={args.text}
+      onClick={args.onClick}
+    />
+    <Button
+      shape="rounded"
+      variant="solid"
+      text={args.text}
+      onClick={args.onClick}
+    />
+    <Button
+      shape="square"
+      variant="outline"
+      text={args.text}
+      onClick={args.onClick}
+    />
+    <Button
+      shape="square"
+      variant="solid"
+      text={args.text}
+      onClick={args.onClick}
+    />
     <Button
       icon={<ImageIcon />}
       shape="square"
       variant="solid"
       text={args.text}
+      onClick={args.onClick}
     />
   </>
 );
