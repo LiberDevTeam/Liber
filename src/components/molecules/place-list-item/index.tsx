@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-const activeClassName = 'selected-chat';
+const activeClassName = 'selected-place';
 
 const Root = styled(NavLink)`
   display: inline-flex;
@@ -75,7 +75,7 @@ const Time = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.semibold};
 `;
 
-export type ChatItem = {
+export type PlaceItem = {
   id: string;
   title: string;
   avatarImage: string;
@@ -83,26 +83,26 @@ export type ChatItem = {
   timestamp: number;
 };
 
-export interface ChatListItemProps {
-  chat: ChatItem;
+export interface PlaceListItemProps {
+  place: PlaceItem;
 }
 
-export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
-  function ChatListItem({ chat }) {
+export const PlaceListItem: React.FC<PlaceListItemProps> = React.memo(
+  function PlaceListItem({ place }) {
     const dispTime = useMemo(() => {
-      const date = fromUnixTime(chat.timestamp);
+      const date = fromUnixTime(place.timestamp);
       return formatDistanceToNowStrict(date, { addSuffix: true });
-    }, [chat.timestamp]);
+    }, [place.timestamp]);
 
     return (
-      <Root to={`/chats/${chat.id}`} activeClassName={activeClassName}>
+      <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
         <LeftContainer>
           <Image />
           <Status />
         </LeftContainer>
         <RightContainer>
-          <Title>{chat.title}</Title>
-          <Description>{chat.description}</Description>
+          <Title>{place.title}</Title>
+          <Description>{place.description}</Description>
           <Time>{dispTime}</Time>
         </RightContainer>
       </Root>

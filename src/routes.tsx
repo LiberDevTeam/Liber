@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import IndexPage from './pages';
 import { NewPlace } from './pages/places/new';
 import { history } from './state/store';
-import { Chats } from './pages/chats';
+import { Places } from './pages/places';
 import { NotFoundPage } from './pages/404';
 
 export const Routes: React.FC = () => (
@@ -13,7 +13,7 @@ export const Routes: React.FC = () => (
     <Switch>
       <Route exact path="/" render={() => <IndexPage />} />
       <Route exact path="/places/new" render={() => <NewPlace />} />
-      <Route path="/chats/:cid?" render={() => <Chats />} />
+      <Route path="/places/:cid?" render={() => <Places />} />
       <Route render={() => <NotFoundPage />} />
     </Switch>
   </ConnectedRouter>

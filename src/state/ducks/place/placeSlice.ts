@@ -9,7 +9,7 @@ export type Message = {
   timestamp: number;
 };
 
-export type place = {
+export type Place = {
   id: string;
   name: string;
   description: string;

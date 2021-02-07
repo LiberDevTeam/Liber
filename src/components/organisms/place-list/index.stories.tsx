@@ -1,11 +1,11 @@
 import React from 'react';
 import { Story } from '@storybook/react/types-6-0';
-import { ChatList, ChatListProps } from '.';
-import { ChatItem } from '~/components/molecules/chat-list-item';
+import { PlaceList, PlaceListProps } from '.';
+import { PlaceItem } from '~/components/molecules/place-list-item';
 import { add, getUnixTime, sub } from 'date-fns';
 
 // TODO: 実際のchatデータモックに置き換える
-const chatList: ChatItem[] = [...Array(50)].map((_, index) => {
+const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
   const id = String(index);
   const yesterday = sub(new Date(), { days: 1 });
   const time = add(yesterday, { hours: index });
@@ -20,12 +20,12 @@ const chatList: ChatItem[] = [...Array(50)].map((_, index) => {
 });
 
 export default {
-  component: ChatList,
-  title: 'organisms/ChatList',
+  component: PlaceList,
+  title: 'organisms/PlaceList',
   args: {
-    chatList,
+    placeList,
   },
 };
 
-const Template: Story<ChatListProps> = (args) => <ChatList {...args} />;
+const Template: Story<PlaceListProps> = (args) => <PlaceList {...args} />;
 export const Default = Template.bind({});

@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
-import { place } from '~/state/ducks/place/placeSlice';
+import { Place } from '~/state/ducks/place/placeSlice';
 
 export type Me = {
   id: string;
   username: string;
-  places: Record<string, place>;
+  places: Record<string, Place>;
 };
 
 export type MeState = Me;
@@ -21,7 +21,7 @@ export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    addPlace: (state, action: PayloadAction<place>) => {
+    addPlace: (state, action: PayloadAction<Place>) => {
       const { id, name, description } = action.payload;
       state.places[action.payload.id] = { id, name, description };
     },
@@ -48,7 +48,7 @@ export const { addPlace, updateUsername } = meSlice.actions;
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
 export const selectMe = (state: RootState): typeof state.me => state.me;
-export const selectChannelById = (id: string) => (state: RootState): Channel =>
-  state.me.channels[id];
+export const selectPlaceById = (id: string) => (state: RootState): Place =>
+  state.me.places[id];
 
 export default meSlice.reducer;

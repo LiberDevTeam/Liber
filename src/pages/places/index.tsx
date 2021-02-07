@@ -6,14 +6,14 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '~/components/atoms/input';
 import { PageTitle } from '~/components/atoms/page-title';
-import { ChatItem } from '~/components/molecules/chat-list-item';
-import { ChatDetail } from '~/components/organisms/chat-detail';
-import { ChatList } from '~/components/organisms/chat-list';
+import { PlaceItem } from '~/components/molecules/place-list-item';
+import { PlaceDetail } from '~/components/organisms/place-detail';
+import { PlaceList } from '~/components/organisms/place-list';
 import BaseLayout from '~/templates';
-import { selectChannelMessages } from '../../state/ducks/channel/channelSlice';
-import { selectChannelById, selectMe } from '../../state/ducks/me/meSlice';
+import { selectPlaceMessages } from '../../state/ducks/place/placeSlice';
+import { selectPlaceById, selectMe } from '../../state/ducks/me/meSlice';
 
-const PAGE_TITLE = 'Chats';
+const PAGE_TITLE = 'Places';
 
 const Root = styled.div`
   height: 100%;
@@ -35,18 +35,18 @@ const SearchBox = styled.div`
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
-export const Chats: React.FC = React.memo(function Chats() {
+export const Places: React.FC = React.memo(function Places() {
   const { cid } = useParams<{ cid: string }>();
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const chatList: ChatItem[] = Object.values(me.channels).map((c) => ({
+  const placeList: PlaceItem[] = Object.values(me.places).map((c) => ({
     ...c,
     title: c.name,
     avatarImage: `https://i.pravatar.cc/60?u=${c.id}`,
     timestamp: 1612708219995,
   }));
-  const chat = useSelector(selectChannelById(cid));
-  const messages = useSelector(selectChannelMessages(cid));
+  const place = useSelector(selectPlaceById(cid));
+  const messages = useSelector(selectPlaceMessages(cid));
 
   const handleSubmit = useCallback(
     (text: string) => {
@@ -70,10 +70,14 @@ export const Chats: React.FC = React.memo(function Chats() {
           <SearchBox>
             <Input icon={<SearchIcon />} />
           </SearchBox>
-          <ChatList chatList={chatList} />
+          <PlaceList placeList={placeList} />
         </LeftContainer>
-        {chat && (
-          <ChatDetail chat={chat} onSubmit={handleSubmit} messages={messages} />
+        {place && (
+          <PlaceDetail
+            place={place}
+            onSubmit={handleSubmit}
+            messages={messages}
+          />
         )}
       </Root>
     </BaseLayout>
