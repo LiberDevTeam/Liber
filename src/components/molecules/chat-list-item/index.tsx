@@ -6,7 +6,8 @@ import styled from 'styled-components';
 const activeClassName = 'selected-chat';
 
 const Root = styled(NavLink)`
-  display: flex;
+  display: inline-flex;
+  width: 100%;
   padding: ${(props) => props.theme.space[1]}px;
   border-radius: ${(props) => props.theme.radii.medium}px;
   border: 2px solid white;
