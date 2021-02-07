@@ -8,7 +8,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from '~/state/store';
 import { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyles } from './theme';
-import 'webrtc-adapter';
 import { Normalize } from 'styled-normalize';
 
 ReactDOM.render(
