@@ -2,7 +2,6 @@ import React from 'react';
 import { SideNavLink } from '~/components/atoms/side-nav-link';
 import {
   Search as SearchIcon,
-  List as ListIcon,
   Add as AddIcon,
   Forum as MessagesIcon,
   Settings as SettingsIcon,
@@ -52,14 +51,11 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
         <SideNavLink exact icon={<SearchIcon />} to="/">
           Explore
         </SideNavLink>
-        <SideNavLink exact icon={<ListIcon />} to="/places">
-          {"You've been to"}
-        </SideNavLink>
         <SideNavLink exact icon={<AddIcon />} to="/places/new">
           Create new
         </SideNavLink>
-        <SideNavLink icon={<MessagesIcon />} to="/chats">
-          Chats
+        <SideNavLink exact icon={<MessagesIcon />} to="/places">
+          Places
         </SideNavLink>
       </LinkGroup>
 

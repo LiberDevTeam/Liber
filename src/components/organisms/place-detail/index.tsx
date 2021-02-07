@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/atoms/button';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
-import { Channel, Message } from '~/state/ducks/channel/channelSlice';
+import { Place, Message } from '~/state/ducks/place/placeSlice';
 
 const Root = styled.div`
   display: grid;
@@ -13,7 +13,7 @@ const Root = styled.div`
 `;
 
 const Header = styled.div``;
-const ChatTitle = styled.h2`
+const Title = styled.h2`
   color: ${(props) => props.theme.colors.primaryText};
   font-size: ${(props) => props.theme.fontSizes.lg};
   font-weight: ${(props) => props.theme.fontWeights.medium};
@@ -43,14 +43,14 @@ export interface FormValues {
   text: string;
 }
 
-export type ChatDetailProps = {
-  chat: Channel;
+export type PlaceDetailProps = {
+  place: Place;
   messages: Message[];
   onSubmit: (text: string) => void;
 };
 
-export const ChatDetail: React.FC<ChatDetailProps> = React.memo(
-  function ChatPage({ chat, messages, onSubmit }) {
+export const PlaceDetail: React.FC<PlaceDetailProps> = React.memo(
+  function PlaceDetail({ place, messages, onSubmit }) {
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
@@ -64,8 +64,8 @@ export const ChatDetail: React.FC<ChatDetailProps> = React.memo(
     return (
       <Root>
         <Header>
-          <ChatTitle>{chat.name}</ChatTitle>
-          <Description>{chat.description}</Description>
+          <Title>{place.name}</Title>
+          <Description>{place.description}</Description>
         </Header>
 
         <Messages>

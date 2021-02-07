@@ -8,7 +8,7 @@ import { Textarea } from '~/components/atoms/textarea';
 import { v4 as uuidv4 } from 'uuid';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { addChannel } from '../../state/ducks/me/meSlice';
+import { addPlace } from '../../state/ducks/me/meSlice';
 import { push } from 'connected-react-router';
 
 const PAGE_TITLE = 'Create new place';
@@ -52,8 +52,8 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
 
     async onSubmit({ name, description }) {
       const id = uuidv4();
-      await dispatch(addChannel({ id, name, description }));
-      dispatch(push(`/chats/${id}`));
+      await dispatch(addPlace({ id, name, description }));
+      dispatch(push(`/places/${id}`));
     },
   });
 
