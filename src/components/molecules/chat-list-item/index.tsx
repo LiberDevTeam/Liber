@@ -31,9 +31,11 @@ const LeftContainer = styled.div`
   position: relative;
   padding: ${(props) => props.theme.space[1]}px;
 `;
-const Image = styled.img`
+// TODO: use image
+const Image = styled.div`
   width: 100%;
   height: 100%;
+  background: ${(props) => props.theme.colors.bg2};
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 const Status = styled.div`
@@ -95,7 +97,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
     return (
       <Root to={`/chats/${chat.id}`} activeClassName={activeClassName}>
         <LeftContainer>
-          <Image src={chat.avatarImage} />
+          <Image />
           <Status />
         </LeftContainer>
         <RightContainer>
