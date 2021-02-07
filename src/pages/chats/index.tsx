@@ -10,7 +10,6 @@ import { ChatItem } from '~/components/molecules/chat-list-item';
 import { ChatDetail } from '~/components/organisms/chat-detail';
 import { ChatList } from '~/components/organisms/chat-list';
 import BaseLayout from '~/templates';
-import { broadcastMessage, rtcCreateOffer } from '../../connection/actions';
 import { selectChannelMessages } from '../../state/ducks/channel/channelSlice';
 import { selectChannelById, selectMe } from '../../state/ducks/me/meSlice';
 
@@ -51,21 +50,17 @@ export const Chats: React.FC = React.memo(function Chats() {
 
   const handleSubmit = useCallback(
     (text: string) => {
-      dispatch(
-        broadcastMessage(cid, {
-          id: uuidv4(),
-          uid: me.id,
-          text,
-          timestamp: new Date().getTime(),
-        })
-      );
+      // dispatch(
+      //   broadcastMessage(cid, {
+      //     id: uuidv4(),
+      //     uid: me.id,
+      //     text,
+      //     timestamp: new Date().getTime(),
+      //   })
+      // );
     },
     [dispatch, me, cid]
   );
-
-  useEffect(() => {
-    dispatch(rtcCreateOffer(cid, me));
-  }, [dispatch, cid, me]);
 
   return (
     <BaseLayout>
