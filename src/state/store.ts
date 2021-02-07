@@ -1,8 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
-import channelReducer, {
-  ChannelState,
-} from '~/state/ducks/channel/channelSlice';
+import placeReducer, { PlaceState } from '~/state/ducks/place/placeSlice';
 import meReducer, { MeState } from '~/state/ducks/me/meSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
@@ -26,8 +24,8 @@ const mePersistConfig = {
   debug: true,
 };
 
-const channelPersistConfig = {
-  key: 'channel',
+const placePersistConfig = {
+  key: 'place',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
@@ -39,7 +37,7 @@ const channelPersistConfig = {
 
 const reducers = combineReducers({
   me: persistReducer<MeState>(mePersistConfig, meReducer),
-  channel: persistReducer<ChannelState>(channelPersistConfig, channelReducer),
+  place: persistReducer<PlaceState>(placePersistConfig, placeReducer),
   router: connectRouter(history),
 });
 

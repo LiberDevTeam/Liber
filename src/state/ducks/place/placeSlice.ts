@@ -9,24 +9,24 @@ export type Message = {
   timestamp: number;
 };
 
-export type Channel = {
+export type place = {
   id: string;
   name: string;
   description: string;
 };
 
-export interface ChannelState {
+export interface PlaceState {
   messages: Record<string, Message[]>; // Record<cid, Message[]>
   messagesIndex: Record<string, true>; // Record<mid, null> for check duplication of messages
 }
 
-const initialState: ChannelState = {
+const initialState: PlaceState = {
   messages: {},
   messagesIndex: {},
 };
 
-export const channelSlice = createSlice({
-  name: 'channel',
+export const placeSlice = createSlice({
+  name: 'place',
   initialState,
   reducers: {
     addMessage: (
@@ -37,7 +37,7 @@ export const channelSlice = createSlice({
       state.messages[cid] = [message].concat(state.messages[cid] || []);
       state.messagesIndex[message.id] = true;
     },
-    setChannelMessages: (
+    setPlaceMessages: (
       state,
       action: PayloadAction<{ cid: string; messages: Message[] }>
     ) => {
@@ -58,7 +58,7 @@ export const channelSlice = createSlice({
   },
 });
 
-export const { addMessage, setChannelMessages } = channelSlice.actions;
+export const { addMessage, setPlaceMessages } = placeSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -74,10 +74,10 @@ export const { addMessage, setChannelMessages } = channelSlice.actions;
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
-export const selectChannel = (state: RootState): typeof state.channel =>
-  state.channel;
-export const selectChannelMessages = (cid: string) => (
+export const selectPlace = (state: RootState): typeof state.place =>
+  state.place;
+export const selectPlaceMessages = (cid: string) => (
   state: RootState
-): Message[] => state.channel.messages[cid] || [];
+): Message[] => state.place.messages[cid] || [];
 
-export default channelSlice.reducer;
+export default placeSlice.reducer;
