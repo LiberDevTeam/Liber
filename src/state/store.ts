@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 import placeReducer, { PlaceState } from '~/state/ducks/place/placeSlice';
 import meReducer, { MeState } from '~/state/ducks/me/meSlice';
+import p2pReducer from '~/state/ducks/p2p/p2pSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
 import { combineReducers } from 'redux';
@@ -38,6 +39,7 @@ const placePersistConfig = {
 const reducers = combineReducers({
   me: persistReducer<MeState>(mePersistConfig, meReducer),
   place: persistReducer<PlaceState>(placePersistConfig, placeReducer),
+  p2p: p2pReducer,
   router: connectRouter(history),
 });
 
@@ -55,3 +57,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+export type AppDispatch = typeof store.dispatch;

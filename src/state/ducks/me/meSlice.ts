@@ -6,7 +6,6 @@ import { Place } from '~/state/ducks/place/placeSlice';
 export type Me = {
   id: string;
   username: string;
-  places: Record<string, Place>;
 };
 
 export type MeState = Me;
@@ -14,24 +13,19 @@ export type MeState = Me;
 const initialState: MeState = {
   id: uuidv4(),
   username: 'username',
-  places: {},
 };
 
 export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    addPlace: (state, action: PayloadAction<Place>) => {
-      const { id, name, description } = action.payload;
-      state.places[action.payload.id] = { id, name, description };
-    },
     updateUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
   },
 });
 
-export const { addPlace, updateUsername } = meSlice.actions;
+export const { updateUsername } = meSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -48,7 +42,5 @@ export const { addPlace, updateUsername } = meSlice.actions;
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
 export const selectMe = (state: RootState): typeof state.me => state.me;
-export const selectPlaceById = (id: string) => (state: RootState): Place =>
-  state.me.places[id];
 
 export default meSlice.reducer;

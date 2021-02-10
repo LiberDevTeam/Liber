@@ -1,11 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '~/state/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppDispatch, RootState } from '~/state/store';
 
 export type Message = {
   id: string; // UUID
   uid: string;
   text: string;
-  attachment?: string; // this is infoHash of torrent file
   timestamp: number;
 };
 
@@ -13,52 +12,53 @@ export type Place = {
   id: string;
   name: string;
   description: string;
+  isPrivate: boolean;
+  swarmKey?: string;
 };
 
 export interface PlaceState {
-  messages: Record<string, Message[]>; // Record<cid, Message[]>
-  messagesIndex: Record<string, true>; // Record<mid, null> for check duplication of messages
+  messages: Record<string, Message[]>;
+  places: Record<string, Place>;
 }
 
 const initialState: PlaceState = {
   messages: {},
-  messagesIndex: {},
+  places: {},
 };
 
-export const placeSlice = createSlice({
-  name: 'place',
+export const publishMessage = createAsyncThunk<
+  { pid: string; message: Message },
+  { pid: string; message: Message },
+  { dispatch: AppDispatch; state: PlaceState }
+>('places/publishMessage', async (arg) => {
+  // TODO publish the message
+  return arg;
+});
+
+export const placesSlice = createSlice({
+  name: 'places',
   initialState,
   reducers: {
-    addMessage: (
+    setMessages: (
       state,
-      action: PayloadAction<{ cid: string; message: Message }>
+      action: PayloadAction<{ pid: string; messages: Message[] }>
     ) => {
-      const { cid, message } = action.payload;
-      state.messages[cid] = [message].concat(state.messages[cid] || []);
-      state.messagesIndex[message.id] = true;
+      const { pid, messages } = action.payload;
+      state.messages[pid] = messages || [];
     },
-    setPlaceMessages: (
-      state,
-      action: PayloadAction<{ cid: string; messages: Message[] }>
-    ) => {
-      const { cid, messages } = action.payload;
-      if (!messages) {
-        state.messages[cid] = [];
-        state.messagesIndex = {};
-        return;
-      }
-      Object.values(messages).sort((a, b) =>
-        a.timestamp > b.timestamp ? -1 : 1
-      );
-      state.messages[cid] = messages;
-      state.messagesIndex = messages.reduce((prev, message) => {
-        return { ...prev, [message.id]: true };
-      }, {});
+    addPlace: (state, action: PayloadAction<Place>) => {
+      state.places[action.payload.id] = { ...action.payload };
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(publishMessage.fulfilled, (state, action) => {
+      const { pid, message } = action.payload;
+      state.messages[pid] = (state.messages[pid] || []).concat(message || []);
+    });
   },
 });
 
-export const { addMessage, setPlaceMessages } = placeSlice.actions;
+export const { addPlace, setMessages } = placesSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -76,8 +76,11 @@ export const { addMessage, setPlaceMessages } = placeSlice.actions;
 // export const selectCount = (state: RootState) => state.counter.value;
 export const selectPlace = (state: RootState): typeof state.place =>
   state.place;
-export const selectPlaceMessages = (cid: string) => (
+export const selectPlaces = (state: RootState) => state.place.places;
+export const selectPlaceById = (pid: string) => (state: RootState) =>
+  state.place.places[pid];
+export const selectPlaceMessages = (pid: string) => (
   state: RootState
-): Message[] => state.place.messages[cid] || [];
+): Message[] => state.place.messages[pid] || [];
 
-export default placeSlice.reducer;
+export default placesSlice.reducer;

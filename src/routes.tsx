@@ -13,7 +13,7 @@ export const Routes: React.FC = () => (
     <Switch>
       <Route exact path="/" render={() => <IndexPage />} />
       <Route exact path="/places/new" render={() => <NewPlace />} />
-      <Route path="/places/:cid?" render={() => <Places />} />
+      <Route path="/places/:pid?" render={() => <Places />} />
       <Route render={() => <NotFoundPage />} />
     </Switch>
   </ConnectedRouter>
