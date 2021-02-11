@@ -1,11 +1,22 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppDispatch, RootState } from '~/state/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '~/state/store';
+
+export const MESSAGE_TYPE = {
+  MediaFile: 'MediaFile',
+  Text: 'Text',
+  Initial: 'Initial',
+} as const;
+type MESSAGE_TYPE = typeof MESSAGE_TYPE[keyof typeof MESSAGE_TYPE];
 
 export type Message = {
   id: string; // UUID
-  uid: string;
-  text: string;
+  type: MESSAGE_TYPE;
+  uid: string; // UUID
   timestamp: number;
+  text?: string;
+  fileUrl?: string;
+  messageHistory?: Message[]; // the list of messages posted recently
+  place?: Place;
 };
 
 export type Place = {
@@ -26,15 +37,6 @@ const initialState: PlaceState = {
   places: {},
 };
 
-export const publishMessage = createAsyncThunk<
-  { pid: string; message: Message },
-  { pid: string; message: Message },
-  { dispatch: AppDispatch; state: PlaceState }
->('places/publishMessage', async (arg) => {
-  // TODO publish the message
-  return arg;
-});
-
 export const placesSlice = createSlice({
   name: 'places',
   initialState,
@@ -49,16 +51,17 @@ export const placesSlice = createSlice({
     addPlace: (state, action: PayloadAction<Place>) => {
       state.places[action.payload.id] = { ...action.payload };
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(publishMessage.fulfilled, (state, action) => {
+    addMessage: (
+      state,
+      action: PayloadAction<{ pid: string; message: Message }>
+    ) => {
       const { pid, message } = action.payload;
       state.messages[pid] = (state.messages[pid] || []).concat(message || []);
-    });
+    },
   },
 });
 
-export const { addPlace, setMessages } = placesSlice.actions;
+export const { addPlace, setMessages, addMessage } = placesSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -77,8 +80,8 @@ export const { addPlace, setMessages } = placesSlice.actions;
 export const selectPlace = (state: RootState): typeof state.place =>
   state.place;
 export const selectPlaces = (state: RootState) => state.place.places;
-export const selectPlaceById = (pid: string) => (state: RootState) =>
-  state.place.places[pid];
+export const selectPlaceById = (pid: string | null) => (state: RootState) =>
+  state.place.places[pid || ''];
 export const selectPlaceMessages = (pid: string) => (
   state: RootState
 ): Message[] => state.place.messages[pid] || [];

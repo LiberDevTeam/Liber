@@ -26,13 +26,13 @@ const mePersistConfig = {
 };
 
 const placePersistConfig = {
-  key: 'place',
+  key: 'places',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
     version: 1,
   }),
-  whitelist: ['messages'],
+  whitelist: ['messages', 'places'],
   debug: true,
 };
 

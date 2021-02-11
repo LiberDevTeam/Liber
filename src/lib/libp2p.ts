@@ -5,7 +5,9 @@ import { NOISE } from 'libp2p-noise';
 import MPLEX from 'libp2p-mplex';
 import WebSockets from 'libp2p-websockets';
 import WebRtcStar from 'libp2p-webrtc-star';
-import { MemoryStore } from 'interface-datastore';
+import { MemoryDatastore } from 'interface-datastore';
+import Gossipsub from 'libp2p-gossipsub';
+import Bootstrap from 'libp2p-bootstrap';
 
 export const createLibp2pNode = (datastore?) => {
   return Libp2p.create({
@@ -23,6 +25,7 @@ export const createLibp2pNode = (datastore?) => {
       streamMuxer: [MPLEX],
       connEncryption: [NOISE],
       peerDiscovery: [Bootstrap],
+      pubsub: Gossipsub,
     },
     config: {
       peerDiscovery: {
@@ -42,12 +45,12 @@ export const createLibp2pNode = (datastore?) => {
     },
     keychain: {
       pass: 'notsafepassword123456789',
-      datastore: new MemoryStore(),
+      datastore: new MemoryDatastore(),
     },
   });
 };
 
-export const createPnetLibp2pNode = (datastore?) => {
+export const createPnetLibp2pNode = (swarmKey?: string, datastore?) => {
   return Libp2p.create({
     modules: {
       transport: [WebSockets, WebRtcStar],
@@ -55,10 +58,11 @@ export const createPnetLibp2pNode = (datastore?) => {
       connEncryption: [NOISE],
       peerDiscovery: [],
       connProtector: new Protector(swarmKey),
+      pubsub: Gossipsub,
     },
     keychain: {
       pass: 'notsafepassword123456789',
-      datastore: new MemoryStore(),
+      datastore: new MemoryDatastore(),
     },
   });
 };

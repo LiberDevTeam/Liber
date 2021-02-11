@@ -54,7 +54,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
 
     async onSubmit({ name, description, isPrivate }) {
       const id = uuidv4();
-      await dispatch(addPlace({ id, name, description, isPrivate }));
+      dispatch(addPlace({ id, name, description, isPrivate }));
       dispatch(push(`/places/${id}`));
     },
   });

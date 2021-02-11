@@ -10,12 +10,13 @@ import { PlaceItem } from '~/components/molecules/place-list-item';
 import { PlaceDetail } from '~/components/organisms/place-detail';
 import { PlaceList } from '~/components/organisms/place-list';
 import { selectMe } from '~/state/ducks/me/meSlice';
+import { publishMessage } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
 import {
-  publishMessage,
   selectPlaceMessages,
   selectPlaces,
   selectPlaceById,
+  MESSAGE_TYPE,
 } from '../../state/ducks/place/placeSlice';
 
 const PAGE_TITLE = 'Places';
@@ -58,13 +59,14 @@ export const Places: React.FC = React.memo(function Places() {
     (text: string) => {
       const message = {
         id: uuidv4(),
+        type: MESSAGE_TYPE.Text,
         uid: me.id,
         text,
         timestamp: new Date().getTime(),
       };
       dispatch(publishMessage({ pid, message }));
     },
-    [dispatch, me, pid]
+    [dispatch, places, pid]
   );
 
   return (
