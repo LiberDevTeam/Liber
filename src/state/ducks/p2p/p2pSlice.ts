@@ -9,13 +9,10 @@ import {
   addMessage,
   addPlace,
   Message,
-  MESSAGE_TYPE,
   Place,
   setMessages,
 } from '../place/placeSlice';
 import { push } from 'connected-react-router';
-
-import { v4 as uuidv4 } from 'uuid';
 
 export type P2PState = {
   ipfsNode: Ipfs | null;
@@ -25,13 +22,9 @@ export type P2PState = {
 
 export const initNodes = createAsyncThunk<
   P2PState,
-  {
-    pid: string | null;
-    swarmId: string | null;
-    peerId: string | null;
-  },
+  void,
   { dispatch: AppDispatch; state: RootState }
->('p2p/initNodes', async ({ pid, swarmId, peerId }, thunkAPI) => {
+>('p2p/initNodes', async (_, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const {
     place: { places, messages },
@@ -57,40 +50,6 @@ export const initNodes = createAsyncThunk<
   const ipfsNode = await IPFS.create();
   if (!ipfsNode.isOnline) {
     await ipfsNode.start();
-  }
-
-  // the case when a user is joining to a new place
-  if (pid) {
-    let node: Libp2p;
-    if (swarmId) {
-      node = await createPnetLibp2pNode(swarmId);
-      await node.start();
-    } else {
-      node = publicLibp2pNode!;
-    }
-
-    setupNode(node, messages[pid], places[pid], pid, dispatch);
-
-    node.pubsub.subscribe(welcomePlaceTopic(node.peerId.toB58String(), pid));
-    node.pubsub.on(welcomePlaceTopic(node.peerId.toB58String(), pid), (msg) => {
-      const { place, messages } = JSON.parse(uint8ArrayToString(msg.data));
-      dispatch(addPlace(place));
-      dispatch(setMessages({ pid, messages }));
-      node.pubsub.unsubscribe(
-        welcomePlaceTopic(node.peerId.toB58String(), pid)
-      );
-    });
-
-    node.pubsub.publish(
-      joinedPlaceTopic(peerId!, pid),
-      uint8ArrayFromString(
-        JSON.stringify({ peerId: node.peerId.toB58String() })
-      )
-    );
-
-    dispatch(addPrivateLibp2pNode({ pid, node }));
-
-    dispatch(push(`/places/${pid}`));
   }
 
   return {
@@ -134,6 +93,7 @@ async function setupNode(
     );
   });
   node.pubsub.subscribe(joinedPlaceTopic(peerId, pid));
+  console.log(node.pubsub.getTopics());
 }
 
 export const publishMessage = createAsyncThunk<
@@ -153,6 +113,50 @@ export const publishMessage = createAsyncThunk<
   );
 
   thunkAPI.dispatch(addMessage({ pid, message }));
+});
+
+export const joinPlace = createAsyncThunk<
+  void,
+  {
+    pid: string;
+    swarmId: string | null;
+    peerId: string;
+  },
+  { dispatch: AppDispatch; state: RootState }
+>('p2p/joinPlace', async ({ pid, swarmId, peerId }, thunkAPI) => {
+  const { dispatch } = thunkAPI;
+  const {
+    p2p: { publicLibp2pNode },
+    place: { places, messages },
+  } = thunkAPI.getState();
+
+  let node: Libp2p;
+  if (swarmId) {
+    node = await createPnetLibp2pNode(swarmId);
+    await node.start();
+  } else {
+    node = publicLibp2pNode!;
+    console.log(publicLibp2pNode);
+  }
+
+  setupNode(node, messages[pid], places[pid], pid, dispatch);
+
+  node.pubsub.subscribe(welcomePlaceTopic(node.peerId.toB58String(), pid));
+  node.pubsub.on(welcomePlaceTopic(node.peerId.toB58String(), pid), (msg) => {
+    const { place, messages } = JSON.parse(uint8ArrayToString(msg.data));
+    dispatch(addPlace(place));
+    dispatch(setMessages({ pid, messages }));
+    node.pubsub.unsubscribe(welcomePlaceTopic(node.peerId.toB58String(), pid));
+  });
+
+  node.pubsub.publish(
+    joinedPlaceTopic(peerId!, pid),
+    uint8ArrayFromString(JSON.stringify({ peerId: node.peerId.toB58String() }))
+  );
+
+  dispatch(addPrivateLibp2pNode({ pid, node }));
+
+  dispatch(push(`/places/${pid}`));
 });
 
 const initialState: P2PState = {

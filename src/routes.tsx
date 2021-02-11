@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import IndexPage from './pages';
 import { NewPlace } from './pages/places/new';
-import { history } from './state/store';
+import { history, AppThunkDispatch } from './state/store';
 import { Places } from './pages/places';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
-import { initNodes } from './state/ducks/p2p/p2pSlice';
+import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
 import { useLocation } from 'react-router-dom';
 
 export const Routes: React.FC = () => (
@@ -28,14 +28,21 @@ function useQuery() {
 }
 
 function Initializer() {
-  const dispatch = useDispatch();
+  const dispatch: AppThunkDispatch = useDispatch();
 
   const query = useQuery();
   const pid = query.get('pid');
   const peerId = query.get('peerId');
 
   useEffect(() => {
-    dispatch(initNodes({ peerId, pid, swarmId: query.get('swarmId') }));
+    (async () => {
+      await dispatch(initNodes());
+      pid &&
+        peerId &&
+        (await dispatch(
+          joinPlace({ peerId, pid, swarmId: query.get('swarmId') })
+        ));
+    })();
   }, [dispatch]);
 
   return null;

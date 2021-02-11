@@ -1,4 +1,9 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  ThunkDispatch,
+} from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 import placeReducer, { PlaceState } from '~/state/ducks/place/placeSlice';
 import meReducer, { MeState } from '~/state/ducks/me/meSlice';
@@ -10,6 +15,7 @@ import { enableMapSet } from 'immer';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
+import { useDispatch } from 'react-redux';
 
 export const history = createBrowserHistory();
 
@@ -58,3 +64,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 export type AppDispatch = typeof store.dispatch;
+export type AppThunkDispatch = ThunkDispatch<RootState, any, Action>;
+export function useReduxDispatch(): AppThunkDispatch {
+  return useDispatch<AppThunkDispatch>();
+}
