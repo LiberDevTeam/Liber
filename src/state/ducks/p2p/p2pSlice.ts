@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
-import Libp2p from 'libp2p';
-import { createLibp2pNode, createPnetLibp2pNode } from '~/lib/libp2p';
+import { publicLibp2pOptions, createPnetLibp2pNode } from '~/lib/libp2p';
 import uint8ArrayToString from 'uint8arrays/to-string';
 import uint8ArrayFromString from 'uint8arrays/from-string';
 import {
@@ -13,11 +12,11 @@ import {
   setMessages,
 } from '../place/placeSlice';
 import { push } from 'connected-react-router';
+import promiseRetry from 'promise-retry';
 
 export type P2PState = {
   ipfsNode: Ipfs | null;
-  publicLibp2pNode: Libp2p | null;
-  privateLibp2pNodes: Record<string, Libp2p>;
+  privateIpfsNodes: Record<string, Ipfs>;
 };
 
 export const initNodes = createAsyncThunk<
@@ -30,32 +29,26 @@ export const initNodes = createAsyncThunk<
     place: { places, messages },
   } = thunkAPI.getState();
 
-  const publicLibp2pNode = await createLibp2pNode();
-  await publicLibp2pNode.start();
+  // @ts-ignore
+  const ipfsNode = await IPFS.create({
+    libp2p: publicLibp2pOptions,
+  });
 
-  const privateLibp2pNodes: Record<string, Libp2p> = {};
+  const privateIpfsNodes: Record<string, Ipfs> = {};
+
   Object.keys(places).forEach(async (pid) => {
     if (places[pid].isPrivate) {
-      const node = await createPnetLibp2pNode(places[pid].swarmKey);
-      await node.start();
-
-      setupNode(node, messages[pid], places[pid], pid, dispatch);
-
-      privateLibp2pNodes[pid] = node;
+      // const ipfsNode = await IPFS.create(options);
+      // setupNode(node, messages[pid], places[pid], pid, dispatch);
+      // privateIpfsNodes[pid] = node;
     } else {
-      setupNode(publicLibp2pNode, messages[pid], places[pid], pid, dispatch);
+      setupNode(ipfsNode, messages[pid], places[pid], pid, dispatch);
     }
   });
 
-  const ipfsNode = await IPFS.create();
-  if (!ipfsNode.isOnline) {
-    await ipfsNode.start();
-  }
-
   return {
     ipfsNode,
-    publicLibp2pNode,
-    privateLibp2pNodes,
+    privateIpfsNodes,
   };
 });
 
@@ -72,28 +65,37 @@ function welcomePlaceTopic(peerId: string, pid: string) {
 }
 
 async function setupNode(
-  node: Libp2p,
+  node: Ipfs,
   messages: Message[],
   place: Place,
   pid: string,
   dispatch: AppDispatch
 ) {
-  node.pubsub.on(publishMessageTopic(pid), (msg) => {
+  node.pubsub.subscribe(publishMessageTopic(pid), (msg) => {
     const message: Message = JSON.parse(uint8ArrayToString(msg.data));
     dispatch(addMessage({ pid, message }));
   });
-  node.pubsub.subscribe(publishMessageTopic(pid));
 
-  const peerId = node.peerId.toB58String();
-  node.pubsub.on(joinedPlaceTopic(peerId, pid), (msg) => {
+  const peerId = (await node.id()).id;
+  node.pubsub.subscribe(joinedPlaceTopic(peerId, pid), (msg) => {
+    console.log('received');
+    console.log(msg);
     const { peerId } = JSON.parse(uint8ArrayToString(msg.data));
     node.pubsub.publish(
       welcomePlaceTopic(peerId, pid),
-      uint8ArrayFromString(JSON.stringify({ messages, place }))
+      uint8ArrayFromString(JSON.stringify({ messages, place })),
+      {}
     );
   });
-  node.pubsub.subscribe(joinedPlaceTopic(peerId, pid));
-  console.log(node.pubsub.getTopics());
+  console.log(await node.pubsub.ls());
+  console.log(await node.pubsub.peers(joinedPlaceTopic(peerId, pid)));
+  // node.pubsub.publish(joinedPlaceTopic(peerId, pid), uint8ArrayFromString(JSON.stringify({
+  //   id: "id",
+  //   type: MESSAGE_TYPE.Text,
+  //   uid: "hoge",
+  //   text: "test",
+  //   timestamp: new Date().getTime(),
+  // })), {})
 }
 
 export const publishMessage = createAsyncThunk<
@@ -105,14 +107,13 @@ export const publishMessage = createAsyncThunk<
   const { places } = state.place;
 
   (places[pid].isPrivate
-    ? state.p2p.privateLibp2pNodes[pid]
-    : state.p2p.publicLibp2pNode
+    ? state.p2p.privateIpfsNodes[pid]
+    : state.p2p.ipfsNode
   )?.pubsub.publish(
     publishMessageTopic(pid),
-    uint8ArrayFromString(JSON.stringify(message))
+    uint8ArrayFromString(JSON.stringify(message)),
+    {}
   );
-
-  thunkAPI.dispatch(addMessage({ pid, message }));
 });
 
 export const joinPlace = createAsyncThunk<
@@ -126,43 +127,60 @@ export const joinPlace = createAsyncThunk<
 >('p2p/joinPlace', async ({ pid, swarmId, peerId }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const {
-    p2p: { publicLibp2pNode },
+    p2p: { ipfsNode },
     place: { places, messages },
   } = thunkAPI.getState();
 
-  let node: Libp2p;
+  let node: Ipfs;
   if (swarmId) {
-    node = await createPnetLibp2pNode(swarmId);
-    await node.start();
+    // node = await createPnetLibp2pNode(swarmId);
+    // await node.start();
+    // dispatch(addPrivateLibp2pNode({ pid, node }));
   } else {
-    node = publicLibp2pNode!;
-    console.log(publicLibp2pNode);
+    node = ipfsNode!;
   }
+  node = ipfsNode!;
 
   setupNode(node, messages[pid], places[pid], pid, dispatch);
 
-  node.pubsub.subscribe(welcomePlaceTopic(node.peerId.toB58String(), pid));
-  node.pubsub.on(welcomePlaceTopic(node.peerId.toB58String(), pid), (msg) => {
+  const myPeerId = (await node.id()).id;
+  node.pubsub.subscribe(welcomePlaceTopic(myPeerId, pid), (msg) => {
     const { place, messages } = JSON.parse(uint8ArrayToString(msg.data));
     dispatch(addPlace(place));
     dispatch(setMessages({ pid, messages }));
-    node.pubsub.unsubscribe(welcomePlaceTopic(node.peerId.toB58String(), pid));
+    node.pubsub.unsubscribe(welcomePlaceTopic(myPeerId, pid));
+
+    dispatch(push(`/places/${pid}`));
   });
 
-  node.pubsub.publish(
-    joinedPlaceTopic(peerId!, pid),
-    uint8ArrayFromString(JSON.stringify({ peerId: node.peerId.toB58String() }))
-  );
-
-  dispatch(addPrivateLibp2pNode({ pid, node }));
-
-  dispatch(push(`/places/${pid}`));
+  // retry until one peer is connected at least
+  promiseRetry((retry) => {
+    return new Promise((resolve, reject) => {
+      node.pubsub
+        .peers(joinedPlaceTopic(peerId!, pid))
+        .then((peers) => {
+          if (peers.length === 0) {
+            console.log('retried');
+            reject(new Error('peers are still not connected'));
+            return;
+          }
+          resolve(peers);
+        })
+        .catch((err) => reject(err));
+    }).catch((err) => retry(err));
+  }).then(() => {
+    node.pubsub.publish(
+      // "/liber/p/QmNV8FiWaHWS5StGr9Gwh9oCZ16pYLtsrc84JcB2rXivrc/places/d1cf8a53-69f4-4d25-bc8d-ee3d154d2426/joined/1.0.0",
+      joinedPlaceTopic(peerId!, pid),
+      uint8ArrayFromString(JSON.stringify({ peerId: myPeerId })),
+      {}
+    );
+  });
 });
 
 const initialState: P2PState = {
   ipfsNode: null,
-  publicLibp2pNode: null,
-  privateLibp2pNodes: {},
+  privateIpfsNodes: {},
 };
 
 export const p2pSlice = createSlice({
@@ -171,10 +189,10 @@ export const p2pSlice = createSlice({
   reducers: {
     addPrivateLibp2pNode: (
       state,
-      action: PayloadAction<{ pid: string; node: Libp2p }>
+      action: PayloadAction<{ pid: string; node: Ipfs }>
     ) => {
       const { pid, node } = action.payload;
-      state.privateLibp2pNodes[pid] = node;
+      state.privateIpfsNodes[pid] = node;
     },
   },
   extraReducers: (builder) => {

@@ -22,7 +22,11 @@
       }
     },
     {
-      "files": ["src/lib/libp2p.ts"],
+      "files": [
+        "src/lib/libp2p.ts",
+        "src/state/ducks/p2p/p2pSlice.ts",
+        "src/lib/ipfs.ts"
+      ],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off"
       }
