@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
-import { publicLibp2pOptions, createPnetLibp2pNode } from '~/lib/libp2p';
+import { publicLibp2pOptions } from '~/lib/libp2p';
 import uint8ArrayToString from 'uint8arrays/to-string';
 import uint8ArrayFromString from 'uint8arrays/from-string';
 import {
@@ -38,9 +38,7 @@ export const initNodes = createAsyncThunk<
 
   Object.keys(places).forEach(async (pid) => {
     if (places[pid].isPrivate) {
-      // const ipfsNode = await IPFS.create(options);
-      // setupNode(node, messages[pid], places[pid], pid, dispatch);
-      // privateIpfsNodes[pid] = node;
+      // TODO
     } else {
       setupNode(ipfsNode, messages[pid], places[pid], pid, dispatch);
     }
@@ -87,15 +85,6 @@ async function setupNode(
       {}
     );
   });
-  console.log(await node.pubsub.ls());
-  console.log(await node.pubsub.peers(joinedPlaceTopic(peerId, pid)));
-  // node.pubsub.publish(joinedPlaceTopic(peerId, pid), uint8ArrayFromString(JSON.stringify({
-  //   id: "id",
-  //   type: MESSAGE_TYPE.Text,
-  //   uid: "hoge",
-  //   text: "test",
-  //   timestamp: new Date().getTime(),
-  // })), {})
 }
 
 export const publishMessage = createAsyncThunk<
@@ -131,15 +120,7 @@ export const joinPlace = createAsyncThunk<
     place: { places, messages },
   } = thunkAPI.getState();
 
-  let node: Ipfs;
-  if (swarmId) {
-    // node = await createPnetLibp2pNode(swarmId);
-    // await node.start();
-    // dispatch(addPrivateLibp2pNode({ pid, node }));
-  } else {
-    node = ipfsNode!;
-  }
-  node = ipfsNode!;
+  const node = ipfsNode!;
 
   setupNode(node, messages[pid], places[pid], pid, dispatch);
 
@@ -155,22 +136,17 @@ export const joinPlace = createAsyncThunk<
 
   // retry until one peer is connected at least
   promiseRetry((retry) => {
-    return new Promise((resolve, reject) => {
-      node.pubsub
-        .peers(joinedPlaceTopic(peerId!, pid))
-        .then((peers) => {
-          if (peers.length === 0) {
-            console.log('retried');
-            reject(new Error('peers are still not connected'));
-            return;
-          }
+    return new Promise((resolve, reject) =>
+      node.pubsub.peers(joinedPlaceTopic(peerId!, pid)).then((peers) => {
+        if (peers.length === 0) {
+          reject(new Error('peers are still not connected'));
+        } else {
           resolve(peers);
-        })
-        .catch((err) => reject(err));
-    }).catch((err) => retry(err));
+        }
+      })
+    ).catch((err) => retry(err));
   }).then(() => {
     node.pubsub.publish(
-      // "/liber/p/QmNV8FiWaHWS5StGr9Gwh9oCZ16pYLtsrc84JcB2rXivrc/places/d1cf8a53-69f4-4d25-bc8d-ee3d154d2426/joined/1.0.0",
       joinedPlaceTopic(peerId!, pid),
       uint8ArrayFromString(JSON.stringify({ peerId: myPeerId })),
       {}
