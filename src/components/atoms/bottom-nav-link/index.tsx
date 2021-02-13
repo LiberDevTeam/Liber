@@ -9,11 +9,9 @@ const StyledNavLink = styled(NavLink)`
   align-items: center;
   width: 60px;
   height: 60px;
-  flex-basis: 48px;
   padding: ${(props) => props.theme.space[3]}px;
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.sm};
-  border-radius: ${(props) => props.theme.radii.medium}px;
   text-decoration: none;
 
   &.${activeClassName} {
@@ -27,9 +25,7 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-const LinkText = styled.span`
-  color: ${(props) => props.theme.colors.secondaryText};
-`;
+const LinkText = styled.span``;
 
 export interface BottomNavLinkProps {
   to: string;
