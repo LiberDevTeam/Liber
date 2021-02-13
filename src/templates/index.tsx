@@ -1,6 +1,7 @@
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { BottomNavigation } from '~/components/organisms/bottom-navigation';
 import { SideNavigation } from '~/components/organisms/side-navigation';
 
 const commonRootStyle = css`
@@ -23,6 +24,13 @@ const Root = styled.div`
   ${commonRootStyle};
 `;
 
+const SpHeader = styled.header`
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  overflow: auto;
+`;
+
 const Header = styled.header`
   height: 100%;
   overflow: auto;
@@ -41,9 +49,9 @@ const BaseLayout: React.FC = ({ children }) => {
 
   return isMobile ? (
     <SpRoot>
-      <Header>
-        <SideNavigation />
-      </Header>
+      <SpHeader>
+        <BottomNavigation />
+      </SpHeader>
 
       <Main>{children}</Main>
     </SpRoot>
