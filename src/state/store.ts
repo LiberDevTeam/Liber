@@ -1,7 +1,13 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  ThunkDispatch,
+} from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 import placeReducer, { PlaceState } from '~/state/ducks/place/placeSlice';
 import meReducer, { MeState } from '~/state/ducks/me/meSlice';
+import p2pReducer from '~/state/ducks/p2p/p2pSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
 import { combineReducers } from 'redux';
@@ -9,6 +15,7 @@ import { enableMapSet } from 'immer';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
+import { useDispatch } from 'react-redux';
 
 export const history = createBrowserHistory();
 
@@ -25,19 +32,20 @@ const mePersistConfig = {
 };
 
 const placePersistConfig = {
-  key: 'place',
+  key: 'places',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
     version: 1,
   }),
-  whitelist: ['messages'],
+  whitelist: ['messages', 'places'],
   debug: true,
 };
 
 const reducers = combineReducers({
   me: persistReducer<MeState>(mePersistConfig, meReducer),
   place: persistReducer<PlaceState>(placePersistConfig, placeReducer),
+  p2p: p2pReducer,
   router: connectRouter(history),
 });
 
@@ -55,3 +63,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+export type AppDispatch = typeof store.dispatch;
+export type AppThunkDispatch = ThunkDispatch<RootState, any, Action>;
+export function useReduxDispatch(): AppThunkDispatch {
+  return useDispatch<AppThunkDispatch>();
+}

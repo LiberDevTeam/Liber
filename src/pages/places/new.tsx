@@ -8,7 +8,7 @@ import { Textarea } from '~/components/atoms/textarea';
 import { v4 as uuidv4 } from 'uuid';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { addPlace } from '../../state/ducks/me/meSlice';
+import { addPlace } from '../../state/ducks/place/placeSlice';
 import { push } from 'connected-react-router';
 
 const PAGE_TITLE = 'Create new place';
@@ -40,6 +40,7 @@ const SubmitButton = styled(Button)`
 interface FormValues {
   name: string;
   description: string;
+  isPrivate: boolean;
 }
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
@@ -48,11 +49,12 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
     initialValues: {
       name: '',
       description: '',
+      isPrivate: false,
     },
 
-    async onSubmit({ name, description }) {
+    async onSubmit({ name, description, isPrivate }) {
       const id = uuidv4();
-      await dispatch(addPlace({ id, name, description }));
+      dispatch(addPlace({ id, name, description, isPrivate }));
       dispatch(push(`/places/${id}`));
     },
   });

@@ -20,6 +20,12 @@
       "rules": {
         "import/no-anonymous-default-export": "off"
       }
+    },
+    {
+      "files": ["src/lib/libp2p.ts", "src/state/ducks/p2p/p2pSlice.ts"],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
     }
   ]
 }

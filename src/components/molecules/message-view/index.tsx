@@ -35,7 +35,7 @@ const Body = styled.div`
 export interface MessageViewProps {
   uid: string;
   timestamp: number;
-  text: string;
+  text?: string;
 }
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
