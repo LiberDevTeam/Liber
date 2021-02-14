@@ -7,8 +7,8 @@ import { Search as SearchIcon } from '@material-ui/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { theme } from '~/theme';
 import { PlaceItem } from '~/components/molecules/place-list-item';
-import { PlaceDetail } from '~/components/organisms/place-detail';
-import { PlaceList } from '~/components/organisms/place-list';
+import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
+import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { publishMessage } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
@@ -94,12 +94,12 @@ export const Places: React.FC = React.memo(function Places() {
       <Root>
         {!(isMobile && place) && (
           <ListContainer>
-            <PlaceList title={PAGE_TITLE} placeList={placeList} />
+            <PlaceListColumn title={PAGE_TITLE} placeList={placeList} />
           </ListContainer>
         )}
         {place && (
           <ListContainer>
-            <PlaceDetail
+            <PlaceDetailColumn
               place={place}
               onSubmit={handleSubmit}
               messages={messages}

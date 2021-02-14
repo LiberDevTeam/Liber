@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Search as SearchIcon, Add as AddIcon } from '@material-ui/icons';
 import {
   PlaceItem,
-  PlaceListItem,
+  PlaceListColumnItem,
 } from '~/components/molecules/place-list-item';
 import { Input } from '~/components/atoms/input';
 import { PageTitle } from '~/components/atoms/page-title';
 
-export type PlaceListProps = {
+export type PlaceListColumnProps = {
   title: string;
   placeList: PlaceItem[];
   onClickNew?: () => void;
@@ -44,8 +44,8 @@ const List = styled.div`
   }
 `;
 
-export const PlaceList: React.FC<PlaceListProps> = React.memo(
-  function PlaceList({
+export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
+  function PlaceListColumn({
     title,
     placeList,
     onClickNew = () => {
@@ -65,7 +65,7 @@ export const PlaceList: React.FC<PlaceListProps> = React.memo(
         </SearchBox>
         <List>
           {placeList.map((place) => (
-            <PlaceListItem key={`place-${place.id}`} place={place} />
+            <PlaceListColumnItem key={`place-${place.id}`} place={place} />
           ))}
         </List>
       </>

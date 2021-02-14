@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlaceItem, PlaceListItem, PlaceListItemProps } from '.';
+import { PlaceItem, PlaceListColumnItem, PlaceListColumnItemProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
 import { getUnixTime } from 'date-fns';
 
@@ -15,14 +15,14 @@ const place: PlaceItem = {
 };
 
 export default {
-  component: PlaceListItem,
-  title: 'molecules/PlaceListItem',
+  component: PlaceListColumnItem,
+  title: 'molecules/PlaceListColumnItem',
   args: {
     place,
   },
 };
 
-const Template: Story<PlaceListItemProps> = (args) => (
-  <PlaceListItem {...args} />
+const Template: Story<PlaceListColumnItemProps> = (args) => (
+  <PlaceListColumnItem {...args} />
 );
 export const Default = Template.bind({});

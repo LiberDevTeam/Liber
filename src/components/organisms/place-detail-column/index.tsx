@@ -56,14 +56,14 @@ export interface FormValues {
   text: string;
 }
 
-export type PlaceDetailProps = {
+export type PlaceDetailColumnProps = {
   place: Place;
   messages: Message[];
   onSubmit: (text: string) => void;
 };
 
-export const PlaceDetail: React.FC<PlaceDetailProps> = React.memo(
-  function PlaceDetail({ place, messages, onSubmit }) {
+export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
+  function PlaceDetailColumn({ place, messages, onSubmit }) {
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',

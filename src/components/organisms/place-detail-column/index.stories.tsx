@@ -1,6 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react/types-6-0';
-import { PlaceDetail, PlaceDetailProps } from '.';
+import { PlaceDetailColumn, PlaceDetailColumnProps } from '.';
 import { PlaceItem } from '~/components/molecules/place-list-item';
 import { getUnixTime } from 'date-fns';
 import { Message } from '~/state/ducks/place/placeSlice';
@@ -24,13 +24,15 @@ const message: Message = {
 };
 
 export default {
-  component: PlaceDetail,
-  title: 'organisms/PlaceDetail',
+  component: PlaceDetailColumn,
+  title: 'organisms/PlaceDetailColumn',
   args: {
     place,
     messages: [...new Array(10)].map(() => message),
   },
 };
 
-const Template: Story<PlaceDetailProps> = (args) => <PlaceDetail {...args} />;
+const Template: Story<PlaceDetailColumnProps> = (args) => (
+  <PlaceDetailColumn {...args} />
+);
 export const Default = Template.bind({});
