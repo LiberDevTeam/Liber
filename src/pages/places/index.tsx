@@ -1,11 +1,11 @@
-import { Search as SearchIcon } from '@material-ui/icons';
+import { useMediaQuery } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Search as SearchIcon } from '@material-ui/icons';
 import { v4 as uuidv4 } from 'uuid';
-import { Input } from '~/components/atoms/input';
-import { PageTitle } from '~/components/atoms/page-title';
+import { theme } from '~/theme';
 import { PlaceItem } from '~/components/molecules/place-list-item';
 import { PlaceDetail } from '~/components/organisms/place-detail';
 import { PlaceList } from '~/components/organisms/place-list';
@@ -18,6 +18,8 @@ import {
   selectPlaceById,
   MESSAGE_TYPE,
 } from '../../state/ducks/place/placeSlice';
+import { Input } from '~/components/atoms/input';
+import { PageTitle } from '~/components/atoms/page-title';
 
 const PAGE_TITLE = 'Places';
 
@@ -27,10 +29,26 @@ const Root = styled.div`
   height: 100%;
 `;
 
+const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  background: transparent;
+  border: none;
+`;
+
+const SearchBox = styled.div`
+  margin-top: ${(props) => props.theme.space[8]}px;
+  padding-right: ${(props) => props.theme.space[6]}px;
+`;
+
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-basis: ${(props) => props.theme.breakpoints.xs};
+  margin: ${(props) => props.theme.space[2]}px;
   overflow: hidden;
   & + * {
     padding-left: ${(props) => props.theme.space[4]}px;
@@ -39,11 +57,6 @@ const ListContainer = styled.div`
   &:last-child {
     flex-grow: 1;
   }
-`;
-
-const SearchBox = styled.div`
-  margin-top: ${(props) => props.theme.space[8]}px;
-  padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
 export const Places: React.FC = React.memo(function Places() {
@@ -74,16 +87,16 @@ export const Places: React.FC = React.memo(function Places() {
     [dispatch, places, pid]
   );
 
+  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
+
   return (
     <BaseLayout>
       <Root>
-        <ListContainer>
-          <PageTitle>{PAGE_TITLE}</PageTitle>
-          <SearchBox>
-            <Input icon={<SearchIcon />} />
-          </SearchBox>
-          <PlaceList placeList={placeList} />
-        </ListContainer>
+        {!(isMobile && place) && (
+          <ListContainer>
+            <PlaceList title={PAGE_TITLE} placeList={placeList} />
+          </ListContainer>
+        )}
         {place && (
           <ListContainer>
             <PlaceDetail

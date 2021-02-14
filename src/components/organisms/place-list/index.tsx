@@ -1,13 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Search as SearchIcon, Add as AddIcon } from '@material-ui/icons';
 import {
   PlaceItem,
   PlaceListItem,
 } from '~/components/molecules/place-list-item';
+import { Input } from '~/components/atoms/input';
+import { PageTitle } from '~/components/atoms/page-title';
 
 export type PlaceListProps = {
+  title: string;
   placeList: PlaceItem[];
+  onClickNew?: () => void;
 };
+
+const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  background: transparent;
+  border: none;
+`;
+
+const SearchBox = styled.div`
+  margin-top: ${(props) => props.theme.space[8]}px;
+  padding-right: ${(props) => props.theme.space[6]}px;
+`;
 
 const List = styled.div`
   flex: 1;
@@ -25,13 +45,30 @@ const List = styled.div`
 `;
 
 export const PlaceList: React.FC<PlaceListProps> = React.memo(
-  function PlaceList({ placeList }) {
+  function PlaceList({
+    title,
+    placeList,
+    onClickNew = () => {
+      console.log('onClickNew');
+    },
+  }) {
     return (
-      <List>
-        {placeList.map((place) => (
-          <PlaceListItem key={`place-${place.id}`} place={place} />
-        ))}
-      </List>
+      <>
+        <Header>
+          <PageTitle>{title}</PageTitle>
+          <Button onClick={() => onClickNew()}>
+            <AddIcon />
+          </Button>
+        </Header>
+        <SearchBox>
+          <Input icon={<SearchIcon />} />
+        </SearchBox>
+        <List>
+          {placeList.map((place) => (
+            <PlaceListItem key={`place-${place.id}`} place={place} />
+          ))}
+        </List>
+      </>
     );
   }
 );
