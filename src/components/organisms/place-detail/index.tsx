@@ -7,17 +7,21 @@ import { MessageView } from '~/components/molecules/message-view';
 import { Place, Message } from '~/state/ducks/place/placeSlice';
 
 const Root = styled.div`
-  display: grid;
-  grid-template-rows: 80px 1fr 64px;
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+  justify-content: space-between;
   overflow: hidden;
 `;
 
-const Header = styled.div``;
+const Header = styled.header``;
+
 const Title = styled.h2`
   color: ${(props) => props.theme.colors.primaryText};
   font-size: ${(props) => props.theme.fontSizes.lg};
   font-weight: ${(props) => props.theme.fontWeights.medium};
 `;
+
 const Description = styled.div`
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.md};
@@ -27,16 +31,25 @@ const Description = styled.div`
 `;
 
 const Messages = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
   & > * {
     margin-top: ${(props) => props.theme.space[6]}px;
   }
-  overflow-y: auto;
 `;
 
-const Footer = styled.div`
+const Footer = styled.footer`
   display: flex;
+  position: relative;
+  bottom: 0;
+  align-items: center;
+  justify-content: space-between;
   padding: ${(props) => props.theme.space[1]}px;
   padding-top: ${(props) => props.theme.space[5]}px;
+`;
+
+const Form = styled.form`
+  display: contents;
 `;
 
 export interface FormValues {
@@ -79,8 +92,8 @@ export const PlaceDetail: React.FC<PlaceDetailProps> = React.memo(
           ))}
         </Messages>
 
-        <form onSubmit={formik.handleSubmit}>
-          <Footer>
+        <Footer>
+          <Form onSubmit={formik.handleSubmit}>
             <Input
               name="text"
               placeholder="Message..."
@@ -95,8 +108,8 @@ export const PlaceDetail: React.FC<PlaceDetailProps> = React.memo(
               type="submit"
               disabled={formik.isSubmitting}
             />
-          </Footer>
-        </form>
+          </Form>
+        </Footer>
       </Root>
     );
   }

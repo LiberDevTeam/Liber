@@ -22,18 +22,23 @@ import {
 const PAGE_TITLE = 'Places';
 
 const Root = styled.div`
+  display: flex;
+  width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: 360px auto;
-  grid-gap: ${(props) => props.theme.space[8]}px;
 `;
 
-const LeftContainer = styled.div`
+const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border-right: 3px solid ${(props) => props.theme.colors.border};
-  padding-right: ${(props) => props.theme.space[2]}px;
+  flex-basis: ${(props) => props.theme.breakpoints.xs};
   overflow: hidden;
+  & + * {
+    padding-left: ${(props) => props.theme.space[4]}px;
+    border-left: 3px solid ${(props) => props.theme.colors.border};
+  }
+  &:last-child {
+    flex-grow: 1;
+  }
 `;
 
 const SearchBox = styled.div`
@@ -72,19 +77,21 @@ export const Places: React.FC = React.memo(function Places() {
   return (
     <BaseLayout>
       <Root>
-        <LeftContainer>
+        <ListContainer>
           <PageTitle>{PAGE_TITLE}</PageTitle>
           <SearchBox>
             <Input icon={<SearchIcon />} />
           </SearchBox>
           <PlaceList placeList={placeList} />
-        </LeftContainer>
+        </ListContainer>
         {place && (
-          <PlaceDetail
-            place={place}
-            onSubmit={handleSubmit}
-            messages={messages}
-          />
+          <ListContainer>
+            <PlaceDetail
+              place={place}
+              onSubmit={handleSubmit}
+              messages={messages}
+            />
+          </ListContainer>
         )}
       </Root>
     </BaseLayout>
