@@ -13,7 +13,8 @@ const commonRootStyle = css`
 `;
 
 const SpRoot = styled.div`
-  display: block;
+  display: flex;
+  flex-flow: column;
   ${commonRootStyle};
 `;
 
@@ -26,8 +27,8 @@ const Root = styled.div`
 `;
 
 const SpHeader = styled.header`
-  position: fixed;
   width: 100%;
+  order: 2;
   bottom: 0;
   overflow: auto;
 `;
@@ -38,6 +39,8 @@ const Header = styled.header`
 `;
 
 const Main = styled.main`
+  width: 100%;
+  height: 100%;
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
   padding: ${(props) => props.theme.space[8]}px;
