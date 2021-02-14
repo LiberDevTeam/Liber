@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
 import { publicLibp2pOptions } from '~/lib/libp2p';
@@ -16,13 +16,27 @@ import { createFromPubKey } from 'peer-id';
 import multiaddr from 'multiaddr';
 import pipe from 'it-pipe';
 
-export type P2PState = {
-  ipfsNode: Ipfs | null;
-  privateIpfsNodes: Record<string, Ipfs>;
+const publishMessageTopic = (pid: string) => {
+  return `/liber/places/${pid}/publish_message/1.0.0`;
 };
 
+const joinPlaceProtocol = (pid: string) => {
+  return `/liber/places/${pid}/join/1.0.0`;
+};
+
+const p2pNodes: {
+  ipfsNode: Ipfs | null;
+  privateIpfsNodes: Record<string, Ipfs>;
+} = {
+  ipfsNode: null,
+  privateIpfsNodes: {},
+};
+
+export const ipfsNode = () => p2pNodes.ipfsNode!;
+export const privateIpfsNodes = (pid: string) => p2pNodes.privateIpfsNodes[pid];
+
 export const initNodes = createAsyncThunk<
-  P2PState,
+  void,
   void,
   { dispatch: AppDispatch; state: RootState }
 >('p2p/initNodes', async (_, thunkAPI) => {
@@ -31,34 +45,19 @@ export const initNodes = createAsyncThunk<
     place: { places, messages },
   } = thunkAPI.getState();
 
-  // @ts-ignore
-  const ipfsNode = await IPFS.create({
+  p2pNodes.ipfsNode = await IPFS.create({
     libp2p: publicLibp2pOptions,
   });
 
-  const privateIpfsNodes: Record<string, Ipfs> = {};
-
   Object.keys(places).forEach(async (pid) => {
-    if (places[pid].isPrivate) {
+    if (places[pid].swarmKey) {
       // TODO
+      // p2pNodes.privateIpfsNodes[pid] = IPFS.create({});
     } else {
-      setupNode(ipfsNode, messages[pid], places[pid], pid, dispatch);
+      setupNode(p2pNodes.ipfsNode!, messages[pid], places[pid], pid, dispatch);
     }
   });
-
-  return {
-    ipfsNode,
-    privateIpfsNodes,
-  };
 });
-
-function publishMessageTopic(pid: string) {
-  return `/liber/places/${pid}/publish_message/1.0.0`;
-}
-
-function joinPlaceProtocol(pid: string) {
-  return `/liber/places/${pid}/join/1.0.0`;
-}
 
 async function setupNode(
   node: Ipfs,
@@ -94,10 +93,7 @@ export const publishMessage = createAsyncThunk<
   const state = thunkAPI.getState();
   const { places } = state.place;
 
-  (places[pid].isPrivate
-    ? state.p2p.privateIpfsNodes[pid]
-    : state.p2p.ipfsNode
-  )?.pubsub.publish(
+  (places[pid].swarmKey ? privateIpfsNodes(pid) : ipfsNode())?.pubsub.publish(
     publishMessageTopic(pid),
     uint8ArrayFromString(JSON.stringify(message)),
     {}
@@ -116,11 +112,10 @@ export const joinPlace = createAsyncThunk<
 >('p2p/joinPlace', async ({ pid, swarmId, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const {
-    p2p: { ipfsNode },
     place: { places, messages },
   } = thunkAPI.getState();
 
-  const node = ipfsNode!;
+  const node = ipfsNode();
 
   setupNode(node, messages[pid], places[pid], pid, dispatch);
 
@@ -153,35 +148,6 @@ export const joinPlace = createAsyncThunk<
   });
 });
 
-const initialState: P2PState = {
-  ipfsNode: null,
-  privateIpfsNodes: {},
-};
-
-export const p2pSlice = createSlice({
-  name: 'p2p',
-  initialState,
-  reducers: {
-    addPrivateLibp2pNode: (
-      state,
-      action: PayloadAction<{ pid: string; node: Ipfs }>
-    ) => {
-      const { pid, node } = action.payload;
-      state.privateIpfsNodes[pid] = node;
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(initNodes.fulfilled, (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      };
-    });
-  },
-});
-
-export const { addPrivateLibp2pNode } = p2pSlice.actions;
-
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
@@ -196,6 +162,3 @@ export const { addPrivateLibp2pNode } = p2pSlice.actions;
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const selectCount = (state: RootState) => state.counter.value;
-export const selectP2P = (state: RootState): typeof state.me => state.me;
-
-export default p2pSlice.reducer;
