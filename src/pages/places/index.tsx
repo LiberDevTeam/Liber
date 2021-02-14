@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Search as SearchIcon } from '@material-ui/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { theme } from '~/theme';
 import { PlaceItem } from '~/components/molecules/place-list-item';
@@ -18,8 +17,6 @@ import {
   selectPlaceById,
   MESSAGE_TYPE,
 } from '../../state/ducks/place/placeSlice';
-import { Input } from '~/components/atoms/input';
-import { PageTitle } from '~/components/atoms/page-title';
 
 const PAGE_TITLE = 'Places';
 
@@ -27,21 +24,6 @@ const Root = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Button = styled.button`
-  background: transparent;
-  border: none;
-`;
-
-const SearchBox = styled.div`
-  margin-top: ${(props) => props.theme.space[8]}px;
-  padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
 const ListContainer = styled.div`
@@ -84,7 +66,7 @@ export const Places: React.FC = React.memo(function Places() {
       };
       dispatch(publishMessage({ pid, message }));
     },
-    [dispatch, places, pid]
+    [dispatch, pid, me.id]
   );
 
   const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
