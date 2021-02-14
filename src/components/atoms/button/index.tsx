@@ -10,7 +10,6 @@ interface RootProps {
 
 const Root = styled.button<RootProps>`
   display: inline-flex;
-  min-width: 200px;
   align-items: center;
   justify-content: center;
   height: 40px;

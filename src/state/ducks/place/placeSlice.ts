@@ -24,6 +24,7 @@ export type Place = {
   name: string;
   description: string;
   swarmKey: string | null;
+  invitationUrl?: string;
 };
 
 export interface PlaceState {
