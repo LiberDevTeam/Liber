@@ -1,6 +1,6 @@
 import { ConnectedRouter, push } from 'connected-react-router';
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import IndexPage from './pages';
 import { NewPlace } from './pages/places/new';
 import { history, AppThunkDispatch } from './state/store';
@@ -8,13 +8,30 @@ import { Places } from './pages/places';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
 import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
-import { useParams } from 'react-router-dom';
 
-type RootParams = {
+type QueryParams = {
   pid?: string;
-  peerId?: string;
+  pubKey?: string;
   swarmId?: string;
+  addrs?: string[]; // multiaddrs
 };
+
+// A custom hook that builds on useLocation to parse
+// the query string.
+function useQuery<T extends { [K in keyof T]?: string | string[] }>(): T {
+  const { search } = useLocation();
+
+  return React.useMemo(() => {
+    const query = new URLSearchParams(search);
+    return Array.from(query.keys()).reduce((result, key) => {
+      const value = query.getAll(key);
+      return {
+        ...result,
+        [key]: (value.length === 1 ? value[0] : value) || undefined,
+      };
+    }, {} as T);
+  }, [search]);
+}
 
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
@@ -31,16 +48,16 @@ export const Routes: React.FC = () => (
 
 function Initializer() {
   const dispatch: AppThunkDispatch = useDispatch();
-  const { pid, peerId, swarmId } = useParams<RootParams>();
+  const { pid, pubKey, swarmId, addrs } = useQuery<QueryParams>();
 
   useEffect(() => {
     (async () => {
       await dispatch(initNodes());
-      if (pid && peerId && swarmId) {
-        await dispatch(joinPlace({ peerId, pid, swarmId }));
+      if (pid && pubKey && addrs) {
+        await dispatch(joinPlace({ pubKey, pid, swarmId, addrs }));
       }
     })();
-  }, [pid, peerId, swarmId, dispatch]);
+  }, [pid, pubKey, swarmId, addrs, dispatch]);
 
   return null;
 }

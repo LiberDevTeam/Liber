@@ -12,7 +12,9 @@ import {
   setMessages,
 } from '../place/placeSlice';
 import { push } from 'connected-react-router';
-import promiseRetry from 'promise-retry';
+import { createFromPubKey } from 'peer-id';
+import multiaddr from 'multiaddr';
+import pipe from 'it-pipe';
 
 export type P2PState = {
   ipfsNode: Ipfs | null;
@@ -54,12 +56,8 @@ function publishMessageTopic(pid: string) {
   return `/liber/places/${pid}/publish_message/1.0.0`;
 }
 
-function joinedPlaceTopic(peerId: string, pid: string) {
-  return `/liber/p/${peerId}/places/${pid}/joined/1.0.0`;
-}
-
-function welcomePlaceTopic(peerId: string, pid: string) {
-  return `/liber/p/${peerId}/places/${pid}/welcome/1.0.0`;
+function joinPlaceProtocol(pid: string) {
+  return `/liber/places/${pid}/join/1.0.0`;
 }
 
 async function setupNode(
@@ -74,17 +72,18 @@ async function setupNode(
     dispatch(addMessage({ pid, message }));
   });
 
-  const peerId = (await node.id()).id;
-  node.pubsub.subscribe(joinedPlaceTopic(peerId, pid), (msg) => {
-    console.log('received');
-    console.log(msg);
-    const { peerId } = JSON.parse(uint8ArrayToString(msg.data));
-    node.pubsub.publish(
-      welcomePlaceTopic(peerId, pid),
-      uint8ArrayFromString(JSON.stringify({ messages, place })),
-      {}
-    );
+  // @ts-ignore
+  node.libp2p.handle(joinPlaceProtocol(pid), ({ stream, connection }) => {
+    // TODO(kyfk): validate a peer id is the same being invited.
+    // const peerId = connection.remotePeer.toB58String();
+    pipe([JSON.stringify({ messages, place })], stream);
   });
+
+  // @ts-ignore
+  console.log(node.libp2p.publicKey);
+
+  console.log((await node.id()).publicKey);
+  console.log((await node.id()).addresses[0].toString());
 }
 
 export const publishMessage = createAsyncThunk<
@@ -109,11 +108,12 @@ export const joinPlace = createAsyncThunk<
   void,
   {
     pid: string;
-    swarmId: string | null;
-    peerId: string;
+    pubKey: string;
+    swarmId: string | undefined;
+    addrs: string[];
   },
   { dispatch: AppDispatch; state: RootState }
->('p2p/joinPlace', async ({ pid, swarmId, peerId }, thunkAPI) => {
+>('p2p/joinPlace', async ({ pid, swarmId, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const {
     p2p: { ipfsNode },
@@ -124,33 +124,32 @@ export const joinPlace = createAsyncThunk<
 
   setupNode(node, messages[pid], places[pid], pid, dispatch);
 
-  const myPeerId = (await node.id()).id;
-  node.pubsub.subscribe(welcomePlaceTopic(myPeerId, pid), (msg) => {
-    const { place, messages } = JSON.parse(uint8ArrayToString(msg.data));
-    dispatch(addPlace(place));
-    dispatch(setMessages({ pid, messages }));
-    node.pubsub.unsubscribe(welcomePlaceTopic(myPeerId, pid));
+  const remotePeer = await createFromPubKey(pubKey);
 
-    dispatch(push(`/places/${pid}`));
-  });
+  // @ts-ignore
+  node.libp2p.peerStore.addressBook.add(
+    remotePeer,
+    addrs.map((addr) => multiaddr(addr))
+  );
 
-  // retry until one peer is connected at least
-  promiseRetry((retry) => {
-    return new Promise((resolve, reject) =>
-      node.pubsub.peers(joinedPlaceTopic(peerId!, pid)).then((peers) => {
-        if (peers.length === 0) {
-          reject(new Error('peers are still not connected'));
-        } else {
-          resolve(peers);
-        }
-      })
-    ).catch((err) => retry(err));
-  }).then(() => {
-    node.pubsub.publish(
-      joinedPlaceTopic(peerId!, pid),
-      uint8ArrayFromString(JSON.stringify({ peerId: myPeerId })),
-      {}
-    );
+  // @ts-ignore
+  node.libp2p.peerStore.protoBook.set(remotePeer, joinPlaceProtocol(pid));
+
+  // TODO(kyfk): retry connect with the remote peer invited the user when a connection refused.
+  // @ts-ignore
+  const { stream } = await node.libp2p.dialProtocol(
+    remotePeer,
+    joinPlaceProtocol(pid),
+    {}
+  );
+  pipe(stream, async (source) => {
+    for await (const message of source) {
+      const { messages, place } = JSON.parse(message.toString());
+      dispatch(setMessages({ pid, messages }));
+      dispatch(addPlace(place));
+      dispatch(push(`/places/${pid}`));
+      return;
+    }
   });
 });
 
