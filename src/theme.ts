@@ -98,11 +98,20 @@ const fontFamily = {
   mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`,
 };
 
+const breakpoints = {
+  xs: '360px',
+  sm: '768px',
+  md: '1024px',
+  lg: '1920px',
+  xl: '2560px',
+};
+
 export const theme = {
   colors,
   fontWeights,
   fontSizes,
   fontFamily,
+  breakpoints,
   space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   shadows: {
