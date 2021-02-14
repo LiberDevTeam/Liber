@@ -32,6 +32,9 @@ const InputName = styled(Input)`
 const InputDescription = styled(Textarea)`
   margin-top: ${(props) => props.theme.space[5]}px;
 `;
+const PrivateFlagGroup = styled.div`
+  margin-top: ${(props) => props.theme.space[5]}px;
+`;
 
 const SubmitButton = styled(Button)`
   margin-top: ${(props) => props.theme.space[8]}px;
@@ -86,6 +89,18 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />
+
+        <PrivateFlagGroup role="group">
+          <label>
+            <input
+              name="isPrivate"
+              type="checkbox"
+              checked={formik.values.isPrivate}
+              onChange={formik.handleChange}
+            />
+            Make private
+          </label>
+        </PrivateFlagGroup>
 
         <SubmitButton
           shape="square"
