@@ -1,8 +1,9 @@
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery } from '@material-ui/core';
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { BottomNavigation } from '~/components/organisms/bottom-navigation';
 import { SideNavigation } from '~/components/organisms/side-navigation';
+import { theme } from '~/theme';
 
 const commonRootStyle = css`
   width: 100vw;
@@ -44,8 +45,7 @@ const Main = styled.main`
 `;
 
 const BaseLayout: React.FC = ({ children }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
 
   return isMobile ? (
     <SpRoot>
