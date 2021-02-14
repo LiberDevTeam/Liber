@@ -23,8 +23,7 @@ export type Place = {
   id: string;
   name: string;
   description: string;
-  isPrivate: boolean;
-  swarmKey?: string;
+  swarmKey: string | null;
 };
 
 export interface PlaceState {
