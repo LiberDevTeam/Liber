@@ -5,11 +5,9 @@ import BaseLayout from '~/templates';
 import { Input } from '~/components/atoms/input';
 import { Button } from '~/components/atoms/button';
 import { Textarea } from '~/components/atoms/textarea';
-import { v4 as uuidv4 } from 'uuid';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { addPlace } from '../../state/ducks/place/placeSlice';
-import { push } from 'connected-react-router';
+import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -89,16 +87,14 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
     },
 
     async onSubmit({ name, description, isPrivate }) {
-      const id = uuidv4();
       dispatch(
-        addPlace({
-          id,
+        createNewPlace({
           name,
           description,
-          swarmKey: isPrivate ? uuidv4() : null,
+          isPrivate,
+          avatarImage: avatarImage!,
         })
       );
-      dispatch(push(`/places/${id}`));
     },
   });
 

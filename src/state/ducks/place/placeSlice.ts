@@ -23,8 +23,10 @@ export type Place = {
   id: string;
   name: string;
   description: string;
-  swarmKey: string | null;
+  avatarImage: string;
+  swarmKey?: string;
   invitationUrl?: string;
+  timestamp: number;
 };
 
 export interface PlaceState {

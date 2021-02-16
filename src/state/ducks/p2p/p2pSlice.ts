@@ -15,6 +15,8 @@ import { push } from 'connected-react-router';
 import { createFromPubKey } from 'peer-id';
 import multiaddr from 'multiaddr';
 import pipe from 'it-pipe';
+import { v4 as uuidv4 } from 'uuid';
+import getUnixTime from 'date-fns/getUnixTime';
 
 const publishMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/publish_message/1.0.0`;
@@ -105,11 +107,11 @@ export const joinPlace = createAsyncThunk<
   {
     pid: string;
     pubKey: string;
-    swarmId: string | undefined;
+    swarmKey: string | undefined;
     addrs: string[];
   },
   { dispatch: AppDispatch; state: RootState }
->('p2p/joinPlace', async ({ pid, swarmId, pubKey, addrs }, thunkAPI) => {
+>('p2p/joinPlace', async ({ pid, swarmKey, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const {
     place: { places, messages },
@@ -147,6 +149,47 @@ export const joinPlace = createAsyncThunk<
     }
   });
 });
+
+export const createNewPlace = createAsyncThunk<
+  void,
+  {
+    name: string;
+    description: string;
+    isPrivate: boolean;
+    avatarImage: File;
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'p2p/createNewPlace',
+  async ({ name, description, isPrivate, avatarImage }, thunkAPI) => {
+    const { dispatch } = thunkAPI;
+
+    const id = uuidv4();
+
+    const file = await ipfsNode().add({
+      path: avatarImage.name,
+      content: avatarImage,
+    });
+
+    if (isPrivate) {
+      // TODO
+      // const swarmKey = uuidv4()
+      // p2pNodes.privateIpfsNodes[id] = await IPFS.create({})
+    }
+
+    dispatch(
+      addPlace({
+        id,
+        name,
+        description,
+        avatarImage: `https://ipfs.io/ipfs/${file.cid}?filename=${file.path}`,
+        timestamp: getUnixTime(new Date()),
+      })
+    );
+
+    dispatch(push(`/places/${id}`));
+  }
+);
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

@@ -5,11 +5,13 @@ import MPLEX from 'libp2p-mplex';
 import WebrtcStar from 'libp2p-webrtc-star';
 import Gossipsub from 'libp2p-gossipsub';
 import Bootstrap from 'libp2p-bootstrap';
+import MulticastDNS from 'libp2p-mdns';
 import { FaultTolerance } from 'libp2p/src/transport-manager';
 import RelayConstants from 'libp2p/src/circuit/constants';
 import Constants from 'libp2p/src/constants';
 import { dnsaddrResolver } from 'multiaddr/src/resolvers';
 import { publicAddressesFirst } from 'libp2p-utils/src/address-sort';
+import KadDHT from 'libp2p-kad-dht';
 
 export const publicLibp2pOptions = {
   start: true,
@@ -17,8 +19,8 @@ export const publicLibp2pOptions = {
     transport: [WebrtcStar],
     streamMuxer: [MPLEX],
     connEncryption: [NOISE],
-    peerDiscovery: [Bootstrap],
-    // dht: KadDHT,
+    peerDiscovery: [Bootstrap, MulticastDNS],
+    dht: KadDHT,
     pubsub: Gossipsub,
   },
   addresses: {
@@ -89,6 +91,9 @@ export const publicLibp2pOptions = {
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa',
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt',
+          '/dns4/ams-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd',
+          '/dns4/lon-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLMeWqB7YGVLJN3pNLQpmmEk35v6wYtsMGLzSr5QBU3',
+          '/dns4/sfo-3.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLPppuBtQSGwKDZT2M73ULpjvfd3aZ6ha4oFGL1KrGM',
         ],
       },
     },

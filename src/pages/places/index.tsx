@@ -1,5 +1,7 @@
-import { useMediaQuery } from '@material-ui/core';
 import React, { useCallback } from 'react';
+import { useMediaQuery } from '@material-ui/core';
+import { Search as SearchIcon } from '@material-ui/icons';
+import { getUnixTime } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -48,9 +50,6 @@ export const Places: React.FC = React.memo(function Places() {
   const places = useSelector(selectPlaces);
   const placeList: PlaceItem[] = Object.values(places).map((p) => ({
     ...p,
-    title: p.name,
-    avatarImage: `https://i.pravatar.cc/60?u=${p.id}`,
-    timestamp: 1612708219995,
   }));
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessages(pid));
@@ -62,7 +61,7 @@ export const Places: React.FC = React.memo(function Places() {
         type: MESSAGE_TYPE.Text,
         uid: me.id,
         text,
-        timestamp: new Date().getTime(),
+        timestamp: getUnixTime(new Date()),
       };
       dispatch(publishMessage({ pid, message }));
     },

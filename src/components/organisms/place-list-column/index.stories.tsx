@@ -11,7 +11,7 @@ const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
   const time = add(yesterday, { hours: index });
   return {
     id,
-    title: 'We Love FC Barcelona!!',
+    name: 'We Love FC Barcelona!!',
     avatarImage: `https://i.pravatar.cc/60?u=${id}`,
     description:
       'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',

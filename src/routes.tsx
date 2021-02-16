@@ -12,7 +12,7 @@ import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
 type QueryParams = {
   pid?: string;
   pubKey?: string;
-  swarmId?: string;
+  swarmKey?: string;
   addrs?: string[]; // multiaddrs
 };
 
@@ -48,13 +48,13 @@ export const Routes: React.FC = () => (
 
 function Initializer() {
   const dispatch: AppThunkDispatch = useDispatch();
-  const { pid, pubKey, swarmId, addrs } = useQuery<QueryParams>();
+  const { pid, pubKey, swarmKey, addrs } = useQuery<QueryParams>();
 
   useEffect(() => {
     (async () => {
       await dispatch(initNodes());
       if (pid && pubKey && addrs) {
-        await dispatch(joinPlace({ pubKey, pid, swarmId, addrs }));
+        await dispatch(joinPlace({ pubKey, pid, swarmKey, addrs }));
       }
     })();
   }, [dispatch]);
