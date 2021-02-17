@@ -32,16 +32,10 @@ const LeftContainer = styled.div`
   padding: ${(props) => props.theme.space[1]}px;
 `;
 
-const ImageContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  background: ${(props) => props.theme.colors.bg2};
-  border-radius: ${(props) => props.theme.radii.medium}px;
-`;
-
 const Image = styled.img`
   width: 100%;
   height: 100%;
+  background: ${(props) => props.theme.colors.bg2};
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 
@@ -104,9 +98,7 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
         <LeftContainer>
-          <ImageContainer>
-            <Image src={place.avatarImage} />
-          </ImageContainer>
+          <Image src={place.avatarImage} />
           <Status />
         </LeftContainer>
         <RightContainer>

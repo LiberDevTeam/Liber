@@ -62,7 +62,7 @@ export const publicLibp2pOptions = {
   },
   config: {
     dht: {
-      enabled: false,
+      enabled: true,
       kBucketSize: 20,
       randomWalk: {
         enabled: false, // disabled waiting for https://github.com/libp2p/js-libp2p-kad-dht/issues/86
