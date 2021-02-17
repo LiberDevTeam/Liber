@@ -59,6 +59,9 @@ export const initNodes = createAsyncThunk<
       setupNode(p2pNodes.ipfsNode!, messages[pid], places[pid], pid, dispatch);
     }
   });
+
+  console.log((await p2pNodes.ipfsNode.id()).publicKey);
+  console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
 
 async function setupNode(
@@ -79,12 +82,6 @@ async function setupNode(
     // const peerId = connection.remotePeer.toB58String();
     pipe([JSON.stringify({ messages, place })], stream);
   });
-
-  // @ts-ignore
-  console.log(node.libp2p.publicKey);
-
-  console.log((await node.id()).publicKey);
-  console.log((await node.id()).addresses[0].toString());
 }
 
 export const publishMessage = createAsyncThunk<
@@ -162,14 +159,16 @@ export const createNewPlace = createAsyncThunk<
 >(
   'p2p/createNewPlace',
   async ({ name, description, isPrivate, avatarImage }, thunkAPI) => {
+    image = avatarImage;
     const { dispatch } = thunkAPI;
 
     const id = uuidv4();
 
     const file = await ipfsNode().add({
-      path: avatarImage.name,
-      content: avatarImage,
+      path: image.name,
+      content: image,
     });
+    // console.log(file)
 
     if (isPrivate) {
       // TODO
@@ -182,7 +181,7 @@ export const createNewPlace = createAsyncThunk<
         id,
         name,
         description,
-        avatarImage: `https://ipfs.io/ipfs/${file.cid}?filename=${file.path}`,
+        avatarImage: ``,
         timestamp: getUnixTime(new Date()),
       })
     );
@@ -190,6 +189,8 @@ export const createNewPlace = createAsyncThunk<
     dispatch(push(`/places/${id}`));
   }
 );
+
+let image;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

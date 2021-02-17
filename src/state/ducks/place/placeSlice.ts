@@ -24,6 +24,7 @@ export type Place = {
   name: string;
   description: string;
   avatarImage: string;
+  // avatarImageCID: string;
   swarmKey?: string;
   invitationUrl?: string;
   timestamp: number;

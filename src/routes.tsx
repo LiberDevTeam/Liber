@@ -57,7 +57,7 @@ function Initializer() {
         await dispatch(joinPlace({ pubKey, pid, swarmKey, addrs }));
       }
     })();
-  }, [dispatch]);
+  }, [dispatch, pid, pubKey, addrs]);
 
   return null;
 }

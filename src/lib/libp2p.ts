@@ -3,6 +3,7 @@
 import { NOISE } from 'libp2p-noise';
 import MPLEX from 'libp2p-mplex';
 import WebrtcStar from 'libp2p-webrtc-star';
+import WebSockets from 'libp2p-websockets';
 import Gossipsub from 'libp2p-gossipsub';
 import Bootstrap from 'libp2p-bootstrap';
 import MulticastDNS from 'libp2p-mdns';
@@ -11,16 +12,14 @@ import RelayConstants from 'libp2p/src/circuit/constants';
 import Constants from 'libp2p/src/constants';
 import { dnsaddrResolver } from 'multiaddr/src/resolvers';
 import { publicAddressesFirst } from 'libp2p-utils/src/address-sort';
-import KadDHT from 'libp2p-kad-dht';
 
 export const publicLibp2pOptions = {
   start: true,
   modules: {
-    transport: [WebrtcStar],
+    transport: [WebSockets, WebrtcStar],
     streamMuxer: [MPLEX],
     connEncryption: [NOISE],
     peerDiscovery: [Bootstrap, MulticastDNS],
-    dht: KadDHT,
     pubsub: Gossipsub,
   },
   addresses: {
@@ -61,16 +60,6 @@ export const publicLibp2pOptions = {
     },
   },
   config: {
-    dht: {
-      enabled: true,
-      kBucketSize: 20,
-      randomWalk: {
-        enabled: false, // disabled waiting for https://github.com/libp2p/js-libp2p-kad-dht/issues/86
-        queriesPerPeriod: 1,
-        interval: 300e3,
-        timeout: 10e3,
-      },
-    },
     nat: {
       enabled: true,
       ttl: 7200,
