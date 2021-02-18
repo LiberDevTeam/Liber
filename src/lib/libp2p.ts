@@ -3,10 +3,8 @@
 import { NOISE } from 'libp2p-noise';
 import MPLEX from 'libp2p-mplex';
 import WebrtcStar from 'libp2p-webrtc-star';
-import WebSockets from 'libp2p-websockets';
 import Gossipsub from 'libp2p-gossipsub';
 import Bootstrap from 'libp2p-bootstrap';
-import MulticastDNS from 'libp2p-mdns';
 import { FaultTolerance } from 'libp2p/src/transport-manager';
 import RelayConstants from 'libp2p/src/circuit/constants';
 import Constants from 'libp2p/src/constants';
@@ -16,10 +14,10 @@ import { publicAddressesFirst } from 'libp2p-utils/src/address-sort';
 export const publicLibp2pOptions = {
   start: true,
   modules: {
-    transport: [WebSockets, WebrtcStar],
+    transport: [WebrtcStar],
     streamMuxer: [MPLEX],
     connEncryption: [NOISE],
-    peerDiscovery: [Bootstrap, MulticastDNS],
+    peerDiscovery: [Bootstrap],
     pubsub: Gossipsub,
   },
   addresses: {

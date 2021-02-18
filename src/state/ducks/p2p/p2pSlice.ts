@@ -8,6 +8,7 @@ import {
   placeAdded,
   selectAllPlaces,
   selectPlaceById,
+  selectPlaceMessages,
   selectPlaceMessagesByPID,
 } from '../places/placesSlice';
 import { Message, placeMessageAdded } from '../places/messagesSlice';
@@ -52,22 +53,25 @@ export const initNodes = createAsyncThunk<
     libp2p: publicLibp2pOptions,
   });
 
-  Object.keys(selectAllPlaces(state)).forEach(async (pid) => {
-    const place = selectPlaceById(pid)(state);
-    if (!place) return;
-
+  selectAllPlaces(state).forEach(async (place) => {
     if (place.swarmKey) {
       // TODO
       // p2pNodes.privateIpfsNodes[pid] = IPFS.create({});
     } else {
-      const messages = selectPlaceMessagesByPID(pid)(state);
-      subscribePublishPlaceMessageTopic(p2pNodes.ipfsNode!, pid, dispatch);
+      const messages = selectPlaceMessages(place)(state);
+
+      const node = ipfsNode();
+      subscribePublishPlaceMessageTopic(node, place.id, dispatch);
+
       // @ts-ignore
-      node.libp2p.handle(joinPlaceProtocol(pid), ({ stream, connection }) => {
-        // TODO(kyfk): validate a peer id is the same being invited.
-        // const peerId = connection.remotePeer.toB58String();
-        pipe([JSON.stringify({ messages, place })], stream);
-      });
+      node.libp2p.handle(
+        joinPlaceProtocol(place.id),
+        ({ stream, connection }) => {
+          // TODO(kyfk): validate a peer id is the same being invited.
+          // const peerId = connection.remotePeer.toB58String();
+          pipe([JSON.stringify({ messages, place })], stream);
+        }
+      );
     }
   });
 
@@ -158,14 +162,14 @@ export const joinPlace = createAsyncThunk<
 >('p2p/joinPlace', async ({ pid, swarmKey, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
 
-  const remotePeer = await createFromPubKey(decodeURIComponent(pubKey));
+  const remotePeer = await createFromPubKey(pubKey);
 
   const node = ipfsNode();
 
   // @ts-ignore
   node.libp2p.peerStore.addressBook.add(
     remotePeer,
-    addrs.map((addr) => multiaddr(decodeURIComponent(addr)))
+    addrs.map((addr) => multiaddr(addr))
   );
 
   // @ts-ignore

@@ -53,10 +53,13 @@ export const selectPlaceById = (id: string) => (state: RootState) =>
   selectors.selectById(state.places, id);
 export const selectAllPlaces = (state: RootState) =>
   selectors.selectAll(state.places);
-export const selectPlaceMessagesByPID = (pid: string) => (state: RootState) =>
-  selectors
-    .selectById(state.places, pid)
-    ?.messageIds.map((id) => selectMessageById(state.placeMessages, id))
+export const selectPlaceMessagesByPID = (pid: string) => (state: RootState) => {
+  const place = selectors.selectById(state.places, pid);
+  return place ? selectPlaceMessages(place)(state) : [];
+};
+export const selectPlaceMessages = (place: Place) => (state: RootState) =>
+  place.messageIds
+    .map((id) => selectMessageById(state.placeMessages, id))
     .filter((m): m is Message => typeof m === 'object') || [];
 
 export default placesSlice.reducer;
