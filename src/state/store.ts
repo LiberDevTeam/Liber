@@ -17,7 +17,6 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { useDispatch } from 'react-redux';
-import { ipfsContentsSlice } from './ducks/p2p/ipfsContentsSlice';
 
 export const history = createBrowserHistory();
 
@@ -68,8 +67,11 @@ const ipfsContentsPersistConfig = {
 const reducers = combineReducers({
   me: persistReducer(mePersistConfig, meReducer),
   places: persistReducer(placesPersistConfig, placesReducer),
-  placeMessages: persistReducer(placesPersistConfig, placeMessagesReducer),
-  ipfsContents: persistReducer(placesPersistConfig, ipfsContentsReducer),
+  placeMessages: persistReducer(
+    placeMessagesPersistConfig,
+    placeMessagesReducer
+  ),
+  ipfsContents: persistReducer(ipfsContentsPersistConfig, ipfsContentsReducer),
   router: connectRouter(history),
 });
 

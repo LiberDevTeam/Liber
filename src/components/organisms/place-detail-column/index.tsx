@@ -86,7 +86,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
           {messages.map((m) => (
             <MessageView
               key={m.id}
-              uid={m.authorID}
+              authorId={m.authorId}
               timestamp={m.postedAt}
               text={m.text}
             />

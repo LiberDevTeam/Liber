@@ -16,6 +16,7 @@ const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
     description:
       'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
     timestamp: getUnixTime(time),
+    invitationUrl: 'https://liber.live',
   };
 });
 

@@ -11,14 +11,13 @@ import { PlaceItem } from '~/components/molecules/place-list-item';
 import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
 import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
-import { publishMessage } from '~/state/ducks/p2p/p2pSlice';
+import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
 import {
-  selectPlaceMessages,
-  selectPlaces,
+  selectAllPlaces,
   selectPlaceById,
-  MESSAGE_TYPE,
-} from '../../state/ducks/place/placeSlice';
+  selectPlaceMessagesByPID,
+} from '../../state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'Places';
 
@@ -47,23 +46,25 @@ export const Places: React.FC = React.memo(function Places() {
   const { pid } = useParams<{ pid: string }>();
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const places = useSelector(selectPlaces);
+  const places = useSelector(selectAllPlaces);
   const placeList: PlaceItem[] = Object.values(places).map((p) => ({
     ...p,
+    timestamp: p.lastActedAt,
   }));
   const place = useSelector(selectPlaceById(pid));
-  const messages = useSelector(selectPlaceMessages(pid));
+  const messages = useSelector(selectPlaceMessagesByPID(pid));
 
   const handleSubmit = useCallback(
     (text: string) => {
       const message = {
         id: uuidv4(),
-        type: MESSAGE_TYPE.Text,
-        uid: me.id,
+        authorId: me.id,
+        authorName: me.username,
         text,
-        timestamp: getUnixTime(new Date()),
+        postedAt: getUnixTime(new Date()),
+        // ipfsCID,
       };
-      dispatch(publishMessage({ pid, message }));
+      dispatch(publishPlaceMessage({ pid, message }));
     },
     [dispatch, pid, me.id]
   );

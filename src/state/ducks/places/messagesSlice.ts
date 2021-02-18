@@ -7,7 +7,7 @@ import {
 import { AppDispatch, RootState } from '~/state/store';
 import { ipfsContentAdded } from '../p2p/ipfsContentsSlice';
 import { ipfsNode } from '../p2p/p2pSlice';
-import { placeAdded } from './placesSlice';
+import { Place } from './placesSlice';
 
 export type Message = {
   id: string; // UUID
@@ -16,6 +16,7 @@ export type Message = {
   postedAt: number;
   text?: string;
   ipfsCID?: string;
+  content?: string;
 };
 
 export const placeMessagePublished = createAsyncThunk<
@@ -75,12 +76,18 @@ export const messagesSlice = createSlice({
     ) => {
       messagesAdapter.addOne(state, action.payload.message);
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(placeAdded, (state, action) => {
+    placeAdded: (
+      state,
+      action: PayloadAction<{ place: Place; messages: Message[] }>
+    ) => {
       messagesAdapter.upsertMany(state, action.payload.messages);
-    });
+    },
   },
+  // extraReducers: (builder) => {
+  //   builder.addCase(, (state, action) => {
+  //     messagesAdapter.upsertMany(state, action.payload.messages);
+  //   });
+  // },
 });
 
 export const { placeMessageAdded } = messagesSlice.actions;

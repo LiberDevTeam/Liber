@@ -33,14 +33,14 @@ const Body = styled.div`
 `;
 
 export interface MessageViewProps {
-  uid: string;
+  authorId: string;
   timestamp: number;
   text?: string;
 }
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
-  function MessageView({ uid, timestamp, text }) {
-    const name = uid.split('-')[0];
+  function MessageView({ authorId, timestamp, text }) {
+    const name = authorId.split('-')[0];
     const color = colorHash.hex(name);
     return (
       <div>

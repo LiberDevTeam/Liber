@@ -54,6 +54,9 @@ function Initializer() {
     (async () => {
       await dispatch(initNodes());
       if (pid && pubKey && addrs) {
+        console.log(pid);
+        console.log(pubKey);
+        console.log(addrs);
         await dispatch(joinPlace({ pubKey, pid, swarmKey, addrs }));
       }
     })();

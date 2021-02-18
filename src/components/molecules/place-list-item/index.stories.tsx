@@ -12,6 +12,7 @@ const place: PlaceItem = {
   description:
     'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
   timestamp: getUnixTime(new Date()),
+  invitationUrl: 'https://liber.live',
 };
 
 export default {

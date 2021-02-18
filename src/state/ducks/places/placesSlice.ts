@@ -3,15 +3,17 @@ import {
   createEntityAdapter,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { Message, placeMessageAdded } from './messagesSlice';
+import { RootState } from '~/state/store';
+import { Message, placeMessageAdded, selectMessageById } from './messagesSlice';
 
 export type Place = {
   id: string;
   name: string;
   description: string;
+  avatarImage: string;
   avatarImageCID: string;
   swarmKey?: string;
-  invitationUrl?: string;
+  invitationUrl: string;
   lastActedAt: number;
   createdAt: number;
   messageIds: string[];
@@ -47,7 +49,14 @@ export const placesSlice = createSlice({
 export const { placeAdded } = placesSlice.actions;
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = selectors.selectById;
-export const selectAllPlaces = selectors.selectAll;
+export const selectPlaceById = (id: string) => (state: RootState) =>
+  selectors.selectById(state.places, id);
+export const selectAllPlaces = (state: RootState) =>
+  selectors.selectAll(state.places);
+export const selectPlaceMessagesByPID = (pid: string) => (state: RootState) =>
+  selectors
+    .selectById(state.places, pid)
+    ?.messageIds.map((id) => selectMessageById(state.placeMessages, id))
+    .filter((m): m is Message => typeof m === 'object') || [];
 
 export default placesSlice.reducer;

@@ -1,7 +1,9 @@
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useStore } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { SharePlaceDialog } from '../share-place-dialog';
 
 const activeClassName = 'selected-place';
 
@@ -80,8 +82,9 @@ export type PlaceItem = {
   id: string;
   name: string;
   avatarImage: string;
+  invitationUrl: string;
   description: string;
-  lastActedAt: number;
+  timestamp: number;
 };
 
 export interface PlaceListColumnItemProps {
@@ -91,9 +94,11 @@ export interface PlaceListColumnItemProps {
 export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
   function PlaceListColumnItem({ place }) {
     const dispTime = useMemo(() => {
-      const date = fromUnixTime(place.lastActedAt);
+      const date = fromUnixTime(place.timestamp);
       return formatDistanceToNowStrict(date, { addSuffix: true });
-    }, [place.lastActedAt]);
+    }, [place.timestamp]);
+
+    const [open, setOpen] = useState(true);
 
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
@@ -104,6 +109,11 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
         <RightContainer>
           <Title>{place.name}</Title>
           <Description>{place.description}</Description>
+          <SharePlaceDialog
+            open={open}
+            url={place.invitationUrl}
+            onClose={() => setOpen(false)}
+          />
           <Time>{dispTime}</Time>
         </RightContainer>
       </Root>

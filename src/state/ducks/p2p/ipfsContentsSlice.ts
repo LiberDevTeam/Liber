@@ -20,4 +20,7 @@ export const ipfsContentsSlice = createSlice({
 
 export const { ipfsContentAdded } = ipfsContentsSlice.actions;
 
+const selectors = ipfsContentsAdapter.getSelectors();
+export const selectIpfsContentByCID = selectors.selectById;
+
 export default ipfsContentsSlice.reducer;
