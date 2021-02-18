@@ -81,7 +81,7 @@ export type PlaceItem = {
   name: string;
   avatarImage: string;
   description: string;
-  timestamp: number;
+  lastActedAt: number;
 };
 
 export interface PlaceListColumnItemProps {
@@ -91,9 +91,9 @@ export interface PlaceListColumnItemProps {
 export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
   function PlaceListColumnItem({ place }) {
     const dispTime = useMemo(() => {
-      const date = fromUnixTime(place.timestamp);
+      const date = fromUnixTime(place.lastActedAt);
       return formatDistanceToNowStrict(date, { addSuffix: true });
-    }, [place.timestamp]);
+    }, [place.lastActedAt]);
 
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>

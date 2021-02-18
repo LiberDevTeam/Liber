@@ -5,8 +5,10 @@ import {
   ThunkDispatch,
 } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
-import placeReducer, { PlaceState } from '~/state/ducks/place/placeSlice';
-import meReducer, { MeState } from '~/state/ducks/me/meSlice';
+import placesReducer from '~/state/ducks/places/placesSlice';
+import meReducer from '~/state/ducks/me/meSlice';
+import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
+import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
 import { combineReducers } from 'redux';
@@ -15,10 +17,13 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { useDispatch } from 'react-redux';
+import { ipfsContentsSlice } from './ducks/p2p/ipfsContentsSlice';
 
 export const history = createBrowserHistory();
 
 enableMapSet();
+
+const debug = true;
 
 const mePersistConfig = {
   key: 'me',
@@ -27,23 +32,44 @@ const mePersistConfig = {
     storeName: 'liber',
     version: 1,
   }),
-  debug: true,
+  debug,
 };
 
-const placePersistConfig = {
+const placesPersistConfig = {
   key: 'places',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
     version: 1,
   }),
-  whitelist: ['messages', 'places'],
-  debug: true,
+  // whitelist: ['messages', 'places'],
+  debug,
+};
+
+const placeMessagesPersistConfig = {
+  key: 'placeMessages',
+  storage: createIdbStorage({
+    name: 'liber',
+    storeName: 'liber',
+    version: 1,
+  }),
+  debug,
+};
+
+const ipfsContentsPersistConfig = {
+  key: 'ipfsContents',
+  storage: createIdbStorage({
+    name: 'liber',
+    storeName: 'liber',
+    version: 1,
+  }),
 };
 
 const reducers = combineReducers({
-  me: persistReducer<MeState>(mePersistConfig, meReducer),
-  place: persistReducer<PlaceState>(placePersistConfig, placeReducer),
+  me: persistReducer(mePersistConfig, meReducer),
+  places: persistReducer(placesPersistConfig, placesReducer),
+  placeMessages: persistReducer(placesPersistConfig, placeMessagesReducer),
+  ipfsContents: persistReducer(placesPersistConfig, ipfsContentsReducer),
   router: connectRouter(history),
 });
 
