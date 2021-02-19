@@ -2,12 +2,8 @@ import {
   createSlice,
   PayloadAction,
   createEntityAdapter,
-  createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { AppDispatch, RootState } from '~/state/store';
-import { ipfsContentAdded } from '../p2p/ipfsContentsSlice';
-import { ipfsNode } from '../p2p/p2pSlice';
-import { Place } from './placesSlice';
+import { Place, placeAdded } from './placesSlice';
 
 export type Message = {
   id: string; // UUID
@@ -15,52 +11,9 @@ export type Message = {
   authorName?: string;
   postedAt: number;
   text?: string;
-  ipfsCID?: string;
-  content?: string;
+  contentIpfsCID?: string;
+  contentUrl?: string;
 };
-
-export const placeMessagePublished = createAsyncThunk<
-  {
-    pid: string;
-    message: Message;
-  },
-  {
-    pid: string;
-    message: Message;
-    file?: File;
-  },
-  { dispatch: AppDispatch; state: RootState }
->('placeMessages/published', async ({ pid, message, file }, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-
-  if (file) {
-    const content = await ipfsNode().add({
-      path: file.name,
-      content: file,
-    });
-    const cid = content.cid.toBaseEncodedString();
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        dispatch(
-          ipfsContentAdded({
-            cid,
-            dataURL: e.target.result as string,
-            file,
-          })
-        );
-      }
-    };
-    reader.readAsDataURL(file);
-
-    message.ipfsCID = cid;
-  }
-
-  return {
-    pid,
-    message,
-  };
-});
 
 const messagesAdapter = createEntityAdapter<Message>({
   sortComparer: (a, b) => a.postedAt - b.postedAt,
@@ -76,18 +29,12 @@ export const messagesSlice = createSlice({
     ) => {
       messagesAdapter.addOne(state, action.payload.message);
     },
-    placeAdded: (
-      state,
-      action: PayloadAction<{ place: Place; messages: Message[] }>
-    ) => {
-      messagesAdapter.upsertMany(state, action.payload.messages);
-    },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(, (state, action) => {
-  //     messagesAdapter.upsertMany(state, action.payload.messages);
-  //   });
-  // },
+  extraReducers: (builder) => {
+    builder.addCase(placeAdded, (state, action) => {
+      messagesAdapter.upsertMany(state, action.payload.messages);
+    });
+  },
 });
 
 export const { placeMessageAdded } = messagesSlice.actions;

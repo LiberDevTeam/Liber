@@ -10,17 +10,17 @@ export type Place = {
   id: string;
   name: string;
   description: string;
-  avatarImage: string;
+  avatarImage: string; // data url
   avatarImageCID: string;
   swarmKey?: string;
   invitationUrl: string;
-  lastActedAt: number;
+  timestamp: number; // the timestamp any user in the place acted at
   createdAt: number;
   messageIds: string[];
 };
 
 const placesAdapter = createEntityAdapter<Place>({
-  sortComparer: (a, b) => a.lastActedAt - b.lastActedAt,
+  sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
 
 export const placesSlice = createSlice({

@@ -12,12 +12,13 @@ import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
 import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
+import { RootState } from '~/state/store';
 import BaseLayout from '~/templates';
 import {
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessagesByPID,
-} from '../../state/ducks/places/placesSlice';
+} from '~/state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'Places';
 
@@ -46,11 +47,10 @@ export const Places: React.FC = React.memo(function Places() {
   const { pid } = useParams<{ pid: string }>();
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const places = useSelector(selectAllPlaces);
-  const placeList: PlaceItem[] = Object.values(places).map((p) => ({
-    ...p,
-    timestamp: p.lastActedAt,
-  }));
+  const places = useSelector((state: RootState) => selectAllPlaces(state));
+
+  const placeList: PlaceItem[] = places.map((place) => ({ ...place }));
+
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
 
@@ -62,11 +62,10 @@ export const Places: React.FC = React.memo(function Places() {
         authorName: me.username,
         text,
         postedAt: getUnixTime(new Date()),
-        // ipfsCID,
       };
       dispatch(publishPlaceMessage({ pid, message }));
     },
-    [dispatch, pid, me.id]
+    [dispatch, pid, me.id, me.username]
   );
 
   const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);

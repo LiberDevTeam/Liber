@@ -1,8 +1,9 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '~/state/store';
 
 export type IpfsContent = {
   cid: string;
-  dataURL: string;
+  dataUrl: string;
   file: File;
 };
 
@@ -21,6 +22,7 @@ export const ipfsContentsSlice = createSlice({
 export const { ipfsContentAdded } = ipfsContentsSlice.actions;
 
 const selectors = ipfsContentsAdapter.getSelectors();
-export const selectIpfsContentByCID = selectors.selectById;
+export const selectIpfsContentByCID = (cid: string) => (state: RootState) =>
+  selectors.selectById(state.ipfsContents, cid);
 
 export default ipfsContentsSlice.reducer;

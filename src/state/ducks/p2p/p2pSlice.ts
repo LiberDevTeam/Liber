@@ -5,11 +5,11 @@ import { publicLibp2pOptions } from '~/lib/libp2p';
 import uint8ArrayToString from 'uint8arrays/to-string';
 import uint8ArrayFromString from 'uint8arrays/from-string';
 import {
+  Place,
   placeAdded,
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessages,
-  selectPlaceMessagesByPID,
 } from '../places/placesSlice';
 import { Message, placeMessageAdded } from '../places/messagesSlice';
 import { push } from 'connected-react-router';
@@ -21,6 +21,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import all from 'it-all';
 import uint8ArrayConcat from 'uint8arrays/concat';
 import { ipfsContentAdded } from './ipfsContentsSlice';
+import { Me } from '../me/meSlice';
 
 const publishPlaceMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/messages/publish/1.0.0`;
@@ -61,17 +62,9 @@ export const initNodes = createAsyncThunk<
       const messages = selectPlaceMessages(place)(state);
 
       const node = ipfsNode();
-      subscribePublishPlaceMessageTopic(node, place.id, dispatch);
+      subscribePublishPlaceMessageTopic(node, place.id, state.me, dispatch);
 
-      // @ts-ignore
-      node.libp2p.handle(
-        joinPlaceProtocol(place.id),
-        ({ stream, connection }) => {
-          // TODO(kyfk): validate a peer id is the same being invited.
-          // const peerId = connection.remotePeer.toB58String();
-          pipe([JSON.stringify({ messages, place })], stream);
-        }
-      );
+      handleJoinPlaceProtocol(node, place, messages);
     }
   });
 
@@ -79,34 +72,20 @@ export const initNodes = createAsyncThunk<
   console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
 
-async function subscribePublishPlaceMessageTopic(
+function subscribePublishPlaceMessageTopic(
   node: Ipfs,
   pid: string,
+  me: Me,
   dispatch: AppDispatch
 ) {
   node.pubsub.subscribe(publishPlaceMessageTopic(pid), async (msg) => {
     const message: Message = JSON.parse(uint8ArrayToString(msg.data));
-    if (message.ipfsCID) {
-      // @ts-ignore
-      for await (const entry of ipfsNode().get(message.ipfsCID)) {
-        if (entry.type === 'dir' || !entry.content) continue;
-        const blob = new Blob([uint8ArrayConcat(await all(entry.content!))], {
-          type: 'application/octet-binary',
-        });
-        const file = new File([blob], entry.path);
-        const cid = entry.cid.toBaseEncodedString();
-        message.ipfsCID = cid;
-        dispatch(placeMessageAdded({ pid, message }));
-        const dataURL = await readAsDataURL(file);
-        dispatch(
-          ipfsContentAdded({
-            cid,
-            dataURL,
-            file,
-          })
-        );
-        message.content = dataURL;
-      }
+    if (message.authorId === me.id) return;
+    if (message.contentIpfsCID) {
+      message.contentUrl = await addIpfsContent(
+        dispatch,
+        message.contentIpfsCID
+      );
     }
     dispatch(placeMessageAdded({ pid, message }));
   });
@@ -126,16 +105,16 @@ export const publishPlaceMessage = createAsyncThunk<
       content: file,
     });
     const cid = content.cid.toBaseEncodedString();
-    message.ipfsCID = cid;
-    const dataURL = await readAsDataURL(file);
-    message.content = dataURL;
+    const dataUrl = await readAsDataURL(file);
     dispatch(
       ipfsContentAdded({
         cid,
-        dataURL,
+        dataUrl,
         file,
       })
     );
+    message.contentIpfsCID = cid;
+    message.contentUrl = dataUrl;
   }
 
   (selectPlaceById(pid)(state)?.swarmKey
@@ -161,6 +140,7 @@ export const joinPlace = createAsyncThunk<
   { dispatch: AppDispatch; state: RootState }
 >('p2p/joinPlace', async ({ pid, swarmKey, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
+  const { me } = thunkAPI.getState();
 
   const remotePeer = await createFromPubKey(pubKey);
 
@@ -182,24 +162,40 @@ export const joinPlace = createAsyncThunk<
     joinPlaceProtocol(pid),
     {}
   );
-  pipe(stream, async (source) => {
-    for await (const message of source) {
-      const { messages, place } = JSON.parse(message.toString());
-
-      dispatch(placeAdded({ place, messages }));
-
-      subscribePublishPlaceMessageTopic(node, pid, dispatch);
-
-      // @ts-ignore
-      node.libp2p.handle(joinPlaceProtocol(pid), ({ stream, connection }) => {
-        // TODO(kyfk): validate a peer id is the same being invited.
-        // const peerId = connection.remotePeer.toB58String();
-        pipe([JSON.stringify({ messages, place })], stream);
-      });
-
-      dispatch(push(`/places/${pid}`));
-      return;
+  await pipe(stream, async (source) => {
+    const message = [];
+    for await (const chunk of source) {
+      message.push(chunk);
     }
+
+    const {
+      messages,
+      place,
+    }: { messages: Message[]; place: Place } = JSON.parse(message.toString());
+
+    const messagesWithDataUrl = await Promise.all(
+      messages.map(async (m) => {
+        if (m.contentIpfsCID) {
+          m.contentUrl = await addIpfsContent(dispatch, m.contentIpfsCID);
+        }
+        return m;
+      })
+    );
+
+    const avatarImage = await addIpfsContent(dispatch, place.avatarImageCID);
+    if (avatarImage) {
+      place.avatarImage = avatarImage;
+    }
+
+    place.invitationUrl = (await buildInvitationUrl(node, pid)).href;
+
+    dispatch(placeAdded({ place, messages: messagesWithDataUrl }));
+
+    subscribePublishPlaceMessageTopic(node, pid, me, dispatch);
+
+    handleJoinPlaceProtocol(node, place, messages);
+
+    dispatch(push(`/places/${pid}`));
   });
 });
 
@@ -224,35 +220,28 @@ export const createNewPlace = createAsyncThunk<
 
     let swarmKey;
     if (isPrivate) {
-      // TODO
+      // TODO private swarm
       // const swarmKey = uuidv4()
       // p2pNodes.privateIpfsNodes[id] = await IPFS.create({})
     }
 
-    const id = uuidv4();
+    const pid = uuidv4();
 
-    const nid = await ipfsNode().id();
+    // build a invitation url
+    const invitationUrl = await buildInvitationUrl(ipfsNode(), pid);
 
     const cid = file.cid.toBaseEncodedString();
 
-    // TODO
-    const invitationUrl = new URL(`https://localhost:3000`);
-    invitationUrl.searchParams.append('pid', id);
-    nid.addresses.map((addr) => {
-      invitationUrl.searchParams.append('addrs', addr.toString());
-    });
-    invitationUrl.searchParams.append('pubKey', nid.publicKey);
-
-    const dataURL = await readAsDataURL(avatarImage);
-
     const timestamp = getUnixTime(new Date());
+    const dataUrl = await readAsDataURL(avatarImage);
+
     const place = {
-      id,
+      id: pid,
       name,
       description,
-      avatarImage: dataURL,
+      avatarImage: dataUrl,
       avatarImageCID: cid,
-      lastActedAt: timestamp,
+      timestamp: timestamp,
       createdAt: timestamp,
       messageIds: [],
       swarmKey: swarmKey || undefined,
@@ -264,12 +253,12 @@ export const createNewPlace = createAsyncThunk<
     dispatch(
       ipfsContentAdded({
         cid,
-        dataURL,
+        dataUrl,
         file: avatarImage,
       })
     );
 
-    dispatch(push(`/places/${id}`));
+    dispatch(push(`/places/${pid}`));
   }
 );
 
@@ -283,6 +272,74 @@ const readAsDataURL = (file: File) => {
     };
     reader.readAsDataURL(file);
   });
+};
+
+const getIpfsContentFile = async (cid: string) => {
+  for await (const entry of ipfsNode().get(cid)) {
+    if (entry.type === 'dir' || !entry.content) continue;
+    const blob = new Blob([uint8ArrayConcat(await all(entry.content!))], {
+      type: 'application/octet-binary',
+    });
+    const file = new File([blob], entry.path);
+    return file;
+  }
+};
+
+const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
+  const file = await getIpfsContentFile(cid);
+  if (!file) return;
+
+  const dataUrl = await readAsDataURL(file);
+  dispatch(
+    ipfsContentAdded({
+      cid,
+      dataUrl,
+      file,
+    })
+  );
+  return dataUrl;
+};
+
+const handleJoinPlaceProtocol = (
+  node: Ipfs,
+  place: Place,
+  messages: Message[]
+) => {
+  // @ts-ignore
+  node.libp2p.handle(
+    joinPlaceProtocol(place.id),
+    // @ts-ignore
+    ({ stream, connection }) => {
+      // TODO(kyfk): validate a peer id is the same being invited.
+      // const peerId = connection.remotePeer.toB58String();
+
+      const { invitationUrl, avatarImage, ...omittedPlace } = place;
+
+      pipe(
+        [
+          JSON.stringify({
+            messages: messages.map((m) => {
+              const { contentUrl, ...messageOmitted } = m;
+              return messageOmitted;
+            }),
+            place: omittedPlace,
+          }),
+        ],
+        stream
+      );
+    }
+  );
+};
+
+const buildInvitationUrl = async (node: Ipfs, pid: string) => {
+  const nid = await node.id();
+  const invitationUrl = new URL(`https://localhost:3000`);
+  invitationUrl.searchParams.append('pid', pid);
+  nid.addresses.map((addr) => {
+    invitationUrl.searchParams.append('addrs', addr.toString());
+  });
+  invitationUrl.searchParams.append('pubKey', nid.publicKey);
+  return invitationUrl;
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
