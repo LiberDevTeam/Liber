@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { Button } from '~/components/atoms/button';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
-import { Place, Message } from '~/state/ducks/place/placeSlice';
+import { Place } from '~/state/ducks/places/placesSlice';
+import { Message } from '~/state/ducks/places/messagesSlice';
 
 const Root = styled.div`
   display: flex;
@@ -85,8 +86,8 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
           {messages.map((m) => (
             <MessageView
               key={m.id}
-              uid={m.uid}
-              timestamp={m.timestamp}
+              authorId={m.authorId}
+              timestamp={m.postedAt}
               text={m.text}
             />
           ))}

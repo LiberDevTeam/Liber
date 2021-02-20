@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
-import { Place } from '~/state/ducks/place/placeSlice';
 
 export type Me = {
   id: string;

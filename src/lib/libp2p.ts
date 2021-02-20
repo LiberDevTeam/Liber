@@ -18,7 +18,6 @@ export const publicLibp2pOptions = {
     streamMuxer: [MPLEX],
     connEncryption: [NOISE],
     peerDiscovery: [Bootstrap],
-    // dht: KadDHT,
     pubsub: Gossipsub,
   },
   addresses: {
@@ -59,16 +58,6 @@ export const publicLibp2pOptions = {
     },
   },
   config: {
-    dht: {
-      enabled: false,
-      kBucketSize: 20,
-      randomWalk: {
-        enabled: false, // disabled waiting for https://github.com/libp2p/js-libp2p-kad-dht/issues/86
-        queriesPerPeriod: 1,
-        interval: 300e3,
-        timeout: 10e3,
-      },
-    },
     nat: {
       enabled: true,
       ttl: 7200,
@@ -89,6 +78,9 @@ export const publicLibp2pOptions = {
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa',
           '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt',
+          '/dns4/ams-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd',
+          '/dns4/lon-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLMeWqB7YGVLJN3pNLQpmmEk35v6wYtsMGLzSr5QBU3',
+          '/dns4/sfo-3.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLPppuBtQSGwKDZT2M73ULpjvfd3aZ6ha4oFGL1KrGM',
         ],
       },
     },

@@ -7,11 +7,12 @@ import { getUnixTime } from 'date-fns';
 const id = '1';
 const place: PlaceItem = {
   id,
-  title: 'We Love FC Barcelona!!',
+  name: 'We Love FC Barcelona!!',
   avatarImage: `https://i.pravatar.cc/60?u=${id}`,
   description:
     'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
   timestamp: getUnixTime(new Date()),
+  invitationUrl: 'https://liber.live',
 };
 
 export default {

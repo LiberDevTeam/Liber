@@ -11,7 +11,7 @@ const Template: Story<MessageViewProps> = (args) => <MessageView {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  uid: 'C7140B81',
+  authorId: 'C7140B81',
   text: 'それはpornスター。サッカーやない',
   timestamp: 1612204980858,
 };

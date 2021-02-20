@@ -1,7 +1,8 @@
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 
 const activeClassName = 'selected-place';
 
@@ -31,13 +32,14 @@ const LeftContainer = styled.div`
   position: relative;
   padding: ${(props) => props.theme.space[1]}px;
 `;
-// TODO: use image
-const Image = styled.div`
+
+const Image = styled.img`
   width: 100%;
   height: 100%;
   background: ${(props) => props.theme.colors.bg2};
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
+
 const Status = styled.div`
   width: 12px;
   height: 12px;
@@ -77,8 +79,9 @@ const Time = styled.div`
 
 export type PlaceItem = {
   id: string;
-  title: string;
+  name: string;
   avatarImage: string;
+  invitationUrl: string;
   description: string;
   timestamp: number;
 };
@@ -94,15 +97,22 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
       return formatDistanceToNowStrict(date, { addSuffix: true });
     }, [place.timestamp]);
 
+    const [open, setOpen] = useState(true);
+
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
         <LeftContainer>
-          <Image />
+          <Image src={place.avatarImage} />
           <Status />
         </LeftContainer>
         <RightContainer>
-          <Title>{place.title}</Title>
+          <Title>{place.name}</Title>
           <Description>{place.description}</Description>
+          <SharePlaceDialog
+            open={open}
+            url={place.invitationUrl}
+            onClose={() => setOpen(false)}
+          />
           <Time>{dispTime}</Time>
         </RightContainer>
       </Root>
