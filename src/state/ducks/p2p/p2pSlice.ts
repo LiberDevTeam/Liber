@@ -6,12 +6,11 @@ import uint8ArrayToString from 'uint8arrays/to-string';
 import uint8ArrayFromString from 'uint8arrays/from-string';
 import {
   Place,
-  placeAdded,
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessages,
 } from '../places/placesSlice';
-import { Message, placeMessageAdded } from '../places/messagesSlice';
+import { Message } from '../places/messagesSlice';
 import { push } from 'connected-react-router';
 import { createFromPubKey } from 'peer-id';
 import multiaddr from 'multiaddr';
@@ -22,6 +21,7 @@ import all from 'it-all';
 import uint8ArrayConcat from 'uint8arrays/concat';
 import { ipfsContentAdded } from './ipfsContentsSlice';
 import { Me } from '../me/meSlice';
+import { placeMessageAdded, placeAdded } from '~/state/actionCreater';
 
 const publishPlaceMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/messages/publish/1.0.0`;

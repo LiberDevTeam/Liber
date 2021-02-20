@@ -1,9 +1,5 @@
-import {
-  createSlice,
-  PayloadAction,
-  createEntityAdapter,
-} from '@reduxjs/toolkit';
-import { Place, placeAdded } from './placesSlice';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { placeAdded, placeMessageAdded } from '~/state/actionCreater';
 
 export type Message = {
   id: string; // UUID
@@ -22,22 +18,19 @@ const messagesAdapter = createEntityAdapter<Message>({
 export const messagesSlice = createSlice({
   name: 'placeMessages',
   initialState: messagesAdapter.getInitialState(),
-  reducers: {
-    placeMessageAdded: (
-      state,
-      action: PayloadAction<{ pid: string; message: Message }>
-    ) => {
-      messagesAdapter.addOne(state, action.payload.message);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(placeAdded, (state, action) => {
-      messagesAdapter.upsertMany(state, action.payload.messages);
-    });
+    builder
+      .addCase(placeAdded, (state, action) => {
+        messagesAdapter.upsertMany(state, action.payload.messages);
+      })
+      .addCase(placeMessageAdded, (state, action) => {
+        messagesAdapter.addOne(state, action.payload.message);
+      });
   },
 });
 
-export const { placeMessageAdded } = messagesSlice.actions;
+// export const { } = messagesSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

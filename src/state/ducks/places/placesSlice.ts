@@ -1,10 +1,7 @@
-import {
-  createSlice,
-  createEntityAdapter,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { placeMessageAdded, placeAdded } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
-import { Message, placeMessageAdded, selectMessageById } from './messagesSlice';
+import { Message, selectMessageById } from './messagesSlice';
 
 export type Place = {
   id: string;
@@ -26,27 +23,24 @@ const placesAdapter = createEntityAdapter<Place>({
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
-  reducers: {
-    placeAdded: (
-      state,
-      action: PayloadAction<{ place: Place; messages: Message[] }>
-    ) => {
-      const { place, messages } = action.payload;
-      place.messageIds = messages.map((m) => m.id);
-      placesAdapter.addOne(state, place);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(placeMessageAdded, (state, action) => {
-      const { pid, message } = action.payload;
-      const place = { ...state.entities[pid] };
-      place.messageIds = [...place.messageIds, message.id];
-      placesAdapter.updateOne(state, { id: pid, changes: place });
-    });
+    builder
+      .addCase(placeMessageAdded, (state, action) => {
+        const { pid, message } = action.payload;
+        const place = { ...state.entities[pid] };
+        place.messageIds = [...place.messageIds, message.id];
+        placesAdapter.updateOne(state, { id: pid, changes: place });
+      })
+      .addCase(placeAdded, (state, action) => {
+        const { place, messages } = action.payload;
+        place.messageIds = messages.map((m) => m.id);
+        placesAdapter.addOne(state, place);
+      });
   },
 });
 
-export const { placeAdded } = placesSlice.actions;
+// export const { } = placesSlice.actions;
 
 const selectors = placesAdapter.getSelectors();
 export const selectPlaceById = (id: string) => (state: RootState) =>
