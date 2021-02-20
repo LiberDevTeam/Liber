@@ -6,10 +6,10 @@ const activeClassName = 'selected';
 const StyledNavLink = styled(NavLink)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 60px;
   height: 60px;
-  padding: ${(props) => props.theme.space[3]}px;
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.sm};
   text-decoration: none;

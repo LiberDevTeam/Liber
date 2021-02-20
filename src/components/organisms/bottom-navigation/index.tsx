@@ -9,9 +9,11 @@ import styled from 'styled-components';
 
 const Root = styled.div`
   display: flex;
-  padding: ${(props) => props.theme.space[3]}px;
   justify-content: space-around;
+  align-items: center;
   width: 100%;
+  height: 100%;
+  overflow-y: hidden;
 `;
 
 export const BottomNavigation: React.FC = React.memo(
