@@ -1,11 +1,16 @@
+import {
+  AddCircle as AttacheFileIcon,
+  Send as SendIcon,
+} from '@material-ui/icons';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button } from '~/components/atoms/button';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
-import { Place } from '~/state/ducks/places/placesSlice';
 import { Message } from '~/state/ducks/places/messagesSlice';
+import { Place } from '~/state/ducks/places/placesSlice';
+import { IconButton } from '../../atoms/icon-button';
+import * as Yup from 'yup';
 
 const Root = styled.div`
   display: flex;
@@ -21,6 +26,16 @@ const Title = styled.h2`
   color: ${(props) => props.theme.colors.primaryText};
   font-size: ${(props) => props.theme.fontSizes.lg};
   font-weight: ${(props) => props.theme.fontWeights.medium};
+`;
+
+const InputFile = styled.input`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  width: 100%;
 `;
 
 const Description = styled.div`
@@ -39,6 +54,29 @@ const Messages = styled.div`
   }
 `;
 
+const UploadFileButtonGroup = styled.div`
+  position: relative;
+  &:active {
+    opacity: 0.8;
+  }
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  color: ${(props) => props.theme.colors.primary};
+  margin-left: ${(props) => props.theme.space[2]}px;
+
+  & > svg {
+    font-size: ${(props) => props.theme.fontSizes['4xl']};
+  }
+
+  &:disabled {
+    color: ${(props) => props.theme.colors.disabled};
+  }
+`;
+
 const Footer = styled.footer`
   display: flex;
   position: relative;
@@ -53,6 +91,10 @@ const Form = styled.form`
   display: contents;
 `;
 
+const validationSchema = Yup.object().shape({
+  text: Yup.string().required(),
+});
+
 export interface FormValues {
   text: string;
 }
@@ -60,20 +102,33 @@ export interface FormValues {
 export type PlaceDetailColumnProps = {
   place: Place;
   messages: Message[];
-  onSubmit: (text: string) => void;
+  onSubmit: (values: { text: string; file?: File }) => void;
 };
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place, messages, onSubmit }) {
+    const [files, setFiles] = useState<File[]>([]);
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
       },
+      validationSchema,
+      validateOnMount: true,
       async onSubmit({ text }) {
-        onSubmit(text);
+        // TODO: support multiple files
+        onSubmit({ text, file: files[0] });
         formik.resetForm();
+        formik.validateForm();
       },
     });
+
+    const handleAttacheFile = async (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      if (e.currentTarget.files && e.currentTarget.files[0]) {
+        setFiles([e.currentTarget.files[0]]);
+      }
+    };
 
     return (
       <Root>
@@ -102,12 +157,25 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
             />
-            <Button
-              text="Send"
-              shape="square"
-              variant="solid"
+            <UploadFileButtonGroup>
+              <StyledIconButton
+                icon={<AttacheFileIcon />}
+                title="Attache file"
+                disabled={formik.isSubmitting}
+                type="button"
+              />
+              <InputFile
+                name="avatarImage"
+                type="file"
+                accept="image/*"
+                onChange={handleAttacheFile}
+              />
+            </UploadFileButtonGroup>
+            <StyledIconButton
+              icon={<SendIcon />}
+              title="Send"
               type="submit"
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || formik.isValid === false}
             />
           </Form>
         </Footer>

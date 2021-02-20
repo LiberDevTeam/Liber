@@ -52,10 +52,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
             {name}
           </UserName>
           <Timestamp>
-            {format(
-              fromUnixTime(Math.round(timestamp / 1000)),
-              'yyyy-MM-dd HH:mm:ss'
-            )}
+            {format(fromUnixTime(timestamp), 'yyyy-MM-dd HH:mm:ss')}
           </Timestamp>
         </MessageHead>
         <Body>{text}</Body>
