@@ -8,8 +8,8 @@ const StyledNavLink = styled(NavLink)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 60px;
-  height: 60px;
+  width: 100%;
+  height: 100%;
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.sm};
   text-decoration: none;
