@@ -49,7 +49,9 @@ const Main = styled.main`
 `;
 
 const BaseLayout: React.FC = ({ children }) => {
-  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
+  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`, {
+    noSsr: true,
+  });
 
   return isMobile ? (
     <SpRoot>
