@@ -28,6 +28,7 @@ const Root = styled.div`
 
 const SpHeader = styled.header`
   width: 100%;
+  flex-basis: 80px;
   order: 2;
   bottom: 0;
   overflow: auto;
