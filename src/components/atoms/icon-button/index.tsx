@@ -16,7 +16,9 @@ const Root = styled.button`
   }
 
   &:active {
-    opacity: 0.6;
+    svg {
+      opacity: 0.6;
+    }
   }
 
   &:hover {
