@@ -1,9 +1,8 @@
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 import React, { useMemo, useState } from 'react';
-import { useStore } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { SharePlaceDialog } from '../share-place-dialog';
+import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 
 const activeClassName = 'selected-place';
 

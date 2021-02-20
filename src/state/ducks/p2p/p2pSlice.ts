@@ -9,8 +9,8 @@ import {
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessages,
-} from '../places/placesSlice';
-import { Message } from '../places/messagesSlice';
+} from '~/state/ducks/places/placesSlice';
+import { Message } from '~/state/ducks/places/messagesSlice';
 import { push } from 'connected-react-router';
 import { createFromPubKey } from 'peer-id';
 import multiaddr from 'multiaddr';
@@ -19,8 +19,8 @@ import { v4 as uuidv4 } from 'uuid';
 import getUnixTime from 'date-fns/getUnixTime';
 import all from 'it-all';
 import uint8ArrayConcat from 'uint8arrays/concat';
-import { ipfsContentAdded } from './ipfsContentsSlice';
-import { Me } from '../me/meSlice';
+import { ipfsContentAdded } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { Me } from '~/state/ducks/me/meSlice';
 import { placeMessageAdded, placeAdded } from '~/state/actionCreater';
 
 const publishPlaceMessageTopic = (pid: string) => {
