@@ -54,7 +54,7 @@ export const initNodes = createAsyncThunk<
     libp2p: publicLibp2pOptions,
   });
 
-  selectAllPlaces(state).forEach(async (place) => {
+  selectAllPlaces(state).forEach((place) => {
     if (place.swarmKey) {
       // TODO
       // p2pNodes.privateIpfsNodes[pid] = IPFS.create({});
@@ -99,6 +99,8 @@ export const publishPlaceMessage = createAsyncThunk<
   const { dispatch } = thunkAPI;
   const state = thunkAPI.getState();
 
+  const msg = { ...message };
+
   if (file) {
     const content = await ipfsNode().add({
       path: file.name,
@@ -113,8 +115,8 @@ export const publishPlaceMessage = createAsyncThunk<
         file,
       })
     );
-    message.contentIpfsCID = cid;
-    message.contentUrl = dataUrl;
+    msg.contentIpfsCID = cid;
+    msg.contentUrl = dataUrl;
   }
 
   (selectPlaceById(pid)(state)?.swarmKey
@@ -122,11 +124,11 @@ export const publishPlaceMessage = createAsyncThunk<
     : ipfsNode()
   )?.pubsub.publish(
     publishPlaceMessageTopic(pid),
-    uint8ArrayFromString(JSON.stringify(message)),
+    uint8ArrayFromString(JSON.stringify(msg)),
     {}
   );
 
-  dispatch(placeMessageAdded({ pid, message }));
+  dispatch(placeMessageAdded({ pid, message: msg }));
 });
 
 export const joinPlace = createAsyncThunk<
