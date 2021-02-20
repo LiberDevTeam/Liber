@@ -46,11 +46,11 @@ const Root = styled.button<RootProps>`
 `;
 
 const IconWrapper = styled.span`
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin-right: ${(props) => props.theme.space[2]}px;
   & > svg {
-    font-size: ${(props) => props.theme.fontSizes.lg};
+    font-size: ${(props) => props.theme.fontSizes.xl};
   }
 `;
 

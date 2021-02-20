@@ -64,18 +64,6 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
         <SideNavLink exact icon={<SettingsIcon />} to="/settings">
           Settings
         </SideNavLink>
-        <SideNavLink exact icon={<OtherIcon />} to="/privacy-policy">
-          Privacy Policy
-        </SideNavLink>
-        <SideNavLink exact icon={<OtherIcon />} to="/terms-of-service">
-          Terms of Service
-        </SideNavLink>
-        <SideNavLink exact icon={<OtherIcon />} to="/license">
-          License
-        </SideNavLink>
-        <SideNavLink exact icon={<ContactIcon />} to="/contact-us">
-          Contact Us
-        </SideNavLink>
       </LinkGroup>
 
       <LinkGroup>

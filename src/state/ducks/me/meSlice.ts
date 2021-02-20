@@ -9,9 +9,10 @@ export type Me = {
 
 export type MeState = Me;
 
+const id = uuidv4();
 const initialState: MeState = {
-  id: uuidv4(),
-  username: 'username',
+  id,
+  username: id, // Use id as default username.
 };
 
 export const meSlice = createSlice({
