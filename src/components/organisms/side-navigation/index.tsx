@@ -7,20 +7,25 @@ import {
   Settings as SettingsIcon,
   Notes as OtherIcon,
   ContactMail as ContactIcon,
-  AccessTime as LiberIcon,
 } from '@material-ui/icons';
 import styled from 'styled-components';
+import liberLogo from '~/logo.svg';
+import logoText from '~/logo-text.png';
 
 const Root = styled.div`
   width: 244px;
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
-// TODO: これは差し替える
 const AppName = styled.div`
-  font-size: 30px;
   display: flex;
   align-items: center;
+  padding: ${(props) => props.theme.space[4]}px;
+`;
+
+const LogoIcon = styled.img`
+  filter: drop-shadow(0px 3px 11px rgba(46, 121, 246, 0.4));
+  margin-right: ${(props) => props.theme.space[4]}px;
 `;
 
 const LinkGroup = styled.div`
@@ -42,8 +47,8 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
   return (
     <Root>
       <AppName>
-        <LiberIcon fontSize="inherit" style={{ marginRight: '8' }} />
-        Liber
+        <LogoIcon src={liberLogo} alt="Liber logo" />
+        <img src={logoText} alt="Liber logo" height={24} />
       </AppName>
 
       <LinkGroup>
