@@ -1,6 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react/types-6-0';
-import { PlaceList, PlaceListProps } from '.';
+import { PlaceListColumn, PlaceListColumnProps } from '.';
 import { PlaceItem } from '~/components/molecules/place-list-item';
 import { add, getUnixTime, sub } from 'date-fns';
 
@@ -20,12 +20,14 @@ const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
 });
 
 export default {
-  component: PlaceList,
-  title: 'organisms/PlaceList',
+  component: PlaceListColumn,
+  title: 'organisms/PlaceListColumn',
   args: {
     placeList,
   },
 };
 
-const Template: Story<PlaceListProps> = (args) => <PlaceList {...args} />;
+const Template: Story<PlaceListColumnProps> = (args) => (
+  <PlaceListColumn {...args} />
+);
 export const Default = Template.bind({});

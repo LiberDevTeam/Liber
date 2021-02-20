@@ -1,14 +1,13 @@
-import { Search as SearchIcon } from '@material-ui/icons';
+import { useMediaQuery } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import { Input } from '~/components/atoms/input';
-import { PageTitle } from '~/components/atoms/page-title';
+import { theme } from '~/theme';
 import { PlaceItem } from '~/components/molecules/place-list-item';
-import { PlaceDetail } from '~/components/organisms/place-detail';
-import { PlaceList } from '~/components/organisms/place-list';
+import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
+import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { publishMessage } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
@@ -22,23 +21,24 @@ import {
 const PAGE_TITLE = 'Places';
 
 const Root = styled.div`
+  display: flex;
+  width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: 360px auto;
-  grid-gap: ${(props) => props.theme.space[8]}px;
 `;
 
-const LeftContainer = styled.div`
+const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border-right: 3px solid ${(props) => props.theme.colors.border};
-  padding-right: ${(props) => props.theme.space[2]}px;
+  flex-basis: ${(props) => props.theme.breakpoints.xs};
+  margin: ${(props) => props.theme.space[2]}px;
   overflow: hidden;
-`;
-
-const SearchBox = styled.div`
-  margin-top: ${(props) => props.theme.space[8]}px;
-  padding-right: ${(props) => props.theme.space[6]}px;
+  & + * {
+    padding-left: ${(props) => props.theme.space[4]}px;
+    border-left: 3px solid ${(props) => props.theme.colors.border};
+  }
+  &:last-child {
+    flex-grow: 1;
+  }
 `;
 
 export const Places: React.FC = React.memo(function Places() {
@@ -66,25 +66,27 @@ export const Places: React.FC = React.memo(function Places() {
       };
       dispatch(publishMessage({ pid, message }));
     },
-    [dispatch, places, pid]
+    [dispatch, pid, me.id]
   );
+
+  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
 
   return (
     <BaseLayout>
       <Root>
-        <LeftContainer>
-          <PageTitle>{PAGE_TITLE}</PageTitle>
-          <SearchBox>
-            <Input icon={<SearchIcon />} />
-          </SearchBox>
-          <PlaceList placeList={placeList} />
-        </LeftContainer>
+        {!(isMobile && place) && (
+          <ListContainer>
+            <PlaceListColumn title={PAGE_TITLE} placeList={placeList} />
+          </ListContainer>
+        )}
         {place && (
-          <PlaceDetail
-            place={place}
-            onSubmit={handleSubmit}
-            messages={messages}
-          />
+          <ListContainer>
+            <PlaceDetailColumn
+              place={place}
+              onSubmit={handleSubmit}
+              messages={messages}
+            />
+          </ListContainer>
         )}
       </Root>
     </BaseLayout>

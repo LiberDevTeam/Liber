@@ -83,12 +83,12 @@ export type PlaceItem = {
   timestamp: number;
 };
 
-export interface PlaceListItemProps {
+export interface PlaceListColumnItemProps {
   place: PlaceItem;
 }
 
-export const PlaceListItem: React.FC<PlaceListItemProps> = React.memo(
-  function PlaceListItem({ place }) {
+export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
+  function PlaceListColumnItem({ place }) {
     const dispTime = useMemo(() => {
       const date = fromUnixTime(place.timestamp);
       return formatDistanceToNowStrict(date, { addSuffix: true });
