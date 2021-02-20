@@ -35,7 +35,6 @@ const ListContainer = styled.div`
   margin: ${(props) => props.theme.space[2]}px;
   overflow: hidden;
   & + * {
-    padding-left: ${(props) => props.theme.space[4]}px;
     border-left: 3px solid ${(props) => props.theme.colors.border};
   }
   &:last-child {

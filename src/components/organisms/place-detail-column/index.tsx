@@ -5,12 +5,14 @@ import {
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import * as Yup from 'yup';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
+import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 import { Message } from '~/state/ducks/places/messagesSlice';
 import { Place } from '~/state/ducks/places/placesSlice';
 import { IconButton } from '../../atoms/icon-button';
-import * as Yup from 'yup';
+import { PlaceDetailHeader } from '../../molecules/place-detail-header';
 
 const Root = styled.div`
   display: flex;
@@ -18,14 +20,6 @@ const Root = styled.div`
   flex-flow: column;
   justify-content: space-between;
   overflow: hidden;
-`;
-
-const Header = styled.header``;
-
-const Title = styled.h2`
-  color: ${(props) => props.theme.colors.primaryText};
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
 `;
 
 const InputFile = styled.input`
@@ -38,18 +32,11 @@ const InputFile = styled.input`
   width: 100%;
 `;
 
-const Description = styled.div`
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.md};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  word-break: break-all;
-  margin-top: ${(props) => props.theme.space[4]}px;
-`;
-
 const Messages = styled.div`
   flex-grow: 1;
   overflow-y: auto;
   & > * {
+    margin-left: ${(props) => props.theme.space[6]}px;
     margin-top: ${(props) => props.theme.space[6]}px;
   }
 `;
@@ -83,8 +70,8 @@ const Footer = styled.footer`
   bottom: 0;
   align-items: center;
   justify-content: space-between;
-  padding: ${(props) => props.theme.space[1]}px;
-  padding-top: ${(props) => props.theme.space[5]}px;
+  padding: ${(props) => props.theme.space[4]}px;
+  padding-bottom: ${(props) => props.theme.space[1]}px;
 `;
 
 const Form = styled.form`
@@ -108,6 +95,7 @@ export type PlaceDetailColumnProps = {
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place, messages, onSubmit }) {
     const [files, setFiles] = useState<File[]>([]);
+    const [open, setOpen] = useState(false);
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
@@ -131,55 +119,62 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
     };
 
     return (
-      <Root>
-        <Header>
-          <Title>{place.name}</Title>
-          <Description>{place.description}</Description>
-        </Header>
+      <>
+        <Root>
+          <PlaceDetailHeader
+            place={place}
+            onInviteClick={() => setOpen(true)}
+          />
 
-        <Messages>
-          {messages.map((m) => (
-            <MessageView
-              key={m.id}
-              authorId={m.authorId}
-              timestamp={m.postedAt}
-              text={m.text}
-            />
-          ))}
-        </Messages>
+          <Messages>
+            {messages.map((m) => (
+              <MessageView
+                key={m.id}
+                authorId={m.authorId}
+                timestamp={m.postedAt}
+                text={m.text}
+              />
+            ))}
+          </Messages>
 
-        <Footer>
-          <Form onSubmit={formik.handleSubmit}>
-            <Input
-              name="text"
-              placeholder="Message..."
-              value={formik.values.text}
-              onChange={formik.handleChange}
-              disabled={formik.isSubmitting}
-            />
-            <UploadFileButtonGroup>
-              <StyledIconButton
-                icon={<AttacheFileIcon />}
-                title="Attache file"
+          <Footer>
+            <Form onSubmit={formik.handleSubmit}>
+              <Input
+                name="text"
+                placeholder="Message..."
+                value={formik.values.text}
+                onChange={formik.handleChange}
                 disabled={formik.isSubmitting}
-                type="button"
               />
-              <InputFile
-                name="avatarImage"
-                type="file"
-                accept="image/*"
-                onChange={handleAttacheFile}
+              <UploadFileButtonGroup>
+                <StyledIconButton
+                  icon={<AttacheFileIcon />}
+                  title="Attache file"
+                  disabled={formik.isSubmitting}
+                  type="button"
+                />
+                <InputFile
+                  name="avatarImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAttacheFile}
+                />
+              </UploadFileButtonGroup>
+              <StyledIconButton
+                icon={<SendIcon />}
+                title="Send"
+                type="submit"
+                disabled={formik.isSubmitting || formik.isValid === false}
               />
-            </UploadFileButtonGroup>
-            <StyledIconButton
-              icon={<SendIcon />}
-              title="Send"
-              type="submit"
-              disabled={formik.isSubmitting || formik.isValid === false}
-            />
-          </Form>
-        </Footer>
-      </Root>
+            </Form>
+          </Footer>
+        </Root>
+        <SharePlaceDialog
+          open={open}
+          url={place.invitationUrl}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   }
 );

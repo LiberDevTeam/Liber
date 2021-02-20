@@ -1,8 +1,7 @@
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 
 const activeClassName = 'selected-place';
 
@@ -97,8 +96,6 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
       return formatDistanceToNowStrict(date, { addSuffix: true });
     }, [place.timestamp]);
 
-    const [open, setOpen] = useState(true);
-
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
         <LeftContainer>
@@ -108,11 +105,6 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
         <RightContainer>
           <Title>{place.name}</Title>
           <Description>{place.description}</Description>
-          <SharePlaceDialog
-            open={open}
-            url={place.invitationUrl}
-            onClose={() => setOpen(false)}
-          />
           <Time>{dispTime}</Time>
         </RightContainer>
       </Root>
