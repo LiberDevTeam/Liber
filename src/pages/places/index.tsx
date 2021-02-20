@@ -55,7 +55,7 @@ export const Places: React.FC = React.memo(function Places() {
   const messages = useSelector(selectPlaceMessagesByPID(pid));
 
   const handleSubmit = useCallback(
-    (text: string) => {
+    ({ text, file }: { text: string; file?: File }) => {
       const message = {
         id: uuidv4(),
         authorId: me.id,
@@ -63,7 +63,7 @@ export const Places: React.FC = React.memo(function Places() {
         text,
         postedAt: getUnixTime(new Date()),
       };
-      dispatch(publishPlaceMessage({ pid, message }));
+      dispatch(publishPlaceMessage({ pid, message, file }));
     },
     [dispatch, pid, me.id, me.username]
   );

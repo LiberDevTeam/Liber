@@ -38,6 +38,7 @@ const colors = {
   lightText: '#fcfdfe',
   lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
+  disabled: '#dedede',
   bg: '#fcfdfe',
   bg2: '#f0f5fa',
   bg3: '#f3f3f3',

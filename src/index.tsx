@@ -9,6 +9,9 @@ import { persistor } from '~/state/store';
 import { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyles } from './theme';
 import { Normalize } from 'styled-normalize';
+import ReactModal from 'react-modal';
+
+ReactModal.setAppElement('#root');
 
 ReactDOM.render(
   <React.StrictMode>

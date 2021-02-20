@@ -16,6 +16,10 @@ const Root = styled.button`
   }
 
   &:active {
+    opacity: 0.6;
+  }
+
+  &:hover {
     opacity: 0.8;
   }
 `;

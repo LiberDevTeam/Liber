@@ -33,7 +33,7 @@ const List = styled.div`
   flex: 1;
   margin-top: ${(props) => props.theme.space[8]}px;
   padding: ${(props) => props.theme.space[1]}px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   & > div {
     margin-bottom: ${(props) => props.theme.space[4]}px;
