@@ -8,6 +8,7 @@ import { Places } from './pages/places';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
 import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
+import { SettingsPage } from './pages/settings';
 
 type QueryParams = {
   pid?: string;
@@ -41,6 +42,7 @@ export const Routes: React.FC = () => (
       <Route exact path="/" render={() => <IndexPage />} />
       <Route exact path="/places/new" render={() => <NewPlace />} />
       <Route path="/places/:pid?/:swarmKey?" render={() => <Places />} />
+      <Route exact path="/settings" render={() => <SettingsPage />} />
       <Route render={() => <NotFoundPage />} />
     </Switch>
   </ConnectedRouter>
