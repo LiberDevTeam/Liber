@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-type ButtonVariant = 'solid' | 'outline';
+type ButtonVariant = 'solid' | 'outline' | 'text';
 
 interface RootProps {
   rounded: boolean;
@@ -32,17 +32,30 @@ const Root = styled.button<RootProps>`
     outline: none;
   }
 
-  &:active {
+  &:hover {
     opacity: 0.8;
   }
 
+  &:active {
+    opacity: 0.6;
+  }
+
   // solid
-  ${(props) =>
-    props.variant === 'solid' &&
-    css`
-      color: ${props.theme.colors.lightText};
-      background: ${props.theme.colors.primary};
-    `}
+  ${(props) => {
+    switch (props.variant) {
+      case 'solid':
+        return css`
+          color: ${props.theme.colors.lightText};
+          background: ${props.theme.colors.primary};
+        `;
+
+      case 'text':
+        return css`
+          border: none;
+          background: none;
+        `;
+    }
+  }}
 `;
 
 const IconWrapper = styled.span`

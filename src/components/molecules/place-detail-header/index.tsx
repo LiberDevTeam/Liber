@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Place } from '~/state/ducks/places/placesSlice';
 import styled from 'styled-components';
-import { PersonAdd as AddUserIcon } from '@material-ui/icons';
+import {
+  PersonAdd as AddUserIcon,
+  MoreVert as MenuIcon,
+  ExitToApp as LeaveIcon,
+} from '@material-ui/icons';
 import { IconButton } from '../../atoms/icon-button';
+import Dropdown from 'rc-dropdown';
+import { Button } from '~/components/atoms/button';
+import 'rc-dropdown/assets/index.css';
 
 const Root = styled.header`
   padding: ${(props) => props.theme.space[6]}px;
@@ -22,6 +29,7 @@ const Avatar = styled.img`
 `;
 
 const Title = styled.h2`
+  flex: 1;
   color: ${(props) => props.theme.colors.primaryText};
   font-size: ${(props) => props.theme.fontSizes.lg};
   font-weight: ${(props) => props.theme.fontWeights.medium};
@@ -29,8 +37,9 @@ const Title = styled.h2`
 `;
 
 const Actions = styled.div`
-  position: absolute;
-  right: 0;
+  & > * {
+    margin-left: ${(props) => props.theme.space[4]}px;
+  }
 `;
 
 const Description = styled.div`
@@ -41,13 +50,30 @@ const Description = styled.div`
   margin-top: ${(props) => props.theme.space[4]}px;
 `;
 
+const Menu = styled.div`
+  min-width: 230px;
+  background: ${(props) => props.theme.colors.bg};
+  box-shadow: ${(props) => props.theme.shadows[1]};
+  border-radius: ${(props) => props.theme.radii.medium}px;
+  padding: ${(props) => props.theme.space[2]}px;
+`;
+
+const LeaveButton = styled(Button)`
+  color: ${(props) => props.theme.colors.red};
+  width: 100%;
+  justify-content: flex-start;
+`;
+
 export interface PlaceDetailHeaderProps {
   place: Place;
   onInviteClick: () => void;
+  onLeave: () => void;
 }
 
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
-  function PlaceDetailHeader({ place, onInviteClick }) {
+  function PlaceDetailHeader({ place, onInviteClick, onLeave }) {
+    const [openMenu, setOpenMenu] = useState(false);
+
     return (
       <Root>
         <TitleLine>
@@ -59,6 +85,28 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
               title="Invite people"
               onClick={onInviteClick}
             />
+
+            <Dropdown
+              visible={openMenu}
+              onVisibleChange={() => setOpenMenu(false)}
+              overlay={() => (
+                <Menu>
+                  <LeaveButton
+                    shape="square"
+                    variant="text"
+                    text="Leave Place"
+                    onClick={onLeave}
+                    icon={<LeaveIcon />}
+                  />
+                </Menu>
+              )}
+            >
+              <IconButton
+                icon={<MenuIcon fontSize="large" />}
+                title="Open menu"
+                onClick={() => setOpenMenu(!openMenu)}
+              />
+            </Dropdown>
           </Actions>
         </TitleLine>
         <Description>{place.description}</Description>

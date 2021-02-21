@@ -124,6 +124,9 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
           <PlaceDetailHeader
             place={place}
             onInviteClick={() => setOpen(true)}
+            onLeave={() => {
+              console.log('onLeave');
+            }}
           />
 
           <Messages>
