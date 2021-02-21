@@ -19,6 +19,8 @@ const Root = styled.button<RootProps>`
   font-weight: ${(props) => props.theme.fontWeights.light};
   font-size: ${(props) => props.theme.fontSizes.md};
 
+  cursor: pointer;
+
   background: ${(props) => props.theme.colors.bg};
   padding: 0px 20px;
 
