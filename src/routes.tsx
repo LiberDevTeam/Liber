@@ -42,7 +42,7 @@ export const Routes: React.FC = () => (
       <Route exact path="/" render={() => <IndexPage />} />
       <Route exact path="/places/new" render={() => <NewPlace />} />
       <Route path="/places/:pid?/:swarmKey?" render={() => <Places />} />
-      <Route exact path="/settings" render={() => <SettingsPage />} />
+      <Route path="/settings" render={() => <SettingsPage />} />
       <Route render={() => <NotFoundPage />} />
     </Switch>
   </ConnectedRouter>
