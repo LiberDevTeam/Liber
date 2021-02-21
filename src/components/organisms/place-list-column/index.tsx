@@ -26,6 +26,7 @@ const Button = styled.button`
 
 const SearchBox = styled.div`
   margin-top: ${(props) => props.theme.space[8]}px;
+  padding: ${(props) => props.theme.space[1]}px;
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
