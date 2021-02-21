@@ -25,14 +25,12 @@ const Button = styled.button`
 `;
 
 const SearchBox = styled.div`
-  margin-top: ${(props) => props.theme.space[8]}px;
-  padding: ${(props) => props.theme.space[1]}px;
   padding-right: ${(props) => props.theme.space[6]}px;
 `;
 
 const List = styled.div`
   flex: 1;
-  margin-top: ${(props) => props.theme.space[8]}px;
+  margin-top: ${(props) => props.theme.space[6]}px;
   padding: ${(props) => props.theme.space[1]}px;
   overflow-y: auto;
 
