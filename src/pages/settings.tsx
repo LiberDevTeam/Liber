@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import BaseLayout from '~/templates';
 import { PageTitle } from '~/components/atoms/page-title';
-import { Input } from '../components/atoms/input';
 import styled from 'styled-components';
 import { Button } from '../components/atoms/button';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,27 +10,13 @@ import {
   CloudUpload as ImportIcon,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { SettingSection } from '~/components/organisms/setting-section';
+import { TextFormWithSubmit } from '~/components/molecules/textform-with-submit';
 
 const PAGE_TITLE = 'Settings';
 
 const Contents = styled.div`
   padding-top: ${(props) => props.theme.space[9]}px;
-`;
-
-const UsernameInput = styled(Input)`
-  max-width: 256px;
-  margin-right: ${(props) => props.theme.space[4]}px;
-`;
-
-const InputLabel = styled.label`
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.md};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-`;
-
-const UserNameForm = styled.div`
-  display: flex;
-  margin-top: ${(props) => props.theme.space[4]}px;
 `;
 
 const BackupButtons = styled.div`
@@ -42,13 +27,6 @@ const BackupButtons = styled.div`
     max-width: 300px;
     margin-top: ${(props) => props.theme.space[3]}px;
   }
-`;
-
-const SectionLabel = styled.div`
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.md};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  margin-top: ${(props) => props.theme.space[12]}px;
 `;
 
 const Links = styled.div`
@@ -65,50 +43,47 @@ const Links = styled.div`
 
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
-  const [username, setUsername] = useState(me.username);
   const dispatch = useDispatch();
-  const handleUsernameChange = useCallback(() => {
+  const handleUsernameChange = (username: string) =>
     dispatch(updateUsername(username));
-  }, [dispatch, username]);
+  const handleExportBackup = useCallback(() => {
+    console.log('export');
+  }, []);
+  const handleImportBackup = useCallback(() => {
+    console.log('import');
+  }, []);
 
   return (
     <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
       <Contents>
-        <InputLabel htmlFor="username">Username</InputLabel>
-        <UserNameForm>
-          <UsernameInput
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.currentTarget.value)}
+        <SettingSection title="Username">
+          <TextFormWithSubmit
+            buttonName="Update"
+            defaultText={me.username}
+            onSubmit={handleUsernameChange}
           />
-          <Button
-            text="Update"
-            onClick={handleUsernameChange}
-            shape="rounded"
-            variant="outline"
-          />
-        </UserNameForm>
+        </SettingSection>
 
-        <SectionLabel>Backup</SectionLabel>
+        <SettingSection title="Backup">
+          <BackupButtons>
+            <Button
+              text="Create and download backup"
+              onClick={handleExportBackup}
+              shape="square"
+              variant="solid"
+              icon={<DownloadIcon />}
+            />
 
-        <BackupButtons>
-          <Button
-            text="Create and download backup"
-            onClick={handleUsernameChange}
-            shape="square"
-            variant="solid"
-            icon={<DownloadIcon />}
-          />
-
-          <Button
-            text="Import backup"
-            onClick={handleUsernameChange}
-            shape="square"
-            variant="outline"
-            icon={<ImportIcon />}
-          />
-        </BackupButtons>
+            <Button
+              text="Import backup"
+              onClick={handleImportBackup}
+              shape="square"
+              variant="outline"
+              icon={<ImportIcon />}
+            />
+          </BackupButtons>
+        </SettingSection>
 
         <Links>
           <Link to="/">Privacy Policy</Link>
