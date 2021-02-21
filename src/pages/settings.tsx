@@ -1,10 +1,15 @@
 import React, { useCallback } from 'react';
 import BaseLayout from '~/templates';
 import { PageTitle } from '~/components/atoms/page-title';
+import { ToggleSwitch } from '~/components/atoms/toggle-switch';
 import styled from 'styled-components';
 import { Button } from '../components/atoms/button';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMe, updateUsername } from '../state/ducks/me/meSlice';
+import {
+  selectMe,
+  updateUsername,
+  updateIsolationMode,
+} from '../state/ducks/me/meSlice';
 import {
   CloudDownload as DownloadIcon,
   CloudUpload as ImportIcon,
@@ -52,6 +57,8 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const handleImportBackup = useCallback(() => {
     console.log('import');
   }, []);
+  const handleChangeIsolation = (isIsolation: boolean) =>
+    dispatch(updateIsolationMode(isIsolation));
 
   return (
     <BaseLayout>
@@ -83,6 +90,16 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
               icon={<ImportIcon />}
             />
           </BackupButtons>
+        </SettingSection>
+
+        <SettingSection
+          title="Isolation mode"
+          description="If this mode is enabled, the application is isolated from everything of the Liber Search functionality."
+        >
+          <ToggleSwitch
+            checked={me.settings.isIsolation}
+            onChange={handleChangeIsolation}
+          />
         </SettingSection>
 
         <Links>
