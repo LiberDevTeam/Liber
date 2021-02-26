@@ -1,5 +1,9 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import { placeAdded, placeMessageAdded } from '~/state/actionCreater';
+import {
+  leftPlace,
+  placeAdded,
+  placeMessageAdded,
+} from '~/state/actionCreater';
 
 export type Message = {
   id: string; // UUID
@@ -26,7 +30,10 @@ export const messagesSlice = createSlice({
       })
       .addCase(placeMessageAdded, (state, action) => {
         messagesAdapter.addOne(state, action.payload.message);
-      });
+      })
+      .addCase(leftPlace, (state, action) =>
+        messagesAdapter.removeMany(state, action.payload.messageIds)
+      );
   },
 });
 
