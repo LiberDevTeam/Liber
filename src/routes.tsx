@@ -1,4 +1,4 @@
-import { ConnectedRouter, push } from 'connected-react-router';
+import { ConnectedRouter } from 'connected-react-router';
 import React, { useEffect } from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import IndexPage from './pages';
@@ -59,7 +59,7 @@ function Initializer() {
         await dispatch(joinPlace({ pubKey, pid, swarmKey, addrs }));
       }
     })();
-  }, [dispatch, pid, pubKey, addrs]);
+  }, [dispatch, pid, pubKey, addrs, swarmKey]);
 
   return null;
 }

@@ -42,6 +42,7 @@ const colors = {
   bg: '#fcfdfe',
   bg2: '#f0f5fa',
   bg3: '#f3f3f3',
+  bg4: '#c4c4c4',
   modalBg: '#00000077',
   border: '#f0f5fa',
   green: '#4eeb91',

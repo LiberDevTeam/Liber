@@ -2,9 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
 
+export type Settings = {
+  isIsolation: boolean;
+};
+
 export type Me = {
   id: string;
   username: string;
+  settings: Settings;
 };
 
 export type MeState = Me;
@@ -13,6 +18,9 @@ const id = uuidv4();
 const initialState: MeState = {
   id,
   username: id, // Use id as default username.
+  settings: {
+    isIsolation: false,
+  },
 };
 
 export const meSlice = createSlice({
@@ -22,10 +30,13 @@ export const meSlice = createSlice({
     updateUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
+    updateIsolationMode: (state, action: PayloadAction<boolean>) => {
+      state.settings.isIsolation = action.payload;
+    },
   },
 });
 
-export const { updateUsername } = meSlice.actions;
+export const { updateUsername, updateIsolationMode } = meSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
