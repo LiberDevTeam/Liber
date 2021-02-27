@@ -101,6 +101,7 @@
     "@storybook/preset-create-react-app": "^3.1.5",
     "@storybook/react": "^6.1.15",
     "@types/color-hash": "^1.0.0",
+    "@types/gtag.js": "^0.0.4",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.20",
     "@types/promise-retry": "^1.1.3",
