@@ -9,6 +9,7 @@ import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
 import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
 import { SettingsPage } from './pages/settings';
+import { TrackerProvider } from './state/contexts/tracker';
 
 type QueryParams = {
   pid?: string;
@@ -37,14 +38,16 @@ function useQuery<T extends { [K in keyof T]?: string | string[] }>(): T {
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
     <Initializer />
-    {/* your usual react-router-dom v4/v5 routing */}
-    <Switch>
-      <Route exact path="/" render={() => <IndexPage />} />
-      <Route exact path="/places/new" render={() => <NewPlace />} />
-      <Route path="/places/:pid?/:swarmKey?" render={() => <Places />} />
-      <Route exact path="/settings" render={() => <SettingsPage />} />
-      <Route render={() => <NotFoundPage />} />
-    </Switch>
+    <TrackerProvider>
+      {/* your usual react-router-dom v4/v5 routing */}
+      <Switch>
+        <Route exact path="/" render={() => <IndexPage />} />
+        <Route exact path="/places/new" render={() => <NewPlace />} />
+        <Route path="/places/:pid?/:swarmKey?" render={() => <Places />} />
+        <Route exact path="/settings" render={() => <SettingsPage />} />
+        <Route render={() => <NotFoundPage />} />
+      </Switch>
+    </TrackerProvider>
   </ConnectedRouter>
 );
 
