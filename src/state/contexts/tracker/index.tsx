@@ -7,8 +7,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import GtagWrapper from '~/lib/tracking/gtag';
+import { selectMe } from '~/state/ducks/me/meSlice';
 
 type GenerateFromStrProps = {
   __html: string; // 埋め込むHTML文字列
@@ -106,6 +108,11 @@ export const TrackerProvider: React.FC = ({ children }) => {
   const [tracker, setTracker] = useState<GtagWrapper | null>(null);
   const [isFirstView, setIsFirstView] = useState<boolean>(true);
   const location = useLocation();
+  const me = useSelector(selectMe);
+
+  const isIsolation = useMemo(() => me.settings.isIsolation, [
+    me.settings.isIsolation,
+  ]);
 
   const handleMounted = useCallback(
     () => setTracker(new GtagWrapper(GA_MEASUREMENT_ID)),
@@ -113,8 +120,13 @@ export const TrackerProvider: React.FC = ({ children }) => {
   );
 
   const TrackingTags = useMemo<JSX.Element>(
-    () => <GenerateFromStr __html={GaDomStr} callback={handleMounted} />,
-    [handleMounted]
+    () => (
+      <GenerateFromStr
+        __html={isIsolation ? '' : GaDomStr}
+        callback={handleMounted}
+      />
+    ),
+    [isIsolation, handleMounted]
   );
 
   // trackerオブジェクト初期化完了後、ページ遷移時にページ遷移イベントを送信するイベントを組み込み
