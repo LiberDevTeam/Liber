@@ -49,17 +49,23 @@ const IconWrapper = styled.span`
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   icon?: React.ReactNode;
+  innerRef?:
+    | ((instance: HTMLInputElement | null) => void)
+    | React.RefObject<HTMLInputElement>
+    | null
+    | undefined;
 };
 
 export const Input: React.FC<InputProps> = React.memo(function Input({
   icon,
   className,
+  innerRef,
   ...rest
 }) {
   return (
     <Root className={className}>
       <IconWrapper>{icon}</IconWrapper>
-      <InnerInput {...rest} hasIcon={Boolean(icon)} />
+      <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
     </Root>
   );
 });
