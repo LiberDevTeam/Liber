@@ -239,7 +239,7 @@ export const createNewPlace = createAsyncThunk<
     const timestamp = getUnixTime(new Date());
     const dataUrl = await readAsDataURL(avatarImage);
 
-    const place = {
+    const place: Place = {
       id: pid,
       name,
       description,
@@ -248,6 +248,7 @@ export const createNewPlace = createAsyncThunk<
       timestamp: timestamp,
       createdAt: timestamp,
       messageIds: [],
+      unreadMessages: [],
       swarmKey: swarmKey || undefined,
       invitationUrl: invitationUrl.href,
     };
