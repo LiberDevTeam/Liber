@@ -15,10 +15,15 @@ import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
 import { RootState } from '~/state/store';
 import BaseLayout from '~/templates';
 import {
+  clearUnreadMessages,
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
+import {
+  Message,
+  selectMessageById,
+} from '../../state/ducks/places/messagesSlice';
 
 const PAGE_TITLE = 'Places';
 
@@ -52,6 +57,15 @@ export const Places: React.FC = React.memo(function Places() {
 
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
+  const recentUnreadMessage = useSelector<RootState, Message | undefined>(
+    (state) =>
+      place?.unreadMessages
+        ? selectMessageById(
+            state.placeMessages,
+            place.unreadMessages[place.unreadMessages.length - 1]
+          )
+        : undefined
+  );
 
   const handleSubmit = useCallback(
     ({ text, file }: { text: string; file?: File }) => {
@@ -66,6 +80,11 @@ export const Places: React.FC = React.memo(function Places() {
     },
     [dispatch, pid, me.id, me.username]
   );
+  const handleReachBottom = useCallback(() => {
+    if (recentUnreadMessage) {
+      dispatch(clearUnreadMessages(pid));
+    }
+  }, [dispatch, recentUnreadMessage, pid]);
 
   const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
 
@@ -80,6 +99,9 @@ export const Places: React.FC = React.memo(function Places() {
         {place && (
           <ListContainer>
             <PlaceDetailColumn
+              onReachBottom={handleReachBottom}
+              myId={me.id}
+              recentUnreadMessage={recentUnreadMessage}
               place={place}
               onSubmit={handleSubmit}
               messages={messages}

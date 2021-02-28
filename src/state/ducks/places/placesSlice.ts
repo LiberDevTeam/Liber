@@ -1,4 +1,8 @@
-import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createEntityAdapter,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {
   placeMessageAdded,
   placeAdded,
@@ -18,6 +22,7 @@ export type Place = {
   timestamp: number; // the timestamp any user in the place acted at
   createdAt: number;
   messageIds: string[];
+  unreadMessages: string[];
 };
 
 const placesAdapter = createEntityAdapter<Place>({
@@ -27,13 +32,23 @@ const placesAdapter = createEntityAdapter<Place>({
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
-  reducers: {},
+  reducers: {
+    clearUnreadMessages(state, action: PayloadAction<string>) {
+      const place = state.entities[action.payload];
+      if (place) {
+        place.unreadMessages = [];
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(placeMessageAdded, (state, action) => {
         const { pid, message } = action.payload;
         const place = { ...state.entities[pid] };
         place.messageIds = [...place.messageIds, message.id];
+        place.unreadMessages = place.unreadMessages
+          ? [...place.unreadMessages, message.id]
+          : [message.id];
         placesAdapter.updateOne(state, { id: pid, changes: place });
       })
       .addCase(placeAdded, (state, action) => {
@@ -62,5 +77,7 @@ export const selectPlaceMessages = (place: Place) => (state: RootState) =>
   place.messageIds
     .map((id) => selectMessageById(state.placeMessages, id))
     .filter((m): m is Message => typeof m === 'object') || [];
+
+export const { clearUnreadMessages } = placesSlice.actions;
 
 export default placesSlice.reducer;

@@ -4,7 +4,7 @@ import {
 } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as Yup from 'yup';
@@ -17,6 +17,7 @@ import { Message } from '~/state/ducks/places/messagesSlice';
 import { Place } from '~/state/ducks/places/placesSlice';
 import { IconButton } from '../../atoms/icon-button';
 import { PlaceDetailHeader } from '../../molecules/place-detail-header';
+import Observer from '@researchgate/react-intersection-observer';
 
 const Root = styled.div`
   display: flex;
@@ -91,17 +92,28 @@ export interface FormValues {
 }
 
 export type PlaceDetailColumnProps = {
+  myId: string;
   place: Place;
   messages: Message[];
+  recentUnreadMessage: Message | undefined;
   onSubmit: (values: { text: string; file?: File }) => void;
+  onReachBottom: () => void;
 };
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
-  function PlaceDetailColumn({ place, messages, onSubmit }) {
+  function PlaceDetailColumn({
+    place,
+    messages,
+    onSubmit,
+    myId,
+    recentUnreadMessage,
+    onReachBottom,
+  }) {
     const dispatch = useDispatch();
     const [files, setFiles] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
     const messageInputRef = useRef<HTMLInputElement>(null);
+    const messagesBottomRef = useRef<HTMLDivElement>(null);
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
@@ -124,6 +136,27 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         setFiles([e.currentTarget.files[0]]);
       }
     };
+
+    // Scroll to bottom when open chat
+    useEffect(() => {
+      messagesBottomRef.current?.scrollIntoView();
+    }, [place.id]);
+
+    // If recent unread message is mine, scroll to bottom
+    useEffect(() => {
+      if (recentUnreadMessage?.authorId === myId) {
+        messagesBottomRef.current?.scrollIntoView();
+      }
+    }, [recentUnreadMessage, myId]);
+
+    const handleIntersection = useCallback(
+      (e) => {
+        if (e.isIntersecting) {
+          onReachBottom();
+        }
+      },
+      [onReachBottom]
+    );
 
     return (
       <>
@@ -149,6 +182,9 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                 text={m.text}
               />
             ))}
+            <Observer onChange={handleIntersection}>
+              <div ref={messagesBottomRef} />
+            </Observer>
           </Messages>
 
           <Footer>
