@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Search as SearchIcon, Add as AddIcon } from '@material-ui/icons';
 import { PlaceListColumnItem } from '~/components/molecules/place-list-item';
@@ -51,6 +51,15 @@ export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
       console.log('onClickNew');
     },
   }) {
+    const [searchText, setSearchText] = useState('');
+
+    const handleSearchTextChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.currentTarget.value);
+      },
+      []
+    );
+
     return (
       <>
         <Header>
@@ -60,12 +69,18 @@ export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
           </Button>
         </Header>
         <SearchBox>
-          <Input icon={<SearchIcon />} />
+          <Input
+            icon={<SearchIcon />}
+            value={searchText}
+            onChange={handleSearchTextChange}
+          />
         </SearchBox>
         <List>
-          {placeList.map((place) => (
-            <PlaceListColumnItem key={`place-${place.id}`} place={place} />
-          ))}
+          {placeList
+            .filter((place) => place.name.includes(searchText))
+            .map((place) => (
+              <PlaceListColumnItem key={`place-${place.id}`} place={place} />
+            ))}
         </List>
       </>
     );
