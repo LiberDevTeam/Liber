@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import BaseLayout from '~/templates';
 import { PageTitle } from '~/components/atoms/page-title';
 import { ToggleSwitch } from '~/components/atoms/toggle-switch';
@@ -59,6 +59,15 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   }, []);
   const handleChangeIsolation = (isIsolation: boolean) =>
     dispatch(updateIsolationMode(isIsolation));
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const isBeforeIsolation = useMemo(() => me.settings.isIsolation, []);
+
+  useEffect(() => {
+    if (isBeforeIsolation !== me.settings.isIsolation) {
+      setTimeout(() => window?.location.reload(), 600);
+    }
+  }, [isBeforeIsolation, me.settings.isIsolation]);
 
   return (
     <BaseLayout>
