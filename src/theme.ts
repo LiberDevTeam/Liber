@@ -52,6 +52,10 @@ const colors = {
 
 const fontSizes = {
   /**
+   * 10px
+   */
+  xxs: '0.625rem',
+  /**
    * 12px
    */
   xs: '0.75rem',

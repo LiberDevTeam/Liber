@@ -1,11 +1,11 @@
 import React from 'react';
 import { Story } from '@storybook/react/types-6-0';
 import { PlaceListColumn, PlaceListColumnProps } from '.';
-import { PlaceItem } from '~/components/molecules/place-list-item';
 import { add, getUnixTime, sub } from 'date-fns';
+import { Place } from '~/state/ducks/places/placesSlice';
 
 // TODO: 実際のchatデータモックに置き換える
-const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
+const placeList: Place[] = [...Array(50)].map((_, index) => {
   const id = String(index);
   const yesterday = sub(new Date(), { days: 1 });
   const time = add(yesterday, { hours: index });
@@ -17,6 +17,10 @@ const placeList: PlaceItem[] = [...Array(50)].map((_, index) => {
       'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
     timestamp: getUnixTime(time),
     invitationUrl: 'https://liber.live',
+    avatarImageCID: '',
+    createdAt: 0,
+    messageIds: [],
+    unreadMessages: [],
   };
 });
 
@@ -32,3 +36,4 @@ const Template: Story<PlaceListColumnProps> = (args) => (
   <PlaceListColumn {...args} />
 );
 export const Default = Template.bind({});
+Default.args = {};

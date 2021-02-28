@@ -11,4 +11,5 @@ export const leftPlace = createAction<{ pid: string; messageIds: string[] }>(
 export const placeMessageAdded = createAction<{
   pid: string;
   message: Message;
+  mine: boolean;
 }>('placeMessages/placeMessageAdded');

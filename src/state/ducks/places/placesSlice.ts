@@ -43,12 +43,14 @@ export const placesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(placeMessageAdded, (state, action) => {
-        const { pid, message } = action.payload;
+        const { pid, message, mine } = action.payload;
         const place = { ...state.entities[pid] };
         place.messageIds = [...place.messageIds, message.id];
-        place.unreadMessages = place.unreadMessages
-          ? [...place.unreadMessages, message.id]
-          : [message.id];
+        if (mine === false) {
+          place.unreadMessages = place.unreadMessages
+            ? [...place.unreadMessages, message.id]
+            : [message.id];
+        }
         placesAdapter.updateOne(state, { id: pid, changes: place });
       })
       .addCase(placeAdded, (state, action) => {

@@ -87,7 +87,7 @@ const subscribePublishPlaceMessageTopic = (
         message.contentIpfsCID
       );
     }
-    dispatch(placeMessageAdded({ pid, message }));
+    dispatch(placeMessageAdded({ pid, message, mine: false }));
   });
 };
 
@@ -128,7 +128,7 @@ export const publishPlaceMessage = createAsyncThunk<
     {}
   );
 
-  dispatch(placeMessageAdded({ pid, message: msg }));
+  dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
 });
 
 export const joinPlace = createAsyncThunk<

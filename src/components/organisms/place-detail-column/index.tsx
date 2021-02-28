@@ -18,6 +18,7 @@ import { Place } from '~/state/ducks/places/placesSlice';
 import { IconButton } from '../../atoms/icon-button';
 import { PlaceDetailHeader } from '../../molecules/place-detail-header';
 import Observer from '@researchgate/react-intersection-observer';
+import { UnreadToast } from '~/components/molecules/unread-toast';
 
 const Root = styled.div`
   display: flex;
@@ -35,6 +36,16 @@ const InputFile = styled.input`
   right: 0;
   opacity: 0;
   width: 100%;
+`;
+
+const ToastWrapper = styled.div`
+  position: absolute;
+  display: block;
+  text-align: center;
+  top: -60px;
+  left: 0;
+  right: 0;
+  margin-bottom: ${(props) => props.theme.space[6]}px;
 `;
 
 const Messages = styled.div`
@@ -92,23 +103,14 @@ export interface FormValues {
 }
 
 export type PlaceDetailColumnProps = {
-  myId: string;
   place: Place;
   messages: Message[];
-  recentUnreadMessage: Message | undefined;
   onSubmit: (values: { text: string; file?: File }) => void;
-  onReachBottom: () => void;
+  onClearUnread: () => void;
 };
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
-  function PlaceDetailColumn({
-    place,
-    messages,
-    onSubmit,
-    myId,
-    recentUnreadMessage,
-    onReachBottom,
-  }) {
+  function PlaceDetailColumn({ place, messages, onSubmit, onClearUnread }) {
     const dispatch = useDispatch();
     const [files, setFiles] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
@@ -126,6 +128,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         formik.resetForm();
         formik.validateForm();
         messageInputRef.current?.focus();
+        messagesBottomRef.current?.scrollIntoView();
       },
     });
 
@@ -142,20 +145,13 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       messagesBottomRef.current?.scrollIntoView();
     }, [place.id]);
 
-    // If recent unread message is mine, scroll to bottom
-    useEffect(() => {
-      if (recentUnreadMessage?.authorId === myId) {
-        messagesBottomRef.current?.scrollIntoView();
-      }
-    }, [recentUnreadMessage, myId]);
-
     const handleIntersection = useCallback(
       (e) => {
         if (e.isIntersecting) {
-          onReachBottom();
+          onClearUnread();
         }
       },
-      [onReachBottom]
+      [onClearUnread]
     );
 
     return (
@@ -188,6 +184,18 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
           </Messages>
 
           <Footer>
+            {place.unreadMessages?.length > 0 ? (
+              <ToastWrapper>
+                <UnreadToast
+                  messageCount={place.unreadMessages.length}
+                  onClose={onClearUnread}
+                  onClick={() => {
+                    messagesBottomRef.current?.scrollIntoView();
+                  }}
+                />
+              </ToastWrapper>
+            ) : null}
+
             <Form onSubmit={formik.handleSubmit}>
               <Input
                 innerRef={messageInputRef}
