@@ -15,7 +15,7 @@ const place: Place = {
   timestamp: getUnixTime(new Date()),
   invitationUrl: 'https://liber.live',
   avatarImageCID: '',
-  createdAt: 0,
+  createdAt: getUnixTime(new Date()),
   messageIds: [],
   unreadMessages: ['unread-message'],
 };
@@ -23,12 +23,12 @@ const place: Place = {
 export default {
   component: PlaceListColumnItem,
   title: 'molecules/PlaceListColumnItem',
-  args: {
-    place,
-  },
 };
 
 const Template: Story<PlaceListColumnItemProps> = (args) => (
   <PlaceListColumnItem {...args} />
 );
 export const Default = Template.bind({});
+Default.args = {
+  place,
+};

@@ -1,10 +1,16 @@
-import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
+import {
+  formatDistanceToNowStrict,
+  fromUnixTime,
+  differenceInHours,
+} from 'date-fns';
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Place } from '~/state/ducks/places/placesSlice';
 
 const activeClassName = 'selected-place';
+
+type ActiveStatus = 'active' | 'modest' | 'inactive';
 
 const Root = styled(NavLink)`
   display: inline-flex;
@@ -41,14 +47,24 @@ const Image = styled.img`
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 
-const Status = styled.div`
+const Status = styled.div<{ status: ActiveStatus }>`
   width: 12px;
   height: 12px;
   position: absolute;
   top: 0px;
   right: 0px;
-  background: ${(props) => props.theme.colors.green};
   border-radius: ${(props) => props.theme.radii.round};
+  border: 1px solid ${(props) => props.theme.colors.bg};
+  background: ${(props) => {
+    switch (props.status) {
+      case 'active':
+        return props.theme.colors.green;
+      case 'modest':
+        return props.theme.colors.yellow;
+      case 'inactive':
+        return props.theme.colors.bg4;
+    }
+  }};
 `;
 
 const RightContainer = styled.div`
@@ -93,22 +109,40 @@ const UnreadCount = styled.div`
   box-shadow: ${(props) => props.theme.space[2]}px;
 `;
 
+const calcStatusFromTime = (time: Date): ActiveStatus => {
+  const diff = differenceInHours(new Date(), time);
+  console.log(diff);
+
+  if (diff > 24) {
+    return 'inactive';
+  }
+
+  if (diff > 6) {
+    return 'modest';
+  }
+
+  return 'active';
+};
+
 export interface PlaceListColumnItemProps {
   place: Place;
 }
 
 export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
   function PlaceListColumnItem({ place }) {
-    const dispTime = useMemo(() => {
+    const [dispTime, status] = useMemo(() => {
       const date = fromUnixTime(place.timestamp);
-      return formatDistanceToNowStrict(date, { addSuffix: true });
+      return [
+        formatDistanceToNowStrict(date, { addSuffix: true }),
+        calcStatusFromTime(date),
+      ];
     }, [place.timestamp]);
 
     return (
       <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
         <LeftContainer>
           <Image src={place.avatarImage} />
-          <Status />
+          <Status status={status} />
         </LeftContainer>
         <RightContainer>
           <Title>{place.name}</Title>
