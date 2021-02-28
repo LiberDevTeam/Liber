@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
 import BaseLayout from '~/templates';
@@ -8,6 +8,7 @@ import { Textarea } from '~/components/atoms/textarea';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
+import { PreviewImage } from '~/components/molecules/preview-image';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -48,11 +49,6 @@ const UploadFileButtonGroup = styled.div`
     opacity: 0.8;
   }
 `;
-const PreviewImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: ${(props) => props.theme.radii.medium}px;
-`;
 
 const SubmitButton = styled(Button)`
   margin-top: ${(props) => props.theme.space[8]}px;
@@ -78,33 +74,40 @@ interface FormValues {
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [avatarImage, setAvatarImage] = useState<File | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
       description: '',
       isPrivate: false,
     },
-
     async onSubmit({ name, description, isPrivate }) {
-      dispatch(
-        createNewPlace({
-          name,
-          description,
-          isPrivate,
-          avatarImage: avatarImage!,
-        })
-      );
+      if (avatarInputRef.current?.files) {
+        dispatch(
+          createNewPlace({
+            name,
+            description,
+            isPrivate,
+            avatarImage: avatarInputRef.current.files[0],
+          })
+        );
+      }
     },
   });
 
-  const handleChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.files && e.currentTarget.files[0]) {
-      setAvatarImage(e.currentTarget.files[0]);
-      const file = await readFile(e.currentTarget.files[0]);
+  const handleChangeImage = async () => {
+    if (avatarInputRef.current?.files && avatarInputRef.current.files[0]) {
+      const file = await readFile(avatarInputRef.current.files[0]);
       setAvatarPreview(file);
     }
   };
+
+  const handleRemoveAvatarImage = useCallback(() => {
+    if (avatarInputRef.current) {
+      avatarInputRef.current.value = '';
+    }
+    setAvatarPreview(null);
+  }, []);
 
   return (
     <BaseLayout>
@@ -127,10 +130,16 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           disabled={formik.isSubmitting}
         />
 
-        {avatarPreview ? <PreviewImage src={avatarPreview} /> : null}
+        {avatarPreview ? (
+          <PreviewImage
+            src={avatarPreview}
+            onRemove={handleRemoveAvatarImage}
+          />
+        ) : null}
         <UploadFileButtonGroup>
           <Button text="Select Thumbnail Image" shape="square" type="button" />
           <InputFile
+            ref={avatarInputRef}
             name="avatarImage"
             type="file"
             accept="image/*"
