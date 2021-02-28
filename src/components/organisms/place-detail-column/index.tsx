@@ -4,7 +4,7 @@ import {
 } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as Yup from 'yup';
@@ -101,6 +101,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
     const dispatch = useDispatch();
     const [files, setFiles] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
+    const messageInputRef = useRef<HTMLInputElement>(null);
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
@@ -112,6 +113,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         onSubmit({ text, file: files[0] });
         formik.resetForm();
         formik.validateForm();
+        messageInputRef.current?.focus();
       },
     });
 
@@ -152,6 +154,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
           <Footer>
             <Form onSubmit={formik.handleSubmit}>
               <Input
+                innerRef={messageInputRef}
                 name="text"
                 placeholder="Message..."
                 value={formik.values.text}
