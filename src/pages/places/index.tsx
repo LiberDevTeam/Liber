@@ -1,29 +1,24 @@
-import React, { useCallback } from 'react';
 import { useMediaQuery } from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
 import { getUnixTime } from 'date-fns';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import { theme } from '~/theme';
 import { PlaceItem } from '~/components/molecules/place-list-item';
 import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
 import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
-import { RootState } from '~/state/store';
-import BaseLayout from '~/templates';
 import {
   clearUnreadMessages,
   selectAllPlaces,
   selectPlaceById,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
-import {
-  Message,
-  selectMessageById,
-} from '../../state/ducks/places/messagesSlice';
+import { RootState } from '~/state/store';
+import BaseLayout from '~/templates';
+import { theme } from '~/theme';
 
 const PAGE_TITLE = 'Places';
 
@@ -53,19 +48,8 @@ export const Places: React.FC = React.memo(function Places() {
   const me = useSelector(selectMe);
   const places = useSelector((state: RootState) => selectAllPlaces(state));
 
-  const placeList: PlaceItem[] = places.map((place) => ({ ...place }));
-
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
-  const recentUnreadMessage = useSelector<RootState, Message | undefined>(
-    (state) =>
-      place?.unreadMessages
-        ? selectMessageById(
-            state.placeMessages,
-            place.unreadMessages[place.unreadMessages.length - 1]
-          )
-        : undefined
-  );
 
   const handleSubmit = useCallback(
     ({ text, file }: { text: string; file?: File }) => {
@@ -80,11 +64,11 @@ export const Places: React.FC = React.memo(function Places() {
     },
     [dispatch, pid, me.id, me.username]
   );
-  const handleReachBottom = useCallback(() => {
-    if (recentUnreadMessage) {
+  const handleClearUnread = useCallback(() => {
+    if (place?.unreadMessages) {
       dispatch(clearUnreadMessages(pid));
     }
-  }, [dispatch, recentUnreadMessage, pid]);
+  }, [dispatch, place?.unreadMessages, pid]);
 
   const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
 
@@ -93,15 +77,13 @@ export const Places: React.FC = React.memo(function Places() {
       <Root>
         {!(isMobile && place) && (
           <ListContainer>
-            <PlaceListColumn title={PAGE_TITLE} placeList={placeList} />
+            <PlaceListColumn title={PAGE_TITLE} placeList={places} />
           </ListContainer>
         )}
         {place && (
           <ListContainer>
             <PlaceDetailColumn
-              onReachBottom={handleReachBottom}
-              myId={me.id}
-              recentUnreadMessage={recentUnreadMessage}
+              onClearUnread={handleClearUnread}
               place={place}
               onSubmit={handleSubmit}
               messages={messages}

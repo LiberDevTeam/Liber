@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { Place } from '~/state/ducks/places/placesSlice';
 
 const activeClassName = 'selected-place';
 
@@ -12,6 +13,7 @@ const Root = styled(NavLink)`
   border-radius: ${(props) => props.theme.radii.medium}px;
   border: 2px solid white;
   text-decoration: none;
+  align-items: center;
 
   &.${activeClassName} {
     background: ${(props) => props.theme.colors.bg2};
@@ -76,17 +78,23 @@ const Time = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.semibold};
 `;
 
-export type PlaceItem = {
-  id: string;
-  name: string;
-  avatarImage: string;
-  invitationUrl: string;
-  description: string;
-  timestamp: number;
-};
+const UnreadCount = styled.div`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  padding: ${(props) => props.theme.space[1]}px;
+  font-size: ${(props) => props.theme.fontSizes.xxs};
+  border-radius: ${(props) => props.theme.radii.large}px;
+  color: ${(props) => props.theme.colors.lightText};
+  background: ${(props) => props.theme.colors.primary};
+  margin-right: ${(props) => props.theme.space[2]}px;
+  box-shadow: ${(props) => props.theme.space[2]}px;
+`;
 
 export interface PlaceListColumnItemProps {
-  place: PlaceItem;
+  place: Place;
 }
 
 export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
@@ -107,6 +115,13 @@ export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.mem
           <Description>{place.description}</Description>
           <Time>{dispTime}</Time>
         </RightContainer>
+        {place.unreadMessages.length > 0 ? (
+          <UnreadCount>
+            {place.unreadMessages.length > 99
+              ? '99+'
+              : place.unreadMessages.length}
+          </UnreadCount>
+        ) : null}
       </Root>
     );
   }

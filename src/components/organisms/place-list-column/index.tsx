@@ -1,16 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Search as SearchIcon, Add as AddIcon } from '@material-ui/icons';
-import {
-  PlaceItem,
-  PlaceListColumnItem,
-} from '~/components/molecules/place-list-item';
+import { PlaceListColumnItem } from '~/components/molecules/place-list-item';
 import { Input } from '~/components/atoms/input';
 import { PageTitle } from '~/components/atoms/page-title';
+import { Place } from '~/state/ducks/places/placesSlice';
 
 export type PlaceListColumnProps = {
   title: string;
-  placeList: PlaceItem[];
+  placeList: Place[];
   onClickNew?: () => void;
 };
 
