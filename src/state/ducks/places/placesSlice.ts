@@ -1,5 +1,9 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import { placeMessageAdded, placeAdded } from '~/state/actionCreater';
+import {
+  placeMessageAdded,
+  placeAdded,
+  leftPlace,
+} from '~/state/actionCreater';
 import { RootState } from '~/state/store';
 import { Message, selectMessageById } from './messagesSlice';
 
@@ -36,7 +40,10 @@ export const placesSlice = createSlice({
         const { place, messages } = action.payload;
         place.messageIds = messages.map((m) => m.id);
         placesAdapter.addOne(state, place);
-      });
+      })
+      .addCase(leftPlace, (state, action) =>
+        placesAdapter.removeOne(state, action.payload.pid)
+      );
   },
 });
 

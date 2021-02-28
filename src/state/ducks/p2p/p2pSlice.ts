@@ -72,12 +72,12 @@ export const initNodes = createAsyncThunk<
   console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
 
-function subscribePublishPlaceMessageTopic(
+const subscribePublishPlaceMessageTopic = (
   node: Ipfs,
   pid: string,
   me: Me,
   dispatch: AppDispatch
-) {
+) => {
   node.pubsub.subscribe(publishPlaceMessageTopic(pid), async (msg) => {
     const message: Message = JSON.parse(uint8ArrayToString(msg.data));
     if (message.authorId === me.id) return;
@@ -89,7 +89,7 @@ function subscribePublishPlaceMessageTopic(
     }
     dispatch(placeMessageAdded({ pid, message }));
   });
-}
+};
 
 export const publishPlaceMessage = createAsyncThunk<
   void,
@@ -214,8 +214,10 @@ export const createNewPlace = createAsyncThunk<
   'p2p/createNewPlace',
   async ({ name, description, isPrivate, avatarImage }, thunkAPI) => {
     const { dispatch } = thunkAPI;
+    const state = thunkAPI.getState();
 
-    const file = await ipfsNode().add({
+    const node = ipfsNode();
+    const file = await node.add({
       path: avatarImage.name,
       content: avatarImage,
     });
@@ -250,7 +252,8 @@ export const createNewPlace = createAsyncThunk<
       invitationUrl: invitationUrl.href,
     };
 
-    dispatch(placeAdded({ place, messages: [] }));
+    const messages: Message[] = [];
+    dispatch(placeAdded({ place, messages }));
 
     dispatch(
       ipfsContentAdded({
@@ -259,6 +262,9 @@ export const createNewPlace = createAsyncThunk<
         file: avatarImage,
       })
     );
+
+    handleJoinPlaceProtocol(node, place, messages);
+    subscribePublishPlaceMessageTopic(node, pid, state.me, dispatch);
 
     dispatch(push(`/places/${pid}`));
   }
@@ -344,17 +350,12 @@ const buildInvitationUrl = async (node: Ipfs, pid: string) => {
   return invitationUrl;
 };
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
-// export const incrementAsync = (amount: number): AppThunk => dispatch => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount));
-//   }, 1000);
-// };
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-// export const selectCount = (state: RootState) => state.counter.value;
+export const unsubscribeIpfsNode = createAsyncThunk<
+  void,
+  { pid: string },
+  { dispatch: AppDispatch; state: RootState }
+>('p2p/initNodes', async ({ pid }) => {
+  ipfsNode().pubsub.unsubscribe(publishPlaceMessageTopic(pid));
+  // @ts-ignore
+  ipfsNode().libp2p.unhandle(joinPlaceProtocol(pid));
+});

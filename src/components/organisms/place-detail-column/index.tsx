@@ -2,13 +2,17 @@ import {
   AddCircle as AttacheFileIcon,
   Send as SendIcon,
 } from '@material-ui/icons';
+import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
 import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
+import { leftPlace } from '~/state/actionCreater';
+import { unsubscribeIpfsNode } from '~/state/ducks/p2p/p2pSlice';
 import { Message } from '~/state/ducks/places/messagesSlice';
 import { Place } from '~/state/ducks/places/placesSlice';
 import { IconButton } from '../../atoms/icon-button';
@@ -94,6 +98,7 @@ export type PlaceDetailColumnProps = {
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place, messages, onSubmit }) {
+    const dispatch = useDispatch();
     const [files, setFiles] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
     const formik = useFormik<FormValues>({
@@ -125,7 +130,11 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             place={place}
             onInviteClick={() => setOpen(true)}
             onLeave={() => {
-              console.log('onLeave');
+              dispatch(
+                leftPlace({ pid: place.id, messageIds: place.messageIds })
+              );
+              dispatch(unsubscribeIpfsNode({ pid: place.id }));
+              dispatch(push('/places'));
             }}
           />
 
