@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import { PlaceItem } from '~/components/molecules/place-list-item';
 import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
 import { PlaceListColumn } from '~/components/organisms/place-list-column';
 import { selectMe } from '~/state/ducks/me/meSlice';
