@@ -26,7 +26,8 @@ export interface Place {
   messageIds: string[];
   unreadMessages: string[];
   // orbit db id
-  messagesDBId: string;
+  feedAddress: string;
+  keyValAddress: string;
 }
 
 const placesAdapter = createEntityAdapter<Place>({

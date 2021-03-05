@@ -12,6 +12,7 @@ import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
 
 type QueryParams = {
+  address?: string;
   placeId?: string;
   pubKey?: string;
   addrs?: string[]; // multiaddrs
@@ -52,13 +53,13 @@ export const Routes: React.FC = () => (
 
 function Initializer() {
   const dispatch: AppThunkDispatch = useDispatch();
-  const { placeId, pubKey, addrs } = useQuery<QueryParams>();
+  const { placeId, address, pubKey, addrs } = useQuery<QueryParams>();
 
   useEffect(() => {
     (async () => {
       await dispatch(initNodes());
-      if (placeId && pubKey && addrs) {
-        await dispatch(joinPlace({ pubKey, placeId, addrs }));
+      if (placeId && address && pubKey && addrs) {
+        await dispatch(joinPlace({ pubKey, placeId, address, addrs }));
       }
     })();
   }, [dispatch, placeId, pubKey, addrs]);

@@ -11,7 +11,8 @@ export const dummyPlace = (id: string): Place => ({
   timestamp: getUnixTime(new Date()),
   avatarImageCID: '',
   createdAt: 0,
-  messagesDBId: '',
   messageIds: [],
   unreadMessages: [],
+  feedAddress: '',
+  keyValAddress: '',
 });

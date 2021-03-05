@@ -23,6 +23,7 @@ import {
   selectPlaceById,
 } from '~/state/ducks/places/placesSlice';
 import { AppDispatch, RootState } from '~/state/store';
+import { v4 as uuidv4 } from 'uuid';
 
 const publishPlaceMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/messages/publish/1.0.0`;
@@ -34,10 +35,10 @@ const joinPlaceProtocol = (pid: string) => {
 
 type PlaceDBValue = string | number | string[];
 
-const getMessagesAddress = (messagesId: string): string =>
-  `/orbitdb/${messagesId}/messages`;
-const getPlaceAddress = (placeId: string): string =>
-  `/orbitdb/${placeId}/place`;
+const getMessagesAddress = (address: string, placeId: string): string =>
+  `/orbitdb/${address}/${placeId}/messages`;
+const getPlaceAddress = (address: string, placeId: string): string =>
+  `/orbitdb/${address}/${placeId}/place`;
 
 const dbOptions: IStoreOptions = { accessController: { write: ['*'] } };
 
@@ -73,39 +74,46 @@ const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
 };
 
 const connectMessageFeed = async ({
-  feedId,
+  placeId,
+  address,
   onMessageAdd,
 }: {
-  feedId?: string;
+  placeId: string;
+  address?: string;
   onMessageAdd: (messages: Message[]) => void;
 }) => {
   if (!orbitDB) {
     throw new Error('orbitDB instance is not exists');
   }
 
-  const db = feedId
-    ? await orbitDB.feed<Message>(getMessagesAddress(feedId))
-    : await orbitDB.feed<Message>('messages', dbOptions);
+  const db = address
+    ? await orbitDB.feed<Message>(getMessagesAddress(address, placeId))
+    : await orbitDB.feed<Message>(`${placeId}/messages`, dbOptions);
+
+  console.log(db);
+
   db.events.on('replicated', () => {
     onMessageAdd(readMessagesFromFeed(db));
   });
-  messageFeeds[db.address.root] = db;
+  messageFeeds[placeId] = db;
   await db.load();
   return db;
 };
 
-const connectPlaceKeyValue = async (placeId?: string) => {
+const connectPlaceKeyValue = async (placeId: string, address?: string) => {
   if (!orbitDB) {
     throw new Error('orbit DB instance is not exists');
   }
 
-  const db = placeId
-    ? await orbitDB.keyvalue<PlaceDBValue>(getPlaceAddress(placeId))
-    : await orbitDB.keyvalue<PlaceDBValue>('place', dbOptions);
+  const db = address
+    ? await orbitDB.keyvalue<PlaceDBValue>(getPlaceAddress(address, placeId))
+    : await orbitDB.keyvalue<PlaceDBValue>(`${placeId}/place`, dbOptions);
+  console.log(db);
+
   db.events.on('replicated', () => {
     console.log('Place info updated');
   });
-  placeKeyValues[db.address.root] = db;
+  placeKeyValues[placeId] = db;
   await db.load();
   return db;
 };
@@ -126,10 +134,11 @@ export const initNodes = createAsyncThunk<
   });
   orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
 
-  selectAllPlaces(state).forEach((place) => {
-    connectPlaceKeyValue(place.id);
+  selectAllPlaces(state).forEach(async (place) => {
+    connectPlaceKeyValue(place.id, place.keyValAddress);
     connectMessageFeed({
-      feedId: place.messagesDBId,
+      placeId: place.id,
+      address: place.feedAddress,
       onMessageAdd: (messages) => {
         dispatch(
           placeMessagesAdded({
@@ -177,11 +186,11 @@ export const publishPlaceMessage = createAsyncThunk<
     msg.contentUrl = dataUrl;
   }
 
-  if (!messageFeeds[place.messagesDBId]) {
+  if (!messageFeeds[place.id]) {
     throw new Error(`messages DB is not exists.`);
   }
 
-  await messageFeeds[place.messagesDBId].add(msg);
+  await messageFeeds[place.id].add(msg);
   dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
 });
 
@@ -190,10 +199,11 @@ export const joinPlace = createAsyncThunk<
   {
     placeId: string;
     pubKey: string;
+    address: string;
     addrs: string[];
   },
   { dispatch: AppDispatch; state: RootState }
->('p2p/joinPlace', async ({ placeId, pubKey, addrs }, thunkAPI) => {
+>('p2p/joinPlace', async ({ placeId, address, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
   const remotePeer = await createFromPubKey(pubKey);
@@ -209,29 +219,35 @@ export const joinPlace = createAsyncThunk<
   if (!orbitDB) {
     throw new Error('OrbitDB is not initialized');
   }
+  console.log('a');
 
-  const placeDB = await connectPlaceKeyValue(placeId);
-  const name = placeDB.get('id') as string;
+  const placeKeyValue = await connectPlaceKeyValue(placeId, address);
+  console.log('a');
+  const feedAddress = placeKeyValue.get('feedAddress') as string;
 
-  if (!name) {
+  console.log(feedAddress);
+
+  if (!feedAddress) {
     throw new Error(`Cannot read data from place DB`);
   }
 
   const place: Place = {
     id: placeId,
-    name: placeDB.get('name') as string,
-    avatarImage: placeDB.get('avatarImage') as string,
-    avatarImageCID: placeDB.get('avatarImageCID') as string,
-    description: placeDB.get('description') as string,
-    invitationUrl: placeDB.get('invitationUrl') as string,
-    messagesDBId: placeDB.get('messagesDBId') as string,
-    createdAt: placeDB.get('createdAt') as number,
-    timestamp: placeDB.get('timestamp') as number,
+    name: placeKeyValue.get('name') as string,
+    avatarImage: placeKeyValue.get('avatarImage') as string,
+    avatarImageCID: placeKeyValue.get('avatarImageCID') as string,
+    description: placeKeyValue.get('description') as string,
+    invitationUrl: placeKeyValue.get('invitationUrl') as string,
+    feedAddress: placeKeyValue.get('feedAddress') as string,
+    keyValAddress: placeKeyValue.get('keyValAddress') as string,
+    createdAt: placeKeyValue.get('createdAt') as number,
+    timestamp: placeKeyValue.get('timestamp') as number,
     messageIds: [],
     unreadMessages: [],
   };
   const feed = await connectMessageFeed({
-    feedId: place.messagesDBId,
+    placeId,
+    address: feedAddress,
     onMessageAdd: (messages) => {
       dispatch(
         placeMessagesAdded({
@@ -280,9 +296,11 @@ export const createNewPlace = createAsyncThunk<
       throw new Error('orbit db is not initialized');
     }
 
-    const placeDB = await connectPlaceKeyValue();
-    const placeId = placeDB.address.root;
-    const messagesDB = await connectMessageFeed({
+    const placeId = uuidv4();
+
+    const placeKeyValue = await connectPlaceKeyValue(placeId);
+    const feed = await connectMessageFeed({
+      placeId,
       onMessageAdd: (messages) => {
         dispatch(
           placeMessagesAdded({
@@ -297,10 +315,16 @@ export const createNewPlace = createAsyncThunk<
     const timestamp = getUnixTime(new Date());
     const dataUrl = await readAsDataURL(avatarImage);
     // build a invitation url
-    const invitationUrl = await buildInvitationUrl(node, placeId);
+    const invitationUrl = await buildInvitationUrl(
+      node,
+      placeId,
+      placeKeyValue.address.root
+    );
 
     const place: Place = {
       id: placeId,
+      keyValAddress: placeKeyValue.address.root,
+      feedAddress: feed.address.root,
       name,
       description,
       avatarImage: dataUrl,
@@ -309,14 +333,13 @@ export const createNewPlace = createAsyncThunk<
       createdAt: timestamp,
       swarmKey: swarmKey || undefined,
       invitationUrl: invitationUrl.href,
-      messagesDBId: messagesDB.address.root,
       messageIds: [],
       unreadMessages: [],
     };
 
     Object.keys(place).forEach((key) => {
       const v = place[key as keyof Place];
-      v && placeDB.put(key, v);
+      v && placeKeyValue.put(key, v);
     });
 
     dispatch(placeAdded({ place, messages: [] }));
@@ -369,10 +392,15 @@ const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
   return dataUrl;
 };
 
-const buildInvitationUrl = async (node: Ipfs, placeId: string) => {
+const buildInvitationUrl = async (
+  node: Ipfs,
+  placeId: string,
+  address: string
+) => {
   const nid = await node.id();
   const invitationUrl = new URL(`https://localhost:3000`);
   invitationUrl.searchParams.append('placeId', placeId);
+  invitationUrl.searchParams.append('address', address);
   nid.addresses.map((addr) => {
     invitationUrl.searchParams.append('addrs', addr.toString());
   });
