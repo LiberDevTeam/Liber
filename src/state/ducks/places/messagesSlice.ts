@@ -3,6 +3,7 @@ import {
   leftPlace,
   placeAdded,
   placeMessageAdded,
+  placeMessagesAdded,
 } from '~/state/actionCreater';
 
 export type Message = {
@@ -30,6 +31,9 @@ export const messagesSlice = createSlice({
       })
       .addCase(placeMessageAdded, (state, action) => {
         messagesAdapter.addOne(state, action.payload.message);
+      })
+      .addCase(placeMessagesAdded, (state, action) => {
+        messagesAdapter.upsertMany(state, action.payload.messages);
       })
       .addCase(leftPlace, (state, action) =>
         messagesAdapter.removeMany(state, action.payload.messageIds)

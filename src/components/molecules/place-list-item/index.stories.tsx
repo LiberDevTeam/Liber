@@ -1,24 +1,12 @@
 import React from 'react';
 import { PlaceListColumnItem, PlaceListColumnItemProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
-import { getUnixTime } from 'date-fns';
 import { Place } from '~/state/ducks/places/placesSlice';
+import { dummyPlace } from '../../../mocks/place';
 
 // TODO: 実際のchatデータモックに置き換える
 const id = '1';
-const place: Place = {
-  id,
-  name: 'We Love FC Barcelona!!',
-  avatarImage: `https://i.pravatar.cc/60?u=${id}`,
-  description:
-    'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
-  timestamp: getUnixTime(new Date()),
-  invitationUrl: 'https://liber.live',
-  avatarImageCID: '',
-  createdAt: getUnixTime(new Date()),
-  messageIds: [],
-  unreadMessages: ['unread-message'],
-};
+const place: Place = { ...dummyPlace(id), unreadMessages: ['unread message'] };
 
 export default {
   component: PlaceListColumnItem,

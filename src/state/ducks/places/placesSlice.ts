@@ -2,16 +2,18 @@ import {
   createSlice,
   createEntityAdapter,
   PayloadAction,
+  EntityId,
 } from '@reduxjs/toolkit';
 import {
   placeMessageAdded,
   placeAdded,
   leftPlace,
+  placeMessagesAdded,
 } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
 import { Message, selectMessageById } from './messagesSlice';
 
-export type Place = {
+export interface Place {
   id: string;
   name: string;
   description: string;
@@ -23,7 +25,9 @@ export type Place = {
   createdAt: number;
   messageIds: string[];
   unreadMessages: string[];
-};
+  // orbit db id
+  messagesDBId: string;
+}
 
 const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
@@ -53,14 +57,25 @@ export const placesSlice = createSlice({
         }
         placesAdapter.updateOne(state, { id: pid, changes: place });
       })
+      .addCase(placeMessagesAdded, (state, action) => {
+        const place = state.entities[action.payload.placeId];
+
+        if (place) {
+          const ids = action.payload.messages.map((message) => message.id);
+          place.messageIds = [...new Set(place.messageIds.concat(ids))];
+          place.unreadMessages = [...new Set(place.unreadMessages.concat(ids))];
+        }
+      })
       .addCase(placeAdded, (state, action) => {
         const { place, messages } = action.payload;
-        place.messageIds = messages.map((m) => m.id);
-        placesAdapter.addOne(state, place);
+        place.messageIds = messages.map((message) => message.id);
+        if (place) {
+          placesAdapter.addOne(state, place);
+        }
       })
-      .addCase(leftPlace, (state, action) =>
-        placesAdapter.removeOne(state, action.payload.pid)
-      );
+      .addCase(leftPlace, (state, action) => {
+        placesAdapter.removeOne(state, action.payload.pid);
+      });
   },
 });
 
@@ -69,16 +84,26 @@ export const placesSlice = createSlice({
 const selectors = placesAdapter.getSelectors();
 export const selectPlaceById = (id: string) => (state: RootState) =>
   selectors.selectById(state.places, id);
+
 export const selectAllPlaces = (state: RootState) =>
   selectors.selectAll(state.places);
-export const selectPlaceMessagesByPID = (pid: string) => (state: RootState) => {
+
+export const selectPlaceIds = (state: RootState): EntityId[] =>
+  selectors.selectIds(state.places);
+
+export const selectPlaceMessagesByPID = (pid: string) => (
+  state: RootState
+): Message[] => {
   const place = selectors.selectById(state.places, pid);
-  return place ? selectPlaceMessages(place)(state) : [];
-};
-export const selectPlaceMessages = (place: Place) => (state: RootState) =>
-  place.messageIds
+
+  if (!place) {
+    return [];
+  }
+
+  return place.messageIds
     .map((id) => selectMessageById(state.placeMessages, id))
-    .filter((m): m is Message => typeof m === 'object') || [];
+    .filter(Boolean) as Message[];
+};
 
 export const { clearUnreadMessages } = placesSlice.actions;
 

@@ -1,27 +1,28 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppDispatch, RootState } from '~/state/store';
+import { push } from 'connected-react-router';
+import getUnixTime from 'date-fns/getUnixTime';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
+import all from 'it-all';
+import multiaddr from 'multiaddr';
+import OrbitDB from 'orbit-db';
+import FeedStore from 'orbit-db-feedstore';
+import KeyValueStore from 'orbit-db-kvstore';
+import { createFromPubKey } from 'peer-id';
+import uint8ArrayConcat from 'uint8arrays/concat';
 import { publicLibp2pOptions } from '~/lib/libp2p';
-import uint8ArrayToString from 'uint8arrays/to-string';
-import uint8ArrayFromString from 'uint8arrays/from-string';
+import {
+  placeAdded,
+  placeMessageAdded,
+  placeMessagesAdded,
+} from '~/state/actionCreater';
+import { ipfsContentAdded } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { Message } from '~/state/ducks/places/messagesSlice';
 import {
   Place,
   selectAllPlaces,
   selectPlaceById,
-  selectPlaceMessages,
 } from '~/state/ducks/places/placesSlice';
-import { Message } from '~/state/ducks/places/messagesSlice';
-import { push } from 'connected-react-router';
-import { createFromPubKey } from 'peer-id';
-import multiaddr from 'multiaddr';
-import pipe from 'it-pipe';
-import { v4 as uuidv4 } from 'uuid';
-import getUnixTime from 'date-fns/getUnixTime';
-import all from 'it-all';
-import uint8ArrayConcat from 'uint8arrays/concat';
-import { ipfsContentAdded } from '~/state/ducks/p2p/ipfsContentsSlice';
-import { Me } from '~/state/ducks/me/meSlice';
-import { placeMessageAdded, placeAdded } from '~/state/actionCreater';
+import { AppDispatch, RootState } from '~/state/store';
 
 const publishPlaceMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/messages/publish/1.0.0`;
@@ -29,6 +30,22 @@ const publishPlaceMessageTopic = (pid: string) => {
 
 const joinPlaceProtocol = (pid: string) => {
   return `/liber/places/${pid}/join/1.0.0`;
+};
+
+type PlaceDBValue = string | number | string[];
+
+const getMessagesAddress = (messagesId: string): string =>
+  `/orbitdb/${messagesId}/messages`;
+const getPlaceAddress = (placeId: string): string =>
+  `/orbitdb/${placeId}/place`;
+
+const dbOptions: IStoreOptions = { accessController: { write: ['*'] } };
+
+const excludeMyMessages = (
+  authorId: string,
+  messages: Message[]
+): Message[] => {
+  return messages.filter((m) => m.authorId !== authorId);
 };
 
 const p2pNodes: {
@@ -39,7 +56,61 @@ const p2pNodes: {
   privateIpfsNodes: {},
 };
 
-export const ipfsNode = () => p2pNodes.ipfsNode!;
+let orbitDB: OrbitDB | null;
+type MessageFeed = FeedStore<Message>;
+const messageFeeds: Record<string, MessageFeed> = {};
+const placeKeyValues: Record<string, KeyValueStore<PlaceDBValue>> = {};
+const lastHash: Record<string, string> = {};
+
+const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
+  const items = feed
+    .iterator({ limit: -1, gt: lastHash[feed.address.root] ?? undefined })
+    .collect();
+  if (items.length > 0) {
+    lastHash[feed.address.root] = items[items.length - 1].hash;
+  }
+  return items.map((item) => item.payload.value);
+};
+
+const connectMessageFeed = async ({
+  feedId,
+  onMessageAdd,
+}: {
+  feedId?: string;
+  onMessageAdd: (messages: Message[]) => void;
+}) => {
+  if (!orbitDB) {
+    throw new Error('orbitDB instance is not exists');
+  }
+
+  const db = feedId
+    ? await orbitDB.feed<Message>(getMessagesAddress(feedId))
+    : await orbitDB.feed<Message>('messages', dbOptions);
+  db.events.on('replicated', () => {
+    onMessageAdd(readMessagesFromFeed(db));
+  });
+  messageFeeds[db.address.root] = db;
+  await db.load();
+  return db;
+};
+
+const connectPlaceKeyValue = async (placeId?: string) => {
+  if (!orbitDB) {
+    throw new Error('orbit DB instance is not exists');
+  }
+
+  const db = placeId
+    ? await orbitDB.keyvalue<PlaceDBValue>(getPlaceAddress(placeId))
+    : await orbitDB.keyvalue<PlaceDBValue>('place', dbOptions);
+  db.events.on('replicated', () => {
+    console.log('Place info updated');
+  });
+  placeKeyValues[db.address.root] = db;
+  await db.load();
+  return db;
+};
+
+export const ipfsNode = (): Ipfs => p2pNodes.ipfsNode!;
 export const privateIpfsNodes = (pid: string) => p2pNodes.privateIpfsNodes[pid];
 
 export const initNodes = createAsyncThunk<
@@ -47,49 +118,32 @@ export const initNodes = createAsyncThunk<
   void,
   { dispatch: AppDispatch; state: RootState }
 >('p2p/initNodes', async (_, thunkAPI) => {
-  const { dispatch } = thunkAPI;
   const state = thunkAPI.getState();
+  const dispatch = thunkAPI.dispatch;
 
   p2pNodes.ipfsNode = await IPFS.create({
     libp2p: publicLibp2pOptions,
   });
+  orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
 
   selectAllPlaces(state).forEach((place) => {
-    if (place.swarmKey) {
-      // TODO
-      // p2pNodes.privateIpfsNodes[pid] = IPFS.create({});
-    } else {
-      const messages = selectPlaceMessages(place)(state);
-
-      const node = ipfsNode();
-      subscribePublishPlaceMessageTopic(node, place.id, state.me, dispatch);
-
-      handleJoinPlaceProtocol(node, place, messages);
-    }
+    connectPlaceKeyValue(place.id);
+    connectMessageFeed({
+      feedId: place.messagesDBId,
+      onMessageAdd: (messages) => {
+        dispatch(
+          placeMessagesAdded({
+            placeId: place.id,
+            messages: excludeMyMessages(state.me.id, messages),
+          })
+        );
+      },
+    });
   });
 
   console.log((await p2pNodes.ipfsNode.id()).publicKey);
   console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
-
-const subscribePublishPlaceMessageTopic = (
-  node: Ipfs,
-  pid: string,
-  me: Me,
-  dispatch: AppDispatch
-) => {
-  node.pubsub.subscribe(publishPlaceMessageTopic(pid), async (msg) => {
-    const message: Message = JSON.parse(uint8ArrayToString(msg.data));
-    if (message.authorId === me.id) return;
-    if (message.contentIpfsCID) {
-      message.contentUrl = await addIpfsContent(
-        dispatch,
-        message.contentIpfsCID
-      );
-    }
-    dispatch(placeMessageAdded({ pid, message, mine: false }));
-  });
-};
 
 export const publishPlaceMessage = createAsyncThunk<
   void,
@@ -98,8 +152,12 @@ export const publishPlaceMessage = createAsyncThunk<
 >('p2p/publishPlaceMessage', async ({ pid, message, file }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const state = thunkAPI.getState();
-
   const msg = { ...message };
+  const place = selectPlaceById(pid)(state);
+
+  if (!place) {
+    throw new Error(`Place (id: ${pid}) is not exists.`);
+  }
 
   if (file) {
     const content = await ipfsNode().add({
@@ -119,31 +177,25 @@ export const publishPlaceMessage = createAsyncThunk<
     msg.contentUrl = dataUrl;
   }
 
-  (selectPlaceById(pid)(state)?.swarmKey
-    ? privateIpfsNodes(pid)
-    : ipfsNode()
-  )?.pubsub.publish(
-    publishPlaceMessageTopic(pid),
-    uint8ArrayFromString(JSON.stringify(msg)),
-    {}
-  );
+  if (!messageFeeds[place.messagesDBId]) {
+    throw new Error(`messages DB is not exists.`);
+  }
 
+  await messageFeeds[place.messagesDBId].add(msg);
   dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
 });
 
 export const joinPlace = createAsyncThunk<
   void,
   {
-    pid: string;
+    placeId: string;
     pubKey: string;
-    swarmKey: string | undefined;
     addrs: string[];
   },
   { dispatch: AppDispatch; state: RootState }
->('p2p/joinPlace', async ({ pid, swarmKey, pubKey, addrs }, thunkAPI) => {
+>('p2p/joinPlace', async ({ placeId, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
-
   const remotePeer = await createFromPubKey(pubKey);
 
   const node = ipfsNode();
@@ -154,51 +206,46 @@ export const joinPlace = createAsyncThunk<
     addrs.map((addr) => multiaddr(addr))
   );
 
-  // @ts-ignore
-  node.libp2p.peerStore.protoBook.set(remotePeer, joinPlaceProtocol(pid));
+  if (!orbitDB) {
+    throw new Error('OrbitDB is not initialized');
+  }
 
-  // TODO(kyfk): retry connect with the remote peer invited the user when a connection refused.
-  // @ts-ignore
-  const { stream } = await node.libp2p.dialProtocol(
-    remotePeer,
-    joinPlaceProtocol(pid),
-    {}
-  );
-  await pipe(stream, async (source) => {
-    const message = [];
-    for await (const chunk of source) {
-      message.push(chunk);
-    }
+  const placeDB = await connectPlaceKeyValue(placeId);
+  const name = placeDB.get('id') as string;
 
-    const {
-      messages,
-      place,
-    }: { messages: Message[]; place: Place } = JSON.parse(message.toString());
+  if (!name) {
+    throw new Error(`Cannot read data from place DB`);
+  }
 
-    const messagesWithDataUrl = await Promise.all(
-      messages.map(async (m) => {
-        if (m.contentIpfsCID) {
-          m.contentUrl = await addIpfsContent(dispatch, m.contentIpfsCID);
-        }
-        return m;
-      })
-    );
-
-    const avatarImage = await addIpfsContent(dispatch, place.avatarImageCID);
-    if (avatarImage) {
-      place.avatarImage = avatarImage;
-    }
-
-    place.invitationUrl = (await buildInvitationUrl(node, pid)).href;
-
-    dispatch(placeAdded({ place, messages: messagesWithDataUrl }));
-
-    subscribePublishPlaceMessageTopic(node, pid, me, dispatch);
-
-    handleJoinPlaceProtocol(node, place, messages);
-
-    dispatch(push(`/places/${pid}`));
+  const place: Place = {
+    id: placeId,
+    name: placeDB.get('name') as string,
+    avatarImage: placeDB.get('avatarImage') as string,
+    avatarImageCID: placeDB.get('avatarImageCID') as string,
+    description: placeDB.get('description') as string,
+    invitationUrl: placeDB.get('invitationUrl') as string,
+    messagesDBId: placeDB.get('messagesDBId') as string,
+    createdAt: placeDB.get('createdAt') as number,
+    timestamp: placeDB.get('timestamp') as number,
+    messageIds: [],
+    unreadMessages: [],
+  };
+  const feed = await connectMessageFeed({
+    feedId: place.messagesDBId,
+    onMessageAdd: (messages) => {
+      dispatch(
+        placeMessagesAdded({
+          placeId,
+          messages: excludeMyMessages(me.id, messages),
+        })
+      );
+    },
   });
+
+  const messages = readMessagesFromFeed(feed);
+
+  dispatch(placeAdded({ place, messages }));
+  dispatch(push(`/places/${placeId}`));
 });
 
 export const createNewPlace = createAsyncThunk<
@@ -214,7 +261,7 @@ export const createNewPlace = createAsyncThunk<
   'p2p/createNewPlace',
   async ({ name, description, isPrivate, avatarImage }, thunkAPI) => {
     const { dispatch } = thunkAPI;
-    const state = thunkAPI.getState();
+    const { me } = thunkAPI.getState();
 
     const node = ipfsNode();
     const file = await node.add({
@@ -229,33 +276,50 @@ export const createNewPlace = createAsyncThunk<
       // p2pNodes.privateIpfsNodes[id] = await IPFS.create({})
     }
 
-    const pid = uuidv4();
+    if (!orbitDB) {
+      throw new Error('orbit db is not initialized');
+    }
 
-    // build a invitation url
-    const invitationUrl = await buildInvitationUrl(ipfsNode(), pid);
+    const placeDB = await connectPlaceKeyValue();
+    const placeId = placeDB.address.root;
+    const messagesDB = await connectMessageFeed({
+      onMessageAdd: (messages) => {
+        dispatch(
+          placeMessagesAdded({
+            placeId,
+            messages: excludeMyMessages(me.id, messages),
+          })
+        );
+      },
+    });
 
     const cid = file.cid.toBaseEncodedString();
-
     const timestamp = getUnixTime(new Date());
     const dataUrl = await readAsDataURL(avatarImage);
+    // build a invitation url
+    const invitationUrl = await buildInvitationUrl(node, placeId);
 
     const place: Place = {
-      id: pid,
+      id: placeId,
       name,
       description,
       avatarImage: dataUrl,
       avatarImageCID: cid,
       timestamp: timestamp,
       createdAt: timestamp,
-      messageIds: [],
-      unreadMessages: [],
       swarmKey: swarmKey || undefined,
       invitationUrl: invitationUrl.href,
+      messagesDBId: messagesDB.address.root,
+      messageIds: [],
+      unreadMessages: [],
     };
 
-    const messages: Message[] = [];
-    dispatch(placeAdded({ place, messages }));
+    Object.keys(place).forEach((key) => {
+      const v = place[key as keyof Place];
+      v && placeDB.put(key, v);
+    });
 
+    dispatch(placeAdded({ place, messages: [] }));
     dispatch(
       ipfsContentAdded({
         cid,
@@ -263,11 +327,7 @@ export const createNewPlace = createAsyncThunk<
         file: avatarImage,
       })
     );
-
-    handleJoinPlaceProtocol(node, place, messages);
-    subscribePublishPlaceMessageTopic(node, pid, state.me, dispatch);
-
-    dispatch(push(`/places/${pid}`));
+    dispatch(push(`/places/${placeId}`));
   }
 );
 
@@ -309,41 +369,10 @@ const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
   return dataUrl;
 };
 
-const handleJoinPlaceProtocol = (
-  node: Ipfs,
-  place: Place,
-  messages: Message[]
-) => {
-  // @ts-ignore
-  node.libp2p.handle(
-    joinPlaceProtocol(place.id),
-    // @ts-ignore
-    ({ stream, connection }) => {
-      // TODO(kyfk): validate a peer id is the same being invited.
-      // const peerId = connection.remotePeer.toB58String();
-
-      const { invitationUrl, avatarImage, ...omittedPlace } = place;
-
-      pipe(
-        [
-          JSON.stringify({
-            messages: messages.map((m) => {
-              const { contentUrl, ...messageOmitted } = m;
-              return messageOmitted;
-            }),
-            place: omittedPlace,
-          }),
-        ],
-        stream
-      );
-    }
-  );
-};
-
-const buildInvitationUrl = async (node: Ipfs, pid: string) => {
+const buildInvitationUrl = async (node: Ipfs, placeId: string) => {
   const nid = await node.id();
   const invitationUrl = new URL(`https://localhost:3000`);
-  invitationUrl.searchParams.append('pid', pid);
+  invitationUrl.searchParams.append('placeId', placeId);
   nid.addresses.map((addr) => {
     invitationUrl.searchParams.append('addrs', addr.toString());
   });
