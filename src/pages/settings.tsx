@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import BaseLayout from '~/templates';
 import { PageTitle } from '~/components/atoms/page-title';
 import { ToggleSwitch } from '~/components/atoms/toggle-switch';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Button } from '../components/atoms/button';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,10 +13,12 @@ import {
 import {
   CloudDownload as DownloadIcon,
   CloudUpload as ImportIcon,
+  Autorenew as AutorenewIcon,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { SettingSection } from '~/components/organisms/setting-section';
 import { TextFormWithSubmit } from '~/components/molecules/textform-with-submit';
+import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
 
 const PAGE_TITLE = 'Settings';
 
@@ -46,19 +48,41 @@ const Links = styled.div`
   }
 `;
 
+const rotate = keyframes`
+  from {
+    transform: rotateZ(0);
+    }
+  to {
+    transform: rotateZ(360deg);
+  }
+`;
+
+const LoadingIcon = styled(AutorenewIcon)`
+  animation: ${rotate} 0.5s linear infinite;
+`;
+
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
   const handleUsernameChange = (username: string) =>
     dispatch(updateUsername(username));
-  const handleExportBackup = useCallback(() => {
-    console.log('export');
-  }, []);
-  const handleImportBackup = useCallback(() => {
-    console.log('import');
-  }, []);
+  const handleExportBackup = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      await downloadIdbBackup();
+    },
+    []
+  );
+  const handleImportBackup = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      setIsImporting(true);
+      await uploadIdbBackup().finally(() => setIsImporting(false));
+    },
+    []
+  );
   const handleChangeIsolation = (isIsolation: boolean) =>
     dispatch(updateIsolationMode(isIsolation));
+
+  const [isImporting, setIsImporting] = useState<boolean>(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const isBeforeIsolation = useMemo(() => me.settings.isIsolation, []);
@@ -96,7 +120,7 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
               onClick={handleImportBackup}
               shape="square"
               variant="outline"
-              icon={<ImportIcon />}
+              icon={isImporting ? <LoadingIcon /> : <ImportIcon />}
             />
           </BackupButtons>
         </SettingSection>
