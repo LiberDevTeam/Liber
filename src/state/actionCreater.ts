@@ -13,3 +13,7 @@ export const placeMessageAdded = createAction<{
   message: Message;
   mine: boolean;
 }>('placeMessages/placeMessageAdded');
+export const placeMessagesAdded = createAction<{
+  placeId: string;
+  messages: Message[];
+}>('placeMessages/placeMessagesAdded');

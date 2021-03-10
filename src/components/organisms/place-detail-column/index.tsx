@@ -124,7 +124,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       validateOnMount: true,
       async onSubmit({ text }) {
         // TODO: support multiple files
-        onSubmit({ text, file: files[0] });
+        await onSubmit({ text, file: files[0] });
         formik.resetForm();
         formik.validateForm();
         messageInputRef.current?.focus();

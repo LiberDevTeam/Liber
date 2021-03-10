@@ -12,9 +12,9 @@ import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
 
 type QueryParams = {
-  pid?: string;
+  address?: string;
+  placeId?: string;
   pubKey?: string;
-  swarmKey?: string;
   addrs?: string[]; // multiaddrs
 };
 
@@ -53,16 +53,16 @@ export const Routes: React.FC = () => (
 
 function Initializer() {
   const dispatch: AppThunkDispatch = useDispatch();
-  const { pid, pubKey, swarmKey, addrs } = useQuery<QueryParams>();
+  const { placeId, address, pubKey, addrs } = useQuery<QueryParams>();
 
   useEffect(() => {
     (async () => {
       await dispatch(initNodes());
-      if (pid && pubKey && addrs) {
-        await dispatch(joinPlace({ pubKey, pid, swarmKey, addrs }));
+      if (placeId && address && pubKey && addrs) {
+        await dispatch(joinPlace({ pubKey, placeId, address, addrs }));
       }
     })();
-  }, [dispatch, pid, pubKey, addrs, swarmKey]);
+  }, [dispatch, placeId, pubKey, addrs]);
 
   return null;
 }

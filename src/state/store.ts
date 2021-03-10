@@ -15,7 +15,6 @@ import { combineReducers } from 'redux';
 import { enableMapSet } from 'immer';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
 import { useDispatch } from 'react-redux';
 
 export const history = createBrowserHistory();
@@ -77,7 +76,7 @@ const reducers = combineReducers({
 
 export const store = configureStore({
   reducer: reducers,
-  middleware: [thunk, routerMiddleware(history), logger],
+  middleware: [thunk, routerMiddleware(history)],
 });
 
 export const persistor = persistStore(store);
