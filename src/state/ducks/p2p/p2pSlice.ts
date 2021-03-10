@@ -2,13 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
-import all from 'it-all';
 import multiaddr from 'multiaddr';
 import OrbitDB from 'orbit-db';
 import FeedStore from 'orbit-db-feedstore';
 import KeyValueStore from 'orbit-db-kvstore';
 import { createFromPubKey } from 'peer-id';
-import uint8ArrayConcat from 'uint8arrays/concat';
 import { publicLibp2pOptions } from '~/lib/libp2p';
 import {
   placeAdded,
@@ -156,43 +154,53 @@ export const initNodes = createAsyncThunk<
 
 export const publishPlaceMessage = createAsyncThunk<
   void,
-  { pid: string; message: Message; file?: File },
+  { pid: string; message: Message; attachments?: File[] },
   { dispatch: AppDispatch; state: RootState }
->('p2p/publishPlaceMessage', async ({ pid, message, file }, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-  const state = thunkAPI.getState();
-  const msg = { ...message };
-  const place = selectPlaceById(pid)(state);
+>(
+  'p2p/publishPlaceMessage',
+  async ({ pid, message, attachments }, thunkAPI) => {
+    const { dispatch } = thunkAPI;
+    const state = thunkAPI.getState();
+    const msg = { ...message };
+    const place = selectPlaceById(pid)(state);
 
-  if (!place) {
-    throw new Error(`Place (id: ${pid}) is not exists.`);
+    if (!place) {
+      throw new Error(`Place (id: ${pid}) is not exists.`);
+    }
+
+    if (attachments) {
+      msg.attachments =
+        (await Promise.all(
+          attachments.map(async (file) => {
+            const content = await ipfsNode().add({
+              path: file.name,
+              content: file,
+            });
+            const cid = content.cid.toBaseEncodedString();
+            const dataUrl = await readAsDataURL(file);
+            dispatch(
+              ipfsContentAdded({
+                cid,
+                dataUrl,
+                file,
+              })
+            );
+            return {
+              ipfsCid: cid,
+              dataUrl: dataUrl,
+            };
+          })
+        )) || [];
+    }
+
+    if (!messageFeeds[place.id]) {
+      throw new Error(`messages DB is not exists.`);
+    }
+
+    await messageFeeds[place.id].add(msg);
+    dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
   }
-
-  if (file) {
-    const content = await ipfsNode().add({
-      path: file.name,
-      content: file,
-    });
-    const cid = content.cid.toBaseEncodedString();
-    const dataUrl = await readAsDataURL(file);
-    dispatch(
-      ipfsContentAdded({
-        cid,
-        dataUrl,
-        file,
-      })
-    );
-    msg.contentIpfsCID = cid;
-    msg.contentUrl = dataUrl;
-  }
-
-  if (!messageFeeds[place.id]) {
-    throw new Error(`messages DB is not exists.`);
-  }
-
-  await messageFeeds[place.id].add(msg);
-  dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
-});
+);
 
 export const joinPlace = createAsyncThunk<
   void,
@@ -219,13 +227,9 @@ export const joinPlace = createAsyncThunk<
   if (!orbitDB) {
     throw new Error('OrbitDB is not initialized');
   }
-  console.log('a');
 
   const placeKeyValue = await connectPlaceKeyValue(placeId, address);
-  console.log('a');
   const feedAddress = placeKeyValue.get('feedAddress') as string;
-
-  console.log(feedAddress);
 
   if (!feedAddress) {
     throw new Error(`Cannot read data from place DB`);
@@ -366,31 +370,31 @@ const readAsDataURL = (file: File) => {
   });
 };
 
-const getIpfsContentFile = async (cid: string) => {
-  for await (const entry of ipfsNode().get(cid)) {
-    if (entry.type === 'dir' || !entry.content) continue;
-    const blob = new Blob([uint8ArrayConcat(await all(entry.content!))], {
-      type: 'application/octet-binary',
-    });
-    const file = new File([blob], entry.path);
-    return file;
-  }
-};
-
-const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
-  const file = await getIpfsContentFile(cid);
-  if (!file) return;
-
-  const dataUrl = await readAsDataURL(file);
-  dispatch(
-    ipfsContentAdded({
-      cid,
-      dataUrl,
-      file,
-    })
-  );
-  return dataUrl;
-};
+// const getIpfsContentFile = async (cid: string) => {
+//   for await (const entry of ipfsNode().get(cid)) {
+//     if (entry.type === 'dir' || !entry.content) continue;
+//     const blob = new Blob([uint8ArrayConcat(await all(entry.content!))], {
+//       type: 'application/octet-binary',
+//     });
+//     const file = new File([blob], entry.path);
+//     return file;
+//   }
+// };
+//
+// const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
+//   const file = await getIpfsContentFile(cid);
+//   if (!file) return;
+//
+//   const dataUrl = await readAsDataURL(file);
+//   dispatch(
+//     ipfsContentAdded({
+//       cid,
+//       dataUrl,
+//       file,
+//     })
+//   );
+//   return dataUrl;
+// };
 
 const buildInvitationUrl = async (
   node: Ipfs,

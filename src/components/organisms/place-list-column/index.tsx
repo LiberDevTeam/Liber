@@ -5,6 +5,8 @@ import { PlaceListColumnItem } from '~/components/molecules/place-list-item';
 import { Input } from '~/components/atoms/input';
 import { PageTitle } from '~/components/atoms/page-title';
 import { Place } from '~/state/ducks/places/placesSlice';
+import { push } from 'connected-react-router';
+import { useDispatch } from 'react-redux';
 
 export type PlaceListColumnProps = {
   title: string;
@@ -44,13 +46,8 @@ const List = styled.div`
 `;
 
 export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
-  function PlaceListColumn({
-    title,
-    placeList,
-    onClickNew = () => {
-      console.log('onClickNew');
-    },
-  }) {
+  function PlaceListColumn({ title, placeList }) {
+    const dispatch = useDispatch();
     const [searchText, setSearchText] = useState('');
 
     const handleSearchTextChange = useCallback(
@@ -60,11 +57,15 @@ export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
       []
     );
 
+    const handleOnClickNew = () => {
+      dispatch(push('/places/new'));
+    };
+
     return (
       <>
         <Header>
           <PageTitle>{title}</PageTitle>
-          <Button onClick={() => onClickNew()}>
+          <Button onClick={handleOnClickNew}>
             <AddIcon />
           </Button>
         </Header>

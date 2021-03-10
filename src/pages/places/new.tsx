@@ -9,6 +9,7 @@ import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import { PreviewImage } from '~/components/molecules/preview-image';
+import readFile from '~/lib/readFile';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -53,17 +54,6 @@ const UploadFileButtonGroup = styled.div`
 const SubmitButton = styled(Button)`
   margin-top: ${(props) => props.theme.space[8]}px;
 `;
-
-const readFile = (file: Blob) =>
-  new Promise<string>((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        resolve(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
 
 interface FormValues {
   name: string;
