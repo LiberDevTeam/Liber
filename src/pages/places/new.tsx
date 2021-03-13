@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
 import BaseLayout from '~/templates';
@@ -9,6 +9,7 @@ import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import { PreviewImage } from '~/components/molecules/preview-image';
+import * as yup from 'yup';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -69,7 +70,15 @@ interface FormValues {
   name: string;
   description: string;
   isPrivate: boolean;
+  avatarImage: File | null;
 }
+
+const validationSchema = yup.object({
+  name: yup.string().required(),
+  description: yup.string(),
+  isPrivate: yup.bool(),
+  avatarImage: yup.mixed().test('not null', '', (value) => value !== null),
+});
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
@@ -80,25 +89,34 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       name: '',
       description: '',
       isPrivate: false,
+      avatarImage: null,
     },
-    async onSubmit({ name, description, isPrivate }) {
-      if (avatarInputRef.current?.files) {
+    validationSchema,
+    async onSubmit({ name, description, isPrivate, avatarImage }) {
+      if (avatarImage) {
         dispatch(
           createNewPlace({
             name,
             description,
             isPrivate,
-            avatarImage: avatarInputRef.current.files[0],
+            avatarImage,
           })
         );
       }
     },
   });
 
+  useEffect(() => {
+    if (formik.values.avatarImage) {
+      readFile(formik.values.avatarImage).then((file) => {
+        setAvatarPreview(file);
+      });
+    }
+  }, [formik.values.avatarImage]);
+
   const handleChangeImage = async () => {
     if (avatarInputRef.current?.files && avatarInputRef.current.files[0]) {
-      const file = await readFile(avatarInputRef.current.files[0]);
-      setAvatarPreview(file);
+      formik.setFieldValue('avatarImage', avatarInputRef.current.files[0]);
     }
   };
 
@@ -107,7 +125,8 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       avatarInputRef.current.value = '';
     }
     setAvatarPreview(null);
-  }, []);
+    formik.setFieldValue('avatarImage', null);
+  }, [formik]);
 
   return (
     <BaseLayout>
@@ -164,7 +183,11 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           text="Submit"
           variant="solid"
           type="submit"
-          disabled={formik.isSubmitting || formik.isValid === false}
+          disabled={
+            formik.isSubmitting ||
+            formik.isValid === false ||
+            formik.dirty === false
+          }
         />
       </Form>
     </BaseLayout>

@@ -6,6 +6,7 @@ type ButtonVariant = 'solid' | 'outline' | 'text';
 interface RootProps {
   rounded: boolean;
   variant: ButtonVariant;
+  disabled: boolean;
 }
 
 const Root = styled.button<RootProps>`
@@ -58,6 +59,14 @@ const Root = styled.button<RootProps>`
         `;
     }
   }}
+
+  ${(props) =>
+    props.disabled &&
+    css`
+      color: ${props.theme.colors.lightText};
+      border-color: ${props.theme.colors.disabled};
+      background: ${props.theme.colors.disabled};
+    `}
 `;
 
 const IconWrapper = styled.span`
@@ -74,6 +83,7 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   shape: 'square' | 'rounded';
   text: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 };
 
 export const Button: React.FC<ButtonProps> = React.memo(function Button({
@@ -81,10 +91,16 @@ export const Button: React.FC<ButtonProps> = React.memo(function Button({
   icon,
   text,
   shape,
+  disabled = false,
   ...args
 }) {
   return (
-    <Root rounded={shape === 'rounded'} variant={variant} {...args}>
+    <Root
+      rounded={shape === 'rounded'}
+      variant={variant}
+      disabled={disabled}
+      {...args}
+    >
       {icon ? <IconWrapper>{icon}</IconWrapper> : null}
       {text}
     </Root>
