@@ -11,6 +11,7 @@ import {
 import styled from 'styled-components';
 import liberLogo from '~/logo.svg';
 import logoText from '~/logo-text.png';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   width: 244px;
@@ -44,6 +45,7 @@ const SubHeader = styled.div`
 `;
 
 export const SideNavigation: React.FC = React.memo(function SideNavigation() {
+  const [t] = useTranslation(['common']);
   return (
     <Root>
       <AppName>
@@ -52,27 +54,27 @@ export const SideNavigation: React.FC = React.memo(function SideNavigation() {
       </AppName>
 
       <LinkGroup>
-        <SubHeader>PLACE</SubHeader>
+        <SubHeader>{t('common:PLACE')}</SubHeader>
         <SideNavLink exact icon={<SearchIcon />} to="/">
-          Explore
+          {t('common:Explore')}
         </SideNavLink>
         <SideNavLink exact icon={<AddIcon />} to="/places/new">
-          Create new
+          {t('common:Create new')}
         </SideNavLink>
         <SideNavLink exact icon={<MessagesIcon />} to="/places">
-          Places
+          {t('common:Places')}
         </SideNavLink>
       </LinkGroup>
 
       <LinkGroup>
-        <SubHeader>OTHERS</SubHeader>
+        <SubHeader>{t('common:OTHERS')}</SubHeader>
         <SideNavLink exact icon={<SettingsIcon />} to="/settings">
-          Settings
+          {t('common:Settings')}
         </SideNavLink>
       </LinkGroup>
 
       <LinkGroup>
-        <SubHeader>LINKS</SubHeader>
+        <SubHeader>{t('common:LINKS')}</SubHeader>
       </LinkGroup>
     </Root>
   );
