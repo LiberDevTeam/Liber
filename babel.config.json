@@ -1,13 +1,12 @@
 {
   "presets": ["react-app"],
-  "plugins": [[
-    "i18next-extract",
-    {
-      "locales": [
-        "ja",
-        "en"
-      ],
-      "outputPath": "./public/locales/{{locale}}/{{ns}}.json"
-    }
-  ]]
+  "plugins": [
+    [
+      "i18next-extract",
+      {
+        "locales": ["ja", "en"],
+        "outputPath": "./public/locales/{{locale}}/{{ns}}.json"
+      }
+    ]
+  ]
 }

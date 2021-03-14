@@ -1,5 +1,5 @@
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
+import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import HttpApi from 'i18next-http-backend';
 
 i18next
@@ -10,6 +10,6 @@ i18next
     lng: 'en',
     fallbackLng: 'en',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
-    }
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+    },
   });

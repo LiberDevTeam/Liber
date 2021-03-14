@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { format, fromUnixTime, isToday } from 'date-fns';
 import ColorHash from 'color-hash';
 import { hex } from 'wcag-contrast';
+import { Attachment } from '~/state/ducks/places/messagesSlice';
 
 const colorHash = new ColorHash();
 
@@ -30,12 +31,21 @@ const Body = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   color: ${(props) => props.theme.colors.primaryText};
   margin-top: ${(props) => props.theme.space[1]}px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const AttachmentContainer = styled.div``;
+const AttachmentImage = styled.img`
+  max-height: 100px;
+  width: auto;
 `;
 
 export interface MessageViewProps {
   authorId: string;
   timestamp: number;
   text?: string;
+  attachments?: Attachment[];
 }
 
 const TIME_STRICT_FORMAT = 'iiii, LLLL d, yyyy p';
@@ -43,7 +53,7 @@ const TODAY_TIME_FORMAT = 'p';
 const DEFAULT_TIME_FORMAT = 'P';
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
-  function MessageView({ authorId, timestamp, text }) {
+  function MessageView({ authorId, timestamp, text, attachments }) {
     const name = authorId.split('-')[0];
     const color = colorHash.hex(name);
     const time = fromUnixTime(timestamp);
@@ -62,7 +72,16 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
               : format(time, DEFAULT_TIME_FORMAT)}
           </Timestamp>
         </MessageHead>
-        <Body>{text}</Body>
+        <Body>
+          {text}
+          {attachments
+            ? attachments.map((a) => (
+                <AttachmentContainer key={a.ipfsCid}>
+                  <AttachmentImage src={a.dataUrl} />
+                </AttachmentContainer>
+              ))
+            : null}
+        </Body>
       </div>
     );
   }

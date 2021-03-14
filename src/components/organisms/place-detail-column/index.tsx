@@ -1,24 +1,34 @@
 import {
-  AddCircle as AttacheFileIcon,
+  AddCircle as AttachFileIcon,
   Send as SendIcon,
 } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import * as Yup from 'yup';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
 import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 import { leftPlace } from '~/state/actionCreater';
-import { unsubscribeIpfsNode } from '~/state/ducks/p2p/p2pSlice';
-import { Message } from '~/state/ducks/places/messagesSlice';
-import { Place } from '~/state/ducks/places/placesSlice';
+import {
+  publishPlaceMessage,
+  unsubscribeIpfsNode,
+} from '~/state/ducks/p2p/p2pSlice';
+import {
+  clearUnreadMessages,
+  Place,
+  selectPlaceMessagesByPID,
+} from '~/state/ducks/places/placesSlice';
 import { IconButton } from '../../atoms/icon-button';
 import { PlaceDetailHeader } from '../../molecules/place-detail-header';
 import Observer from '@researchgate/react-intersection-observer';
 import { UnreadToast } from '~/components/molecules/unread-toast';
+import { PreviewImage } from '~/components/molecules/preview-image';
+import readFile from '~/lib/readFile';
+import { selectMe } from '~/state/ducks/me/meSlice';
+import { v4 as uuidv4 } from 'uuid';
+import { getUnixTime } from 'date-fns';
 
 const Root = styled.div`
   display: flex;
@@ -94,51 +104,49 @@ const Form = styled.form`
   display: contents;
 `;
 
-const validationSchema = Yup.object().shape({
-  text: Yup.string().required(),
-});
-
 export interface FormValues {
   text: string;
 }
 
 export type PlaceDetailColumnProps = {
   place: Place;
-  messages: Message[];
-  onSubmit: (values: { text: string; file?: File }) => void;
-  onClearUnread: () => void;
 };
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
-  function PlaceDetailColumn({ place, messages, onSubmit, onClearUnread }) {
+  function PlaceDetailColumn({ place }) {
+    const me = useSelector(selectMe);
+    const messages = useSelector(selectPlaceMessagesByPID(place.id));
+
     const dispatch = useDispatch();
-    const [files, setFiles] = useState<File[]>([]);
+    const [attachments, setAttachments] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
+    const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
+
     const messageInputRef = useRef<HTMLInputElement>(null);
     const messagesBottomRef = useRef<HTMLDivElement>(null);
+    const attachmentRef = useRef<HTMLInputElement>(null);
+
     const formik = useFormik<FormValues>({
       initialValues: {
         text: '',
       },
-      validationSchema,
       validateOnMount: true,
       async onSubmit({ text }) {
-        // TODO: support multiple files
-        await onSubmit({ text, file: files[0] });
+        const message = {
+          id: uuidv4(),
+          authorId: me.id,
+          authorName: me.username,
+          text,
+          postedAt: getUnixTime(new Date()),
+        };
+        dispatch(publishPlaceMessage({ pid: place.id, message, attachments }));
+
         formik.resetForm();
         formik.validateForm();
         messageInputRef.current?.focus();
         messagesBottomRef.current?.scrollIntoView();
       },
     });
-
-    const handleAttacheFile = async (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      if (e.currentTarget.files && e.currentTarget.files[0]) {
-        setFiles([e.currentTarget.files[0]]);
-      }
-    };
 
     // Scroll to bottom when open chat
     useEffect(() => {
@@ -147,12 +155,41 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
 
     const handleIntersection = useCallback(
       (e) => {
-        if (e.isIntersecting) {
-          onClearUnread();
+        if (e.isIntersecting && place?.unreadMessages) {
+          dispatch(clearUnreadMessages(place.id));
         }
       },
-      [onClearUnread]
+      [dispatch, place?.unreadMessages, place.id]
     );
+
+    const handleRemoveAvatarImage = useCallback((idx: number) => {
+      if (attachmentRef.current) {
+        attachmentRef.current.value = '';
+      }
+      setAttachments((prev) => prev.filter((_, i) => i != idx));
+      setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
+    }, []);
+
+    const handleChangeAttachment = async () => {
+      if (attachmentRef.current?.files) {
+        const files = Array.from(attachmentRef.current?.files);
+        const previews = await Promise.all(
+          Array.from(files).map(async (file, i) => {
+            console.log(file.type);
+            return await readFile(file);
+          })
+        );
+
+        setAttachments((prev) => [...prev, ...files]);
+        setAttachmentPreviews((prev) => [...prev, ...previews]);
+      }
+    };
+
+    const handleClearUnread = useCallback(() => {
+      if (place?.unreadMessages) {
+        dispatch(clearUnreadMessages(place.id));
+      }
+    }, [dispatch, place?.unreadMessages, place.id]);
 
     return (
       <>
@@ -176,6 +213,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                 authorId={m.authorId}
                 timestamp={m.postedAt}
                 text={m.text}
+                attachments={m.attachments}
               />
             ))}
             <Observer onChange={handleIntersection}>
@@ -188,7 +226,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
               <ToastWrapper>
                 <UnreadToast
                   messageCount={place.unreadMessages.length}
-                  onClose={onClearUnread}
+                  onClose={handleClearUnread}
                   onClick={() => {
                     messagesBottomRef.current?.scrollIntoView();
                   }}
@@ -197,6 +235,15 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             ) : null}
 
             <Form onSubmit={formik.handleSubmit}>
+              {attachmentPreviews
+                ? attachmentPreviews.map((preview, i) => (
+                    <PreviewImage
+                      key={attachments[i].name}
+                      src={preview}
+                      onRemove={() => handleRemoveAvatarImage(i)}
+                    />
+                  ))
+                : null}
               <Input
                 innerRef={messageInputRef}
                 name="text"
@@ -207,23 +254,26 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
               />
               <UploadFileButtonGroup>
                 <StyledIconButton
-                  icon={<AttacheFileIcon />}
-                  title="Attache file"
+                  icon={<AttachFileIcon />}
+                  title="Attach file"
                   disabled={formik.isSubmitting}
                   type="button"
                 />
                 <InputFile
-                  name="avatarImage"
+                  ref={attachmentRef}
+                  name="attachment"
                   type="file"
                   accept="image/*"
-                  onChange={handleAttacheFile}
+                  onChange={handleChangeAttachment}
                 />
               </UploadFileButtonGroup>
               <StyledIconButton
                 icon={<SendIcon />}
                 title="Send"
                 type="submit"
-                disabled={formik.isSubmitting || formik.isValid === false}
+                disabled={
+                  formik.values.text === '' && attachmentPreviews.length === 0
+                }
               />
             </Form>
           </Footer>
