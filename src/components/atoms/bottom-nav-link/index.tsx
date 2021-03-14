@@ -26,7 +26,9 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-const LinkText = styled.span``;
+const LinkText = styled.span`
+  padding-top: 1px;
+`;
 
 export interface BottomNavLinkProps {
   to: string;
