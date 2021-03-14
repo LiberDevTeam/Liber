@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { SettingSection } from '~/components/organisms/setting-section';
 import { TextFormWithSubmit } from '~/components/molecules/textform-with-submit';
 import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
+import { useTranslation } from 'react-i18next';
 
 const PAGE_TITLE = 'Settings';
 
@@ -64,6 +65,7 @@ const LoadingIcon = styled(AutorenewIcon)`
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
+  const {t} = useTranslation(['common', 'settings']);
   const handleUsernameChange = (username: string) =>
     dispatch(updateUsername(username));
   const handleExportBackup = useCallback(
@@ -97,18 +99,18 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
     <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
       <Contents>
-        <SettingSection title="Username">
+        <SettingSection title={t('common:Username')}>
           <TextFormWithSubmit
-            buttonName="Update"
+            buttonName={t('settings:Update')}
             defaultText={me.username}
             onSubmit={handleUsernameChange}
           />
         </SettingSection>
 
-        <SettingSection title="Backup">
+        <SettingSection title={t('settings:Backup')}>
           <BackupButtons>
             <Button
-              text="Create and download backup"
+              text={t('settings:Create and download backup')}
               onClick={handleExportBackup}
               shape="square"
               variant="solid"
@@ -116,7 +118,7 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
             />
 
             <Button
-              text="Import backup"
+              text={t('settings:Import backup')}
               onClick={handleImportBackup}
               shape="square"
               variant="outline"
@@ -126,8 +128,8 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
         </SettingSection>
 
         <SettingSection
-          title="Isolation mode"
-          description="If this mode is enabled, the application is isolated from everything of the Liber Search functionality."
+          title={t('settings:Isolation mode')}
+          description={t('settings:If this mode is enabled, the application is isolated from everything of the Liber Search functionality')}
         >
           <ToggleSwitch
             checked={me.settings.isIsolation}
@@ -136,10 +138,10 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
         </SettingSection>
 
         <Links>
-          <Link to="/">Privacy Policy</Link>
-          <Link to="/">Terms of Service</Link>
-          <Link to="/">License</Link>
-          <Link to="/">Contact Us</Link>
+          <Link to="/">{t('common:Privacy Policy')}</Link>
+          <Link to="/">{t('common:Terms of Service')}</Link>
+          <Link to="/">{t('common:License')}</Link>
+          <Link to="/">{t('common:Contact Us')}</Link>
         </Links>
       </Contents>
     </BaseLayout>

@@ -4,9 +4,11 @@ import {
   differenceInHours,
 } from 'date-fns';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Place } from '~/state/ducks/places/placesSlice';
+import { useFnsLocale } from '~/state/hooks/fnsLocale';
 
 const activeClassName = 'selected-place';
 
@@ -130,10 +132,11 @@ export interface PlaceListColumnItemProps {
 
 export const PlaceListColumnItem: React.FC<PlaceListColumnItemProps> = React.memo(
   function PlaceListColumnItem({ place }) {
+    const locale = useFnsLocale();
     const [dispTime, status] = useMemo(() => {
       const date = fromUnixTime(place.timestamp);
       return [
-        formatDistanceToNowStrict(date, { addSuffix: true }),
+        formatDistanceToNowStrict(date, { addSuffix: true, locale  }),
         calcStatusFromTime(date),
       ];
     }, [place.timestamp]);
