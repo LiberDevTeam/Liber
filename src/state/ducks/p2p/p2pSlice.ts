@@ -95,6 +95,15 @@ const connectMessageFeed = async ({
   db.events.on('replicated', () => {
     onMessageAdd(readMessagesFromFeed(db));
   });
+  db.events.on('peer', (...args) => {
+    console.log('peer', args);
+  });
+  db.events.on('replicate', (...args) => {
+    console.log('replicate', args);
+  });
+  db.events.on('load', (...args) => {
+    console.log('load', args);
+  });
   messageFeeds[placeId] = db;
   await db.load();
   return db;
@@ -130,7 +139,22 @@ export const initNodes = createAsyncThunk<
   const dispatch = thunkAPI.dispatch;
 
   p2pNodes.ipfsNode = await IPFS.create({
-    libp2p: publicLibp2pOptions,
+    start: true,
+    preload: {
+      enabled: true,
+    },
+    EXPERIMENTAL: { ipnsPubsub: true },
+    libp2p: {
+      addresses: {
+        listen: [
+          '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+          '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+          '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+        ],
+        announce: [],
+        noAnnounce: [],
+      },
+    },
   });
   orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
 
@@ -150,8 +174,8 @@ export const initNodes = createAsyncThunk<
     });
   });
 
-  console.log((await p2pNodes.ipfsNode.id()).publicKey);
-  console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
+  // console.log((await p2pNodes.ipfsNode.id()).publicKey);
+  // console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
 
 export const publishPlaceMessage = createAsyncThunk<
