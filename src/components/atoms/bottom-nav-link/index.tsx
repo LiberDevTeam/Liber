@@ -11,8 +11,9 @@ const StyledNavLink = styled(NavLink)`
   width: 100%;
   height: 100%;
   color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.sm};
   text-decoration: none;
+  font-weight: ${(props) => props.theme.fontWeights.light};
+  font-size: ${(props) => props.theme.fontSizes.xs};
 
   &.${activeClassName} {
     svg {
