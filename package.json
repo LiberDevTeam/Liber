@@ -40,6 +40,8 @@
     "formik": "^2.2.6",
     "fs-extra": "^9.1.0",
     "html-webpack-plugin": "5.3.1",
+    "i18next": "^19.9.2",
+    "i18next-http-backend": "^1.1.1",
     "identity-obj-proxy": "3.0.0",
     "immer": "8.0.1",
     "ipfs": "^0.54.4",
@@ -65,6 +67,7 @@
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.4",
     "react-dom": "^17.0.1",
+    "react-i18next": "^11.8.10",
     "react-modal": "^3.12.1",
     "react-redux": "^7.2.0",
     "react-refresh": "^0.9.0",
@@ -93,6 +96,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@babel/cli": "^7.13.10",
     "@babel/core": "7.13.10",
     "@craco/craco": "^6.1.1",
     "@storybook/addon-actions": "^6.1.21",
@@ -121,8 +125,10 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.0",
     "babel-loader": "8.1.0",
+    "babel-plugin-i18next-extract": "^0.8.2",
     "babel-plugin-named-asset-import": "^0.3.7",
     "babel-preset-react-app": "^10.0.0",
+    "cross-env": "^7.0.3",
     "dexie": "^3.0.3",
     "eslint": "~7.22.0",
     "eslint-config-prettier": "~8.1.0",
@@ -162,10 +168,11 @@
   },
   "scripts": {
     "build": "craco build",
-    "build-storybook": "build-storybook -s public",
+    "start": "cross-env HTTPS=true craco start",
+    "test": "craco test",
     "gen": "scaffdog generate",
-    "start": "HTTPS=true craco start",
     "storybook": "start-storybook -p 6006 -s public",
-    "test": "craco test"
+    "build-storybook": "build-storybook -s public",
+    "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'"
   }
 }

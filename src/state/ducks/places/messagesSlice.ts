@@ -12,8 +12,12 @@ export type Message = {
   authorName?: string;
   postedAt: number;
   text?: string;
-  contentIpfsCID?: string;
-  contentUrl?: string;
+  attachments?: Attachment[];
+};
+
+export type Attachment = {
+  ipfsCid: string;
+  dataUrl: string;
 };
 
 const messagesAdapter = createEntityAdapter<Message>({

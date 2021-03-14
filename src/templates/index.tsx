@@ -9,13 +9,13 @@ const commonRootStyle = css`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: ${(props) => props.theme.colors.bg2};
 `;
 
 const SpRoot = styled.div`
   display: flex;
   flex-flow: column;
   ${commonRootStyle};
+  background: white;
 `;
 
 const Root = styled.div`
@@ -23,15 +23,15 @@ const Root = styled.div`
   grid-template-columns: 244px auto;
   grid-gap: ${(props) => props.theme.space[5]}px;
   padding: ${(props) => props.theme.space[5]}px;
-  ${commonRootStyle};
+  background: ${(props) => props.theme.colors.bg2};
 `;
 
 const SpHeader = styled.header`
   width: 100%;
-  flex-basis: 80px;
   order: 2;
   bottom: 0;
-  overflow: auto;
+  border-top: 2px solid ${(props) => props.theme.colors.border};
+  padding: 0.5rem 0 2rem;
 `;
 
 const Header = styled.header`
