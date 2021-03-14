@@ -26,12 +26,13 @@ const Root = styled.div`
   background: ${(props) => props.theme.colors.bg2};
 `;
 
-const SpHeader = styled.header`
+const SpNavigation = styled.nav`
+  position: fixed;
   width: 100%;
-  order: 2;
   bottom: 0;
   border-top: 2px solid ${(props) => props.theme.colors.border};
-  padding: 0.5rem 0 2rem;
+  padding: 0.5rem 0;
+  margin-bottom: env(safe-area-inset-bottom);
 `;
 
 const Header = styled.header`
@@ -55,11 +56,10 @@ const BaseLayout: React.FC = ({ children }) => {
 
   return isMobile ? (
     <SpRoot>
-      <SpHeader>
-        <BottomNavigation />
-      </SpHeader>
-
       <Main>{children}</Main>
+      <SpNavigation>
+        <BottomNavigation />
+      </SpNavigation>
     </SpRoot>
   ) : (
     <Root>
