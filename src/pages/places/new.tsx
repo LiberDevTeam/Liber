@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import { PreviewImage } from '~/components/molecules/preview-image';
 import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -84,6 +85,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [t] = useTranslation(['newPlaces']);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
@@ -131,19 +133,19 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   return (
     <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
-      <Description>Please fill out a form and submit it.</Description>
+      <Description>{t('newPlaces:Please fill out a form and submit it')}</Description>
 
       <Form onSubmit={formik.handleSubmit}>
         <InputName
           name="name"
-          placeholder="Name"
+          placeholder={t('newPlaces:Name')}
           value={formik.values.name}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />
         <InputDescription
           name="description"
-          placeholder="Description"
+          placeholder={t('newPlaces:Description')}
           value={formik.values.description}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
@@ -156,7 +158,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           />
         ) : null}
         <UploadFileButtonGroup>
-          <Button text="Select Thumbnail Image" shape="square" type="button" />
+          <Button text={t('newPlaces:Select Thumbnail Image')} shape="square" type="button" />
           <InputFile
             ref={avatarInputRef}
             name="avatarImage"
@@ -174,13 +176,13 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
             />
-            Make private
+            {t('newPlaces:Make private')}
           </label>
         </PrivateFlagGroup>
 
         <SubmitButton
           shape="square"
-          text="Submit"
+          text={t('newPlaces:Submit')}
           variant="solid"
           type="submit"
           disabled={
