@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { PageTitle } from '~/components/atoms/page-title';
 import styled from 'styled-components';
 import BaseLayout from '~/templates';
@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import { PreviewImage } from '~/components/molecules/preview-image';
 import readFile from '~/lib/readFile';
+import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -59,36 +61,54 @@ interface FormValues {
   name: string;
   description: string;
   isPrivate: boolean;
+  avatarImage: File | null;
 }
+
+const validationSchema = yup.object({
+  name: yup.string().required(),
+  description: yup.string(),
+  isPrivate: yup.bool(),
+  avatarImage: yup.mixed().test('not null', '', (value) => value !== null),
+});
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [t] = useTranslation(['newPlaces']);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
       description: '',
       isPrivate: false,
+      avatarImage: null,
     },
-    async onSubmit({ name, description, isPrivate }) {
-      if (avatarInputRef.current?.files) {
+    validationSchema,
+    async onSubmit({ name, description, isPrivate, avatarImage }) {
+      if (avatarImage) {
         dispatch(
           createNewPlace({
             name,
             description,
             isPrivate,
-            avatarImage: avatarInputRef.current.files[0],
+            avatarImage,
           })
         );
       }
     },
   });
 
+  useEffect(() => {
+    if (formik.values.avatarImage) {
+      readFile(formik.values.avatarImage).then((file) => {
+        setAvatarPreview(file);
+      });
+    }
+  }, [formik.values.avatarImage]);
+
   const handleChangeImage = async () => {
     if (avatarInputRef.current?.files && avatarInputRef.current.files[0]) {
-      const file = await readFile(avatarInputRef.current.files[0]);
-      setAvatarPreview(file);
+      formik.setFieldValue('avatarImage', avatarInputRef.current.files[0]);
     }
   };
 
@@ -97,24 +117,27 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       avatarInputRef.current.value = '';
     }
     setAvatarPreview(null);
-  }, []);
+    formik.setFieldValue('avatarImage', null);
+  }, [formik]);
 
   return (
     <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
-      <Description>Please fill out a form and submit it.</Description>
+      <Description>
+        {t('newPlaces:Please fill out a form and submit it')}
+      </Description>
 
       <Form onSubmit={formik.handleSubmit}>
         <InputName
           name="name"
-          placeholder="Name"
+          placeholder={t('newPlaces:Name')}
           value={formik.values.name}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />
         <InputDescription
           name="description"
-          placeholder="Description"
+          placeholder={t('newPlaces:Description')}
           value={formik.values.description}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
@@ -127,7 +150,11 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           />
         ) : null}
         <UploadFileButtonGroup>
-          <Button text="Select Thumbnail Image" shape="square" type="button" />
+          <Button
+            text={t('newPlaces:Select Thumbnail Image')}
+            shape="square"
+            type="button"
+          />
           <InputFile
             ref={avatarInputRef}
             name="avatarImage"
@@ -145,16 +172,20 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
             />
-            Make private
+            {t('newPlaces:Make private')}
           </label>
         </PrivateFlagGroup>
 
         <SubmitButton
           shape="square"
-          text="Submit"
+          text={t('newPlaces:Submit')}
           variant="solid"
           type="submit"
-          disabled={formik.isSubmitting || formik.isValid === false}
+          disabled={
+            formik.isSubmitting ||
+            formik.isValid === false ||
+            formik.dirty === false
+          }
         />
       </Form>
     </BaseLayout>

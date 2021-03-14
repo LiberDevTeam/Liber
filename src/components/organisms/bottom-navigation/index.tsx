@@ -1,9 +1,11 @@
 import React from 'react';
 import { BottomNavLink } from '~/components/atoms/bottom-nav-link';
 import {
+  Home as HomeIcon,
   Search as SearchIcon,
   Forum as MessagesIcon,
-  Settings as SettingsIcon,
+  Store as MarketplaceIcon,
+  AccountCircle as ProfileIcon,
 } from '@material-ui/icons';
 import styled from 'styled-components';
 
@@ -20,14 +22,20 @@ export const BottomNavigation: React.FC = React.memo(
   function BottomNavigation() {
     return (
       <Root>
-        <BottomNavLink exact icon={<SearchIcon />} to="/">
+        <BottomNavLink exact icon={<HomeIcon />} to="/">
+          Home
+        </BottomNavLink>
+        <BottomNavLink exact icon={<SearchIcon />} to="/explore">
           Explore
         </BottomNavLink>
         <BottomNavLink exact icon={<MessagesIcon />} to="/places">
           Chats
         </BottomNavLink>
-        <BottomNavLink icon={<SettingsIcon />} to="/settings">
-          Settings
+        <BottomNavLink exact icon={<MarketplaceIcon />} to="/marketplace">
+          Marketplace
+        </BottomNavLink>
+        <BottomNavLink icon={<ProfileIcon />} to="/profile">
+          Profile
         </BottomNavLink>
       </Root>
     );
