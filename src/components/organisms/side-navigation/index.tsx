@@ -45,7 +45,7 @@ const SubHeader = styled.div`
 `;
 
 export const SideNavigation: React.FC = React.memo(function SideNavigation() {
-  const [t] = useTranslation(['common']);
+  const {t} = useTranslation(['common']);
   return (
     <Root>
       <AppName>

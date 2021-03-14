@@ -65,7 +65,7 @@ const LoadingIcon = styled(AutorenewIcon)`
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
-  const [t] = useTranslation(['common', 'settings']);
+  const {t} = useTranslation(['common', 'settings']);
   const handleUsernameChange = (username: string) =>
     dispatch(updateUsername(username));
   const handleExportBackup = useCallback(

@@ -85,7 +85,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const [t] = useTranslation(['newPlaces']);
+  const {t} = useTranslation(['newPlaces']);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
