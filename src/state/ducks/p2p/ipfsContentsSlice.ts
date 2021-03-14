@@ -22,7 +22,7 @@ export const ipfsContentsSlice = createSlice({
 export const { ipfsContentAdded } = ipfsContentsSlice.actions;
 
 const selectors = ipfsContentsAdapter.getSelectors();
-export const selectIpfsContentByCID = (cid: string) => (state: RootState) =>
+export const selectIpfsContentByCID = (cid: string) => (state: RootState): IpfsContent | undefined =>
   selectors.selectById(state.ipfsContents, cid);
 
 export default ipfsContentsSlice.reducer;

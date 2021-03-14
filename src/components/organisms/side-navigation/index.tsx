@@ -5,8 +5,6 @@ import {
   Add as AddIcon,
   Forum as MessagesIcon,
   Settings as SettingsIcon,
-  Notes as OtherIcon,
-  ContactMail as ContactIcon,
 } from '@material-ui/icons';
 import styled from 'styled-components';
 import liberLogo from '~/logo.svg';

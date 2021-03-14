@@ -62,7 +62,7 @@ function Initializer() {
         await dispatch(joinPlace({ pubKey, placeId, address, addrs }));
       }
     })();
-  }, [dispatch, placeId, pubKey, addrs]);
+  }, [dispatch, placeId, pubKey, address, addrs]);
 
   return null;
 }

@@ -50,7 +50,7 @@ export const placesSlice = createSlice({
       .addCase(placeMessageAdded, (state, action) => {
         const { pid, message, mine } = action.payload;
         const place = { ...state.entities[pid] };
-        place.messageIds = [...place.messageIds, message.id];
+        place.messageIds = [...(place.messageIds || []), message.id];
         if (mine === false) {
           place.unreadMessages = place.unreadMessages
             ? [...place.unreadMessages, message.id]
@@ -83,10 +83,10 @@ export const placesSlice = createSlice({
 // export const { } = placesSlice.actions;
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = (id: string) => (state: RootState) =>
+export const selectPlaceById = (id: string) => (state: RootState): Place | undefined =>
   selectors.selectById(state.places, id);
 
-export const selectAllPlaces = (state: RootState) =>
+export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
 
 export const selectPlaceIds = (state: RootState): EntityId[] =>

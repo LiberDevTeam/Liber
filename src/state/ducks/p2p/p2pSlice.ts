@@ -119,7 +119,7 @@ const connectPlaceKeyValue = async (placeId: string, address?: string) => {
 };
 
 export const ipfsNode = (): Ipfs => p2pNodes.ipfsNode!;
-export const privateIpfsNodes = (pid: string) => p2pNodes.privateIpfsNodes[pid];
+export const privateIpfsNodes = (pid: string): Ipfs => p2pNodes.privateIpfsNodes[pid];
 
 export const initNodes = createAsyncThunk<
   void,
@@ -401,7 +401,7 @@ const buildInvitationUrl = async (
   const invitationUrl = new URL(`https://localhost:3000`);
   invitationUrl.searchParams.append('placeId', placeId);
   invitationUrl.searchParams.append('address', address);
-  nid.addresses.map((addr) => {
+  nid.addresses.forEach((addr) => {
     invitationUrl.searchParams.append('addrs', addr.toString());
   });
   invitationUrl.searchParams.append('pubKey', nid.publicKey);
