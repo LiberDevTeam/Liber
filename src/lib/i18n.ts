@@ -6,7 +6,7 @@ i18next
   .use(HttpApi)
   .use(initReactI18next)
   .init({
-    ns: ['nav', 'newPlaces'],
+    ns: ['common', 'nav', 'newPlaces', 'settings'],
     lng: 'en',
     fallbackLng: 'en',
     backend: {
