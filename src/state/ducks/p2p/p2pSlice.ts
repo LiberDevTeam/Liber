@@ -7,7 +7,6 @@ import OrbitDB from 'orbit-db';
 import FeedStore from 'orbit-db-feedstore';
 import KeyValueStore from 'orbit-db-kvstore';
 import { createFromPubKey } from 'peer-id';
-import { publicLibp2pOptions } from '~/lib/libp2p';
 import {
   placeAdded,
   placeMessageAdded,
@@ -88,11 +87,10 @@ const connectMessageFeed = async ({
     ? await orbitDB.feed<Message>(getMessagesAddress(address, placeId))
     : await orbitDB.feed<Message>(`${placeId}/messages`, dbOptions);
 
-  console.log(db);
-
   db.events.on('replicated', () => {
     onMessageAdd(readMessagesFromFeed(db));
   });
+
   messageFeeds[placeId] = db;
   await db.load();
   return db;
@@ -128,7 +126,22 @@ export const initNodes = createAsyncThunk<
   const dispatch = thunkAPI.dispatch;
 
   p2pNodes.ipfsNode = await IPFS.create({
-    libp2p: publicLibp2pOptions,
+    start: true,
+    preload: {
+      enabled: true,
+    },
+    EXPERIMENTAL: { ipnsPubsub: true },
+    libp2p: {
+      addresses: {
+        listen: [
+          '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+          '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+          '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+        ],
+        announce: [],
+        noAnnounce: [],
+      },
+    },
   });
   orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
 
@@ -147,9 +160,6 @@ export const initNodes = createAsyncThunk<
       },
     });
   });
-
-  console.log((await p2pNodes.ipfsNode.id()).publicKey);
-  console.log((await p2pNodes.ipfsNode.id()).addresses[0].toString());
 });
 
 export const publishPlaceMessage = createAsyncThunk<
@@ -369,32 +379,6 @@ const readAsDataURL = (file: File) => {
     reader.readAsDataURL(file);
   });
 };
-
-// const getIpfsContentFile = async (cid: string) => {
-//   for await (const entry of ipfsNode().get(cid)) {
-//     if (entry.type === 'dir' || !entry.content) continue;
-//     const blob = new Blob([uint8ArrayConcat(await all(entry.content!))], {
-//       type: 'application/octet-binary',
-//     });
-//     const file = new File([blob], entry.path);
-//     return file;
-//   }
-// };
-//
-// const addIpfsContent = async (dispatch: AppDispatch, cid: string) => {
-//   const file = await getIpfsContentFile(cid);
-//   if (!file) return;
-//
-//   const dataUrl = await readAsDataURL(file);
-//   dispatch(
-//     ipfsContentAdded({
-//       cid,
-//       dataUrl,
-//       file,
-//     })
-//   );
-//   return dataUrl;
-// };
 
 const buildInvitationUrl = async (
   node: Ipfs,
