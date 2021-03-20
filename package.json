@@ -1,0 +1,17 @@
+{
+  "name": "liber-sticker-token",
+  "description": "Sticker Token of ERC721 for liber",
+  "version": "0.0.1",
+  "author": "mecaota <24618982+mecaota@users.noreply.github.com>",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.4.1",
+    "solc": "^0.8.2",
+    "truffle": "^5.2.5"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "git@github.com:wakayainc/liberStickerToken.git",
+  "scripts": {
+    "compile": "solcjs --bin --base-path . ./sticker.sol"
+  }
+}
