@@ -21,6 +21,7 @@ import {
 } from '~/state/ducks/places/placesSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
+import { selectMe } from '../me/meSlice';
 
 const publishPlaceMessageTopic = (pid: string) => {
   return `/liber/places/${pid}/messages/publish/1.0.0`;
@@ -115,7 +116,8 @@ const connectPlaceKeyValue = async (placeId: string, address?: string) => {
 };
 
 export const ipfsNode = (): Ipfs => p2pNodes.ipfsNode!;
-export const privateIpfsNodes = (pid: string): Ipfs => p2pNodes.privateIpfsNodes[pid];
+export const privateIpfsNodes = (pid: string): Ipfs =>
+  p2pNodes.privateIpfsNodes[pid];
 
 export const initNodes = createAsyncThunk<
   void,
@@ -164,22 +166,29 @@ export const initNodes = createAsyncThunk<
 
 export const publishPlaceMessage = createAsyncThunk<
   void,
-  { pid: string; message: Message; attachments?: File[] },
+  { text: string; pid: string; attachments?: File[] },
   { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/publishPlaceMessage',
-  async ({ pid, message, attachments }, thunkAPI) => {
-    const { dispatch } = thunkAPI;
-    const state = thunkAPI.getState();
-    const msg = { ...message };
+  async ({ pid, text, attachments }, { dispatch, getState }) => {
+    const state = getState();
     const place = selectPlaceById(pid)(state);
+    const me = selectMe(state);
 
     if (!place) {
       throw new Error(`Place (id: ${pid}) is not exists.`);
     }
 
+    const message: Message = {
+      id: uuidv4(),
+      authorName: me.username,
+      authorId: me.id,
+      text,
+      postedAt: getUnixTime(new Date()),
+    };
+
     if (attachments) {
-      msg.attachments =
+      message.attachments =
         (await Promise.all(
           attachments.map(async (file) => {
             const content = await ipfsNode().add({
@@ -207,8 +216,8 @@ export const publishPlaceMessage = createAsyncThunk<
       throw new Error(`messages DB is not exists.`);
     }
 
-    await messageFeeds[place.id].add(msg);
-    dispatch(placeMessageAdded({ pid, message: msg, mine: true }));
+    await messageFeeds[place.id].add(message);
+    dispatch(placeMessageAdded({ pid, message, mine: true }));
   }
 );
 

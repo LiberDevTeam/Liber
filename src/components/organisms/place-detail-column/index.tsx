@@ -132,14 +132,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       },
       validateOnMount: true,
       async onSubmit({ text }) {
-        const message = {
-          id: uuidv4(),
-          authorId: me.id,
-          authorName: me.username,
-          text,
-          postedAt: getUnixTime(new Date()),
-        };
-        dispatch(publishPlaceMessage({ pid: place.id, message, attachments }));
+        dispatch(publishPlaceMessage({ pid: place.id, text, attachments }));
 
         formik.resetForm();
         formik.validateForm();
