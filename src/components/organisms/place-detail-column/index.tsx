@@ -12,6 +12,7 @@ import { MessageView } from '~/components/molecules/message-view';
 import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
 import { leftPlace } from '~/state/actionCreater';
 import {
+  openProtectedPlace,
   publishPlaceMessage,
   unsubscribeIpfsNode,
 } from '~/state/ducks/p2p/p2pSlice';
@@ -26,9 +27,6 @@ import Observer from '@researchgate/react-intersection-observer';
 import { UnreadToast } from '~/components/molecules/unread-toast';
 import { PreviewImage } from '~/components/molecules/preview-image';
 import readFile from '~/lib/readFile';
-import { selectMe } from '~/state/ducks/me/meSlice';
-import { v4 as uuidv4 } from 'uuid';
-import { getUnixTime } from 'date-fns';
 
 const Root = styled.div`
   display: flex;
@@ -114,13 +112,13 @@ export type PlaceDetailColumnProps = {
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place }) {
-    const me = useSelector(selectMe);
     const messages = useSelector(selectPlaceMessagesByPID(place.id));
 
     const dispatch = useDispatch();
     const [attachments, setAttachments] = useState<File[]>([]);
     const [open, setOpen] = useState(false);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
+    const [password, setPassword] = useState('');
 
     const messageInputRef = useRef<HTMLInputElement>(null);
     const messagesBottomRef = useRef<HTMLDivElement>(null);
@@ -184,6 +182,10 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       }
     }, [dispatch, place?.unreadMessages, place.id]);
 
+    const handlePasswordEnter = useCallback(() => {
+      dispatch(openProtectedPlace({ password, placeId: place.id }));
+    }, [dispatch, place.id, password]);
+
     return (
       <>
         <Root>
@@ -198,6 +200,18 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
               dispatch(push('/places'));
             }}
           />
+
+          {place.passwordRequired && place.hash === undefined && (
+            <>
+              <div>password required</div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.currentTarget.value)}
+              />
+              <button onClick={handlePasswordEnter}>enter</button>
+            </>
+          )}
 
           <Messages>
             {messages.map((m) => (

@@ -18,6 +18,7 @@ import {
   Place,
   selectAllPlaces,
   selectPlaceById,
+  setHash,
 } from '~/state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
@@ -31,10 +32,28 @@ const joinPlaceProtocol = (pid: string) => {
   return `/liber/places/${pid}/join/1.0.0`;
 };
 
-type PlaceDBValue = string | number | string[];
+type PlaceDBValue = string | number | string[] | boolean;
 
-const getMessagesAddress = (address: string, placeId: string): string =>
-  `/orbitdb/${address}/${placeId}/messages`;
+async function digestMessage(message: string): Promise<string> {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  return hashHex;
+}
+
+const getMessagesAddress = ({
+  address,
+  placeId,
+  hash,
+}: {
+  address: string;
+  placeId: string;
+  hash?: string;
+}): string =>
+  `/orbitdb/${address}/${placeId}${hash ? `-${hash}` : ''}/messages`;
 const getPlaceAddress = (address: string, placeId: string): string =>
   `/orbitdb/${address}/${placeId}/place`;
 
@@ -74,19 +93,26 @@ const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
 const connectMessageFeed = async ({
   placeId,
   address,
+  hash,
   onMessageAdd,
 }: {
   placeId: string;
   address?: string;
+  hash?: string;
   onMessageAdd: (messages: Message[]) => void;
 }) => {
   if (!orbitDB) {
     throw new Error('orbitDB instance is not exists');
   }
 
-  const db = address
-    ? await orbitDB.feed<Message>(getMessagesAddress(address, placeId))
-    : await orbitDB.feed<Message>(`${placeId}/messages`, dbOptions);
+  const dbAddress = address
+    ? getMessagesAddress({ address, placeId, hash })
+    : `${placeId}${hash ? `-${hash}` : ''}/messages`;
+
+  const db = await orbitDB.feed<Message>(
+    dbAddress,
+    address ? undefined : dbOptions
+  );
 
   db.events.on('replicated', () => {
     onMessageAdd(readMessagesFromFeed(db));
@@ -97,7 +123,13 @@ const connectMessageFeed = async ({
   return db;
 };
 
-const connectPlaceKeyValue = async (placeId: string, address?: string) => {
+const connectPlaceKeyValue = async ({
+  placeId,
+  address,
+}: {
+  placeId: string;
+  address?: string;
+}) => {
   if (!orbitDB) {
     throw new Error('orbit DB instance is not exists');
   }
@@ -148,10 +180,14 @@ export const initNodes = createAsyncThunk<
   orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
 
   selectAllPlaces(state).forEach(async (place) => {
-    connectPlaceKeyValue(place.id, place.keyValAddress);
+    connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
+    if (place.passwordRequired && place.hash === undefined) {
+      return;
+    }
     connectMessageFeed({
       placeId: place.id,
       address: place.feedAddress,
+      hash: place.hash,
       onMessageAdd: (messages) => {
         dispatch(
           placeMessagesAdded({
@@ -247,7 +283,7 @@ export const joinPlace = createAsyncThunk<
     throw new Error('OrbitDB is not initialized');
   }
 
-  const placeKeyValue = await connectPlaceKeyValue(placeId, address);
+  const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
   const feedAddress = placeKeyValue.get('feedAddress') as string;
 
   if (!feedAddress) {
@@ -265,9 +301,16 @@ export const joinPlace = createAsyncThunk<
     keyValAddress: placeKeyValue.get('keyValAddress') as string,
     createdAt: placeKeyValue.get('createdAt') as number,
     timestamp: placeKeyValue.get('timestamp') as number,
+    passwordRequired: placeKeyValue.get('passwordRequired') as boolean,
     messageIds: [],
     unreadMessages: [],
   };
+
+  if (place.passwordRequired) {
+    dispatch(placeAdded({ place, messages: [] }));
+    return;
+  }
+
   const feed = await connectMessageFeed({
     placeId,
     address: feedAddress,
@@ -294,6 +337,49 @@ export const joinPlace = createAsyncThunk<
   dispatch(push(`/places/${placeId}`));
 });
 
+export const openProtectedPlace = createAsyncThunk<
+  void,
+  { placeId: string; password: string },
+  { dispatch: AppThunkDispatch; state: RootState }
+>(
+  'place/openProtectedPlace',
+  async ({ placeId, password }, { dispatch, getState }) => {
+    const state = getState();
+    const me = state.me;
+    const place = selectPlaceById(placeId)(state);
+
+    if (!place) {
+      throw new Error(`place: ${placeId} is not found.`);
+    }
+
+    const hash = await digestMessage(password);
+    const feed = await connectMessageFeed({
+      placeId,
+      address: place.feedAddress,
+      hash,
+      onMessageAdd: (messages) => {
+        dispatch(
+          placeMessagesAdded({
+            placeId,
+            messages: excludeMyMessages(me.id, messages),
+          })
+        );
+      },
+    });
+
+    const messages = readMessagesFromFeed(feed);
+    dispatch(setHash({ placeId, hash }));
+    dispatch(placeMessagesAdded({ placeId, messages }));
+    dispatch(
+      publishPlaceMessage({
+        pid: placeId,
+        text: `${me.username || me.id} joined!`,
+        attachments: [],
+      })
+    );
+  }
+);
+
 export const createNewPlace = createAsyncThunk<
   void,
   {
@@ -301,13 +387,16 @@ export const createNewPlace = createAsyncThunk<
     description: string;
     isPrivate: boolean;
     avatarImage: File;
+    password?: string;
   },
   { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/createNewPlace',
-  async ({ name, description, isPrivate, avatarImage }, thunkAPI) => {
-    const { dispatch } = thunkAPI;
-    const { me } = thunkAPI.getState();
+  async (
+    { name, description, isPrivate, avatarImage, password },
+    { dispatch, getState }
+  ) => {
+    const { me } = getState();
 
     const node = ipfsNode();
     const file = await node.add({
@@ -327,10 +416,12 @@ export const createNewPlace = createAsyncThunk<
     }
 
     const placeId = uuidv4();
-
-    const placeKeyValue = await connectPlaceKeyValue(placeId);
+    const passwordRequired = password !== undefined;
+    const placeKeyValue = await connectPlaceKeyValue({ placeId });
+    const hash = password ? await digestMessage(password) : undefined;
     const feed = await connectMessageFeed({
       placeId,
+      hash,
       onMessageAdd: (messages) => {
         dispatch(
           placeMessagesAdded({
@@ -363,11 +454,14 @@ export const createNewPlace = createAsyncThunk<
       createdAt: timestamp,
       swarmKey: swarmKey || undefined,
       invitationUrl: invitationUrl.href,
+      passwordRequired,
+      hash,
       messageIds: [],
       unreadMessages: [],
     };
 
     Object.keys(place).forEach((key) => {
+      if (key === 'hash') return; // Do not add hash to the place db.
       const v = place[key as keyof Place];
       v && placeKeyValue.put(key, v);
     });

@@ -25,6 +25,8 @@ export interface Place {
   createdAt: number;
   messageIds: string[];
   unreadMessages: string[];
+  passwordRequired: boolean;
+  hash?: string;
   // orbit db id
   feedAddress: string;
   keyValAddress: string;
@@ -42,6 +44,13 @@ export const placesSlice = createSlice({
       const place = state.entities[action.payload];
       if (place) {
         place.unreadMessages = [];
+      }
+    },
+    setHash(state, action: PayloadAction<{ placeId: string; hash: string }>) {
+      const { placeId, hash } = action.payload;
+      const place = state.entities[placeId];
+      if (place) {
+        place.hash = hash;
       }
     },
   },
@@ -83,8 +92,9 @@ export const placesSlice = createSlice({
 // export const { } = placesSlice.actions;
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = (id: string) => (state: RootState): Place | undefined =>
-  selectors.selectById(state.places, id);
+export const selectPlaceById = (id: string) => (
+  state: RootState
+): Place | undefined => selectors.selectById(state.places, id);
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -106,6 +116,6 @@ export const selectPlaceMessagesByPID = (pid: string) => (
     .filter(Boolean) as Message[];
 };
 
-export const { clearUnreadMessages } = placesSlice.actions;
+export const { clearUnreadMessages, setHash } = placesSlice.actions;
 
 export default placesSlice.reducer;

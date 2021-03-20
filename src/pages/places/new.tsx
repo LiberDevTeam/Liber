@@ -28,7 +28,7 @@ const Form = styled.form`
   flex-direction: column;
 `;
 
-const InputName = styled(Input)`
+const InputText = styled(Input)`
   margin-top: ${(props) => props.theme.space[8]}px;
 `;
 const InputDescription = styled(Textarea)`
@@ -62,6 +62,7 @@ interface FormValues {
   description: string;
   isPrivate: boolean;
   avatarImage: File | null;
+  password?: string;
 }
 
 const validationSchema = yup.object({
@@ -69,13 +70,14 @@ const validationSchema = yup.object({
   description: yup.string(),
   isPrivate: yup.bool(),
   avatarImage: yup.mixed().test('not null', '', (value) => value !== null),
+  password: yup.string(),
 });
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const {t} = useTranslation(['newPlaces']);
+  const { t } = useTranslation(['newPlaces']);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
@@ -84,7 +86,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       avatarImage: null,
     },
     validationSchema,
-    async onSubmit({ name, description, isPrivate, avatarImage }) {
+    async onSubmit({ name, description, isPrivate, avatarImage, password }) {
       if (avatarImage) {
         dispatch(
           createNewPlace({
@@ -92,6 +94,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             description,
             isPrivate,
             avatarImage,
+            password,
           })
         );
       }
@@ -128,7 +131,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       </Description>
 
       <Form onSubmit={formik.handleSubmit}>
-        <InputName
+        <InputText
           name="name"
           placeholder={t('newPlaces:Name')}
           value={formik.values.name}
@@ -139,6 +142,14 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           name="description"
           placeholder={t('newPlaces:Description')}
           value={formik.values.description}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
+        />
+        <InputText
+          name="password"
+          type="password"
+          placeholder={t('newPlaces:Password')}
+          value={formik.values.password}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />
