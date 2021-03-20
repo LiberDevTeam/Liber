@@ -19,7 +19,7 @@ import {
   selectAllPlaces,
   selectPlaceById,
 } from '~/state/ducks/places/placesSlice';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
 import { selectMe } from '../me/meSlice';
 
@@ -229,7 +229,7 @@ export const joinPlace = createAsyncThunk<
     address: string;
     addrs: string[];
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppThunkDispatch; state: RootState }
 >('p2p/joinPlace', async ({ placeId, address, pubKey, addrs }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
@@ -284,6 +284,13 @@ export const joinPlace = createAsyncThunk<
   const messages = readMessagesFromFeed(feed);
 
   dispatch(placeAdded({ place, messages }));
+  dispatch(
+    publishPlaceMessage({
+      pid: placeId,
+      text: `${me.username || me.id} joined!`,
+      attachments: [],
+    })
+  );
   dispatch(push(`/places/${placeId}`));
 });
 

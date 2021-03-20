@@ -12,4 +12,8 @@ i18next
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
+    react: {
+      // TODO: re-enable after implemented to use suspense.
+      useSuspense: false,
+    },
   });
