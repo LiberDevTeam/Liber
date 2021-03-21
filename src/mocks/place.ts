@@ -15,4 +15,6 @@ export const dummyPlace = (id: string): Place => ({
   unreadMessages: [],
   feedAddress: '',
   keyValAddress: '',
+  passwordRequired: false,
+  category: 0,
 });
