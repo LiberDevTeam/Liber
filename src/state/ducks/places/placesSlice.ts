@@ -50,6 +50,8 @@ export interface Place {
   keyValAddress: string;
 }
 
+const messageSort = (a: Message, b: Message): number => a.postedAt - b.postedAt;
+
 const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
@@ -76,20 +78,28 @@ export const placesSlice = createSlice({
     builder
       .addCase(placeMessageAdded, (state, action) => {
         const { pid, message, mine } = action.payload;
-        const place = { ...state.entities[pid] };
-        place.messageIds = [...(place.messageIds || []), message.id];
+        const currentPlace = state.entities[pid];
+        if (currentPlace === undefined) {
+          throw new Error('Place is not exists');
+        }
+        const newPlace: Place = { ...currentPlace };
+        newPlace.messageIds = [...(newPlace.messageIds || []), message.id];
         if (mine === false) {
-          place.unreadMessages = place.unreadMessages
-            ? [...place.unreadMessages, message.id]
+          newPlace.unreadMessages = newPlace.unreadMessages
+            ? [...newPlace.unreadMessages, message.id]
             : [message.id];
         }
-        placesAdapter.updateOne(state, { id: pid, changes: place });
+        if (newPlace.timestamp < message.postedAt) {
+          newPlace.timestamp = message.postedAt;
+        }
+        placesAdapter.updateOne(state, { id: pid, changes: newPlace });
       })
       .addCase(placeMessagesAdded, (state, action) => {
-        const place = state.entities[action.payload.placeId];
+        const { placeId, messages } = action.payload;
+        const place = state.entities[placeId];
 
         if (place) {
-          const ids = action.payload.messages.map((message) => message.id);
+          const ids = messages.sort(messageSort).map((message) => message.id);
           place.messageIds = [...new Set(place.messageIds.concat(ids))];
           place.unreadMessages = [...new Set(place.unreadMessages.concat(ids))];
         }
