@@ -16,4 +16,5 @@ export const dummyPlace = (id: string): Place => ({
   feedAddress: '',
   keyValAddress: '',
   passwordRequired: false,
+  category: 0,
 });

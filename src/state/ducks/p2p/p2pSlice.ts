@@ -316,6 +316,7 @@ export const joinPlace = createAsyncThunk<
     createdAt: placeKeyValue.get('createdAt') as number,
     timestamp: placeKeyValue.get('timestamp') as number,
     passwordRequired: placeKeyValue.get('passwordRequired') as boolean,
+    category: placeKeyValue.get('category') as number,
     messageIds: [],
     unreadMessages: [],
   };
@@ -392,6 +393,7 @@ export const createNewPlace = createAsyncThunk<
   void,
   {
     name: string;
+    category: number;
     description: string;
     isPrivate: boolean;
     avatarImage: File;
@@ -401,7 +403,7 @@ export const createNewPlace = createAsyncThunk<
 >(
   'p2p/createNewPlace',
   async (
-    { name, description, isPrivate, avatarImage, password },
+    { name, description, isPrivate, avatarImage, password, category },
     { dispatch, getState }
   ) => {
     const { me } = getState();
@@ -461,6 +463,7 @@ export const createNewPlace = createAsyncThunk<
       invitationUrl: invitationUrl.href,
       passwordRequired,
       hash,
+      category,
       messageIds: [],
       unreadMessages: [],
     };

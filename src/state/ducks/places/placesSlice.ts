@@ -13,6 +13,23 @@ import {
 import { RootState } from '~/state/store';
 import { Message, selectMessageById } from './messagesSlice';
 
+export const categories = [
+  'Discussion and Stories',
+  'Emotional Reaction Fuel',
+  'Entertainment - Gaming',
+  'Entertainment - Television',
+  'Entertainment - Other (Movies/Music/Franchies/Misc)',
+  'Humor',
+  'Images, Gifs, and Videos',
+  'Learning and Thinking',
+  'Lifestyle and Help',
+  'News and Issues',
+  'Travel',
+  'Race, Gender, and Identity',
+  'Sports',
+  'Technology',
+];
+
 export interface Place {
   id: string;
   name: string;
@@ -26,6 +43,7 @@ export interface Place {
   messageIds: string[];
   unreadMessages: string[];
   passwordRequired: boolean;
+  category: number;
   hash?: string;
   // orbit db id
   feedAddress: string;

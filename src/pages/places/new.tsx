@@ -12,6 +12,7 @@ import { PreviewImage } from '~/components/molecules/preview-image';
 import readFile from '~/lib/readFile';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { categories } from '../../state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'Create new place';
 
@@ -63,6 +64,7 @@ interface FormValues {
   isPrivate: boolean;
   avatarImage: File | null;
   password?: string;
+  category: number;
 }
 
 const validationSchema = yup.object({
@@ -71,22 +73,31 @@ const validationSchema = yup.object({
   isPrivate: yup.bool(),
   avatarImage: yup.mixed().test('not null', '', (value) => value !== null),
   password: yup.string(),
+  category: yup.number().required(),
 });
 
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const { t } = useTranslation(['newPlaces']);
+  const { t } = useTranslation(['newPlaces', 'categories']);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',
       description: '',
       isPrivate: false,
       avatarImage: null,
+      category: 0,
     },
     validationSchema,
-    async onSubmit({ name, description, isPrivate, avatarImage, password }) {
+    async onSubmit({
+      name,
+      description,
+      isPrivate,
+      avatarImage,
+      password,
+      category,
+    }) {
       if (avatarImage) {
         dispatch(
           createNewPlace({
@@ -95,6 +106,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             isPrivate,
             avatarImage,
             password,
+            category,
           })
         );
       }
@@ -174,6 +186,14 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             onChange={handleChangeImage}
           />
         </UploadFileButtonGroup>
+
+        <select id="category" name="category">
+          {categories.map((value, index) => (
+            <option key={value} value={index}>
+              {t(`categories:${value}`)}
+            </option>
+          ))}
+        </select>
 
         <PrivateFlagGroup role="group">
           <label>
