@@ -90,6 +90,23 @@ const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
   return items.map((item) => item.payload.value);
 };
 
+const createMessageReceiveHandler = ({
+  dispatch,
+  placeId,
+  myId,
+}: {
+  dispatch: AppThunkDispatch;
+  placeId: string;
+  myId: string;
+}) => (messages: Message[]): void => {
+  dispatch(
+    placeMessagesAdded({
+      placeId,
+      messages: excludeMyMessages(myId, messages),
+    })
+  );
+};
+
 const connectMessageFeed = async ({
   placeId,
   address,
@@ -188,14 +205,11 @@ export const initNodes = createAsyncThunk<
       placeId: place.id,
       address: place.feedAddress,
       hash: place.hash,
-      onMessageAdd: (messages) => {
-        dispatch(
-          placeMessagesAdded({
-            placeId: place.id,
-            messages: excludeMyMessages(state.me.id, messages),
-          })
-        );
-      },
+      onMessageAdd: createMessageReceiveHandler({
+        dispatch,
+        placeId: place.id,
+        myId: state.me.id,
+      }),
     });
   });
 });
@@ -314,14 +328,11 @@ export const joinPlace = createAsyncThunk<
   const feed = await connectMessageFeed({
     placeId,
     address: feedAddress,
-    onMessageAdd: (messages) => {
-      dispatch(
-        placeMessagesAdded({
-          placeId,
-          messages: excludeMyMessages(me.id, messages),
-        })
-      );
-    },
+    onMessageAdd: createMessageReceiveHandler({
+      dispatch,
+      placeId,
+      myId: me.id,
+    }),
   });
 
   const messages = readMessagesFromFeed(feed);
@@ -357,14 +368,11 @@ export const openProtectedPlace = createAsyncThunk<
       placeId,
       address: place.feedAddress,
       hash,
-      onMessageAdd: (messages) => {
-        dispatch(
-          placeMessagesAdded({
-            placeId,
-            messages: excludeMyMessages(me.id, messages),
-          })
-        );
-      },
+      onMessageAdd: createMessageReceiveHandler({
+        dispatch,
+        placeId,
+        myId: me.id,
+      }),
     });
 
     const messages = readMessagesFromFeed(feed);
@@ -422,14 +430,11 @@ export const createNewPlace = createAsyncThunk<
     const feed = await connectMessageFeed({
       placeId,
       hash,
-      onMessageAdd: (messages) => {
-        dispatch(
-          placeMessagesAdded({
-            placeId,
-            messages: excludeMyMessages(me.id, messages),
-          })
-        );
-      },
+      onMessageAdd: createMessageReceiveHandler({
+        dispatch,
+        placeId,
+        myId: me.id,
+      }),
     });
 
     const cid = file.cid.toBaseEncodedString();
