@@ -4,7 +4,7 @@ import {
   Action,
   ThunkDispatch,
 } from '@reduxjs/toolkit';
-import { createBrowserHistory } from 'history';
+import { createHashHistory } from 'history';
 import placesReducer from '~/state/ducks/places/placesSlice';
 import meReducer from '~/state/ducks/me/meSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
@@ -17,7 +17,7 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import { useDispatch } from 'react-redux';
 
-export const history = createBrowserHistory();
+export const history = createHashHistory();
 
 enableMapSet();
 
