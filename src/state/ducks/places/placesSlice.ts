@@ -7,7 +7,6 @@ import {
 import {
   placeMessageAdded,
   placeAdded,
-  leftPlace,
   placeMessagesAdded,
 } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
@@ -73,6 +72,9 @@ export const placesSlice = createSlice({
         place.hash = hash;
       }
     },
+    leftPlace(state, action: PayloadAction<{ pid: string }>) {
+      placesAdapter.removeOne(state, action.payload.pid);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,13 +113,8 @@ export const placesSlice = createSlice({
           placesAdapter.addOne(state, place);
         }
       })
-      .addCase(leftPlace, (state, action) => {
-        placesAdapter.removeOne(state, action.payload.pid);
-      });
   },
 });
-
-// export const { } = placesSlice.actions;
 
 const selectors = placesAdapter.getSelectors();
 export const selectPlaceById = (id: string) => (
@@ -144,6 +141,6 @@ export const selectPlaceMessagesByPID = (pid: string) => (
     .filter(Boolean) as Message[];
 };
 
-export const { clearUnreadMessages, setHash } = placesSlice.actions;
+export const { clearUnreadMessages, setHash, leftPlace } = placesSlice.actions;
 
 export default placesSlice.reducer;
