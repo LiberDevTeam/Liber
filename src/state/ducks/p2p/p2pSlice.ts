@@ -24,14 +24,6 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
 import { selectMe } from '../me/meSlice';
 
-const publishPlaceMessageTopic = (pid: string) => {
-  return `/liber/places/${pid}/messages/publish/1.0.0`;
-};
-
-const joinPlaceProtocol = (pid: string) => {
-  return `/liber/places/${pid}/join/1.0.0`;
-};
-
 type PlaceDBValue = string | number | string[] | boolean;
 
 async function digestMessage(message: string): Promise<string> {
@@ -132,6 +124,7 @@ const connectMessageFeed = async ({
   );
 
   db.events.on('replicated', () => {
+    console.log("replicated")
     onMessageAdd(readMessagesFromFeed(db));
   });
 
@@ -275,23 +268,12 @@ export const joinPlace = createAsyncThunk<
   void,
   {
     placeId: string;
-    pubKey: string;
     address: string;
-    addrs: string[];
   },
   { dispatch: AppThunkDispatch; state: RootState }
->('p2p/joinPlace', async ({ placeId, address, pubKey, addrs }, thunkAPI) => {
+>('p2p/joinPlace', async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
-  const remotePeer = await createFromPubKey(pubKey);
-
-  const node = ipfsNode();
-
-  // @ts-ignore
-  node.libp2p.peerStore.addressBook.add(
-    remotePeer,
-    addrs.map((addr) => multiaddr(addr))
-  );
 
   if (!orbitDB) {
     throw new Error('OrbitDB is not initialized');
@@ -323,6 +305,7 @@ export const joinPlace = createAsyncThunk<
 
   if (place.passwordRequired) {
     dispatch(placeAdded({ place, messages: [] }));
+    dispatch(push(`/places/${placeId}`));
     return;
   }
 
@@ -442,9 +425,8 @@ export const createNewPlace = createAsyncThunk<
     const cid = file.cid.toBaseEncodedString();
     const timestamp = getUnixTime(new Date());
     const dataUrl = await readAsDataURL(avatarImage);
-    // build a invitation url
+    // build an invitation url
     const invitationUrl = await buildInvitationUrl(
-      node,
       placeId,
       placeKeyValue.address.root
     );
@@ -499,27 +481,11 @@ const readAsDataURL = (file: File) => {
 };
 
 const buildInvitationUrl = async (
-  node: Ipfs,
   placeId: string,
   address: string
 ) => {
-  const nid = await node.id();
-  const invitationUrl = new URL(`https://localhost:3000`);
+  const invitationUrl = new URL(`${window.location.protocol}//${window.location.hostname}/#/`);
   invitationUrl.searchParams.append('placeId', placeId);
   invitationUrl.searchParams.append('address', address);
-  nid.addresses.forEach((addr) => {
-    invitationUrl.searchParams.append('addrs', addr.toString());
-  });
-  invitationUrl.searchParams.append('pubKey', nid.publicKey);
   return invitationUrl;
 };
-
-export const unsubscribeIpfsNode = createAsyncThunk<
-  void,
-  { pid: string },
-  { dispatch: AppDispatch; state: RootState }
->('p2p/initNodes', async ({ pid }) => {
-  ipfsNode().pubsub.unsubscribe(publishPlaceMessageTopic(pid));
-  // @ts-ignore
-  ipfsNode().libp2p.unhandle(joinPlaceProtocol(pid));
-});
