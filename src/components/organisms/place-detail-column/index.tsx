@@ -25,7 +25,7 @@ import { PlaceDetailHeader } from '../../molecules/place-detail-header';
 import Observer from '@researchgate/react-intersection-observer';
 import { UnreadToast } from '~/components/molecules/unread-toast';
 import { PreviewImage } from '~/components/molecules/preview-image';
-import readFile from '~/lib/readFile';
+import { readAsDataURL } from '~/lib/readFile';
 
 const Root = styled.div`
   display: flex;
@@ -166,7 +166,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         const previews = await Promise.all(
           Array.from(files).map(async (file, i) => {
             console.log(file.type);
-            return await readFile(file);
+            return await readAsDataURL(file);
           })
         );
 

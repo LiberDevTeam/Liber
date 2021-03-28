@@ -29,6 +29,17 @@ export const categories = [
   'Technology',
 ];
 
+export enum PlacePermission {
+  NONE,
+  AUTHOR,
+  ADMIN,
+  WRITER,
+  MODERATOR,
+}
+
+// UserId: PlacePermission
+export type PlacePermissions = Record<string, PlacePermission>;
+
 export interface Place {
   id: string;
   name: string;
@@ -44,6 +55,7 @@ export interface Place {
   passwordRequired: boolean;
   category: number;
   hash?: string;
+  permissions: PlacePermissions;
   // orbit db id
   feedAddress: string;
   keyValAddress: string;
@@ -112,7 +124,7 @@ export const placesSlice = createSlice({
         if (place) {
           placesAdapter.addOne(state, place);
         }
-      })
+      });
   },
 });
 
