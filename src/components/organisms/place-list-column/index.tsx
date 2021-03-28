@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Search as SearchIcon, Add as AddIcon } from '@material-ui/icons';
+import { Add as AddIcon } from '@material-ui/icons';
 import { PlaceListColumnItem } from '~/components/molecules/place-list-item';
 import { Input } from '~/components/atoms/input';
 import { PageTitle } from '~/components/atoms/page-title';
 import { Place } from '~/state/ducks/places/placesSlice';
 import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
+import { SvgSearch as SearchIcon } from '~/icons/Search';
 
 export type PlaceListColumnProps = {
   title: string;
@@ -71,9 +72,10 @@ export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
         </Header>
         <SearchBox>
           <Input
-            icon={<SearchIcon />}
+            icon={<SearchIcon width={24} height={24} />}
             value={searchText}
             onChange={handleSearchTextChange}
+            placeholder="Search"
           />
         </SearchBox>
         <List>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { PlaceDetailHeader, PlaceDetailHeaderProps } from './';
 import { Story } from '@storybook/react/types-6-0';
+import avatarImage from '../../../mocks/user.png';
 
 export default {
   component: PlaceDetailHeader,
@@ -8,6 +9,9 @@ export default {
   argTypes: {
     onInviteClick: {
       action: 'onInviteClick',
+    },
+    onLeave: {
+      action: 'onLeave',
     },
   },
 };
@@ -17,13 +21,7 @@ const Template: Story<PlaceDetailHeaderProps> = (args) => (
 );
 export const Default = Template.bind({});
 Default.args = {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  place: {
-    avatarImage: '',
-    id: '',
-    name: 'We Love FC Barcelona!!',
-    description:
-      'DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescion',
-  },
+  name: 'College Friends',
+  avatarImage: avatarImage,
+  memberCount: 23,
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { MessageView, MessageViewProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
+import userImage from '../../../mocks/user.png';
 
 export default {
   component: MessageView,
@@ -11,7 +12,10 @@ const Template: Story<MessageViewProps> = (args) => <MessageView {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  authorId: 'C7140B81',
-  text: 'それはpornスター。サッカーやない',
-  timestamp: 1612204980858,
+  name: 'Charlie Malik',
+  userImage,
+  text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.`,
+  timestamp: 1612204980,
+  mine: false,
+  attachments: [{ dataUrl: userImage, ipfsCid: 'id' }],
 };

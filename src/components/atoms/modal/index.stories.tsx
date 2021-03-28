@@ -22,6 +22,5 @@ const Template: Story<ModalProps> = (args) => <Modal {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   open: true,
-  title: 'Modal title',
   children: <div style={{ width: 572 }}>content</div>,
 };

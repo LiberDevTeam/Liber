@@ -1,12 +1,10 @@
 import React from 'react';
 import { BottomNavLink } from '~/components/atoms/bottom-nav-link';
-import {
-  Home as HomeIcon,
-  Search as SearchIcon,
-  Forum as MessagesIcon,
-  Store as MarketplaceIcon,
-  AccountCircle as ProfileIcon,
-} from '@material-ui/icons';
+import { SvgPeople as ProfileIcon } from '~/icons/People';
+import { SvgSearch as SearchIcon } from '~/icons/Search';
+import { SvgHome as HomeIcon } from '~/icons/Home';
+import { SvgMessageSquare as MessagesIcon } from '~/icons/MessageSquare';
+import { SvgShoppingBag as MarketplaceIcon } from '~/icons/ShoppingBag';
 import styled from 'styled-components';
 
 const Root = styled.div`
@@ -22,19 +20,34 @@ export const BottomNavigation: React.FC = React.memo(
   function BottomNavigation() {
     return (
       <Root>
-        <BottomNavLink exact icon={<HomeIcon />} to="/">
+        <BottomNavLink exact icon={<HomeIcon width={24} height={24} />} to="/">
           Home
         </BottomNavLink>
-        <BottomNavLink exact icon={<SearchIcon />} to="/explore">
+        <BottomNavLink
+          exact
+          icon={<SearchIcon width={24} height={24} />}
+          to="/explore"
+        >
           Explore
         </BottomNavLink>
-        <BottomNavLink exact icon={<MessagesIcon />} to="/places">
+        <BottomNavLink
+          exact
+          icon={<MessagesIcon width={24} height={24} />}
+          to="/places"
+        >
           Chats
         </BottomNavLink>
-        <BottomNavLink exact icon={<MarketplaceIcon />} to="/marketplace">
+        <BottomNavLink
+          exact
+          icon={<MarketplaceIcon width={24} height={24} />}
+          to="/marketplace"
+        >
           Marketplace
         </BottomNavLink>
-        <BottomNavLink icon={<ProfileIcon />} to="/profile">
+        <BottomNavLink
+          icon={<ProfileIcon width={24} height={24} />}
+          to="/profile"
+        >
           Profile
         </BottomNavLink>
       </Root>

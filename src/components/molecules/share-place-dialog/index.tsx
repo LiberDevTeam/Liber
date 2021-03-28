@@ -6,15 +6,31 @@ import { Button } from '~/components/atoms/button';
 import copy from 'copy-to-clipboard';
 
 const Root = styled.div`
-  width: 572px;
-  font-family: ${(props) => props.theme.fontFamily.body};
-  padding-top: ${(props) => props.theme.space[6]}px;
-  padding-bottom: ${(props) => props.theme.space[4]}px;
+  width: 320px;
+  height: 320px;
+  padding-top: ${(props) => props.theme.space[3]}px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Image = styled.span`
+  font-size: 64px;
+  text-align: center;
+`;
+
+const Title = styled.div`
+  font-weight: ${(props) => props.theme.fontWeights.bold};
+  font-size: ${(props) => props.theme.fontSizes.xl};
+  text-align: center;
+  margin-top: ${(props) => props.theme.space[5]}px;
 `;
 
 const Description = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.lg};
+  margin-top: ${(props) => props.theme.space[3]}px;
+  padding: ${(props) => `0px ${props.theme.space[7]}px`};
+  text-align: center;
 `;
 
 const Content = styled.div`
@@ -39,13 +55,14 @@ const description = 'Share the link below to people you want to invite.';
 export const SharePlaceDialog: React.FC<SharePlaceDialogProps> = React.memo(
   function SharePlaceDialog({ open, url, onClose }) {
     const handleCopy = useCallback(() => {
-      // TODO: Show Toast to notice user that url copied.
       copy(url);
     }, [url]);
 
     return (
-      <Modal open={open} title={title} onClose={onClose}>
+      <Modal open={open} onClose={onClose}>
         <Root>
+          <Image>🙋‍♂</Image>
+          <Title>{title}</Title>
           <Description>{description}</Description>
           <Content>
             <Input value={url} readOnly />

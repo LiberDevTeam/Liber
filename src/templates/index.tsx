@@ -1,9 +1,7 @@
-import { useMediaQuery } from '@material-ui/core';
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { BottomNavigation } from '~/components/organisms/bottom-navigation';
-import { SideNavigation } from '~/components/organisms/side-navigation';
-import { theme } from '~/theme';
 
 const commonRootStyle = css`
   width: 100vw;
@@ -18,26 +16,13 @@ const SpRoot = styled.div`
   background: white;
 `;
 
-const Root = styled.div`
-  display: grid;
-  grid-template-columns: 244px auto;
-  grid-gap: ${(props) => props.theme.space[5]}px;
-  padding: ${(props) => props.theme.space[5]}px;
-  background: ${(props) => props.theme.colors.bg2};
-`;
-
 const SpNavigation = styled.nav`
   position: fixed;
   width: 100%;
   bottom: 0;
-  border-top: 2px solid ${(props) => props.theme.colors.border};
-  padding: 0.5rem 0;
+  padding: ${(props) => props.theme.fontSizes.xs} 0;
+  box-shadow: 0px -20px 70px rgba(143, 167, 179, 0.1);
   margin-bottom: env(safe-area-inset-bottom);
-`;
-
-const Header = styled.header`
-  height: 100%;
-  overflow: auto;
 `;
 
 const Main = styled.main`
@@ -50,25 +35,21 @@ const Main = styled.main`
 `;
 
 const BaseLayout: React.FC = ({ children }) => {
-  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`, {
-    noSsr: true,
-  });
-
-  return isMobile ? (
+  return (
     <SpRoot>
       <Main>{children}</Main>
-      <SpNavigation>
-        <BottomNavigation />
-      </SpNavigation>
+      <Switch>
+        <Route path="/places/*" component={() => null} />
+        <Route
+          path="*"
+          component={() => (
+            <SpNavigation>
+              <BottomNavigation />
+            </SpNavigation>
+          )}
+        />
+      </Switch>
     </SpRoot>
-  ) : (
-    <Root>
-      <Header>
-        <SideNavigation />
-      </Header>
-
-      <Main>{children}</Main>
-    </Root>
   );
 };
 

@@ -16,18 +16,20 @@ const StyledNavLink = styled(NavLink)`
   font-size: ${(props) => props.theme.fontSizes.xs};
 
   &.${activeClassName} {
+    color: ${(props) => props.theme.colors.primary};
+
     svg {
       color: ${(props) => props.theme.colors.primary};
     }
+
     span {
-      color: ${(props) => props.theme.colors.primaryText};
       font-weight: ${(props) => props.theme.fontWeights.bold};
     }
   }
 `;
 
 const LinkText = styled.span`
-  padding-top: 1px;
+  padding-top: ${(props) => props.theme.space[3]}px;
 `;
 
 export interface BottomNavLinkProps {
