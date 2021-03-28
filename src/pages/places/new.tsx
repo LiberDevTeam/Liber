@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import { PreviewImage } from '~/components/molecules/preview-image';
-import readFile from '~/lib/readFile';
+import { readAsDataURL } from '~/lib/readFile';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { categories } from '../../state/ducks/places/placesSlice';
@@ -115,7 +115,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
 
   useEffect(() => {
     if (formik.values.avatarImage) {
-      readFile(formik.values.avatarImage).then((file) => {
+      readAsDataURL(formik.values.avatarImage).then((file) => {
         setAvatarPreview(file);
       });
     }

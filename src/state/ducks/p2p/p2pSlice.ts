@@ -2,11 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import IPFS, { IPFS as Ipfs } from 'ipfs';
-import multiaddr from 'multiaddr';
 import OrbitDB from 'orbit-db';
 import FeedStore from 'orbit-db-feedstore';
 import KeyValueStore from 'orbit-db-kvstore';
-import { createFromPubKey } from 'peer-id';
+import { v4 as uuidv4 } from 'uuid';
 import {
   placeAdded,
   placeMessageAdded,
@@ -16,15 +15,17 @@ import { ipfsContentAdded } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { Message } from '~/state/ducks/places/messagesSlice';
 import {
   Place,
+  PlacePermission,
+  PlacePermissions,
   selectAllPlaces,
   selectPlaceById,
   setHash,
 } from '~/state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
-import { v4 as uuidv4 } from 'uuid';
-import { selectMe } from '../me/meSlice';
+import { readAsDataURL } from '~/lib/readFile';
+import { selectMe } from '~/state/ducks/me/meSlice';
 
-type PlaceDBValue = string | number | string[] | boolean;
+type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
 async function digestMessage(message: string): Promise<string> {
   const msgUint8 = new TextEncoder().encode(message);
@@ -124,7 +125,7 @@ const connectMessageFeed = async ({
   );
 
   db.events.on('replicated', () => {
-    console.log("replicated")
+    console.log('replicated');
     onMessageAdd(readMessagesFromFeed(db));
   });
 
@@ -301,6 +302,7 @@ export const joinPlace = createAsyncThunk<
     category: placeKeyValue.get('category') as number,
     messageIds: [],
     unreadMessages: [],
+    permissions: placeKeyValue.get('permissions') as PlacePermissions,
   };
 
   if (place.passwordRequired) {
@@ -448,6 +450,7 @@ export const createNewPlace = createAsyncThunk<
       category,
       messageIds: [],
       unreadMessages: [],
+      permissions: { [me.id]: PlacePermission.AUTHOR },
     };
 
     Object.keys(place).forEach((key) => {
@@ -468,23 +471,10 @@ export const createNewPlace = createAsyncThunk<
   }
 );
 
-const readAsDataURL = (file: File) => {
-  return new Promise<string>((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        resolve(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-const buildInvitationUrl = async (
-  placeId: string,
-  address: string
-) => {
-  const invitationUrl = new URL(`${window.location.protocol}//${window.location.hostname}/#/`);
+const buildInvitationUrl = async (placeId: string, address: string) => {
+  const invitationUrl = new URL(
+    `${window.location.protocol}//${window.location.hostname}/#/`
+  );
   invitationUrl.searchParams.append('placeId', placeId);
   invitationUrl.searchParams.append('address', address);
   return invitationUrl;

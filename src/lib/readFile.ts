@@ -1,5 +1,5 @@
-const readFile = (file: Blob) =>
-  new Promise<string>((resolve) => {
+export const readAsDataURL = (file: File): Promise<string> =>
+  new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target && e.target.result) {
@@ -8,5 +8,3 @@ const readFile = (file: Blob) =>
     };
     reader.readAsDataURL(file);
   });
-
-export default readFile;
