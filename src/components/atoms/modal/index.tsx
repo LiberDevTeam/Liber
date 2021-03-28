@@ -17,18 +17,12 @@ const Title = styled.div`
 `;
 
 export interface ModalProps {
-  title: string;
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({
-  open,
-  title,
-  onClose,
-  children,
-}) => (
+export const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => (
   <ReactModal
     isOpen={open}
     style={{
@@ -48,7 +42,6 @@ export const Modal: React.FC<ModalProps> = ({
     onRequestClose={onClose}
   >
     <Header>
-      <Title>{title}</Title>
       <IconButton icon={<CloseIcon />} onClick={onClose} />
     </Header>
     {children}

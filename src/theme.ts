@@ -1,6 +1,14 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
+  @font-face {
+    font-family: 'Delecta';
+    font-style: normal;
+    font-weight: normal;
+    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA.OTF);
+  }
+
+
   *,
   *::before,
   *::after {
@@ -33,8 +41,8 @@ export const GlobalStyles = createGlobalStyle`
 
 const colors = {
   primary: '#2e79f6',
-  primaryText: '#1a2c58',
-  secondaryText: '#a0aabe',
+  primaryText: '#26404d',
+  secondaryText: '#8fa7b2',
   lightText: '#fcfdfe',
   lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
@@ -43,6 +51,8 @@ const colors = {
   bg2: '#f0f5fa',
   bg3: '#f3f3f3',
   bg4: '#c4c4c4',
+  bgBlue: '#e5f7ff',
+  bgGray: '#f5f8fa',
   modalBg: '#00000077',
   border: '#f0f5fa',
   green: '#4eeb91',
@@ -100,8 +110,8 @@ const fontWeights = {
 };
 
 const fontFamily = {
-  heading: `"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-  body: `"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+  heading: `Delecta, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+  body: `Delecta, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
   mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`,
 };
 
@@ -128,6 +138,7 @@ export const theme = {
   radii: {
     medium: 12,
     large: 20,
+    xl: 32,
     round: '50%',
   },
 } as const;

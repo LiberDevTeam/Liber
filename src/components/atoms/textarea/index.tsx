@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Textarea = styled.textarea`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.md};
-  background: ${(props) => props.theme.colors.bg3};
+  background: ${(props) => props.theme.colors.bgGray};
   border: none;
   border-radius: ${(props) => props.theme.radii.large}px;
   padding: ${(props) => `${props.theme.space[3]}px ${props.theme.space[5]}px`};

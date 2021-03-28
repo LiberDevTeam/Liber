@@ -2,29 +2,25 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Root = styled.div`
-  display: block;
+  display: flex;
   width: 100%;
   position: relative;
-  background: ${(props) => props.theme.colors.bg3};
+  background: ${(props) => props.theme.colors.bgGray};
   font-weight: ${(props) => props.theme.fontWeights.normal};
-  font-size: ${(props) => props.theme.fontSizes.md};
-  border-radius: ${(props) => props.theme.radii.large}px;
+  font-size: ${(props) => props.theme.fontSizes.sm};
+  line-height: ${(props) => props.theme.fontSizes.xl};
+  border-radius: ${(props) => props.theme.radii.xl}px;
+  padding: ${(props) => `${props.theme.space[4]}px ${props.theme.space[5]}px`};
 `;
 
 const InnerInput = styled.input<{ hasIcon: boolean }>`
   display: block;
   width: 100%;
-  background: ${(props) => props.theme.colors.bg3};
-  padding: ${(props) => `${props.theme.space[3]}px ${props.theme.space[5]}px`};
+  background: ${(props) => props.theme.colors.bgGray};
   border: none;
-  border-radius: ${(props) => props.theme.radii.large}px;
+  border-radius: ${(props) => props.theme.radii.xl}px;
   text-overflow: ellipsis;
-
-  &:focus {
-    border-color: ${(props) => props.theme.colors.primary};
-    box-shadow: ${(props) => props.theme.colors.lightPrimary} 0px 0px 0px 2px;
-    outline: none;
-  }
+  outline: none;
 
   ::placeholder {
     color: ${(props) => props.theme.colors.secondaryText};
@@ -33,13 +29,11 @@ const InnerInput = styled.input<{ hasIcon: boolean }>`
   ${(props) =>
     props.hasIcon &&
     css`
-      padding-left: ${(props) => props.theme.space[11]}px;
+      padding-left: ${(props) => props.theme.space[2]}px;
     `}
 `;
 
 const IconWrapper = styled.span`
-  position: absolute;
-  height: 40px;
   left: ${(props) => props.theme.space[3]}px;
   color: ${(props) => props.theme.colors.secondaryText};
   display: flex;
@@ -54,18 +48,21 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
     | React.RefObject<HTMLInputElement>
     | null
     | undefined;
+  actions?: React.ReactNode;
 };
 
 export const Input: React.FC<InputProps> = React.memo(function Input({
   icon,
   className,
   innerRef,
+  actions,
   ...rest
 }) {
   return (
     <Root className={className}>
       <IconWrapper>{icon}</IconWrapper>
       <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
+      {actions}
     </Root>
   );
 });

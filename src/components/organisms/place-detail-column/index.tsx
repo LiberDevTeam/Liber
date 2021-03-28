@@ -1,7 +1,4 @@
-import {
-  AddCircle as AttachFileIcon,
-  Send as SendIcon,
-} from '@material-ui/icons';
+import { Send as SendIcon } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -26,6 +23,10 @@ import Observer from '@researchgate/react-intersection-observer';
 import { UnreadToast } from '~/components/molecules/unread-toast';
 import { PreviewImage } from '~/components/molecules/preview-image';
 import { readAsDataURL } from '~/lib/readFile';
+import { selectMe } from '../../../state/ducks/me/meSlice';
+import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
+import { SvgAttach as AttachIcon } from '~/icons/Attach';
+import { theme } from '~/theme';
 
 const Root = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ const InputFile = styled.input`
   right: 0;
   opacity: 0;
   width: 100%;
+  border: 0;
 `;
 
 const ToastWrapper = styled.div`
@@ -59,17 +61,29 @@ const Messages = styled.div`
   flex-grow: 1;
   overflow-y: auto;
   & > * {
-    margin-left: ${(props) => props.theme.space[6]}px;
-    margin-top: ${(props) => props.theme.space[6]}px;
+    margin-top: ${(props) => props.theme.space[5]}px;
+  }
+`;
+
+const MessageActions = styled.div`
+  display: flex;
+
+  & > * {
+    margin-left: ${(props) => props.theme.space[3]}px;
+    color: ${(props) => props.theme.colors.secondaryText};
+
+    &:first-child {
+      margin-left: 0;
+    }
   }
 `;
 
 const UploadFileButtonGroup = styled.div`
   position: relative;
+  width: 28px;
+  height: 28px;
+
   &:active {
-    opacity: 0.8;
-  }
-  &:hover {
     opacity: 0.8;
   }
 `;
@@ -112,6 +126,7 @@ export type PlaceDetailColumnProps = {
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place }) {
     const messages = useSelector(selectPlaceMessagesByPID(place.id));
+    const me = useSelector(selectMe);
 
     const dispatch = useDispatch();
     const [attachments, setAttachments] = useState<File[]>([]);
@@ -189,8 +204,12 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       <>
         <Root>
           <PlaceDetailHeader
-            place={place}
-            onInviteClick={() => setOpen(true)}
+            name={place.name}
+            avatarImage={place.avatarImage}
+            onInviteClick={() => {
+              setOpen(true);
+            }}
+            memberCount={23}
             onLeave={() => {
               dispatch(leftPlace({ pid: place.id }));
               dispatch(push('/places'));
@@ -213,10 +232,12 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             {messages.map((m) => (
               <MessageView
                 key={m.id}
-                authorId={m.authorId}
+                name={m.authorId}
                 timestamp={m.postedAt}
                 text={m.text}
                 attachments={m.attachments}
+                mine={m.authorId === me.id}
+                userImage={''}
               />
             ))}
             <Observer onChange={handleIntersection}>
@@ -254,22 +275,34 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                 value={formik.values.text}
                 onChange={formik.handleChange}
                 disabled={formik.isSubmitting}
+                actions={
+                  <MessageActions>
+                    <IconButton
+                      type="button"
+                      icon={<StickerIcon width={24} height={24} />}
+                      onClick={() => null}
+                    />
+                    <UploadFileButtonGroup>
+                      <IconButton
+                        type="button"
+                        icon={<AttachIcon width={24} height={24} />}
+                        onClick={() => null}
+                        title="Attach file"
+                        disabled={formik.isSubmitting}
+                        color={theme.colors.secondaryText}
+                      />
+                      <InputFile
+                        ref={attachmentRef}
+                        name="attachment"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChangeAttachment}
+                      />
+                    </UploadFileButtonGroup>
+                  </MessageActions>
+                }
               />
-              <UploadFileButtonGroup>
-                <StyledIconButton
-                  icon={<AttachFileIcon />}
-                  title="Attach file"
-                  disabled={formik.isSubmitting}
-                  type="button"
-                />
-                <InputFile
-                  ref={attachmentRef}
-                  name="attachment"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleChangeAttachment}
-                />
-              </UploadFileButtonGroup>
+
               <StyledIconButton
                 icon={<SendIcon />}
                 title="Send"

@@ -39,21 +39,17 @@ export const Places: React.FC = React.memo(function Places() {
   const { pid } = useParams<{ pid: string }>();
   const places = useSelector((state: RootState) => selectAllPlaces(state));
   const place = useSelector(selectPlaceById(pid));
-  const isMobile = useMediaQuery(`(max-width:${theme.breakpoints.sm})`);
 
   return (
     <BaseLayout>
       <Root>
-        {!(isMobile && place) && (
-          <ListContainer>
-            <PlaceListColumn title={PAGE_TITLE} placeList={places} />
-          </ListContainer>
-        )}
-        {place && (
-          <ListContainer>
+        <ListContainer>
+          {place ? (
             <PlaceDetailColumn place={place} />
-          </ListContainer>
-        )}
+          ) : (
+            <PlaceListColumn title={PAGE_TITLE} placeList={places} />
+          )}
+        </ListContainer>
       </Root>
     </BaseLayout>
   );
