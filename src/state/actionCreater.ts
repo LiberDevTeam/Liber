@@ -5,9 +5,6 @@ import { Place } from './ducks/places/placesSlice';
 export const placeAdded = createAction<{ place: Place; messages: Message[] }>(
   'places/placeAdded'
 );
-export const leftPlace = createAction<{ pid: string; messageIds: string[] }>(
-  'places/leftPlace'
-);
 export const placeMessageAdded = createAction<{
   pid: string;
   message: Message;

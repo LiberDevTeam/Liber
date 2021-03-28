@@ -1,6 +1,5 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 import {
-  leftPlace,
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
@@ -39,9 +38,6 @@ export const messagesSlice = createSlice({
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
       })
-      .addCase(leftPlace, (state, action) =>
-        messagesAdapter.removeMany(state, action.payload.messageIds)
-      );
   },
 });
 

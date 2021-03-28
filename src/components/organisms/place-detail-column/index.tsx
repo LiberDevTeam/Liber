@@ -10,11 +10,10 @@ import styled from 'styled-components';
 import { Input } from '~/components/atoms/input';
 import { MessageView } from '~/components/molecules/message-view';
 import { SharePlaceDialog } from '~/components/molecules/share-place-dialog';
-import { leftPlace } from '~/state/actionCreater';
+import { leftPlace } from '~/state/ducks/places/placesSlice';
 import {
   openProtectedPlace,
   publishPlaceMessage,
-  unsubscribeIpfsNode,
 } from '~/state/ducks/p2p/p2pSlice';
 import {
   clearUnreadMessages,
@@ -193,10 +192,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             place={place}
             onInviteClick={() => setOpen(true)}
             onLeave={() => {
-              dispatch(
-                leftPlace({ pid: place.id, messageIds: place.messageIds })
-              );
-              dispatch(unsubscribeIpfsNode({ pid: place.id }));
+              dispatch(leftPlace({ pid: place.id }));
               dispatch(push('/places'));
             }}
           />
