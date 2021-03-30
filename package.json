@@ -17,6 +17,7 @@
   "repository": "git@github.com:wakayainc/liberStickerToken.git",
   "scripts": {
     "compile": "truffle compile",
+    "migration": "truffle migration",
     "test": "truffle test",
     "generate-types": "npx typechain --target truffle-v5 --outDir @types build/contracts/*.json",
     "postinstall": "npx truffle compile && npm run generate-types"
