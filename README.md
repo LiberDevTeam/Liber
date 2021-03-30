@@ -4,18 +4,18 @@ Sticker Token of ERC721 for liber
 
 ## development guide
 
-### Launch Remix IDE
+plase run command
 
-Please access https://remix.ethereum.org/ 
+`yarn install`
 
-If you use local remix IDE, run this command
+### Compile
 
-`docker-compose up remix`
+`yarn compile`
 
-if you run this command in the background, run this command
+### Local Deploy
 
-`docker-compose up -d remix`
+`yarn migrate`
 
-close comannd is
+### Test
 
-`docker-compose down remix`
+`yarn test`
