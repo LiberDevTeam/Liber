@@ -1,14 +1,23 @@
-// contracts/Sticker.sol
+// contracts/Liber.sol
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity 0.8.0;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol";
 
-contract Liber is ERC1155 {
-    constructor() public ERC1155("https://jsonplaceholder.typicode.com/posts/{id}") {
+contract LiberMarket {
+    mapping(uint256=>uint256) private marketItems; // token_id to price struct
+}
 
+contract LiberSticker is ERC1155PresetMinterPauser {
+    uint256 public constant HELLO = 0;
+
+    constructor() ERC1155PresetMinterPauser("https://jsonplaceholder.typicode.com/posts/{id}") {
+        // todo: default sticker minting
+        publishSticker(HELLO);
     }
-    function publishSticker(id: uint256) {
-        _mint(msg.sender, id, 10**18, "");
+
+    // publish sticker Token, amount of 2**255
+    function publishSticker(uint256 id) public {
+        _mint(msg.sender, id, 2**255, "");
     }
 }
