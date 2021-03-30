@@ -47,6 +47,10 @@ typings/
 # TypeScript cache
 *.tsbuildinfo
 
+# SmartContracts build files
+@types/
+build/
+
 # Optional npm cache directory
 .npm
 
