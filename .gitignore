@@ -50,6 +50,7 @@ typings/
 # SmartContracts build files
 @types/
 build/
+migrations/
 
 # Optional npm cache directory
 .npm

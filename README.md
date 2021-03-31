@@ -19,3 +19,7 @@ plase run command
 ### Test
 
 `yarn test`
+
+## Reference
+
+- https://github.com/ethereum-ts/TypeChain/tree/master/examples/truffle-v5
