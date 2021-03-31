@@ -15,14 +15,14 @@
     "@types/bn.js": "^5.1.0",
     "@types/chai": "^4.2.15",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^14.14.37",
-    "@types/web3": "^1.2.2"
+    "@types/node": "^14.14.37"
   },
   "license": "MIT",
   "main": "index.js",
   "repository": "git@github.com:wakayainc/liberStickerToken.git",
   "scripts": {
     "compile": "truffle compile",
+    "console": "truffle console",
     "generate-types": "npx typechain --target truffle-v5 --outDir @types build/contracts/*.json",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "postinstall": "npx truffle compile && npm run generate-types",
