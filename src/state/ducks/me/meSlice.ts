@@ -10,6 +10,7 @@ export type Me = {
   id: string;
   username: string;
   settings: Settings;
+  avatarImage: string;
 };
 
 export type MeState = Me;
@@ -21,6 +22,7 @@ const initialState: MeState = {
   settings: {
     isIsolation: false,
   },
+  avatarImage: '',
 };
 
 export const meSlice = createSlice({

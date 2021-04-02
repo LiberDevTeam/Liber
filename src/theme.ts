@@ -41,8 +41,6 @@ export const GlobalStyles = createGlobalStyle`
 
 const colors = {
   primary: '#2e79f6',
-  primaryText: '#26404d',
-  secondaryText: '#8fa7b2',
   lightText: '#fcfdfe',
   lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
@@ -58,6 +56,11 @@ const colors = {
   green: '#4eeb91',
   yellow: '#e8eb5c',
   red: '#ef4141',
+
+  // new design below
+  gray: '#E1E4E6',
+  primaryText: '#26404d',
+  secondaryText: '#8fa7b2',
 };
 
 const fontSizes = {

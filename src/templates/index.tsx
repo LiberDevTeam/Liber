@@ -30,8 +30,10 @@ const Main = styled.main`
   height: 100%;
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
-  padding: ${(props) => props.theme.space[8]}px;
+  padding: ${(props) => props.theme.space[4]}px;
+  padding-top: ${(props) => props.theme.space[12]}px;
   overflow: hidden;
+  color: ${(props) => props.theme.colors.primaryText};
 `;
 
 const BaseLayout: React.FC = ({ children }) => {
