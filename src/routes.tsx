@@ -1,10 +1,10 @@
 import { ConnectedRouter } from 'connected-react-router';
 import React, { useEffect } from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
-import IndexPage from './pages';
+import IndexPage from './pages/home';
 import { NewPlace } from './pages/places/new';
 import { history, AppThunkDispatch } from './state/store';
-import { Places } from './pages/places';
+import { Places } from './pages/places/index';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
 import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';

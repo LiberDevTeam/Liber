@@ -1,0 +1,44 @@
+import React from 'react';
+import styled from 'styled-components';
+import { IconButton } from '~/components/iconButton';
+import { Cancel as CancelIcon } from '@material-ui/icons';
+
+const Root = styled.div`
+  display: inline-flex;
+  align-items: center;
+  border-radius: ${(props) => props.theme.radii.medium}px;
+  box-shadow: ${(props) => props.theme.shadows[1]};
+  background-color: ${(props) => props.theme.colors.bg};
+`;
+
+const MainButton = styled.button`
+  border-color: transparent;
+  background: transparent;
+  padding: ${(props) => props.theme.space[2]}px;
+`;
+
+const CloseButton = styled(IconButton)`
+  color: ${(props) => props.theme.colors.secondaryText};
+  margin-left: ${(props) => props.theme.space[2]}px;
+`;
+
+export interface UnreadToastProps {
+  messageCount: number;
+  onClick: () => void;
+  onClose: () => void;
+  className?: string;
+}
+
+// TODO: update style
+export const UnreadToast: React.FC<UnreadToastProps> = React.memo(
+  function UnreadToast({ messageCount, onClick, onClose, className }) {
+    return (
+      <Root className={className}>
+        <MainButton
+          onClick={onClick}
+        >{`${messageCount} new messages`}</MainButton>
+        <CloseButton icon={<CancelIcon />} onClick={onClose} />
+      </Root>
+    );
+  }
+);

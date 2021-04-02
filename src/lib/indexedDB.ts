@@ -14,16 +14,16 @@ export type DBObject = { [dbName: string]: TableObject };
 type TableObject = { [tableName: string]: { values: any[]; keys: string[] } };
 
 const getAllIdb = async (): Promise<DBObject> => {
-  return await targetDbList.reduce(
+  return targetDbList.reduce(
     async (dbAccm, dbName): Promise<DBObject> => {
       const db = await new Dexie(dbName).open();
-      const dbData = await db.tables.reduce(
+      const dbData = db.tables.reduce(
         async (tableAccm, table): Promise<TableObject> => {
           const tableName: string = table.name;
           const values = await db.table(tableName).toCollection().toArray();
           const keys = await db.table(tableName).toCollection().keys();
           return {
-            ...(await tableAccm),
+            ...(tableAccm),
             [tableName]: {
               values,
               keys,
@@ -33,7 +33,7 @@ const getAllIdb = async (): Promise<DBObject> => {
         {}
       );
       return {
-        ...(await dbAccm),
+        ...dbAccm,
         [dbName]: dbData,
       };
     },
@@ -42,10 +42,10 @@ const getAllIdb = async (): Promise<DBObject> => {
 };
 
 const setAllIdb = async (data: DBObject): Promise<void> => {
-  return await Object.keys(data).forEach(async (dbName) => {
+  return Object.keys(data).forEach(async (dbName) => {
     const db = await new Dexie(dbName).open();
     await db.delete();
-    await Object.keys(data[dbName]).forEach(async (tableName) => {
+    Object.keys(data[dbName]).forEach(async (tableName) => {
       const tableData = data[dbName][tableName];
       db.table(tableName)
         .bulkAdd(tableData.values, tableData.keys, { allKeys: true })
@@ -58,15 +58,15 @@ const setAllIdb = async (data: DBObject): Promise<void> => {
 
 export const downloadIdbBackup = async (): Promise<void> => {
   const dbData = await getAllIdb();
-  const json = await JSON.stringify(dbData);
-  const blob = await new Blob([json], {
+  const json = JSON.stringify(dbData);
+  const blob = new Blob([json], {
     type: 'text/json',
   });
-  const blobUrl = await URL.createObjectURL(blob);
+  const blobUrl = URL.createObjectURL(blob);
   const tempLink = document.createElement('a');
-  tempLink.href = await blobUrl;
+  tempLink.href = blobUrl;
   tempLink.download = `LiberBackup_${format(new Date(), 'yyyyMMdd')}.json`;
-  await tempLink.click();
+  tempLink.click();
 };
 
 export const uploadIdbBackup = async (): Promise<void> => {
