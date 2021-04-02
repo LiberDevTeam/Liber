@@ -3,7 +3,7 @@ import { Story } from '@storybook/react/types-6-0';
 import { PlaceListColumn, PlaceListColumnProps } from '.';
 import { add, getUnixTime, sub } from 'date-fns';
 import { Place } from '~/state/ducks/places/placesSlice';
-import { dummyPlace } from '../../../mocks/place';
+import { dummyPlace } from '../../mocks/place';
 
 // TODO: 実際のchatデータモックに置き換える
 const placeList: Place[] = [...Array(50)].map((_, index) => {

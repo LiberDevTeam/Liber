@@ -4,7 +4,7 @@ import { PlaceDetailColumn, PlaceDetailColumnProps } from '.';
 import { getUnixTime } from 'date-fns';
 import { Message } from '~/state/ducks/places/messagesSlice';
 import { Place } from '~/state/ducks/places/placesSlice';
-import { dummyPlace } from '../../../mocks/place';
+import { dummyPlace } from '../../mocks/place';
 
 // TODO: 実際のchatデータモックに置き換える
 const id = '1';

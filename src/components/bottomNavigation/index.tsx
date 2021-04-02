@@ -1,5 +1,5 @@
 import React from 'react';
-import { BottomNavLink } from '~/components/bottom-nav-link';
+import { BottomNavLink } from '~/components/bottomNavigation/bottomNavLink';
 import { SvgPeople as ProfileIcon } from '~/icons/People';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { SvgHome as HomeIcon } from '~/icons/Home';

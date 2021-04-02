@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { BottomNavigation } from '~/components/organisms/bottom-navigation';
+import { BottomNavigation } from '~/components/bottomNavigation';
 
 const commonRootStyle = css`
   width: 100vw;

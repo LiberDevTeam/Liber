@@ -3,8 +3,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { PlaceDetailColumn } from '~/components/organisms/place-detail-column';
-import { PlaceListColumn } from '~/components/organisms/place-list-column';
+import { PlaceDetailColumn } from '~/components/placeDetailColumn';
+import { PlaceListColumn } from '~/components/placeListColumn';
 import {
   selectAllPlaces,
   selectPlaceById,
