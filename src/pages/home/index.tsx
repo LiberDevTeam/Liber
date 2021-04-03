@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BaseLayout from '~/templates';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { selectMe } from '~/state/ducks/me/meSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
+import { Appearance, fetchFeedItems, selectFeed } from '~/state/ducks/feed/feedSlice';
+import FeedItemBigImage from './components/feedItemBigImage';
+import FeedItemDefault from './components/feedItemDefault';
 
 const Header = styled.div`
   display: flex;
@@ -57,14 +60,15 @@ const Username = styled.div`
 const Feed = styled.div`
 `
 
-const FeedItemBigImage = styled.div`
-`
-
-const FeedItemNormal = styled.div`
-`
-
-const IndexPage: React.FC = () => {
+const HomePage: React.FC = () => {
+  const dispatch = useDispatch();
   const me = useSelector(selectMe);
+  const feed = useSelector(selectFeed);
+
+  useEffect(() => {
+      dispatch(fetchFeedItems());
+  }, [dispatch]);
+
   return (
     <BaseLayout>
       <Header>
@@ -80,11 +84,21 @@ const IndexPage: React.FC = () => {
       <Greeting>Hello 😊</Greeting>
       { me.username && (<Username>{me.username}</Username>) }
       <Feed>
-        <FeedItemBigImage></FeedItemBigImage>
-        <FeedItemNormal></FeedItemNormal>
+        { feed.items.map(item => {
+          switch (item.appearance) {
+            case Appearance.BIG_CARD:
+              return (
+                <FeedItemBigImage item={item} />
+              )
+            case Appearance.DEFAULT:
+              return (
+                <FeedItemDefault item={item} />
+              )
+          }
+        })}
       </Feed>
     </BaseLayout>
   );
 };
 
-export default IndexPage;
+export default HomePage;
