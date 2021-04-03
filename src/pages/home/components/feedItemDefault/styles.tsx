@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfsContent';
 
 export const Header = styled.div`
   height: 2.5rem;
@@ -9,10 +10,10 @@ export const Header = styled.div`
   justify-content: space-between;
 `;
 
-export const Avatar = styled.img`
+export const Avatar = styled(IpfsContent)`
   height: 2.5rem;
   width: 2.5rem;
-  border-radius: 1.5rem;
+  border-radius: ${(props) => props.theme.radii.round};
   object-fit: cover;
   border: ${(props) => props.theme.border.white.thin};
   margin-right: ${(props) => props.theme.space[3]}px;

@@ -20,7 +20,7 @@ const initialState: MeState = {
   settings: {
     isIsolation: false,
   },
-  avatarImage: '',
+  avatarCid: '',
 };
 
 export const meSlice = createSlice({

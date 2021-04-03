@@ -3,3 +3,4 @@ declare global {
     gtag: Gtag.Gtag;
   }
 }
+declare module 'it-to-stream';
