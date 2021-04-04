@@ -17,7 +17,7 @@ import {
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { SettingSection } from '~/components/settingSection';
-import { TextFormWithSubmit } from '~/components/textform-with-submit';
+import { TextFormWithSubmit } from '~/components/textformWithSubmit';
 import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
 import { useTranslation } from 'react-i18next';
 

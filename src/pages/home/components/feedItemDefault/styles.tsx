@@ -31,7 +31,6 @@ export const Timestamp = styled.span`
   margin-top: ${props => props.theme.space[1]}px;
   margin-right: ${props => props.theme.space[3]}px;
   font-size: ${props => props.theme.fontSizes['sm']};
-  font-weight: ${props => props.theme.fontWeights.bold};
   opacity: 0.6;
 `;
 

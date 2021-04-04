@@ -37,6 +37,7 @@
     "dotenv-expand": "5.1.0",
     "end-of-stream": "^1.4.1",
     "file-loader": "6.2.0",
+    "file-type": "^16.3.0",
     "formik": "^2.2.6",
     "fs-extra": "^9.1.0",
     "html-webpack-plugin": "5.3.1",
