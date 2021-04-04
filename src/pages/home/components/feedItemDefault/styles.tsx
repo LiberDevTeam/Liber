@@ -1,31 +1,12 @@
 import styled from 'styled-components';
 
-type RootProps = {
-  bgImg: string;
-}
-
-export const Root = styled.div<RootProps>`
-  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%), url("${props => props.bgImg}");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 25rem;
-  width: 100%;
-  border-radius: 1.5rem;
-  display: flex;
-  align-items: flex-end;
-  padding: ${props => props.theme.space[3]}px;
-`;
-
-export const Content = styled.div`
-`;
-
 export const Header = styled.div`
   height: 2.5rem;
   display: flex;
   align-items: center;
-  color: #fff;
+  color: ${props => props.theme.colors.primaryText};
   margin-bottom: ${props => props.theme.space[2]}px;
+  justify-content: space-between;
 `;
 
 export const Avatar = styled.img`
@@ -39,19 +20,22 @@ export const Avatar = styled.img`
 `
 
 export const Title = styled.div`
-  margin-right: ${props => props.theme.space[2]}px;
   font-size: ${props => props.theme.fontSizes['xl']};
   font-weight: ${props => props.theme.fontWeights.bold};
+  display: flex;
+  align-items: center;
 `
 
 export const Timestamp = styled.span`
+  color: ${props => props.theme.colors.secondaryText};
   margin-top: ${props => props.theme.space[1]}px;
+  margin-right: ${props => props.theme.space[3]}px;
   font-size: ${props => props.theme.fontSizes['sm']};
+  font-weight: ${props => props.theme.fontWeights.bold};
   opacity: 0.6;
 `;
 
-export const Body = styled.span`
-  color: #fff;
+export const Text = styled.div`
   font-weight: ${props => props.theme.fontWeights.light};
   line-height: 140%;
 `;

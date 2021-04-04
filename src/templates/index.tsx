@@ -6,6 +6,7 @@ import { BottomNavigation } from '~/components/bottomNavigation';
 const commonRootStyle = css`
   width: 100vw;
   height: 100vh;
+  overflow: scroll;
 `;
 
 const SpRoot = styled.div`
@@ -22,6 +23,7 @@ const SpNavigation = styled.nav`
   padding: ${(props) => props.theme.fontSizes.xs} 0;
   box-shadow: 0px -20px 70px rgba(143, 167, 179, 0.1);
   margin-bottom: env(safe-area-inset-bottom);
+  background: #fff;
 `;
 
 const Main = styled.main`
@@ -31,7 +33,6 @@ const Main = styled.main`
   border-radius: ${(props) => props.theme.radii.large}px;
   padding: ${(props) => props.theme.space[4]}px;
   padding-top: ${(props) => props.theme.space[12]}px;
-  overflow: hidden;
   color: ${(props) => props.theme.colors.primaryText};
 `;
 

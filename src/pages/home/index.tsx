@@ -59,6 +59,12 @@ const Username = styled.div`
 `
 
 const Feed = styled.div`
+  padding-bottom: 5rem;
+`
+
+const ItemContainer = styled.div`
+  border-bottom: 1px solid ${(props) => props.theme.colors.grayLight};
+  padding: ${(props) => props.theme.space[7]}px 0;
 `
 
 const HomePage: React.FC = () => {
@@ -85,9 +91,11 @@ const HomePage: React.FC = () => {
       <Greeting>Hello 😊</Greeting>
       <Username>{username(me)}</Username>
       <Feed>
-        { feed.items.map(item =>
-          (<Item item={item} key={item.id} />)
-        )}
+        { feed.items.map(item =>(
+          <ItemContainer key={item.id} >
+            <Item item={item}/>
+          </ItemContainer>
+        ))}
       </Feed>
     </BaseLayout>
   );

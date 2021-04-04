@@ -59,6 +59,7 @@ const colors = {
 
   // new design below
   gray: '#E1E4E6',
+  grayLight: '#EDF1F2',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
 };
