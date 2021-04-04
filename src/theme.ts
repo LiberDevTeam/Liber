@@ -137,7 +137,7 @@ export const theme = {
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   shadows: {
     0: 'none',
-    1: 'rgba(0, 0, 0, 0.2) 0px 5px 20px',
+    1: 'rgba(0,0,0,0.2) 0 .2rem .5rem',
   },
   radii: {
     medium: 12,

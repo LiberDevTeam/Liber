@@ -35,7 +35,7 @@ export const Avatar = styled.img`
   object-fit: cover;
   border: 1px solid #fff;
   margin-right: ${props => props.theme.space[3]}px;
-  filter: drop-shadow(0 .2rem .5rem rgba(0,0,0,0.15));
+  box-shadow: ${props => props.theme.shadows[1]};
 `
 
 export const Title = styled.div`

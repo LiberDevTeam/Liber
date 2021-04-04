@@ -23,12 +23,8 @@ const Avatar = styled.img`
 const AvatarContainer = styled.div`
   width: ${(props) => props.theme.space[14]}px;
   height: ${(props) => props.theme.space[14]}px;
-  filter: drop-shadow(
-    ${(props) => props.theme.space[0]}px
-    ${(props) => props.theme.space[2]}px
-    ${(props) => props.theme.space[4]}px
-    rgba(143, 167, 179, 0.5)
-  );
+  box-shadow: ${props => props.theme.shadows[1]};
+  border-radius: ${(props) => props.theme.radii.round};
 `
 
 const Notification = styled.div`
