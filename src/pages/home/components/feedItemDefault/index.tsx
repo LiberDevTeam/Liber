@@ -2,10 +2,9 @@ import React from 'react';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { FeedItem, ItemKind } from "~/state/ducks/feed/feedSlice";
-import { Attachment as AttachmentType } from '~/state/ducks/places/messagesSlice';
 import { Avatar, Header, Timestamp, Title, Text } from './styles';
 import { fromUnixTime } from 'date-fns';
-import { Attachment } from '~/components/attachment';
+import { IpfsContent } from '~/components/ipfsContent';
 
 type FeedItemDefaultProps = {
   item: FeedItem;
@@ -16,16 +15,18 @@ const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
     case ItemKind.MESSAGE:
       return (
         <Component
-          attachments={item.attachments && item.attachments}
+          id={item.id}
+          attachmentCidList={item.attachmentCidList}
           title={item.author.username || shortenUid(item.author.id)}
-          avatar={item.author.avatarImage}
+          avatarCid={item.author.avatarCid}
           text={item.text}
           timestamp={item.timestamp} />
       );
     case ItemKind.PLACE:
       return (
         <Component
-          attachments={[{ ipfsCid: "", dataUrl: item.avatarImage }]}
+          id={item.id}
+          attachmentCidList={[item.avatarCid]}
           title={item.name}
           text={item.description}
           timestamp={item.timestamp} />
@@ -34,17 +35,19 @@ const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
 }
 
 type ComponentProps = {
+  id: string,
   title: string;
-  attachments?: AttachmentType[];
-  avatar?: string;
+  attachmentCidList?: string[];
+  avatarCid?: string;
   text?: string;
   timestamp: number;
 }
 
 const Component: React.FC<ComponentProps> = ({
+  id,
   title,
-  attachments,
-  avatar,
+  attachmentCidList,
+  avatarCid,
   text,
   timestamp,
 }) => {
@@ -53,7 +56,7 @@ const Component: React.FC<ComponentProps> = ({
     <>
       <Header>
         <Title>
-          { avatar && (<Avatar src={avatar}></Avatar>) }
+          { avatarCid && (<Avatar cid={avatarCid}></Avatar>) }
           { title }
         </Title>
         <Timestamp>
@@ -63,8 +66,8 @@ const Component: React.FC<ComponentProps> = ({
       <Text>
         { text }
       </Text>
-      { attachments && attachments.map(a => (
-        <Attachment attachment={a} key={a.ipfsCid}/>
+      { attachmentCidList && attachmentCidList.map(cid => (
+        <IpfsContent cid={cid} key={`${id}-${cid}`}/>
       ))}
     </>
   );

@@ -25,6 +25,7 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { addUser, User } from '../users/usersSlice';
+import FileType, { FileTypeResult } from 'file-type/browser';
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
@@ -233,26 +234,27 @@ export const publishPlaceMessage = createAsyncThunk<
     };
 
     if (attachments) {
-      message.attachments =
+      message.attachmentCidList =
         (await Promise.all(
           attachments.map(async (file) => {
             const content = await ipfsNode().add({
               path: file.name,
               content: file,
             });
+            
             const cid = content.cid.toBaseEncodedString();
+            const fileType = await FileType.fromStream(file.stream())
+            if (!fileType) {
+              throw new Error('unsupported file format');
+            }
             const dataUrl = await readAsDataURL(file);
-            dispatch(
-              ipfsContentAdded({
-                cid,
-                dataUrl,
-                file,
-              })
-            );
-            return {
-              ipfsCid: cid,
-              dataUrl: dataUrl,
-            };
+            dispatch(ipfsContentAdded({
+              cid,
+              fileType,
+              dataUrl,
+            }))
+
+            return cid;
           })
         )) || [];
     }
@@ -461,11 +463,16 @@ export const createNewPlace = createAsyncThunk<
     });
 
     dispatch(placeAdded({ place, messages: [] }));
+
+    const fileType = await FileType.fromStream(avatarImage.stream())
+    if (!fileType) {
+      throw new Error('unsupported file format');
+    }
     dispatch(
       ipfsContentAdded({
         cid,
         dataUrl,
-        file: avatarImage,
+        fileType,
       })
     );
     dispatch(push(`/places/${placeId}`));

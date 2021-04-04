@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfsContent';
 
 type RootProps = {
   bgImg: string;
@@ -28,7 +29,7 @@ export const Header = styled.div`
   margin-bottom: ${props => props.theme.space[2]}px;
 `;
 
-export const Avatar = styled.img`
+export const Avatar = styled(IpfsContent)`
   height: 2.5rem;
   width: 2.5rem;
   border-radius: 1.5rem;

@@ -3,7 +3,7 @@ import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolki
 export type User = {
   id: string;
   username?: string;
-  avatarImage?: string;
+  avatarCid?: string;
 };
 
 export type UsersState = {

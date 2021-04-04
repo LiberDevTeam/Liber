@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { ipfsNode } from '~/state/ducks/p2p/p2pSlice';
+import ReactPlayer from 'react-player';
+import { useDispatch, useSelector } from 'react-redux';
+import { addIpfsContent, selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
+
+interface ContentPreviewProps {
+  cid: string;
+}
+
+const Image = styled.img`
+`
+
+export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
+  const dispatch = useDispatch();
+  const content = useSelector(selectIpfsContentByCID(cid));
+
+  useEffect(() => {
+    if (!content) {
+      dispatch(addIpfsContent({ cid }))
+    }
+  }, [dispatch, cid])
+
+  if (!content) {
+    return null;
+  }
+
+  switch (content.fileType.mime) {
+    case "image/apng":
+    case "image/avif":
+    case "image/gif":
+    case "image/jpeg":
+    case "image/png":
+    case "image/webp":
+      return (
+        <Image src={content.dataUrl} />
+      );
+  }
+
+  if (content.fileType.mime.includes('audio/')) {
+    return (
+      <ReactPlayer
+        src={content.dataUrl}
+        forceAudio
+      />
+    )
+  }
+
+  if (content.fileType.mime.includes("video/")) {
+    return (
+      <ReactPlayer
+        src={''}
+        forceVideo
+        config={{
+          file: {
+            hlsOptions: { 
+              ipfs: ipfsNode(),
+              ipfsHash: cid,
+            }
+          }
+        }}
+      />
+    )
+  }
+
+  return (<>unsupported format</>);
+}

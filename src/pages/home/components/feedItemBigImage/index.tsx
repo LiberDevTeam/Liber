@@ -4,6 +4,8 @@ import { shortenUid } from '~/helpers';
 import { fromUnixTime } from 'date-fns';
 import { formatTime } from '~/helpers/time';
 import { Avatar, Root, Title, Timestamp, Body, Content, Header } from './styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
 
 type FeedItemBigImageProps = {
   item: FeedItem;
@@ -14,16 +16,16 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
     case ItemKind.MESSAGE:
       return (
         <Component
-          bgImg={item.attachments && item.attachments[0].dataUrl}
+          bgCid={item.attachmentCidList && item.attachmentCidList[0] }
           title={item.author.username || shortenUid(item.author.id)}
-          avatar={item.author.avatarImage}
+          avatarCid={item.author.avatarCid}
           text={item.text}
           timestamp={item.timestamp} />
       );
     case ItemKind.PLACE:
       return (
         <Component
-          bgImg={item.avatarImage}
+          bgCid={item.avatarCid}
           title={item.name}
           text={item.description}
           timestamp={item.timestamp} />
@@ -32,20 +34,21 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
 }
 
 type ComponentProps = {
-  bgImg?: string;
+  bgCid?: string;
   title: string;
-  avatar?: string;
+  avatarCid?: string;
   text?: string;
   timestamp: number;
 }
 
-const Component: React.FC<ComponentProps> = ({ bgImg, title, avatar, text, timestamp }) => {
+const Component: React.FC<ComponentProps> = ({ bgCid, title, avatarCid, text, timestamp }) => {
+  const bgContent = useSelector(selectIpfsContentByCID(bgCid || ''));
   const time = fromUnixTime(timestamp);
   return (
-    <Root bgImg={bgImg || ""}>
+    <Root bgImg={bgContent?.dataUrl || ""}>
       <Content>
         <Header>
-          { avatar && (<Avatar src={avatar}></Avatar>) }
+          { avatarCid && (<Avatar cid={avatarCid}></Avatar>) }
           <Title>
             { title }
           </Title>

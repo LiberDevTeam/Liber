@@ -5,7 +5,7 @@ import userImage from '../../../mocks/user.png';
 
 export default {
   component: MessageView,
-  title: 'molecules/MessageView',
+  title: 'MessageView',
 };
 
 const Template: Story<MessageViewProps> = (args) => <MessageView {...args} />;
@@ -17,5 +17,5 @@ Default.args = {
   text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.`,
   timestamp: 1612204980,
   mine: false,
-  attachments: [{ dataUrl: userImage, ipfsCid: 'id' }],
+  attachmentCidList: ["cid"],
 };
