@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Input } from '~/components/input';
 import { MessageView } from '~/components/messageView';
 import { SharePlaceDialog } from '~/components/sharePlaceDialog';
-import { leftPlace } from '~/state/ducks/places/placesSlice';
+import { removePlace } from '~/state/ducks/places/placesSlice';
 import {
   openProtectedPlace,
   publishPlaceMessage,
@@ -211,7 +211,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             }}
             memberCount={23}
             onLeave={() => {
-              dispatch(leftPlace({ pid: place.id }));
+              dispatch(removePlace({ pid: place.id }));
               dispatch(push('/places'));
             }}
           />

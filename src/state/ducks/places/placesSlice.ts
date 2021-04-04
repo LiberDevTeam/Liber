@@ -84,8 +84,9 @@ export const placesSlice = createSlice({
         place.hash = hash;
       }
     },
-    leftPlace(state, action: PayloadAction<{ pid: string }>) {
+    removePlace(state, action: PayloadAction<{ pid: string }>) {
       placesAdapter.removeOne(state, action.payload.pid);
+      // TODO expire the messages in the place user left
     },
   },
   extraReducers: (builder) => {
@@ -153,6 +154,6 @@ export const selectPlaceMessagesByPID = (pid: string) => (
     .filter(Boolean) as Message[];
 };
 
-export const { clearUnreadMessages, setHash, leftPlace } = placesSlice.actions;
+export const { clearUnreadMessages, setHash, removePlace } = placesSlice.actions;
 
 export default placesSlice.reducer;

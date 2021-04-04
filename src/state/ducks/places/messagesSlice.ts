@@ -7,7 +7,7 @@ import {
 
 export type Message = {
   id: string; // UUID
-  authorId: string; // UUID
+  authorId: string;
   authorName?: string;
   postedAt: number;
   text?: string;

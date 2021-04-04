@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { format, fromUnixTime, isToday } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
 import { Attachment } from '~/state/ducks/places/messagesSlice';
+import { formatTime, formatTimeStrict } from '~/helpers/time';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
@@ -69,10 +70,6 @@ export interface MessageViewProps {
   userImage: string;
 }
 
-const TIME_STRICT_FORMAT = 'iiii, LLLL d, yyyy p';
-const TODAY_TIME_FORMAT = 'p';
-const DEFAULT_TIME_FORMAT = 'P';
-
 export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({
     name,
@@ -94,10 +91,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
           {mine ? null : <UserName>{name}</UserName>}
           <Text mine={mine}>
             {text}
-            <Timestamp title={format(time, TIME_STRICT_FORMAT)}>
-              {isToday(time)
-                ? `Today at ${format(time, TODAY_TIME_FORMAT)}`
-                : format(time, DEFAULT_TIME_FORMAT)}
+            <Timestamp title={formatTimeStrict(time)}>
+              {formatTime(time)}
             </Timestamp>
           </Text>
           {attachments

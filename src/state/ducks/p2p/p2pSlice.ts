@@ -24,6 +24,7 @@ import {
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '~/state/ducks/me/meSlice';
+import { addUser, User } from '../users/usersSlice';
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
@@ -479,3 +480,19 @@ const buildInvitationUrl = async (placeId: string, address: string) => {
   invitationUrl.searchParams.append('address', address);
   return invitationUrl;
 };
+
+export const lookupAndStoreUser = createAsyncThunk<
+  void, { id: string },
+  { dispatch: AppDispatch; state: RootState }
+>('p2p/lookupAndStoreUserr', async ({ id }, { dispatch, getState }) => {
+  const user = lookupUser(id);
+  dispatch(addUser(user))
+});
+
+const lookupUser = (id: string): User => {
+  // TODO fetch from OrbitDB instead
+  return {
+    id,
+    username: 'usename',
+  }
+}

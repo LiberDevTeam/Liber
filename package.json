@@ -151,11 +151,6 @@
     "webpack": "4.44.2",
     "webpack-dev-server": "3.11.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
     "*.js": "eslint --cache --fix",
@@ -173,6 +168,7 @@
     "gen": "scaffdog generate",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'"
+    "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
+    "prepare": "husky install"
   }
 }

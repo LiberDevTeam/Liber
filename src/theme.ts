@@ -41,8 +41,6 @@ export const GlobalStyles = createGlobalStyle`
 
 const colors = {
   primary: '#2e79f6',
-  primaryText: '#26404d',
-  secondaryText: '#8fa7b2',
   lightText: '#fcfdfe',
   lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
@@ -58,6 +56,12 @@ const colors = {
   green: '#4eeb91',
   yellow: '#e8eb5c',
   red: '#ef4141',
+
+  // new design below
+  gray: '#E1E4E6',
+  grayLight: '#EDF1F2',
+  primaryText: '#26404d',
+  secondaryText: '#8fa7b2',
 };
 
 const fontSizes = {
@@ -133,13 +137,27 @@ export const theme = {
   sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
   shadows: {
     0: 'none',
-    1: 'rgba(0, 0, 0, 0.2) 0px 5px 20px',
+    1: 'rgba(0,0,0,0.2) 0 .2rem .5rem',
   },
   radii: {
     medium: 12,
     large: 20,
     xl: 32,
     round: '50%',
+  },
+  border: {
+    white: {
+      thin: '1px solid #fff',
+    },
+    gray: {
+      thin: `1px solid ${colors.gray}`,
+    },
+    grayLight: {
+      thin: `1px solid ${colors.grayLight}`,
+    },
+  },
+  linearGradient: {
+    0: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%)',
   },
 } as const;
 
