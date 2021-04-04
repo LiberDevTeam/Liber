@@ -145,6 +145,20 @@ export const theme = {
     xl: 32,
     round: '50%',
   },
+  border: {
+    white: {
+      thin: '1px solid #fff',
+    },
+    gray: {
+      thin: `1px solid ${colors.gray}`,
+    },
+    grayLight: {
+      thin: `1px solid ${colors.grayLight}`,
+    },
+  },
+  linearGradient: {
+    0: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%)',
+  },
 } as const;
 
 type AppTheme = typeof theme;
