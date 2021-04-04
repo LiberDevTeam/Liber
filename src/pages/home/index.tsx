@@ -101,7 +101,7 @@ const HomePage: React.FC = () => {
   );
 };
 
-type ItemProps = {
+interface ItemProps {
   item: FeedItem;
 }
 

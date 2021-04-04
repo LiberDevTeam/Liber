@@ -5,7 +5,7 @@ import { fromUnixTime } from 'date-fns';
 import { formatTime } from '~/helpers/time';
 import { Avatar, Root, Title, Timestamp, Body, Content, Header } from './styles';
 
-type FeedItemBigImageProps = {
+interface FeedItemBigImageProps {
   item: FeedItem;
 }
 
@@ -31,7 +31,7 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
   }
 }
 
-type ComponentProps = {
+interface ComponentProps {
   bgImg?: string;
   title: string;
   avatar?: string;

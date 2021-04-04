@@ -7,7 +7,7 @@ import { Avatar, Header, Timestamp, Title, Text } from './styles';
 import { fromUnixTime } from 'date-fns';
 import { Attachment } from '~/components/attachment';
 
-type FeedItemDefaultProps = {
+interface FeedItemDefaultProps {
   item: FeedItem;
 }
 
@@ -33,7 +33,7 @@ const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
   }
 }
 
-type ComponentProps = {
+interface ComponentProps {
   title: string;
   attachments?: AttachmentType[];
   avatar?: string;

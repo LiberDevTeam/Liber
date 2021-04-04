@@ -1,12 +1,12 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type User = {
+export interface User {
   id: string;
   username?: string;
   avatarImage?: string;
 };
 
-export type UsersState = {
+export interface UsersState {
   users: User[];
 };
 

@@ -38,7 +38,7 @@ export interface FeedItemPlace {
 
 export type FeedItem = FeedItemMessage | FeedItemPlace;
 
-export type FeedsState = {
+export interface FeedsState {
   items: FeedItem[];
 };
 

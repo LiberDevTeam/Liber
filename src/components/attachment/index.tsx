@@ -1,7 +1,7 @@
 import React from 'react';
 import { Attachment as AttachmentType } from "~/state/ducks/places/messagesSlice"
 
-type AttachmentProps = {
+interface AttachmentProps {
   attachment: AttachmentType;
 }
 
