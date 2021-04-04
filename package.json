@@ -151,11 +151,6 @@
     "webpack": "4.44.2",
     "webpack-dev-server": "3.11.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
     "*.js": "eslint --cache --fix",
