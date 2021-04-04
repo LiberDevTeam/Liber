@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addIpfsContent, selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { IPFS as Ipfs } from 'ipfs';
 
-interface ContentPreviewProps {
+interface IpfsContentProps {
   cid: string;
+  className?: string;
 }
 
-const Image = styled.img`
-`
+const Image = styled.img``
 
-export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
+export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
   const dispatch = useDispatch();
   const content = useSelector(selectIpfsContentByCID(cid));
   const [ipfsNode, setIpfsNode] = useState<Ipfs>();
@@ -30,7 +30,6 @@ export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
   if (!content) {
     return null;
   }
-  console.log(content.fileType)
 
   switch (content.fileType.mime) {
     case "image/apng":
@@ -40,7 +39,7 @@ export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
     case "image/png":
     case "image/webp":
       return (
-        <Image src={content.dataUrl} />
+        <Image className={className} src={content.dataUrl} />
       );
   }
 

@@ -25,7 +25,10 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { addUser, User } from '../users/usersSlice';
-import FileType, { FileTypeResult } from 'file-type/browser';
+import FileType from 'file-type/browser';
+import {Mutex} from 'async-mutex';
+
+const mutex = new Mutex();
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
@@ -163,7 +166,10 @@ const connectPlaceKeyValue = async ({
 let ipfsNode: Ipfs | null;
 
 export const getIpfsNode = async (): Promise<Ipfs> => {
+  const release = await mutex.acquire();
+
   if (ipfsNode) {
+    release();
     return ipfsNode;
   }
 
@@ -185,6 +191,8 @@ export const getIpfsNode = async (): Promise<Ipfs> => {
       },
     }
   });
+
+  release();
   return ipfsNode;
 }
 
@@ -199,7 +207,7 @@ export const initNodes = createAsyncThunk<
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
 
-  orbitDB = await OrbitDB.createInstance(getIpfsNode());
+  orbitDB = await OrbitDB.createInstance(await getIpfsNode());
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });

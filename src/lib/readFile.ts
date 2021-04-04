@@ -1,4 +1,4 @@
-export const readAsDataURL = (file: File): Promise<string> =>
+export const readAsDataURL = (file: File | Blob): Promise<string> =>
   new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {

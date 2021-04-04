@@ -3,6 +3,7 @@ import { AppDispatch, RootState } from '~/state/store';
 import FileType, { FileTypeResult } from 'file-type/browser';
 import toStream from 'it-to-stream';
 import { getIpfsNode } from './p2pSlice';
+import { readAsDataURL } from '~/lib/readFile';
 
 export interface IpfsContent {
   cid: string;
@@ -21,16 +22,20 @@ export const addIpfsContent = createAsyncThunk<
 >(
   'ipfsContents/addIpfsContent',
   async ({ cid }, { dispatch }) => {
-    const fileType = await FileType.fromStream(toStream((await getIpfsNode()).cat(cid, { length: 24 })))
+    const uint8arr = await readUint8Array((await getIpfsNode()).cat(cid, { length: 24 }));
+    const fileType = await FileType.fromBlob(new Blob(uint8arr))
     if (!fileType) {
       throw new Error('unsupported file format');
     }
-    let dataUrl;
-    if (fileType.mime.includes('image/') /* || fileType.mime.includes('audio/') */) {
-      dataUrl = URL.createObjectURL((await getIpfsNode()).cat(cid)) 
-    }
+
     console.log(fileType)
     console.log(cid)
+
+    let dataUrl;
+    if (fileType.mime.includes('image/') /* || fileType.mime.includes('audio/') */) {
+      const uint8arr = await readUint8Array((await getIpfsNode()).cat(cid));
+      dataUrl = await readAsDataURL(new Blob(uint8arr));
+    }
     dispatch(ipfsContentAdded({
       cid,
       fileType,
@@ -38,6 +43,14 @@ export const addIpfsContent = createAsyncThunk<
     }))
   }
 );
+
+const readUint8Array = async (array: AsyncIterable<Uint8Array>) => {
+  const uint8arr = [];
+  for await (const partial of array) {
+    uint8arr.push(partial);
+  }
+  return uint8arr;
+}
 
 export const ipfsContentsSlice = createSlice({
   name: 'ipfsContents',

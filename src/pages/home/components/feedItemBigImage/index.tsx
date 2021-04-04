@@ -7,6 +7,7 @@ import { Avatar, Root, Title, Timestamp, Body, Content, Header } from './styles'
 import { useDispatch, useSelector } from 'react-redux';
 import { addIpfsContent, selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
+import { IpfsContent } from '~/components/ipfsContent';
 
 type FeedItemBigImageProps = {
   item: FeedItem;
