@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
-import { Message } from '../places/messagesSlice';
-import { Place } from '../places/placesSlice';
+import { Attachment, Message } from '../places/messagesSlice';
+import { User } from '../users/usersSlice';
 
 export enum Appearance {
   DEFAULT,
@@ -13,15 +13,27 @@ export enum ItemKind {
   PLACE,
 }
 
-export interface FeedItemMessage extends Message {
+export interface FeedItemMessage {
   appearance: Appearance,
   kind: ItemKind.MESSAGE,
+
+  id: string;
   placeId: string,
+  author: User,
+  timestamp: number;
+  text?: string;
+  attachments?: Attachment[];
 };
 
-export interface FeedItemPlace extends Place {
+export interface FeedItemPlace {
   appearance: Appearance,
   kind: ItemKind.PLACE,
+
+  id: string;
+  name: string;
+  description: string;
+  avatarImage: string;
+  timestamp: number;
 };
 
 export type FeedItem = FeedItemMessage | FeedItemPlace;
@@ -32,7 +44,7 @@ export type FeedsState = {
 
 export const fetchFeedItems = createAsyncThunk<
   void,
-  void,
+  { lastTimestamp: number } | void,
   { dispatch: AppDispatch; state: RootState }
 >('feed/fetchFeedItems', async (_, thunkAPI) => {
   const state = thunkAPI.getState();
@@ -44,10 +56,12 @@ export const fetchFeedItems = createAsyncThunk<
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
 
-    id: '33333-33333-33333-3333333333',
-    authorId: '55555-55555-55555-5555555555',
-    authorName: 'hogehgoe',
-    postedAt: 10000010,
+    id: '33333-33333-33333-33333333331',
+    author: {
+      id: '55555-55555-55555-5555555555',
+      username: 'hogehgoe',
+    },
+    timestamp: 10000010,
     attachments: [{
       ipfsCid: '5555555555555555555',
       dataUrl: '11111111111111111111111111',
@@ -58,10 +72,12 @@ export const fetchFeedItems = createAsyncThunk<
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
 
-    id: '33333-33333-33333-3333333333',
-    authorId: '55555-55555-55555-5555555555',
-    authorName: 'hogehgoe',
-    postedAt: 10000010,
+    id: '33333-33333-33333-33333333332',
+    author: {
+      id: '55555-55555-55555-5555555555',
+      username: 'hogehgoe',
+    },
+    timestamp: 10000010,
     attachments: [{
       ipfsCid: '5555555555555555555',
       dataUrl: '11111111111111111111111111',
@@ -72,10 +88,12 @@ export const fetchFeedItems = createAsyncThunk<
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
 
-    id: '33333-33333-33333-3333333333',
-    authorId: '55555-55555-55555-5555555555',
-    authorName: 'hogehgoe',
-    postedAt: 10000010,
+    id: '33333-33333-33333-33333333333',
+    author: {
+      id: '55555-55555-55555-5555555555',
+      username: 'hogehgoe',
+    },
+    timestamp: 10000010,
     attachments: [{
       ipfsCid: '5555555555555555555',
       dataUrl: '11111111111111111111111111',
@@ -86,10 +104,12 @@ export const fetchFeedItems = createAsyncThunk<
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
 
-    id: '33333-33333-33333-3333333333',
-    authorId: '55555-55555-55555-5555555555',
-    authorName: 'hogehgoe',
-    postedAt: 10000010,
+    id: '33333-33333-33333-33333333334',
+    author: {
+      id: '55555-55555-55555-5555555555',
+      username: 'hogehgoe',
+    },
+    timestamp: 10000010,
     attachments: [{
       ipfsCid: '5555555555555555555',
       dataUrl: '11111111111111111111111111',
@@ -100,10 +120,12 @@ export const fetchFeedItems = createAsyncThunk<
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
 
-    id: '33333-33333-33333-3333333333',
-    authorId: '55555-55555-55555-5555555555',
-    authorName: 'hogehgoe',
-    postedAt: 10000010,
+    id: '33333-33333-33333-33333333335',
+    author: {
+      id: '55555-55555-55555-5555555555',
+      username: 'hogehgoe',
+    },
+    timestamp: 10000010,
     attachments: [{
       ipfsCid: '5555555555555555555',
       dataUrl: '11111111111111111111111111',

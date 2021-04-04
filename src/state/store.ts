@@ -8,6 +8,7 @@ import { createHashHistory } from 'history';
 import placesReducer from '~/state/ducks/places/placesSlice';
 import meReducer from '~/state/ducks/me/meSlice';
 import feedReducer from '~/state/ducks/feed/feedSlice';
+import usersReducer from '~/state/ducks/users/usersSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
 import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -73,6 +74,7 @@ const reducers = combineReducers({
   ),
   ipfsContents: persistReducer(ipfsContentsPersistConfig, ipfsContentsReducer),
   feed: feedReducer,
+  users: usersReducer,
   router: connectRouter(history),
 });
 

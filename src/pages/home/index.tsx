@@ -4,10 +4,11 @@ import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUs
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import styled, { css } from 'styled-components';
-import { Appearance, fetchFeedItems, selectFeed } from '~/state/ducks/feed/feedSlice';
+import styled from 'styled-components';
+import { Appearance, FeedItem, fetchFeedItems, selectFeed } from '~/state/ducks/feed/feedSlice';
 import FeedItemBigImage from './components/feedItemBigImage';
 import FeedItemDefault from './components/feedItemDefault';
+import { username } from '~/helpers';
 
 const Header = styled.div`
   display: flex;
@@ -66,8 +67,8 @@ const HomePage: React.FC = () => {
   const feed = useSelector(selectFeed);
 
   useEffect(() => {
-      dispatch(fetchFeedItems());
-  }, [dispatch]);
+    dispatch(fetchFeedItems());
+  }, []);
 
   return (
     <BaseLayout>
@@ -82,23 +83,31 @@ const HomePage: React.FC = () => {
         </Notification>
       </Header>
       <Greeting>Hello 😊</Greeting>
-      { me.username && (<Username>{me.username}</Username>) }
+      <Username>{username(me)}</Username>
       <Feed>
-        { feed.items.map(item => {
-          switch (item.appearance) {
-            case Appearance.BIG_CARD:
-              return (
-                <FeedItemBigImage item={item} />
-              )
-            case Appearance.DEFAULT:
-              return (
-                <FeedItemDefault item={item} />
-              )
-          }
-        })}
+        { feed.items.map(item =>
+          (<Item item={item} key={item.id} />)
+        )}
       </Feed>
     </BaseLayout>
   );
 };
+
+type ItemProps = {
+  item: FeedItem;
+}
+
+const Item: React.FC<ItemProps> = ({ item }) => {
+  switch (item.appearance) {
+    case Appearance.BIG_CARD:
+      return (
+        <FeedItemBigImage item={item} />
+      )
+    case Appearance.DEFAULT:
+      return (
+        <FeedItemDefault item={item} />
+      )
+  }
+}
 
 export default HomePage;

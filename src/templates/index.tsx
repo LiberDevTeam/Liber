@@ -6,7 +6,6 @@ import { BottomNavigation } from '~/components/bottomNavigation';
 const commonRootStyle = css`
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
 `;
 
 const SpRoot = styled.div`

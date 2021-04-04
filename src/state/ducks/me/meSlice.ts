@@ -1,16 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '../users/usersSlice';
 
 export type Settings = {
   isIsolation: boolean;
 };
 
-export type Me = {
-  id: string;
-  username: string;
+export type Me = User & {
   settings: Settings;
-  avatarImage: string;
 };
 
 export type MeState = Me;
@@ -18,7 +16,7 @@ export type MeState = Me;
 const id = uuidv4();
 const initialState: MeState = {
   id,
-  username: id, // Use id as default username.
+  username: '',
   settings: {
     isIsolation: false,
   },
