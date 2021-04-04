@@ -39,4 +39,12 @@ export const Timestamp = styled.span`
 export const Text = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.light};
   line-height: 140%;
+  margin-bottom: ${(props) => props.theme.space[4]}px;
+`;
+
+export const Attachment = styled(IpfsContent)`
+  max-height: 200px;
+  width: 100%;
+  border-radius: ${(props) => props.theme.radii.medium}px;
+  object-fit: cover;
 `;

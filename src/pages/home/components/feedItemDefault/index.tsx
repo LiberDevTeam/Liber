@@ -2,9 +2,8 @@ import React from 'react';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
-import { Avatar, Header, Timestamp, Title, Text } from './styles';
+import { Avatar, Header, Timestamp, Title, Text, Attachment } from './styles';
 import { fromUnixTime } from 'date-fns';
-import { IpfsContent } from '~/components/ipfsContent';
 
 interface FeedItemDefaultProps {
   item: FeedItem;
@@ -66,7 +65,7 @@ const Component: React.FC<ComponentProps> = ({
       <Text>{text}</Text>
       {attachmentCidList &&
         attachmentCidList.map((cid) => (
-          <IpfsContent cid={cid} key={`${id}-${cid}`} />
+          <Attachment cid={cid} key={`${id}-${cid}`} />
         ))}
     </>
   );
