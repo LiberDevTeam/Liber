@@ -2,7 +2,7 @@ import { createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } fro
 import { AppDispatch, RootState } from '~/state/store';
 import FileType, { FileTypeResult } from 'file-type/browser';
 import toStream from 'it-to-stream';
-import { ipfsNode } from './p2pSlice';
+import { getIpfsNode } from './p2pSlice';
 
 export interface IpfsContent {
   cid: string;
@@ -21,14 +21,16 @@ export const addIpfsContent = createAsyncThunk<
 >(
   'ipfsContents/addIpfsContent',
   async ({ cid }, { dispatch }) => {
-    const fileType = await FileType.fromStream(toStream(ipfsNode().cat(cid, { length: 24 })))
+    const fileType = await FileType.fromStream(toStream((await getIpfsNode()).cat(cid, { length: 24 })))
     if (!fileType) {
       throw new Error('unsupported file format');
     }
     let dataUrl;
     if (fileType.mime.includes('image/') /* || fileType.mime.includes('audio/') */) {
-      dataUrl = URL.createObjectURL(ipfsNode().cat(cid)) 
+      dataUrl = URL.createObjectURL((await getIpfsNode()).cat(cid)) 
     }
+    console.log(fileType)
+    console.log(cid)
     dispatch(ipfsContentAdded({
       cid,
       fileType,

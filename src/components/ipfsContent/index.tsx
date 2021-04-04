@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ipfsNode } from '~/state/ducks/p2p/p2pSlice';
+import { getIpfsNode} from '~/state/ducks/p2p/p2pSlice';
 import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 import { addIpfsContent, selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { IPFS as Ipfs } from 'ipfs';
 
 interface ContentPreviewProps {
   cid: string;
@@ -15,16 +16,21 @@ const Image = styled.img`
 export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
   const dispatch = useDispatch();
   const content = useSelector(selectIpfsContentByCID(cid));
+  const [ipfsNode, setIpfsNode] = useState<Ipfs>();
 
   useEffect(() => {
-    if (!content) {
-      dispatch(addIpfsContent({ cid }))
-    }
+    (async () => {
+      if (!content) {
+        setIpfsNode(await getIpfsNode());
+        dispatch(addIpfsContent({ cid }))
+      }
+    })();
   }, [dispatch, cid])
 
   if (!content) {
     return null;
   }
+  console.log(content.fileType)
 
   switch (content.fileType.mime) {
     case "image/apng":
@@ -55,7 +61,7 @@ export const IpfsContent: React.FC<ContentPreviewProps> = ({ cid }) => {
         config={{
           file: {
             hlsOptions: { 
-              ipfs: ipfsNode(),
+              ipfs: ipfsNode,
               ipfsHash: cid,
             }
           }

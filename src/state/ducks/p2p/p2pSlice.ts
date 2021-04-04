@@ -160,19 +160,14 @@ const connectPlaceKeyValue = async ({
   return db;
 };
 
-export const ipfsNode = (): Ipfs => p2pNodes.ipfsNode!;
-export const privateIpfsNodes = (pid: string): Ipfs =>
-  p2pNodes.privateIpfsNodes[pid];
+let ipfsNode: Ipfs | null;
 
-export const initNodes = createAsyncThunk<
-  void,
-  void,
-  { dispatch: AppDispatch; state: RootState }
->('p2p/initNodes', async (_, thunkAPI) => {
-  const state = thunkAPI.getState();
-  const dispatch = thunkAPI.dispatch;
+export const getIpfsNode = async (): Promise<Ipfs> => {
+  if (ipfsNode) {
+    return ipfsNode;
+  }
 
-  p2pNodes.ipfsNode = await IPFS.create({
+  ipfsNode = await IPFS.create({
     start: true,
     preload: {
       enabled: true,
@@ -188,9 +183,23 @@ export const initNodes = createAsyncThunk<
         announce: [],
         noAnnounce: [],
       },
-    },
+    }
   });
-  orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
+  return ipfsNode;
+}
+
+export const getPrivateIpfsNode = (pid: string): Ipfs =>
+  p2pNodes.privateIpfsNodes[pid];
+
+export const initNodes = createAsyncThunk<
+  void,
+  void,
+  { dispatch: AppDispatch; state: RootState }
+>('p2p/initNodes', async (_, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const dispatch = thunkAPI.dispatch;
+
+  orbitDB = await OrbitDB.createInstance(getIpfsNode());
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -237,7 +246,7 @@ export const publishPlaceMessage = createAsyncThunk<
       message.attachmentCidList =
         (await Promise.all(
           attachments.map(async (file) => {
-            const content = await ipfsNode().add({
+            const content = await (await getIpfsNode()).add({
               path: file.name,
               content: file,
             });
@@ -396,7 +405,7 @@ export const createNewPlace = createAsyncThunk<
   ) => {
     const { me } = getState();
 
-    const node = ipfsNode();
+    const node = await getIpfsNode();
     const file = await node.add({
       path: avatarImage.name,
       content: avatarImage,

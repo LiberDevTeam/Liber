@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FeedItem, ItemKind } from "~/state/ducks/feed/feedSlice";
 import { shortenUid } from '~/helpers';
 import { fromUnixTime } from 'date-fns';
 import { formatTime } from '~/helpers/time';
 import { Avatar, Root, Title, Timestamp, Body, Content, Header } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { addIpfsContent, selectIpfsContentByCID } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
 
 type FeedItemBigImageProps = {
   item: FeedItem;
@@ -16,7 +17,7 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
     case ItemKind.MESSAGE:
       return (
         <Component
-          bgCid={item.attachmentCidList && item.attachmentCidList[0] }
+          bgCid={item.attachmentCidList[0] }
           title={item.author.username || shortenUid(item.author.id)}
           avatarCid={item.author.avatarCid}
           text={item.text}
@@ -34,7 +35,7 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
 }
 
 type ComponentProps = {
-  bgCid?: string;
+  bgCid: string;
   title: string;
   avatarCid?: string;
   text?: string;
@@ -42,7 +43,18 @@ type ComponentProps = {
 }
 
 const Component: React.FC<ComponentProps> = ({ bgCid, title, avatarCid, text, timestamp }) => {
-  const bgContent = useSelector(selectIpfsContentByCID(bgCid || ''));
+  const dispatch = useDispatch();
+  const bgContent = useSelector(selectIpfsContentByCID(bgCid));
+
+  useEffect(() => {
+    (async () => {
+      if (!bgContent) {
+        await getIpfsNode();
+        dispatch(addIpfsContent({ cid: bgCid }))
+      }
+    })();
+  }, [dispatch, bgContent])
+
   const time = fromUnixTime(timestamp);
   return (
     <Root bgImg={bgContent?.dataUrl || ""}>

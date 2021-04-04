@@ -21,7 +21,7 @@ export interface FeedItemMessage {
   author: User,
   timestamp: number;
   text?: string;
-  attachmentCidList?: string[];
+  attachmentCidList: string[];
 };
 
 export interface FeedItemPlace {
@@ -50,7 +50,7 @@ export const fetchFeedItems = createAsyncThunk<
   const dispatch = thunkAPI.dispatch;
 
   // TODO fetching from the GraphQL endpoint.
-  dispatch(appendFeedItems([{
+  const feedItems: FeedItem[] = [{
     appearance: Appearance.DEFAULT,
     kind: ItemKind.MESSAGE,
     placeId: '22222-22222-22222-2222222222',
@@ -130,7 +130,9 @@ export const fetchFeedItems = createAsyncThunk<
       'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
     ],
     text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-  }]))
+  }];
+
+  dispatch(appendFeedItems(feedItems))
 });
 
 const initialState: FeedsState = {
