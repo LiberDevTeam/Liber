@@ -27,10 +27,11 @@ const Root = styled.button<{ color: string }>`
   }
 `;
 
-export type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export interface IconButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
   color?: string;
-};
+}
 
 export const IconButton: React.FC<IconButtonProps> = React.memo(
   function IconButton({ icon, color = theme.colors.primaryText, ...args }) {

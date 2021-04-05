@@ -35,14 +35,14 @@ const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
   }
 };
 
-type ComponentProps = {
+interface ComponentProps {
   id: string;
   title: string;
   attachmentCidList?: string[];
   avatarCid?: string;
   text?: string;
   timestamp: number;
-};
+}
 
 const Component: React.FC<ComponentProps> = ({
   id,

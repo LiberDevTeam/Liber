@@ -9,11 +9,11 @@ import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 
-export type PlaceListColumnProps = {
+export interface PlaceListColumnProps {
   title: string;
   placeList: Place[];
   onClickNew?: () => void;
-};
+}
 
 const Header = styled.header`
   display: flex;
