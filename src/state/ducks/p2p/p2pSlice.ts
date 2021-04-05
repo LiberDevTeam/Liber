@@ -448,7 +448,7 @@ export const createNewPlace = createAsyncThunk<
       timestamp: timestamp,
       createdAt: timestamp,
       swarmKey: swarmKey || undefined,
-      invitationUrl: invitationUrl.href,
+      invitationUrl: invitationUrl,
       passwordRequired,
       hash,
       category,
@@ -482,12 +482,7 @@ export const createNewPlace = createAsyncThunk<
 );
 
 const buildInvitationUrl = async (placeId: string, address: string) => {
-  const invitationUrl = new URL(
-    `${window.location.protocol}//${window.location.hostname}/#/`
-  );
-  invitationUrl.searchParams.append('placeId', placeId);
-  invitationUrl.searchParams.append('address', address);
-  return invitationUrl;
+  return `${window.location.protocol}//${window.location.host}/#/places/${placeId}/join/${address}`;
 };
 
 export const lookupAndStoreUser = createAsyncThunk<
