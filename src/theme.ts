@@ -8,6 +8,13 @@ export const GlobalStyles = createGlobalStyle`
     src: url(/fonts/ROBERT-CORSEANSCH-DELECTA.OTF);
   }
 
+  @font-face {
+    font-family: 'Delecta';
+    font-style: bold;
+    font-weight: 700;
+    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-BOLD.OTF);
+  }
+
 
   *,
   *::before,
@@ -20,7 +27,7 @@ export const GlobalStyles = createGlobalStyle`
     height: 100%;
   }
 
-  #root {
+  * {
     font-family: ${(props) => props.theme.fontFamily.body};
   }
 
