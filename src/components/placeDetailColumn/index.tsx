@@ -167,7 +167,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
       [dispatch, place?.unreadMessages, place.id]
     );
 
-    const handleRemoveAvatarImage = useCallback((idx: number) => {
+    const handleRemoveAvatar = useCallback((idx: number) => {
       if (attachmentRef.current) {
         attachmentRef.current.value = '';
       }
@@ -205,7 +205,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         <Root>
           <PlaceDetailHeader
             name={place.name}
-            avatarImage={place.avatarImage}
+            avatarCid={place.avatarCid}
             onInviteClick={() => {
               setOpen(true);
             }}
@@ -264,7 +264,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                     <PreviewImage
                       key={attachments[i].name}
                       src={preview}
-                      onRemove={() => handleRemoveAvatarImage(i)}
+                      onRemove={() => handleRemoveAvatar(i)}
                     />
                   ))
                 : null}

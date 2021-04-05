@@ -44,8 +44,7 @@ export interface Place {
   id: string;
   name: string;
   description: string;
-  avatarImage: string; // data url
-  avatarImageCID: string;
+  avatarCid: string;
   swarmKey?: string;
   invitationUrl: string;
   timestamp: number; // the timestamp any user in the place acted at
@@ -154,6 +153,10 @@ export const selectPlaceMessagesByPID = (pid: string) => (
     .filter(Boolean) as Message[];
 };
 
-export const { clearUnreadMessages, setHash, removePlace } = placesSlice.actions;
+export const {
+  clearUnreadMessages,
+  setHash,
+  removePlace,
+} = placesSlice.actions;
 
 export default placesSlice.reducer;

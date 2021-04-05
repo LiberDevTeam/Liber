@@ -11,7 +11,6 @@ import {
 } from '~/state/ducks/places/placesSlice';
 import { RootState } from '~/state/store';
 import BaseLayout from '~/templates';
-import { theme } from '~/theme';
 
 const PAGE_TITLE = 'Places';
 
