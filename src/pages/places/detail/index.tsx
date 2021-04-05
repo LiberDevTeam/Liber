@@ -128,6 +128,12 @@ const StyledIconButton = styled.button`
   }
 `;
 
+const Attachments = styled.div`
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: ${(props) => props.theme.space[3]}px;
+`;
+
 const Footer = styled.footer`
   display: flex;
   position: relative;
@@ -272,6 +278,18 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           </Messages>
 
           <Footer>
+            {attachmentPreviews ? (
+              <Attachments>
+                {attachmentPreviews.map((preview, i) => (
+                  <PreviewImage
+                    key={attachments[i].name}
+                    src={preview}
+                    onRemove={() => handleRemoveAvatar(i)}
+                  />
+                ))}
+              </Attachments>
+            ) : null}
+
             {place.unreadMessages?.length > 0 ? (
               <ToastWrapper>
                 <UnreadToast
@@ -285,15 +303,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             ) : null}
 
             <Form onSubmit={formik.handleSubmit}>
-              {attachmentPreviews
-                ? attachmentPreviews.map((preview, i) => (
-                    <PreviewImage
-                      key={attachments[i].name}
-                      src={preview}
-                      onRemove={() => handleRemoveAvatar(i)}
-                    />
-                  ))
-                : null}
               <MessageInput
                 innerRef={messageInputRef}
                 name="text"
