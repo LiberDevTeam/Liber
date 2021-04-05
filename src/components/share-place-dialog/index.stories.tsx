@@ -5,6 +5,11 @@ import { Story } from '@storybook/react/types-6-0';
 export default {
   component: SharePlaceDialog,
   title: 'molecules/SharePlaceDialog',
+  argTypes: {
+    onClose: {
+      action: 'onClose',
+    },
+  },
 };
 
 const Template: Story<SharePlaceDialogProps> = (args) => (
