@@ -127,7 +127,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
     }
   };
 
-  const handleRemoveAvatarImage = useCallback(() => {
+  const handleRemoveAvatar = useCallback(() => {
     if (avatarInputRef.current) {
       avatarInputRef.current.value = '';
     }
@@ -167,10 +167,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         />
 
         {avatarPreview ? (
-          <PreviewImage
-            src={avatarPreview}
-            onRemove={handleRemoveAvatarImage}
-          />
+          <PreviewImage src={avatarPreview} onRemove={handleRemoveAvatar} />
         ) : null}
         <UploadFileButtonGroup>
           <Button

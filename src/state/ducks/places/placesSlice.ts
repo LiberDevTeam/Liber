@@ -44,7 +44,6 @@ export interface Place {
   id: string;
   name: string;
   description: string;
-  avatar: string; // data url
   avatarCid: string;
   swarmKey?: string;
   invitationUrl: string;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { PlaceDetailHeader, PlaceDetailHeaderProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
-import avatar from '../../mocks/user.png';
 
 export default {
   component: PlaceDetailHeader,
@@ -22,6 +21,6 @@ const Template: Story<PlaceDetailHeaderProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   name: 'College Friends',
-  avatar: avatar,
+  avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
   memberCount: 23,
 };

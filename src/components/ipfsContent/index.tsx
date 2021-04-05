@@ -5,7 +5,7 @@ import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addIpfsContent,
-  selectIpfsContentByCID,
+  selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { IPFS as Ipfs } from 'ipfs';
 
@@ -18,7 +18,7 @@ const Image = styled.img``;
 
 export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
   const dispatch = useDispatch();
-  const content = useSelector(selectIpfsContentByCID(cid));
+  const content = useSelector(selectIpfsContentByCid(cid));
   const [ipfsNode, setIpfsNode] = useState<Ipfs>();
 
   useEffect(() => {

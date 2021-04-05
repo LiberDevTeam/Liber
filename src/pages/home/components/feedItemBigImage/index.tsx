@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addIpfsContent,
-  selectIpfsContentByCID,
+  selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
 
@@ -63,7 +63,7 @@ const Component: React.FC<ComponentProps> = ({
   timestamp,
 }) => {
   const dispatch = useDispatch();
-  const bgContent = useSelector(selectIpfsContentByCID(bgCid));
+  const bgContent = useSelector(selectIpfsContentByCid(bgCid));
 
   useEffect(() => {
     (async () => {
