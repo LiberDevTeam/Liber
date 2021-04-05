@@ -57,11 +57,8 @@ const getPlaceAddress = (address: string, placeId: string): string =>
 
 const dbOptions: IStoreOptions = { accessController: { write: ['*'] } };
 
-const excludeMyMessages = (
-  authorId: string,
-  messages: Message[]
-): Message[] => {
-  return messages.filter((m) => m.authorId !== authorId);
+const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
+  return messages.filter((m) => m.uid !== uid);
 };
 
 const p2pNodes: {
@@ -242,7 +239,7 @@ export const publishPlaceMessage = createAsyncThunk<
     const message: Message = {
       id: uuidv4(),
       authorName: me.username,
-      authorId: me.id,
+      uid: me.id,
       text,
       timestamp: getUnixTime(new Date()),
     };

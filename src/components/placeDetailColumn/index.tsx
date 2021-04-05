@@ -232,11 +232,11 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             {messages.map((m) => (
               <MessageView
                 key={m.id}
-                name={m.authorId}
+                name={m.uid}
                 timestamp={m.timestamp}
                 text={m.text}
                 attachmentCidList={m.attachmentCidList}
-                mine={m.authorId === me.id}
+                mine={m.uid === me.id}
                 userImage={''}
               />
             ))}
