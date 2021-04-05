@@ -18,11 +18,10 @@ import {
   selectIpfsContentByCID,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
-import { IpfsContent } from '~/components/ipfsContent';
 
-type FeedItemBigImageProps = {
+interface FeedItemBigImageProps {
   item: FeedItem;
-};
+}
 
 const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
   switch (item.kind) {
@@ -48,13 +47,13 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
   }
 };
 
-type ComponentProps = {
+interface ComponentProps {
   bgCid: string;
   title: string;
   avatarCid?: string;
   text?: string;
   timestamp: number;
-};
+}
 
 const Component: React.FC<ComponentProps> = ({
   bgCid,

@@ -168,29 +168,26 @@ let ipfsNode: Ipfs | null;
 export const getIpfsNode = async (): Promise<Ipfs> => {
   const release = await mutex.acquire();
 
-  if (ipfsNode) {
-    release();
-    return ipfsNode;
-  }
-
-  ipfsNode = await IPFS.create({
-    start: true,
-    preload: {
-      enabled: true,
-    },
-    EXPERIMENTAL: { ipnsPubsub: true },
-    libp2p: {
-      addresses: {
-        listen: [
-          '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-          '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-          '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
-        ],
-        announce: [],
-        noAnnounce: [],
+  if (!ipfsNode) {
+    ipfsNode = await IPFS.create({
+      start: true,
+      preload: {
+        enabled: true,
       },
-    },
-  });
+      EXPERIMENTAL: { ipnsPubsub: true },
+      libp2p: {
+        addresses: {
+          listen: [
+            '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+            '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+            '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+          ],
+          announce: [],
+          noAnnounce: [],
+        },
+      },
+    });
+  }
 
   release();
   return ipfsNode;

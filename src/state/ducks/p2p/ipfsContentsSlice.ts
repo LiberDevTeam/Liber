@@ -6,7 +6,6 @@ import {
 } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import FileType, { FileTypeResult } from 'file-type/browser';
-import toStream from 'it-to-stream';
 import { getIpfsNode } from './p2pSlice';
 import { readAsDataURL } from '~/lib/readFile';
 
@@ -32,9 +31,6 @@ export const addIpfsContent = createAsyncThunk<
   if (!fileType) {
     throw new Error('unsupported file format');
   }
-
-  console.log(fileType);
-  console.log(cid);
 
   let dataUrl;
   if (
