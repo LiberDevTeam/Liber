@@ -1,6 +1,6 @@
 import { ConnectedRouter } from 'connected-react-router';
 import React, { useEffect } from 'react';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import IndexPage from './pages/home';
 import { NewPlace } from './pages/places/new';
 import { history, AppThunkDispatch } from './state/store';
@@ -8,31 +8,10 @@ import { Places } from './pages/places/index';
 import { ChatDetail } from './pages/places/detail';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
-import { initApp, joinPlace } from './state/ducks/p2p/p2pSlice';
+import { initApp } from './state/ducks/p2p/p2pSlice';
 import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
-
-interface QueryParams {
-  address?: string;
-  placeId?: string;
-}
-
-// A custom hook that builds on useLocation to parse
-// the query string.
-function useQuery<T extends { [K in keyof T]?: string | string[] }>(): T {
-  const { search } = useLocation();
-
-  return React.useMemo(() => {
-    const query = new URLSearchParams(search);
-    return Array.from(query.keys()).reduce((result, key) => {
-      const value = query.getAll(key);
-      return {
-        ...result,
-        [key]: (value.length === 1 ? value[0] : value) || undefined,
-      };
-    }, {} as T);
-  }, [search]);
-}
+import { JoinPlace } from './pages/places/join';
 
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
@@ -43,6 +22,10 @@ export const Routes: React.FC = () => (
         <Route exact path="/" render={() => <IndexPage />} />
         <Route exact path="/places/new" render={() => <NewPlace />} />
         <Route path="/places" exact render={() => <Places />} />
+        <Route
+          path="/places/join/:placeId/:address"
+          render={() => <JoinPlace />}
+        />
         <Route path="/places/:pid?/:swarmKey?" render={() => <ChatDetail />} />
         <Route exact path="/settings" render={() => <SettingsPage />} />
         <Route render={() => <NotFoundPage />} />
@@ -53,16 +36,12 @@ export const Routes: React.FC = () => (
 
 function Initializer() {
   const dispatch: AppThunkDispatch = useDispatch();
-  const { placeId, address } = useQuery<QueryParams>();
 
   useEffect(() => {
     (async () => {
       await dispatch(initApp());
-      if (placeId && address) {
-        await dispatch(joinPlace({ placeId, address }));
-      }
     })();
-  }, [dispatch, placeId, address]);
+  }, [dispatch]);
 
   return null;
 }
