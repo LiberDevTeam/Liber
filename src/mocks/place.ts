@@ -4,12 +4,11 @@ import { Place } from '../state/ducks/places/placesSlice';
 export const dummyPlace = (id: string): Place => ({
   id,
   name: 'We Love FC Barcelona!!',
-  avatarImage: `https://i.pravatar.cc/60?u=${id}`,
+  avatarCid: `QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ`,
   description:
     'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
   invitationUrl: `https://liber.live`,
   timestamp: getUnixTime(new Date()),
-  avatarImageCID: '',
   createdAt: 0,
   messageIds: [],
   unreadMessages: [],

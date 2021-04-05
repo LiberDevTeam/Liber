@@ -62,7 +62,7 @@ interface FormValues {
   name: string;
   description: string;
   isPrivate: boolean;
-  avatarImage: File | null;
+  avatar: File | null;
   password?: string;
   category: number;
 }
@@ -71,7 +71,7 @@ const validationSchema = yup.object({
   name: yup.string().required(),
   description: yup.string(),
   isPrivate: yup.bool(),
-  avatarImage: yup.mixed().test('not null', '', (value) => value !== null),
+  avatar: yup.mixed().test('not null', '', (value) => value !== null),
   password: yup.string(),
   category: yup.number().required(),
 });
@@ -86,7 +86,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       name: '',
       description: '',
       isPrivate: false,
-      avatarImage: null,
+      avatar: null,
       category: 0,
     },
     validationSchema,
@@ -94,17 +94,17 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       name,
       description,
       isPrivate,
-      avatarImage,
+      avatar,
       password,
       category,
     }) {
-      if (avatarImage) {
+      if (avatar) {
         dispatch(
           createNewPlace({
             name,
             description,
             isPrivate,
-            avatarImage,
+            avatar,
             password,
             category,
           })
@@ -114,25 +114,25 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   });
 
   useEffect(() => {
-    if (formik.values.avatarImage) {
-      readAsDataURL(formik.values.avatarImage).then((file) => {
+    if (formik.values.avatar) {
+      readAsDataURL(formik.values.avatar).then((file) => {
         setAvatarPreview(file);
       });
     }
-  }, [formik.values.avatarImage]);
+  }, [formik.values.avatar]);
 
   const handleChangeImage = async () => {
     if (avatarInputRef.current?.files && avatarInputRef.current.files[0]) {
-      formik.setFieldValue('avatarImage', avatarInputRef.current.files[0]);
+      formik.setFieldValue('avatar', avatarInputRef.current.files[0]);
     }
   };
 
-  const handleRemoveAvatarImage = useCallback(() => {
+  const handleRemoveAvatar = useCallback(() => {
     if (avatarInputRef.current) {
       avatarInputRef.current.value = '';
     }
     setAvatarPreview(null);
-    formik.setFieldValue('avatarImage', null);
+    formik.setFieldValue('avatar', null);
   }, [formik]);
 
   return (
@@ -167,10 +167,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         />
 
         {avatarPreview ? (
-          <PreviewImage
-            src={avatarPreview}
-            onRemove={handleRemoveAvatarImage}
-          />
+          <PreviewImage src={avatarPreview} onRemove={handleRemoveAvatar} />
         ) : null}
         <UploadFileButtonGroup>
           <Button
@@ -180,7 +177,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           />
           <InputFile
             ref={avatarInputRef}
-            name="avatarImage"
+            name="avatar"
             type="file"
             accept="image/*"
             onChange={handleChangeImage}

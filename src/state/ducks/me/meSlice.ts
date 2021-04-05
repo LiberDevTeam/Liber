@@ -3,13 +3,13 @@ import { RootState } from '~/state/store';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../users/usersSlice';
 
-export type Settings = {
+export interface Settings {
   isIsolation: boolean;
-};
+}
 
-export type Me = User & {
+export interface Me extends User {
   settings: Settings;
-};
+}
 
 export type MeState = Me;
 

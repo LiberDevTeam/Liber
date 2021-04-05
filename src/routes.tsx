@@ -11,10 +11,10 @@ import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
 import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
 
-type QueryParams = {
+interface QueryParams {
   address?: string;
   placeId?: string;
-};
+}
 
 // A custom hook that builds on useLocation to parse
 // the query string.
@@ -60,7 +60,7 @@ function Initializer() {
         await dispatch(joinPlace({ placeId, address }));
       }
     })();
-  }, [dispatch, placeId, address ]);
+  }, [dispatch, placeId, address]);
 
   return null;
 }

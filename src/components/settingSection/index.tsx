@@ -25,11 +25,11 @@ const SectionMain = styled.div`
   margin: ${(props) => props.theme.space[3]}px 0;
 `;
 
-export type SettingSectionProps = {
+export interface SettingSectionProps {
   title: string;
   description?: string;
   children: React.ReactNode;
-};
+}
 
 export const SettingSection: React.FC<SettingSectionProps> = ({
   title,

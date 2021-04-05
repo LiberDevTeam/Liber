@@ -10,6 +10,7 @@ import { SvgMoreVertical as MenuIcon } from '~/icons/MoreVertical';
 import { SvgInfo as InfoIcon } from '~/icons/Info';
 import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
 import { SvgLogOut as LeaveIcon } from '~/icons/LogOut';
+import { IpfsContent } from '../ipfsContent';
 
 const Root = styled.header`
   display: flex;
@@ -21,7 +22,7 @@ const BackLink = styled(Link)`
   height: 26px;
 `;
 
-const Avatar = styled.img`
+const Avatar = styled(IpfsContent)`
   width: 56px;
   height: 56px;
   border-radius: ${(props) => props.theme.radii.round};
@@ -80,7 +81,7 @@ const LeaveButton = styled(Button)`
 
 export interface PlaceDetailHeaderProps {
   name: string;
-  avatarImage: string;
+  avatarCid: string;
   memberCount: number;
   onInviteClick: () => void;
   onLeave: () => void;
@@ -89,7 +90,7 @@ export interface PlaceDetailHeaderProps {
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
   function PlaceDetailHeader({
     name,
-    avatarImage,
+    avatarCid,
     memberCount,
     onInviteClick,
     onLeave,
@@ -105,7 +106,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
         <BackLink to="/places">
           <BackIcon />
         </BackLink>
-        <Avatar src={avatarImage} />
+        <Avatar cid={avatarCid} />
         <TitleBox>
           <Title>{name}</Title>
           <MemberCount>{memberCount} Members</MemberCount>

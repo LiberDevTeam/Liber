@@ -33,18 +33,19 @@ const Input = styled.input`
   display: none;
 `;
 
-type RootProps = {
+interface RootProps {
   checked: boolean;
   width: number;
-};
+}
 
-export type ToggleSwitchProps = Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'type' | 'onChange'
-> & {
+export interface ToggleSwitchProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'type' | 'onChange'
+  > {
   onChange: (checked: boolean) => void;
   width?: number;
-};
+}
 
 export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   children,

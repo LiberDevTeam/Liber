@@ -41,7 +41,7 @@ const IconWrapper = styled.span`
   justify-content: center;
 `;
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   innerRef?:
     | ((instance: HTMLInputElement | null) => void)
@@ -49,7 +49,7 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
     | null
     | undefined;
   actions?: React.ReactNode;
-};
+}
 
 export const Input: React.FC<InputProps> = React.memo(function Input({
   icon,
