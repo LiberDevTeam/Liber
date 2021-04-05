@@ -2,18 +2,22 @@ import React from 'react';
 import ReactModal from 'react-modal';
 import styled from 'styled-components';
 import { theme } from '~/theme';
-import { IconButton } from '~/components/iconButton';
-import { Close as CloseIcon } from '@material-ui/icons';
+import { SvgClose as CloseIcon } from '~/icons/Close';
+
+const CloseButton = styled.button`
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: ${(props) => props.theme.radii.round};
+  background-color: ${(props) => props.theme.colors.bgGray};
+  padding: ${(props) => props.theme.space[1]}px;
+  color: ${(props) => props.theme.colors.secondaryText};
+`;
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-`;
-const Title = styled.div`
-  font-family: ${(props) => props.theme.fontFamily.heading};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  font-size: ${(props) => props.theme.fontSizes.lg};
 `;
 
 export interface ModalProps {
@@ -36,13 +40,15 @@ export const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => (
         position: 'initial',
         borderRadius: theme.radii.medium,
         inset: 'initial',
-        padding: theme.space[4],
+        padding: theme.space[3],
       },
     }}
     onRequestClose={onClose}
   >
     <Header>
-      <IconButton icon={<CloseIcon />} onClick={onClose} />
+      <CloseButton onClick={onClose} type="button">
+        <CloseIcon width={18} height={18} />
+      </CloseButton>
     </Header>
     {children}
   </ReactModal>
