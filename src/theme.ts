@@ -72,6 +72,7 @@ const colors = {
   green: '#1fbb2f',
   yellow: '#e8eb5c',
   red: '#df2121',
+  white: '#ffffff',
 
   // new design below
   gray: '#E1E4E6',
@@ -163,7 +164,7 @@ export const theme = {
   },
   border: {
     white: {
-      thin: '1px solid #fff',
+      thin: `1px solid ${colors.white}`,
     },
     gray: {
       thin: `1px solid ${colors.gray}`,

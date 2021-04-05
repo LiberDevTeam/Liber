@@ -1,4 +1,3 @@
-import { Send as SendIcon } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -23,10 +22,12 @@ import { UnreadToast } from '~/components/unreadToast';
 import { PreviewImage } from '~/components/previewImage';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '../../state/ducks/me/meSlice';
-import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
-import { SvgAttach as AttachIcon } from '~/icons/Attach';
+import { SvgSmilingFace as StickerIcon } from '../../icons/SmilingFace';
+import { SvgAttach as AttachIcon } from '../../icons/Attach';
+import { SvgNavigation as SendIcon } from '../../icons/Navigation';
 import { theme } from '~/theme';
 import { SharePlaceDialog } from '../share-place-dialog';
+import { lighten } from 'polished';
 
 const Root = styled.div`
   display: flex;
@@ -65,6 +66,10 @@ const Messages = styled.div`
   }
 `;
 
+const MessageInput = styled(Input)`
+  flex: 1;
+`;
+
 const MessageActions = styled.div`
   display: flex;
 
@@ -88,20 +93,40 @@ const UploadFileButtonGroup = styled.div`
   }
 `;
 
-const StyledIconButton = styled(IconButton)`
-  color: ${(props) => props.theme.colors.primary};
+const StyledIconButton = styled.button`
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.white};
   margin-left: ${(props) => props.theme.space[2]}px;
+  border-radius: ${(props) => props.theme.radii.round};
+  border: none;
 
-  & > svg {
-    font-size: ${(props) => props.theme.fontSizes['4xl']};
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => lighten(0.1, props.theme.colors.primary)};
+  }
+
+  &:active {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => lighten(0.2, props.theme.colors.primary)};
   }
 
   &:disabled {
-    color: ${(props) => props.theme.colors.disabled};
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.disabled};
+  }
+
+  & > svg {
+    transform: rotate(90deg);
   }
 `;
 
 const Footer = styled.footer`
+  flex: 1;
   display: flex;
   position: relative;
   bottom: 0;
@@ -268,7 +293,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                     />
                   ))
                 : null}
-              <Input
+              <MessageInput
                 innerRef={messageInputRef}
                 name="text"
                 placeholder="Message..."
@@ -304,13 +329,14 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
               />
 
               <StyledIconButton
-                icon={<SendIcon />}
                 title="Send"
                 type="submit"
                 disabled={
                   formik.values.text === '' && attachmentPreviews.length === 0
                 }
-              />
+              >
+                <SendIcon width={20} height={20} />
+              </StyledIconButton>
             </Form>
           </Footer>
         </Root>
