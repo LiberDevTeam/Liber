@@ -5,12 +5,16 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Button } from '~/components/button';
 import { IconButton } from '~/components/iconButton';
-import { SvgArrowIosBack as BackIcon } from '~/icons/ArrowIosBack';
-import { SvgMoreVertical as MenuIcon } from '~/icons/MoreVertical';
-import { SvgInfo as InfoIcon } from '~/icons/Info';
-import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
-import { SvgLogOut as LeaveIcon } from '~/icons/LogOut';
+import { SvgArrowIosBack as BackIcon } from '../../icons/ArrowIosBack';
+import { SvgMoreVertical as MenuIcon } from '../../icons/MoreVertical';
+import { SvgInfo as InfoIcon } from '../../icons/Info';
+import { SvgPersonAdd as InviteIcon } from '../../icons/PersonAdd';
+import { SvgPeople as PeopleIcon } from '../../icons/People';
+import { SvgLogOut as LeaveIcon } from '../../icons/LogOut';
+import { SvgEdit2 as EditIcon } from '../../icons/Edit2';
+import { SvgBot as BotIcon } from '../../icons/Bot';
 import { IpfsContent } from '../ipfsContent';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.header`
   display: flex;
@@ -47,7 +51,7 @@ const MemberCount = styled.span`
 
 const Actions = styled.div`
   position: absolute;
-  right: 0px;
+  right: ${(props) => props.theme.space[1]}px;
 
   & > * {
     margin-left: ${(props) => props.theme.space[4]}px;
@@ -55,7 +59,7 @@ const Actions = styled.div`
 `;
 
 const Menu = styled.div`
-  width: 190px;
+  width: 200px;
   background: ${(props) => props.theme.colors.bg};
   box-shadow: ${(props) => props.theme.shadows[1]};
   border-radius: ${(props) => props.theme.radii.medium}px;
@@ -67,7 +71,13 @@ const menuStyle = css`
   width: 100%;
   justify-content: flex-start;
   font-weight: ${(props) => props.theme.fontWeights.medium};
+  font-size: ${(props) => props.theme.fontSizes.sm};
   padding: ${(props) => props.theme.space[2]}px;
+
+  & span {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const MenuButton = styled(Button)`
@@ -96,6 +106,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     onLeave,
   }) {
     const [openMenu, setOpenMenu] = useState(false);
+    const { t } = useTranslation('chat');
 
     const handleInfoClick = () => {
       console.log('hello');
@@ -120,21 +131,54 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
 
           <Dropdown
             visible={openMenu}
-            onVisibleChange={() => setOpenMenu(false)}
+            onOverlayClick={() => setOpenMenu(false)}
             overlay={() => (
               <Menu>
                 <MenuButton
-                  title="Invite people"
+                  title={t('Invite People')}
                   shape="square"
                   variant="text"
                   onClick={onInviteClick}
-                  text="Invite People"
+                  text={t('Invite People')}
                   icon={<InviteIcon />}
                 />
-                <LeaveButton
+                <MenuButton
+                  title={t('Edit Chat')}
                   shape="square"
                   variant="text"
-                  text="Leave Place"
+                  onClick={onInviteClick}
+                  text={t('Edit Chat')}
+                  icon={<EditIcon />}
+                />
+                <MenuButton
+                  title={t('Manage Bots')}
+                  shape="square"
+                  variant="text"
+                  onClick={onInviteClick}
+                  text={t('Manage Bots')}
+                  icon={<BotIcon />}
+                />
+                <MenuButton
+                  title={t('Manage Maintainers')}
+                  shape="square"
+                  variant="text"
+                  onClick={onInviteClick}
+                  text={t('Manage Maintainers')}
+                  icon={<PeopleIcon />}
+                />
+                <MenuButton
+                  title={t('Banned Users')}
+                  shape="square"
+                  variant="text"
+                  onClick={onInviteClick}
+                  text={t('Banned Users')}
+                  icon={<PeopleIcon />}
+                />
+                <LeaveButton
+                  title={t('Leave Chat')}
+                  shape="square"
+                  variant="text"
+                  text={t('Leave Chat')}
                   onClick={onLeave}
                   icon={<LeaveIcon />}
                 />
