@@ -31,7 +31,6 @@ export const BottomNavigation: React.FC = React.memo(
           Explore
         </BottomNavLink>
         <BottomNavLink
-          exact
           icon={<MessagesIcon width={24} height={24} />}
           to="/places"
         >

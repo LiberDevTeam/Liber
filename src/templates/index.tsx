@@ -1,19 +1,39 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import { BottomNavigation } from '~/components/bottomNavigation';
+import { Link, Route, Switch } from 'react-router-dom';
+import styled from 'styled-components';
+import { SvgArrowIosBack as BackIcon } from '../icons/ArrowIosBack';
+import { BottomNavigation } from '../components/bottomNavigation';
+import { PageTitle } from '../components/pageTitle';
 
-const commonRootStyle = css`
-  width: 100vw;
-  height: 100vh;
-  overflow: scroll;
-`;
-
-const SpRoot = styled.div`
+const Root = styled.div`
   display: flex;
   flex-flow: column;
-  ${commonRootStyle};
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   background: white;
+  padding-top: ${(props) => props.theme.space[15]}px;
+`;
+
+const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 ${(props) => props.theme.space[7]}px;
+`;
+
+const BackLink = styled(Link)`
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
+
+const Description = styled.div`
+  color: ${(props) => props.theme.colors.secondaryText};
+  font-size: ${(props) => props.theme.fontSizes.md};
+  font-weight: ${(props) => props.theme.fontWeights.normal};
+  word-break: break-all;
+  margin-top: ${(props) => props.theme.space[1]}px;
 `;
 
 const SpNavigation = styled.nav`
@@ -29,17 +49,45 @@ const SpNavigation = styled.nav`
 const Main = styled.main`
   width: 100%;
   height: 100%;
+  overflow: auto;
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
-  padding: ${(props) => props.theme.space[4]}px;
-  padding-top: ${(props) => props.theme.space[12]}px;
   color: ${(props) => props.theme.colors.primaryText};
+  padding: 0 ${(props) => props.theme.space[7]}px;
 `;
 
-const BaseLayout: React.FC = ({ children }) => {
+interface Props {
+  title?: string;
+  backTo?: string;
+  description?: string;
+  headerRightItem?: React.ReactNode;
+}
+
+const BaseLayout: React.FC<Props> = ({
+  children,
+  backTo,
+  title,
+  description,
+  headerRightItem,
+}) => {
   return (
-    <SpRoot>
-      <Main>{children}</Main>
+    <>
+      <Root>
+        <Header>
+          <div>
+            {backTo && (
+              <BackLink to="/places">
+                <BackIcon />
+              </BackLink>
+            )}
+            {title && <PageTitle>{title}</PageTitle>}
+            {description && <Description>{description}</Description>}
+          </div>
+          <div>{headerRightItem}</div>
+        </Header>
+
+        <Main>{children}</Main>
+      </Root>
       <Switch>
         <Route path="/places/*" component={() => null} />
         <Route
@@ -51,7 +99,7 @@ const BaseLayout: React.FC = ({ children }) => {
           )}
         />
       </Switch>
-    </SpRoot>
+    </>
   );
 };
 

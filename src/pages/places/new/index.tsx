@@ -1,28 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { PageTitle } from '~/components/pageTitle';
-import styled from 'styled-components';
-import BaseLayout from '~/templates';
-import { Input } from '~/components/input';
-import { Button } from '~/components/button';
-import { Textarea } from '~/components/textarea';
 import { useFormik } from 'formik';
-import { useDispatch } from 'react-redux';
-import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
-import { PreviewImage } from '~/components/previewImage';
-import { readAsDataURL } from '~/lib/readFile';
-import * as yup from 'yup';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import { readAsDataURL } from '~/lib/readFile';
+import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
+import BaseLayout from '~/templates';
+import { Button } from '../../../components/button';
+import { Input } from '../../../components/input';
+import { PreviewImage } from '../../../components/previewImage';
+import { Textarea } from '../../../components/textarea';
 import { categories } from '../../../state/ducks/places/placesSlice';
 
-const PAGE_TITLE = 'Create new place';
-
-const Description = styled.div`
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  font-weight: ${(props) => props.theme.fontWeights.normal};
-  word-break: break-all;
-  margin-top: ${(props) => props.theme.space[7]}px;
-`;
+const PAGE_TITLE = 'New Chat';
 
 const Form = styled.form`
   display: flex;
@@ -136,12 +127,11 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   }, [formik]);
 
   return (
-    <BaseLayout>
-      <PageTitle>{PAGE_TITLE}</PageTitle>
-      <Description>
-        {t('newPlaces:Please fill out a form and submit it')}
-      </Description>
-
+    <BaseLayout
+      title={PAGE_TITLE}
+      backTo="/places"
+      description={t('newPlaces:Please fill out a form and submit it')}
+    >
       <Form onSubmit={formik.handleSubmit}>
         <InputText
           name="name"
@@ -206,7 +196,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
 
         <SubmitButton
           shape="square"
-          text={t('newPlaces:Submit')}
+          text={t('newPlaces:Start')}
           variant="solid"
           type="submit"
           disabled={

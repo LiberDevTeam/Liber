@@ -28,11 +28,13 @@ export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
         dispatch(addIpfsContent({ cid }));
       }
     })();
-  }, [dispatch, cid]);
+  }, [dispatch, cid, content]);
 
   if (!content) {
     return null;
   }
+
+  console.log(content);
 
   switch (content.fileType.mime) {
     case 'image/apng':

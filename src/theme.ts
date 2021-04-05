@@ -75,8 +75,8 @@ const colors = {
   white: '#ffffff',
 
   // new design below
-  gray: '#E1E4E6',
-  grayLight: '#EDF1F2',
+  gray: '#e1e4e6',
+  grayLight: '#edf1f2',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
 };
@@ -147,6 +147,15 @@ const breakpoints = {
 export const theme = {
   colors,
   fontWeights,
+  /**
+   * xxs: 10px
+   * xs: 12px
+   * sm: 14px
+   * md: 16px
+   * lg: 18px
+   * xl: 20px
+   * 2xl: 24px
+   */
   fontSizes,
   fontFamily,
   breakpoints,
