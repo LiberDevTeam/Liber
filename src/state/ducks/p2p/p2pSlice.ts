@@ -482,7 +482,7 @@ export const createNewPlace = createAsyncThunk<
 );
 
 const buildInvitationUrl = async (placeId: string, address: string) => {
-  return `${window.location.protocol}//${window.location.hostname}/#/places/${placeId}/join/${address}`;
+  return `${window.location.protocol}//${window.location.host}/#/places/${placeId}/join/${address}`;
 };
 
 export const lookupAndStoreUser = createAsyncThunk<
