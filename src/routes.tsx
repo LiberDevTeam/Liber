@@ -5,6 +5,7 @@ import IndexPage from './pages/home';
 import { NewPlace } from './pages/places/new';
 import { history, AppThunkDispatch } from './state/store';
 import { Places } from './pages/places/index';
+import { ChatDetail } from './pages/places/detail';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
 import { initApp, joinPlace } from './state/ducks/p2p/p2pSlice';
@@ -41,7 +42,8 @@ export const Routes: React.FC = () => (
       <Switch>
         <Route exact path="/" render={() => <IndexPage />} />
         <Route exact path="/places/new" render={() => <NewPlace />} />
-        <Route path="/places/:pid?/:swarmKey?" render={() => <Places />} />
+        <Route path="/places" exact render={() => <Places />} />
+        <Route path="/places/:pid?/:swarmKey?" render={() => <ChatDetail />} />
         <Route exact path="/settings" render={() => <SettingsPage />} />
         <Route render={() => <NotFoundPage />} />
       </Switch>

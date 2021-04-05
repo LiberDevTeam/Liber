@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Root = styled.h1`
   font-size: ${(props) => props.theme.fontSizes['2xl']};
-  font-weight: ${(props) => props.theme.fontWeights.semibold};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
 `;
 
 export interface PageTitleProps {

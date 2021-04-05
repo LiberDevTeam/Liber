@@ -1,40 +1,42 @@
+import Observer from '@researchgate/react-intersection-observer';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
+import { lighten } from 'polished';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Input } from '~/components/input';
-import { MessageView } from '~/components/messageView';
-import { removePlace } from '~/state/ducks/places/placesSlice';
+import { readAsDataURL } from '~/lib/readFile';
 import {
   openProtectedPlace,
   publishPlaceMessage,
 } from '~/state/ducks/p2p/p2pSlice';
 import {
   clearUnreadMessages,
-  Place,
+  removePlace,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
-import { IconButton } from '../iconButton';
-import { PlaceDetailHeader } from '../placeDetailHeader';
-import Observer from '@researchgate/react-intersection-observer';
-import { UnreadToast } from '~/components/unreadToast';
-import { PreviewImage } from '~/components/previewImage';
-import { readAsDataURL } from '~/lib/readFile';
-import { selectMe } from '../../state/ducks/me/meSlice';
-import { SvgSmilingFace as StickerIcon } from '../../icons/SmilingFace';
-import { SvgAttach as AttachIcon } from '../../icons/Attach';
-import { SvgNavigation as SendIcon } from '../../icons/Navigation';
 import { theme } from '~/theme';
-import { SharePlaceDialog } from '../share-place-dialog';
-import { lighten } from 'polished';
+import { IconButton } from '../../../components/iconButton';
+import { Input } from '../../../components/input';
+import { MessageView } from '../../../components/messageView';
+import { PlaceDetailHeader } from '../../../components/placeDetailHeader';
+import { PreviewImage } from '../../../components/previewImage';
+import { SharePlaceDialog } from '../../../components/share-place-dialog';
+import { UnreadToast } from '../../../components/unreadToast';
+import { SvgAttach as AttachIcon } from '../../../icons/Attach';
+import { SvgNavigation as SendIcon } from '../../../icons/Navigation';
+import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
+import { selectMe } from '../../../state/ducks/me/meSlice';
+import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
+import BaseLayout from '../../../templates';
 
 const Root = styled.div`
   display: flex;
-  height: 100%;
   flex-flow: column;
-  justify-content: space-between;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding-bottom: ${(props) => props.theme.space[10]}px;
 `;
 
 const InputFile = styled.input`
@@ -59,8 +61,9 @@ const ToastWrapper = styled.div`
 `;
 
 const Messages = styled.div`
-  flex-grow: 1;
+  flex: 1;
   overflow-y: auto;
+  padding-right: ${(props) => props.theme.space[2]}px;
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
@@ -126,14 +129,10 @@ const StyledIconButton = styled.button`
 `;
 
 const Footer = styled.footer`
-  flex: 1;
   display: flex;
   position: relative;
-  bottom: 0;
   align-items: center;
   justify-content: space-between;
-  padding: ${(props) => props.theme.space[4]}px;
-  padding-bottom: ${(props) => props.theme.space[1]}px;
 `;
 
 const Form = styled.form`
@@ -144,89 +143,91 @@ export interface FormValues {
   text: string;
 }
 
-export interface PlaceDetailColumnProps {
-  place: Place;
-}
+export const ChatDetail: React.FC = React.memo(function ChatDetail() {
+  const { pid } = useParams<{ pid: string }>();
+  const place = useSelector(selectPlaceById(pid));
+  const messages = useSelector(selectPlaceMessagesByPID(pid));
+  const me = useSelector(selectMe);
 
-export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
-  function PlaceDetailColumn({ place }) {
-    const messages = useSelector(selectPlaceMessagesByPID(place.id));
-    const me = useSelector(selectMe);
+  const dispatch = useDispatch();
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [open, setOpen] = useState(false);
+  const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
+  const [password, setPassword] = useState('');
 
-    const dispatch = useDispatch();
-    const [attachments, setAttachments] = useState<File[]>([]);
-    const [open, setOpen] = useState(false);
-    const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
-    const [password, setPassword] = useState('');
+  const messageInputRef = useRef<HTMLInputElement>(null);
+  const messagesBottomRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLInputElement>(null);
 
-    const messageInputRef = useRef<HTMLInputElement>(null);
-    const messagesBottomRef = useRef<HTMLDivElement>(null);
-    const attachmentRef = useRef<HTMLInputElement>(null);
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      text: '',
+    },
+    validateOnMount: true,
+    async onSubmit({ text }) {
+      dispatch(publishPlaceMessage({ pid, text, attachments }));
 
-    const formik = useFormik<FormValues>({
-      initialValues: {
-        text: '',
-      },
-      validateOnMount: true,
-      async onSubmit({ text }) {
-        dispatch(publishPlaceMessage({ pid: place.id, text, attachments }));
-
-        formik.resetForm();
-        formik.validateForm();
-        messageInputRef.current?.focus();
-        messagesBottomRef.current?.scrollIntoView();
-      },
-    });
-
-    // Scroll to bottom when open chat
-    useEffect(() => {
+      formik.resetForm();
+      formik.validateForm();
+      messageInputRef.current?.focus();
       messagesBottomRef.current?.scrollIntoView();
-    }, [place.id]);
+    },
+  });
 
-    const handleIntersection = useCallback(
-      (e) => {
-        if (e.isIntersecting && place?.unreadMessages) {
-          dispatch(clearUnreadMessages(place.id));
-        }
-      },
-      [dispatch, place?.unreadMessages, place.id]
-    );
+  // Scroll to bottom when open chat
+  useEffect(() => {
+    messagesBottomRef.current?.scrollIntoView();
+  }, [pid]);
 
-    const handleRemoveAvatar = useCallback((idx: number) => {
-      if (attachmentRef.current) {
-        attachmentRef.current.value = '';
+  const handleIntersection = useCallback(
+    (e) => {
+      if (e.isIntersecting && place?.unreadMessages) {
+        dispatch(clearUnreadMessages(pid));
       }
-      setAttachments((prev) => prev.filter((_, i) => i != idx));
-      setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
-    }, []);
+    },
+    [dispatch, place?.unreadMessages, pid]
+  );
 
-    const handleChangeAttachment = async () => {
-      if (attachmentRef.current?.files) {
-        const files = Array.from(attachmentRef.current?.files);
-        const previews = await Promise.all(
-          Array.from(files).map(async (file, i) => {
-            console.log(file.type);
-            return await readAsDataURL(file);
-          })
-        );
+  const handleRemoveAvatar = useCallback((idx: number) => {
+    if (attachmentRef.current) {
+      attachmentRef.current.value = '';
+    }
+    setAttachments((prev) => prev.filter((_, i) => i != idx));
+    setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
+  }, []);
 
-        setAttachments((prev) => [...prev, ...files]);
-        setAttachmentPreviews((prev) => [...prev, ...previews]);
-      }
-    };
+  const handleChangeAttachment = async () => {
+    if (attachmentRef.current?.files) {
+      const files = Array.from(attachmentRef.current?.files);
+      const previews = await Promise.all(
+        Array.from(files).map(async (file, i) => {
+          console.log(file.type);
+          return await readAsDataURL(file);
+        })
+      );
 
-    const handleClearUnread = useCallback(() => {
-      if (place?.unreadMessages) {
-        dispatch(clearUnreadMessages(place.id));
-      }
-    }, [dispatch, place?.unreadMessages, place.id]);
+      setAttachments((prev) => [...prev, ...files]);
+      setAttachmentPreviews((prev) => [...prev, ...previews]);
+    }
+  };
 
-    const handlePasswordEnter = useCallback(() => {
-      dispatch(openProtectedPlace({ password, placeId: place.id }));
-    }, [dispatch, place.id, password]);
+  const handleClearUnread = useCallback(() => {
+    if (place?.unreadMessages) {
+      dispatch(clearUnreadMessages(pid));
+    }
+  }, [dispatch, place?.unreadMessages, pid]);
 
-    return (
-      <>
+  const handlePasswordEnter = useCallback(() => {
+    dispatch(openProtectedPlace({ password, placeId: pid }));
+  }, [dispatch, pid, password]);
+
+  if (!place) {
+    return <div>404</div>;
+  }
+
+  return (
+    <>
+      <BaseLayout>
         <Root>
           <PlaceDetailHeader
             name={place.name}
@@ -340,12 +341,12 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
             </Form>
           </Footer>
         </Root>
-        <SharePlaceDialog
-          open={open}
-          url={place.invitationUrl}
-          onClose={() => setOpen(false)}
-        />
-      </>
-    );
-  }
-);
+      </BaseLayout>
+      <SharePlaceDialog
+        open={open}
+        url={place.invitationUrl}
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+});

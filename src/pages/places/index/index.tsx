@@ -1,18 +1,15 @@
-import { useMediaQuery } from '@material-ui/core';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { SvgPlus as AddIcon } from '../../../icons/Plus';
+import { push } from 'connected-react-router';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { PlaceDetailColumn } from '~/components/placeDetailColumn';
-import { PlaceListColumn } from '~/components/placeListColumn';
-import {
-  selectAllPlaces,
-  selectPlaceById,
-} from '~/state/ducks/places/placesSlice';
-import { RootState } from '~/state/store';
-import BaseLayout from '~/templates';
-
-const PAGE_TITLE = 'Places';
+import { ChatListItem } from '../../../components/ChatListItem';
+import { Input } from '../../../components/input';
+import { SvgSearch as SearchIcon } from '~/icons/Search';
+import { selectAllPlaces } from '../../../state/ducks/places/placesSlice';
+import { RootState } from '../../../state/store';
+import BaseLayout from '../../../templates';
 
 const Root = styled.div`
   display: flex;
@@ -34,20 +31,73 @@ const ListContainer = styled.div`
   }
 `;
 
+const AddButton = styled.button`
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  justify-content: center;
+  align-items: center;
+  border-radius: ${(props) => props.theme.radii.round};
+  background: transparent;
+  border: ${(props) => props.theme.border.gray.thin};
+`;
+
+const List = styled.div`
+  flex: 1;
+  margin-top: ${(props) => props.theme.space[8]}px;
+  padding: ${(props) => props.theme.space[1]}px;
+  overflow-y: auto;
+
+  & > div {
+    margin-bottom: ${(props) => props.theme.space[4]}px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
+  }
+`;
+
 export const Places: React.FC = React.memo(function Places() {
-  const { pid } = useParams<{ pid: string }>();
   const places = useSelector((state: RootState) => selectAllPlaces(state));
-  const place = useSelector(selectPlaceById(pid));
+  const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearchTextChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.currentTarget.value);
+    },
+    []
+  );
+
+  const handleOnClickNew = () => {
+    dispatch(push('/places/new'));
+  };
 
   return (
-    <BaseLayout>
+    <BaseLayout
+      title="Chats"
+      description="Messages with your friends"
+      headerRightItem={
+        <AddButton onClick={handleOnClickNew}>
+          <AddIcon width={24} height={24} />
+        </AddButton>
+      }
+    >
       <Root>
         <ListContainer>
-          {place ? (
-            <PlaceDetailColumn place={place} />
-          ) : (
-            <PlaceListColumn title={PAGE_TITLE} placeList={places} />
-          )}
+          <Input
+            icon={<SearchIcon width={24} height={24} />}
+            value={searchText}
+            onChange={handleSearchTextChange}
+            placeholder="Search"
+          />
+          <List>
+            {places
+              .filter((place) => place.name.includes(searchText))
+              .map((place) => (
+                <ChatListItem key={`place-${place.id}`} place={place} />
+              ))}
+          </List>
         </ListContainer>
       </Root>
     </BaseLayout>
