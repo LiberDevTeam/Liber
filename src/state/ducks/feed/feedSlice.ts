@@ -133,7 +133,7 @@ export const fetchFeedItems = createAsyncThunk<
     },
   ];
 
-  dispatch(appendFeedItems(feedItems));
+  dispatch(addFeedItems(feedItems));
 });
 
 const initialState: FeedsState = {
@@ -144,13 +144,13 @@ export const feedSlice = createSlice({
   name: 'feed',
   initialState,
   reducers: {
-    appendFeedItems: (state, action: PayloadAction<FeedItem[]>) => {
+    addFeedItems: (state, action: PayloadAction<FeedItem[]>) => {
       state.items = [...state.items, ...action.payload];
     },
   },
 });
 
-export const { appendFeedItems } = feedSlice.actions;
+export const { addFeedItems } = feedSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
