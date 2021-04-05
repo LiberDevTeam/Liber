@@ -5,14 +5,14 @@ import {
   placeMessagesAdded,
 } from '~/state/actionCreater';
 
-export type Message = {
+export interface Message {
   id: string; // UUID
   authorId: string;
   authorName?: string;
   postedAt: number;
   text?: string;
   attachmentCidList?: string[];
-};
+}
 
 const messagesAdapter = createEntityAdapter<Message>({
   sortComparer: (a, b) => a.postedAt - b.postedAt,

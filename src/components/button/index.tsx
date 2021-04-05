@@ -75,13 +75,14 @@ const IconWrapper = styled.span`
   margin-right: ${(props) => props.theme.space[2]}px;
 `;
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   shape: 'square' | 'rounded';
   text: string;
   icon?: React.ReactNode;
   disabled?: boolean;
-};
+}
 
 export const Button: React.FC<ButtonProps> = React.memo(function Button({
   variant = 'solid',

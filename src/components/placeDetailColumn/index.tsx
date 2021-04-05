@@ -119,9 +119,9 @@ export interface FormValues {
   text: string;
 }
 
-export type PlaceDetailColumnProps = {
+export interface PlaceDetailColumnProps {
   place: Place;
-};
+}
 
 export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
   function PlaceDetailColumn({ place }) {

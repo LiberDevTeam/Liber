@@ -12,10 +12,10 @@ import { useLocation } from 'react-router-dom';
 import GtagWrapper from '~/lib/tracking/gtag';
 import { selectMe } from '~/state/ducks/me/meSlice';
 
-type GenerateFromStrProps = {
+interface GenerateFromStrProps {
   __html: string; // 埋め込むHTML文字列
   callback?: () => void; // 埋め込んだDOMが変更された時のCallback関数
-};
+}
 
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID || '';
 
@@ -94,9 +94,9 @@ const GenerateFromStr: React.FC<GenerateFromStrProps> = ({
   return <div ref={ref} />;
 };
 
-type TrackerContextState = {
+interface TrackerContextState {
   tracker: GtagWrapper | null;
-};
+}
 
 const initialContextState: TrackerContextState = {
   tracker: null,

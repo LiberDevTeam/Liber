@@ -10,35 +10,36 @@ const targetDbList = [
   'ipfs/pins',
 ];
 
-export type DBObject = { [dbName: string]: TableObject };
-type TableObject = { [tableName: string]: { values: any[]; keys: string[] } };
+export interface DBObject {
+  [dbName: string]: TableObject;
+}
+interface TableObject {
+  [tableName: string]: { values: any[]; keys: string[] };
+}
 
 const getAllIdb = async (): Promise<DBObject> => {
-  return targetDbList.reduce(
-    async (dbAccm, dbName): Promise<DBObject> => {
-      const db = await new Dexie(dbName).open();
-      const dbData = db.tables.reduce(
-        async (tableAccm, table): Promise<TableObject> => {
-          const tableName: string = table.name;
-          const values = await db.table(tableName).toCollection().toArray();
-          const keys = await db.table(tableName).toCollection().keys();
-          return {
-            ...(tableAccm),
-            [tableName]: {
-              values,
-              keys,
-            },
-          };
-        },
-        {}
-      );
-      return {
-        ...dbAccm,
-        [dbName]: dbData,
-      };
-    },
-    {}
-  );
+  return targetDbList.reduce(async (dbAccm, dbName): Promise<DBObject> => {
+    const db = await new Dexie(dbName).open();
+    const dbData = db.tables.reduce(
+      async (tableAccm, table): Promise<TableObject> => {
+        const tableName: string = table.name;
+        const values = await db.table(tableName).toCollection().toArray();
+        const keys = await db.table(tableName).toCollection().keys();
+        return {
+          ...tableAccm,
+          [tableName]: {
+            values,
+            keys,
+          },
+        };
+      },
+      {}
+    );
+    return {
+      ...dbAccm,
+      [dbName]: dbData,
+    };
+  }, {});
 };
 
 const setAllIdb = async (data: DBObject): Promise<void> => {
