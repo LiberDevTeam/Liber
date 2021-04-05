@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlaceDetailHeader, PlaceDetailHeaderProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
-import avatarImage from '../../../mocks/user.png';
+import avatarImage from '../../mocks/user.png';
 
 export default {
   component: PlaceDetailHeader,
