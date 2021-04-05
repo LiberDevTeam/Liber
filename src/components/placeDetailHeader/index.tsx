@@ -80,7 +80,7 @@ const LeaveButton = styled(Button)`
 
 export interface PlaceDetailHeaderProps {
   name: string;
-  avatarImage: string;
+  avatar: string;
   memberCount: number;
   onInviteClick: () => void;
   onLeave: () => void;
@@ -89,7 +89,7 @@ export interface PlaceDetailHeaderProps {
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
   function PlaceDetailHeader({
     name,
-    avatarImage,
+    avatar,
     memberCount,
     onInviteClick,
     onLeave,
@@ -105,7 +105,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
         <BackLink to="/places">
           <BackIcon />
         </BackLink>
-        <Avatar src={avatarImage} />
+        <Avatar src={avatar} />
         <TitleBox>
           <Title>{name}</Title>
           <MemberCount>{memberCount} Members</MemberCount>

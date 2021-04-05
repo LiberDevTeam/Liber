@@ -205,7 +205,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
         <Root>
           <PlaceDetailHeader
             name={place.name}
-            avatarImage={place.avatarImage}
+            avatar={place.avatar}
             onInviteClick={() => {
               setOpen(true);
             }}

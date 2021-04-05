@@ -309,8 +309,8 @@ export const joinPlace = createAsyncThunk<
   const place: Place = {
     id: placeId,
     name: placeKeyValue.get('name') as string,
-    avatarImage: placeKeyValue.get('avatarImage') as string,
-    avatarImageCID: placeKeyValue.get('avatarImageCID') as string,
+    avatar: placeKeyValue.get('avatar') as string,
+    avatarCid: placeKeyValue.get('avatarCid') as string,
     description: placeKeyValue.get('description') as string,
     invitationUrl: placeKeyValue.get('invitationUrl') as string,
     feedAddress: placeKeyValue.get('feedAddress') as string,
@@ -400,22 +400,22 @@ export const createNewPlace = createAsyncThunk<
     category: number;
     description: string;
     isPrivate: boolean;
-    avatarImage: File;
+    avatar: File;
     password?: string;
   },
   { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/createNewPlace',
   async (
-    { name, description, isPrivate, avatarImage, password, category },
+    { name, description, isPrivate, avatar, password, category },
     { dispatch, getState }
   ) => {
     const { me } = getState();
 
     const node = await getIpfsNode();
     const file = await node.add({
-      path: avatarImage.name,
-      content: avatarImage,
+      path: avatar.name,
+      content: avatar,
     });
 
     let swarmKey;
@@ -445,7 +445,7 @@ export const createNewPlace = createAsyncThunk<
 
     const cid = file.cid.toBaseEncodedString();
     const timestamp = getUnixTime(new Date());
-    const dataUrl = await readAsDataURL(avatarImage);
+    const dataUrl = await readAsDataURL(avatar);
     // build an invitation url
     const invitationUrl = await buildInvitationUrl(
       placeId,
@@ -458,8 +458,8 @@ export const createNewPlace = createAsyncThunk<
       feedAddress: feed.address.root,
       name,
       description,
-      avatarImage: dataUrl,
-      avatarImageCID: cid,
+      avatar: dataUrl,
+      avatarCid: cid,
       timestamp: timestamp,
       createdAt: timestamp,
       swarmKey: swarmKey || undefined,
@@ -480,7 +480,7 @@ export const createNewPlace = createAsyncThunk<
 
     dispatch(placeAdded({ place, messages: [] }));
 
-    const fileType = await FileType.fromStream(avatarImage.stream());
+    const fileType = await FileType.fromStream(avatar.stream());
     if (!fileType) {
       throw new Error('unsupported file format');
     }
