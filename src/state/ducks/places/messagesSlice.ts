@@ -9,13 +9,13 @@ export type Message = {
   id: string; // UUID
   authorId: string;
   authorName?: string;
-  postedAt: number;
+  timestamp: number;
   text?: string;
   attachmentCidList?: string[];
 };
 
 const messagesAdapter = createEntityAdapter<Message>({
-  sortComparer: (a, b) => a.postedAt - b.postedAt,
+  sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
 
 export const messagesSlice = createSlice({

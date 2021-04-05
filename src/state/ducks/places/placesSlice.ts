@@ -61,7 +61,8 @@ export interface Place {
   keyValAddress: string;
 }
 
-const messageSort = (a: Message, b: Message): number => a.postedAt - b.postedAt;
+const messageSort = (a: Message, b: Message): number =>
+  a.timestamp - b.timestamp;
 
 const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
@@ -104,8 +105,8 @@ export const placesSlice = createSlice({
             ? [...newPlace.unreadMessages, message.id]
             : [message.id];
         }
-        if (newPlace.timestamp < message.postedAt) {
-          newPlace.timestamp = message.postedAt;
+        if (newPlace.timestamp < message.timestamp) {
+          newPlace.timestamp = message.timestamp;
         }
         placesAdapter.updateOne(state, { id: pid, changes: newPlace });
       })
@@ -154,6 +155,10 @@ export const selectPlaceMessagesByPID = (pid: string) => (
     .filter(Boolean) as Message[];
 };
 
-export const { clearUnreadMessages, setHash, removePlace } = placesSlice.actions;
+export const {
+  clearUnreadMessages,
+  setHash,
+  removePlace,
+} = placesSlice.actions;
 
 export default placesSlice.reducer;

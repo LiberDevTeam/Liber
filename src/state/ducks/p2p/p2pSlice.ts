@@ -244,7 +244,7 @@ export const publishPlaceMessage = createAsyncThunk<
       authorName: me.username,
       authorId: me.id,
       text,
-      postedAt: getUnixTime(new Date()),
+      timestamp: getUnixTime(new Date()),
     };
 
     if (attachments) {
