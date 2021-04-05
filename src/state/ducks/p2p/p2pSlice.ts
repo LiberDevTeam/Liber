@@ -28,7 +28,8 @@ import { addUser, User } from '../users/usersSlice';
 import FileType from 'file-type/browser';
 import { Mutex } from 'async-mutex';
 
-const mutex = new Mutex();
+const ipfsMutex = new Mutex();
+const orbitDBMutex = new Mutex();
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
@@ -62,6 +63,15 @@ const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
 };
 
 let orbitDB: OrbitDB | null;
+
+export const getOrbitDB = async (): Promise<OrbitDB> => {
+  return await orbitDBMutex.runExclusive<OrbitDB>(async () => {
+    if (!orbitDB) {
+      orbitDB = await OrbitDB.createInstance(await getIpfsNode());
+    }
+    return orbitDB;
+  });
+};
 type MessageFeed = FeedStore<Message>;
 const messageFeeds: Record<string, MessageFeed> = {};
 const placeKeyValues: Record<string, KeyValueStore<PlaceDBValue>> = {};
@@ -105,15 +115,11 @@ const connectMessageFeed = async ({
   hash?: string;
   onMessageAdd: (messages: Message[]) => void;
 }) => {
-  if (!orbitDB) {
-    throw new Error('orbitDB instance is not exists');
-  }
-
   const dbAddress = address
     ? getMessagesAddress({ address, placeId, hash })
     : `${placeId}${hash ? `-${hash}` : ''}/messages`;
 
-  const db = await orbitDB.feed<Message>(
+  const db = await (await getOrbitDB()).feed<Message>(
     dbAddress,
     address ? undefined : dbOptions
   );
@@ -135,9 +141,7 @@ const connectPlaceKeyValue = async ({
   placeId: string;
   address?: string;
 }) => {
-  if (!orbitDB) {
-    throw new Error('orbit DB instance is not exists');
-  }
+  const orbitDB = await getOrbitDB();
 
   const db = address
     ? await orbitDB.keyvalue<PlaceDBValue>(getPlaceAddress(address, placeId))
@@ -156,7 +160,7 @@ let ipfsNode: Ipfs | null;
 const privateIpfsNodes: Record<string, Ipfs> = {};
 
 export const getIpfsNode = async (): Promise<Ipfs> => {
-  return await mutex.runExclusive<Ipfs>(async () => {
+  return await ipfsMutex.runExclusive<Ipfs>(async () => {
     if (!ipfsNode) {
       ipfsNode = await IPFS.create({
         start: true,
@@ -192,8 +196,6 @@ export const initApp = createAsyncThunk<
   const ipfsNode = await getIpfsNode();
 
   dispatch(updateId((await ipfsNode.id()).id));
-
-  orbitDB = await OrbitDB.createInstance(ipfsNode);
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -283,10 +285,6 @@ export const joinPlace = createAsyncThunk<
 >('p2p/joinPlace', async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
-
-  if (!orbitDB) {
-    throw new Error('OrbitDB is not initialized');
-  }
 
   const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
   const feedAddress = placeKeyValue.get('feedAddress') as string;
@@ -411,10 +409,6 @@ export const createNewPlace = createAsyncThunk<
       // TODO private swarm
       // const swarmKey = uuidv4()
       // p2pNodes.privateIpfsNodes[id] = await IPFS.create({})
-    }
-
-    if (!orbitDB) {
-      throw new Error('orbit db is not initialized');
     }
 
     const placeId = uuidv4();
