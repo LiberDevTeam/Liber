@@ -15,6 +15,9 @@ import FeedItemBigImage from './components/feedItemBigImage';
 import FeedItemDefault from './components/feedItemDefault';
 import { username } from '~/helpers';
 import { IpfsContent } from '~/components/ipfsContent';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import InfiniteLoader from 'react-window-infinite-loader';
 
 const Header = styled.div`
   display: flex;
@@ -70,13 +73,7 @@ const ItemContainer = styled.div`
 `;
 
 const HomePage: React.FC = () => {
-  const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const feed = useSelector(selectFeed);
-
-  useEffect(() => {
-    dispatch(fetchFeedItems());
-  }, []);
 
   return (
     <BaseLayout>
@@ -96,6 +93,8 @@ const HomePage: React.FC = () => {
       </Header>
       <Greeting>Hello 😊</Greeting>
       <Username>{username(me)}</Username>
+      <List />
+      {/*
       <Feed>
         {feed.items.map((item) => (
           <ItemContainer key={item.id}>
@@ -103,7 +102,55 @@ const HomePage: React.FC = () => {
           </ItemContainer>
         ))}
       </Feed>
+       */}
     </BaseLayout>
+  );
+};
+
+const List: React.FC = () => {
+  const dispatch = useDispatch();
+  const feed = useSelector(selectFeed);
+  const loadMoreItems = async () => {
+    const lastTimestamp = feed.items[feed.items.length - 1].timestamp;
+    dispatch(fetchFeedItems({ lastTimestamp }));
+  };
+
+  useEffect(() => {
+    dispatch(fetchFeedItems());
+  }, []);
+
+  return (
+    <AutoSizer>
+      {({ height, width }) => (
+        <InfiniteLoader
+          isItemLoaded={(index) => index < feed.items.length - 1}
+          itemCount={feed.items.length + 1}
+          loadMoreItems={loadMoreItems}
+        >
+          {({ onItemsRendered, ref }) => (
+            <FixedSizeList
+              width={width}
+              height={height}
+              itemCount={items.length + 1}
+              itemSize={120}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+            >
+              {({ index, style }) => {
+                if (index >= items.length) {
+                  return null;
+                }
+                return (
+                  <ItemContainer key={items[index].id} style={style}>
+                    <Item item={items[index]} />
+                  </ItemContainer>
+                );
+              }}
+            </FixedSizeList>
+          )}
+        </InfiniteLoader>
+      )}
+    </AutoSizer>
   );
 };
 
