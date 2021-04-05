@@ -15,8 +15,8 @@ const Root = styled.div`
 
 const InnerInput = styled.input<{ hasIcon: boolean }>`
   display: block;
+  background: none;
   width: 100%;
-  background: ${(props) => props.theme.colors.bgGray};
   border: none;
   border-radius: ${(props) => props.theme.radii.xl}px;
   text-overflow: ellipsis;
@@ -56,10 +56,11 @@ export const Input: React.FC<InputProps> = React.memo(function Input({
   className,
   innerRef,
   actions,
+  style,
   ...rest
 }) {
   return (
-    <Root className={className}>
+    <Root className={className} style={style}>
       <IconWrapper>{icon}</IconWrapper>
       <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
       {actions}

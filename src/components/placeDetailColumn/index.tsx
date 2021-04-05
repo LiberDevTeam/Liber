@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Input } from '~/components/input';
 import { MessageView } from '~/components/messageView';
-import { SharePlaceDialog } from '~/components/sharePlaceDialog';
 import { removePlace } from '~/state/ducks/places/placesSlice';
 import {
   openProtectedPlace,
@@ -27,6 +26,7 @@ import { selectMe } from '../../state/ducks/me/meSlice';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { theme } from '~/theme';
+import { SharePlaceDialog } from '../share-place-dialog';
 
 const Root = styled.div`
   display: flex;
