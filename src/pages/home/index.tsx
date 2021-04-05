@@ -14,6 +14,7 @@ import {
 import FeedItemBigImage from './components/feedItemBigImage';
 import FeedItemDefault from './components/feedItemDefault';
 import { username } from '~/helpers';
+import { IpfsContent } from '~/components/ipfsContent';
 
 const Header = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const Header = styled.div`
   margin-bottom: ${(props) => props.theme.space[10]}px;
 `;
 
-const Avatar = styled.img`
+const Avatar = styled(IpfsContent)`
   border-radius: ${(props) => props.theme.radii.round};
 `;
 
@@ -81,8 +82,8 @@ const HomePage: React.FC = () => {
     <BaseLayout>
       <Header>
         <AvatarContainer>
-          {me.avatarImage ? (
-            <Avatar src={me.avatarImage} />
+          {me.avatarCid ? (
+            <Avatar cid={me.avatarCid} />
           ) : (
             <DefaultUserAvatarIcon />
           )}

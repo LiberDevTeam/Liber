@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { fromUnixTime } from 'date-fns';
-import { Attachment } from '~/state/ducks/places/messagesSlice';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
+import { IpfsContent } from '../ipfsContent';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
@@ -55,8 +55,6 @@ const Text = styled.div<{ mine: boolean }>`
 
 const AttachmentContainer = styled.div`
   margin-top: ${(props) => props.theme.space[2]}px;
-`;
-const AttachmentImage = styled.img`
   max-height: 100px;
   width: auto;
 `;
@@ -65,7 +63,7 @@ export interface MessageViewProps {
   name: string;
   timestamp: number;
   text?: string;
-  attachments?: Attachment[];
+  attachmentCidList?: string[];
   mine: boolean;
   userImage: string;
 }
@@ -75,7 +73,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
     name,
     timestamp,
     text,
-    attachments,
+    attachmentCidList,
     mine,
     userImage,
   }) {
@@ -95,10 +93,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
               {formatTime(time)}
             </Timestamp>
           </Text>
-          {attachments
-            ? attachments.map((image) => (
-                <AttachmentContainer key={image.ipfsCid}>
-                  <AttachmentImage src={image.dataUrl} />
+          {attachmentCidList
+            ? attachmentCidList.map((cid) => (
+                <AttachmentContainer key={cid}>
+                  <IpfsContent cid={cid} />
                 </AttachmentContainer>
               ))
             : null}

@@ -17,7 +17,7 @@ import {
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { SettingSection } from '~/components/settingSection';
-import { TextFormWithSubmit } from '~/components/textform-with-submit';
+import { TextFormWithSubmit } from '~/components/textformWithSubmit';
 import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
 import { useTranslation } from 'react-i18next';
 
@@ -65,7 +65,7 @@ const LoadingIcon = styled(AutorenewIcon)`
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
-  const {t} = useTranslation(['common', 'settings']);
+  const { t } = useTranslation(['common', 'settings']);
   const handleUsernameChange = (username: string) =>
     dispatch(updateUsername(username));
   const handleExportBackup = useCallback(
@@ -129,7 +129,9 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
 
         <SettingSection
           title={t('settings:Isolation mode')}
-          description={t('settings:If this mode is enabled, the application is isolated from everything of the Liber Search functionality')}
+          description={t(
+            'settings:If this mode is enabled, the application is isolated from everything of the Liber Search functionality'
+          )}
         >
           <ToggleSwitch
             checked={me.settings.isIsolation}

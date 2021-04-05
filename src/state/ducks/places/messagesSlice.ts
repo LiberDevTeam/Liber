@@ -11,12 +11,7 @@ export type Message = {
   authorName?: string;
   postedAt: number;
   text?: string;
-  attachments?: Attachment[];
-};
-
-export type Attachment = {
-  ipfsCid: string;
-  dataUrl: string;
+  attachmentCidList?: string[];
 };
 
 const messagesAdapter = createEntityAdapter<Message>({
@@ -37,7 +32,7 @@ export const messagesSlice = createSlice({
       })
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
-      })
+      });
   },
 });
 

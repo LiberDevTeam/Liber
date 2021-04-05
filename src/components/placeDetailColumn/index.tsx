@@ -235,7 +235,7 @@ export const PlaceDetailColumn: React.FC<PlaceDetailColumnProps> = React.memo(
                 name={m.authorId}
                 timestamp={m.postedAt}
                 text={m.text}
-                attachments={m.attachments}
+                attachmentCidList={m.attachmentCidList}
                 mine={m.authorId === me.id}
                 userImage={''}
               />

@@ -25,6 +25,10 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { addUser, User } from '../users/usersSlice';
+import FileType from 'file-type/browser';
+import { Mutex } from 'async-mutex';
+
+const mutex = new Mutex();
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
@@ -159,8 +163,37 @@ const connectPlaceKeyValue = async ({
   return db;
 };
 
-export const ipfsNode = (): Ipfs => p2pNodes.ipfsNode!;
-export const privateIpfsNodes = (pid: string): Ipfs =>
+let ipfsNode: Ipfs | null;
+
+export const getIpfsNode = async (): Promise<Ipfs> => {
+  const release = await mutex.acquire();
+
+  if (!ipfsNode) {
+    ipfsNode = await IPFS.create({
+      start: true,
+      preload: {
+        enabled: true,
+      },
+      EXPERIMENTAL: { ipnsPubsub: true },
+      libp2p: {
+        addresses: {
+          listen: [
+            '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+            '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+            '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+          ],
+          announce: [],
+          noAnnounce: [],
+        },
+      },
+    });
+  }
+
+  release();
+  return ipfsNode;
+};
+
+export const getPrivateIpfsNode = (pid: string): Ipfs =>
   p2pNodes.privateIpfsNodes[pid];
 
 export const initNodes = createAsyncThunk<
@@ -171,25 +204,7 @@ export const initNodes = createAsyncThunk<
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
 
-  p2pNodes.ipfsNode = await IPFS.create({
-    start: true,
-    preload: {
-      enabled: true,
-    },
-    EXPERIMENTAL: { ipnsPubsub: true },
-    libp2p: {
-      addresses: {
-        listen: [
-          '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-          '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-          '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
-        ],
-        announce: [],
-        noAnnounce: [],
-      },
-    },
-  });
-  orbitDB = await OrbitDB.createInstance(p2pNodes.ipfsNode);
+  orbitDB = await OrbitDB.createInstance(await getIpfsNode());
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -233,26 +248,29 @@ export const publishPlaceMessage = createAsyncThunk<
     };
 
     if (attachments) {
-      message.attachments =
+      message.attachmentCidList =
         (await Promise.all(
           attachments.map(async (file) => {
-            const content = await ipfsNode().add({
+            const content = await (await getIpfsNode()).add({
               path: file.name,
               content: file,
             });
+
             const cid = content.cid.toBaseEncodedString();
+            const fileType = await FileType.fromStream(file.stream());
+            if (!fileType) {
+              throw new Error('unsupported file format');
+            }
             const dataUrl = await readAsDataURL(file);
             dispatch(
               ipfsContentAdded({
                 cid,
+                fileType,
                 dataUrl,
-                file,
               })
             );
-            return {
-              ipfsCid: cid,
-              dataUrl: dataUrl,
-            };
+
+            return cid;
           })
         )) || [];
     }
@@ -394,7 +412,7 @@ export const createNewPlace = createAsyncThunk<
   ) => {
     const { me } = getState();
 
-    const node = ipfsNode();
+    const node = await getIpfsNode();
     const file = await node.add({
       path: avatarImage.name,
       content: avatarImage,
@@ -461,11 +479,16 @@ export const createNewPlace = createAsyncThunk<
     });
 
     dispatch(placeAdded({ place, messages: [] }));
+
+    const fileType = await FileType.fromStream(avatarImage.stream());
+    if (!fileType) {
+      throw new Error('unsupported file format');
+    }
     dispatch(
       ipfsContentAdded({
         cid,
         dataUrl,
-        file: avatarImage,
+        fileType,
       })
     );
     dispatch(push(`/places/${placeId}`));
@@ -482,11 +505,12 @@ const buildInvitationUrl = async (placeId: string, address: string) => {
 };
 
 export const lookupAndStoreUser = createAsyncThunk<
-  void, { id: string },
+  void,
+  { id: string },
   { dispatch: AppDispatch; state: RootState }
 >('p2p/lookupAndStoreUserr', async ({ id }, { dispatch, getState }) => {
   const user = lookupUser(id);
-  dispatch(addUser(user))
+  dispatch(addUser(user));
 });
 
 const lookupUser = (id: string): User => {
@@ -494,5 +518,5 @@ const lookupUser = (id: string): User => {
   return {
     id,
     username: 'usename',
-  }
-}
+  };
+};
