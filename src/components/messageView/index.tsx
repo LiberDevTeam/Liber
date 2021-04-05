@@ -53,7 +53,7 @@ const Text = styled.div<{ mine: boolean }>`
     props.mine ? props.theme.colors.bgGray : props.theme.colors.bgBlue};
 `;
 
-const AttachmentContainer = styled.div`
+const Attachment = styled(IpfsContent)`
   margin-top: ${(props) => props.theme.space[2]}px;
   max-height: 100px;
   width: auto;
@@ -94,11 +94,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
             </Timestamp>
           </Text>
           {attachmentCidList
-            ? attachmentCidList.map((cid) => (
-                <AttachmentContainer key={cid}>
-                  <IpfsContent cid={cid} />
-                </AttachmentContainer>
-              ))
+            ? attachmentCidList.map((cid) => <Attachment key={cid} cid={cid} />)
             : null}
         </Body>
       </Root>
