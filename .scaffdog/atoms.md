@@ -1,6 +1,6 @@
 ---
 name: 'atoms'
-root: 'src/components/atoms/'
+root: 'src/components/'
 output: '**/*'
 ignore: []
 questions:

@@ -4,8 +4,22 @@ export const GlobalStyles = createGlobalStyle`
   @font-face {
     font-family: 'Delecta';
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     src: url(/fonts/ROBERT-CORSEANSCH-DELECTA.OTF);
+  }
+
+  @font-face {
+    font-family: 'Delecta';
+    font-style: normal;
+    font-weight: 500;
+    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-MEDIUM.OTF);
+  }
+
+  @font-face {
+    font-family: 'Delecta';
+    font-style: bold;
+    font-weight: 700;
+    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-BOLD.OTF);
   }
 
 
@@ -20,7 +34,7 @@ export const GlobalStyles = createGlobalStyle`
     height: 100%;
   }
 
-  #root {
+  * {
     font-family: ${(props) => props.theme.fontFamily.body};
   }
 
@@ -53,9 +67,9 @@ const colors = {
   bgGray: '#f5f8fa',
   modalBg: '#00000077',
   border: '#f0f5fa',
-  green: '#4eeb91',
+  green: '#1fbb2f',
   yellow: '#e8eb5c',
-  red: '#ef4141',
+  red: '#df2121',
 
   // new design below
   gray: '#E1E4E6',
