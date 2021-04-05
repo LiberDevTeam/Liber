@@ -7,7 +7,7 @@ import { history, AppThunkDispatch } from './state/store';
 import { Places } from './pages/places/index';
 import { NotFoundPage } from './pages/404';
 import { useDispatch } from 'react-redux';
-import { initNodes, joinPlace } from './state/ducks/p2p/p2pSlice';
+import { initApp, joinPlace } from './state/ducks/p2p/p2pSlice';
 import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
 
@@ -55,7 +55,7 @@ function Initializer() {
 
   useEffect(() => {
     (async () => {
-      await dispatch(initNodes());
+      await dispatch(initApp());
       if (placeId && address) {
         await dispatch(joinPlace({ placeId, address }));
       }

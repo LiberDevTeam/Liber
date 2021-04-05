@@ -23,7 +23,7 @@ import {
 } from '~/state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { readAsDataURL } from '~/lib/readFile';
-import { selectMe } from '~/state/ducks/me/meSlice';
+import { selectMe, updateId } from '~/state/ducks/me/meSlice';
 import { addUser, User } from '../users/usersSlice';
 import FileType from 'file-type/browser';
 import { Mutex } from 'async-mutex';
@@ -57,19 +57,8 @@ const getPlaceAddress = (address: string, placeId: string): string =>
 
 const dbOptions: IStoreOptions = { accessController: { write: ['*'] } };
 
-const excludeMyMessages = (
-  authorId: string,
-  messages: Message[]
-): Message[] => {
-  return messages.filter((m) => m.authorId !== authorId);
-};
-
-const p2pNodes: {
-  ipfsNode: Ipfs | null;
-  privateIpfsNodes: Record<string, Ipfs>;
-} = {
-  ipfsNode: null,
-  privateIpfsNodes: {},
+const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
+  return messages.filter((m) => m.uid !== uid);
 };
 
 let orbitDB: OrbitDB | null;
@@ -164,47 +153,47 @@ const connectPlaceKeyValue = async ({
 };
 
 let ipfsNode: Ipfs | null;
+const privateIpfsNodes: Record<string, Ipfs> = {};
 
 export const getIpfsNode = async (): Promise<Ipfs> => {
-  const release = await mutex.acquire();
-
-  if (!ipfsNode) {
-    ipfsNode = await IPFS.create({
-      start: true,
-      preload: {
-        enabled: true,
-      },
-      EXPERIMENTAL: { ipnsPubsub: true },
-      libp2p: {
-        addresses: {
-          listen: [
-            '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-            '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-            '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
-          ],
-          announce: [],
-          noAnnounce: [],
+  return await mutex.runExclusive<Ipfs>(async () => {
+    if (!ipfsNode) {
+      ipfsNode = await IPFS.create({
+        start: true,
+        preload: {
+          enabled: true,
         },
-      },
-    });
-  }
-
-  release();
-  return ipfsNode;
+        EXPERIMENTAL: { ipnsPubsub: true },
+        libp2p: {
+          addresses: {
+            listen: [
+              '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+              '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
+              '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+            ],
+            announce: [],
+            noAnnounce: [],
+          },
+        },
+      });
+    }
+    return ipfsNode;
+  });
 };
 
-export const getPrivateIpfsNode = (pid: string): Ipfs =>
-  p2pNodes.privateIpfsNodes[pid];
-
-export const initNodes = createAsyncThunk<
+export const initApp = createAsyncThunk<
   void,
   void,
   { dispatch: AppDispatch; state: RootState }
->('p2p/initNodes', async (_, thunkAPI) => {
+>('p2p/initApp', async (_, thunkAPI) => {
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
 
-  orbitDB = await OrbitDB.createInstance(await getIpfsNode());
+  const ipfsNode = await getIpfsNode();
+
+  dispatch(updateId((await ipfsNode.id()).id));
+
+  orbitDB = await OrbitDB.createInstance(ipfsNode);
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -242,9 +231,9 @@ export const publishPlaceMessage = createAsyncThunk<
     const message: Message = {
       id: uuidv4(),
       authorName: me.username,
-      authorId: me.id,
+      uid: me.id,
       text,
-      postedAt: getUnixTime(new Date()),
+      timestamp: getUnixTime(new Date()),
     };
 
     if (attachments) {

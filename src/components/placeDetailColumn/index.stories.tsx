@@ -11,8 +11,8 @@ const id = '1';
 const place: Place = dummyPlace(id);
 const message: Message = {
   id,
-  authorId: id,
-  postedAt: getUnixTime(new Date()),
+  uid: id,
+  timestamp: getUnixTime(new Date()),
   text:
     'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
 };
