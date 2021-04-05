@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Add as AddIcon } from '@material-ui/icons';
-import { PlaceListColumnItem } from '~/components/placeListItem';
+import { ChatListItem } from '~/components/ChatListItem';
 import { Input } from '~/components/input';
 import { PageTitle } from '~/components/pageTitle';
 import { Place } from '~/state/ducks/places/placesSlice';
@@ -82,7 +82,7 @@ export const PlaceListColumn: React.FC<PlaceListColumnProps> = React.memo(
           {placeList
             .filter((place) => place.name.includes(searchText))
             .map((place) => (
-              <PlaceListColumnItem key={`place-${place.id}`} place={place} />
+              <ChatListItem key={`place-${place.id}`} place={place} />
             ))}
         </List>
       </>
