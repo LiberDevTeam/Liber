@@ -1,3 +1,4 @@
+import 'emoji-mart/css/emoji-mart.css';
 import Observer from '@researchgate/react-intersection-observer';
 import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
@@ -30,6 +31,7 @@ import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
 import { selectMe } from '../../../state/ducks/me/meSlice';
 import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
 import BaseLayout from '../../../templates';
+import { Picker, BaseEmoji } from 'emoji-mart';
 
 const Root = styled.div`
   display: flex;
@@ -141,6 +143,13 @@ const Footer = styled.footer`
   justify-content: space-between;
 `;
 
+const EmojiPickerContainer = styled.div`
+  position: absolute;
+  right: ${(props) => props.theme.space[4]}px;
+  margin-bottom: ${(props) => props.theme.space[2]}px;
+  bottom: 100%;
+`;
+
 const Form = styled.form`
   display: contents;
 `;
@@ -154,6 +163,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
   const me = useSelector(selectMe);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const dispatch = useDispatch();
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -290,6 +300,21 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
               </Attachments>
             ) : null}
 
+            {showEmojiPicker ? (
+              <EmojiPickerContainer>
+                <Picker
+                  native
+                  onSelect={(emoji) => {
+                    formik.setFieldValue(
+                      'text',
+                      formik.values.text + ` ${(emoji as BaseEmoji).native} `
+                    );
+                    setShowEmojiPicker(false);
+                  }}
+                />
+              </EmojiPickerContainer>
+            ) : null}
+
             {place.unreadMessages?.length > 0 ? (
               <ToastWrapper>
                 <UnreadToast
@@ -315,7 +340,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
                     <IconButton
                       type="button"
                       icon={<StickerIcon width={24} height={24} />}
-                      onClick={() => null}
+                      onClick={() => {
+                        setShowEmojiPicker(!showEmojiPicker);
+                      }}
                     />
                     <UploadFileButtonGroup>
                       <IconButton
