@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
 import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,6 +7,7 @@ import {
   selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { IPFS as Ipfs } from 'ipfs';
+import { getIpfsNode } from '../../lib/ipfs';
 
 interface IpfsContentProps {
   cid: string;

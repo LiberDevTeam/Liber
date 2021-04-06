@@ -17,7 +17,7 @@ import {
   addIpfsContent,
   selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
-import { getIpfsNode } from '~/state/ducks/p2p/p2pSlice';
+import { getIpfsNode } from '../../../../lib/ipfs';
 
 interface FeedItemBigImageProps {
   item: FeedItem;

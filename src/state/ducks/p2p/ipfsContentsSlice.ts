@@ -6,8 +6,8 @@ import {
 } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import FileType, { FileTypeResult } from 'file-type/browser';
-import { getIpfsNode } from './p2pSlice';
 import { readAsDataURL } from '~/lib/readFile';
+import { getIpfsNode } from '../../../lib/ipfs';
 
 export interface IpfsContent {
   cid: string;
