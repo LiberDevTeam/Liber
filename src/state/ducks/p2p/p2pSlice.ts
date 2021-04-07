@@ -1,18 +1,26 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
-import IPFS, { IPFS as Ipfs } from 'ipfs';
-import OrbitDB from 'orbit-db';
-import FeedStore from 'orbit-db-feedstore';
-import KeyValueStore from 'orbit-db-kvstore';
+import FileType from 'file-type/browser';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  connectMessageFeed,
+  connectPlaceKeyValue,
+  createMessageFeed,
+  createPlaceKeyValue,
+  getMessageFeedById,
+  readMessagesFromFeed,
+} from '../../../lib/db';
+import { getIpfsNode } from '../../../lib/ipfs';
+import { readAsDataURL } from '../../../lib/readFile';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
-} from '~/state/actionCreater';
-import { ipfsContentAdded } from '~/state/ducks/p2p/ipfsContentsSlice';
-import { Message } from '~/state/ducks/places/messagesSlice';
+} from '../../../state/actionCreater';
+import { selectMe, updateId } from '../../../state/ducks/me/meSlice';
+import { ipfsContentAdded } from '../../../state/ducks/p2p/ipfsContentsSlice';
+import { Message } from '../../../state/ducks/places/messagesSlice';
 import {
   Place,
   PlacePermission,
@@ -20,18 +28,9 @@ import {
   selectAllPlaces,
   selectPlaceById,
   setHash,
-} from '~/state/ducks/places/placesSlice';
-import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
-import { readAsDataURL } from '~/lib/readFile';
-import { selectMe, updateId } from '~/state/ducks/me/meSlice';
+} from '../../../state/ducks/places/placesSlice';
+import { AppDispatch, AppThunkDispatch, RootState } from '../../../state/store';
 import { addUser, User } from '../users/usersSlice';
-import FileType from 'file-type/browser';
-import { Mutex } from 'async-mutex';
-
-const ipfsMutex = new Mutex();
-const orbitDBMutex = new Mutex();
-
-type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
 
 async function digestMessage(message: string): Promise<string> {
   const msgUint8 = new TextEncoder().encode(message);
@@ -43,48 +42,8 @@ async function digestMessage(message: string): Promise<string> {
   return hashHex;
 }
 
-const getMessagesAddress = ({
-  address,
-  placeId,
-  hash,
-}: {
-  address: string;
-  placeId: string;
-  hash?: string;
-}): string =>
-  `/orbitdb/${address}/${placeId}${hash ? `-${hash}` : ''}/messages`;
-const getPlaceAddress = (address: string, placeId: string): string =>
-  `/orbitdb/${address}/${placeId}/place`;
-
-const dbOptions: IStoreOptions = { accessController: { write: ['*'] } };
-
 const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
   return messages.filter((m) => m.uid !== uid);
-};
-
-let orbitDB: OrbitDB | null;
-
-export const getOrbitDB = async (): Promise<OrbitDB> => {
-  return await orbitDBMutex.runExclusive<OrbitDB>(async () => {
-    if (!orbitDB) {
-      orbitDB = await OrbitDB.createInstance(await getIpfsNode());
-    }
-    return orbitDB;
-  });
-};
-type MessageFeed = FeedStore<Message>;
-const messageFeeds: Record<string, MessageFeed> = {};
-const placeKeyValues: Record<string, KeyValueStore<PlaceDBValue>> = {};
-const lastHash: Record<string, string> = {};
-
-const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
-  const items = feed
-    .iterator({ limit: -1, gt: lastHash[feed.address.root] ?? undefined })
-    .collect();
-  if (items.length > 0) {
-    lastHash[feed.address.root] = items[items.length - 1].hash;
-  }
-  return items.map((item) => item.payload.value);
 };
 
 const createMessageReceiveHandler = ({
@@ -102,87 +61,6 @@ const createMessageReceiveHandler = ({
       messages: excludeMyMessages(myId, messages),
     })
   );
-};
-
-const connectMessageFeed = async ({
-  placeId,
-  address,
-  hash,
-  onMessageAdd,
-}: {
-  placeId: string;
-  address?: string;
-  hash?: string;
-  onMessageAdd: (messages: Message[]) => void;
-}) => {
-  const dbAddress = address
-    ? getMessagesAddress({ address, placeId, hash })
-    : `${placeId}${hash ? `-${hash}` : ''}/messages`;
-
-  const db = await (await getOrbitDB()).feed<Message>(
-    dbAddress,
-    address ? undefined : dbOptions
-  );
-
-  db.events.on('replicated', () => {
-    console.log('replicated');
-    onMessageAdd(readMessagesFromFeed(db));
-  });
-
-  messageFeeds[placeId] = db;
-  await db.load();
-  return db;
-};
-
-const connectPlaceKeyValue = async ({
-  placeId,
-  address,
-}: {
-  placeId: string;
-  address?: string;
-}) => {
-  const orbitDB = await getOrbitDB();
-
-  const db = address
-    ? await orbitDB.keyvalue<PlaceDBValue>(getPlaceAddress(address, placeId))
-    : await orbitDB.keyvalue<PlaceDBValue>(`${placeId}/place`, dbOptions);
-  console.log(db);
-
-  db.events.on('replicated', () => {
-    console.log('Place info updated');
-  });
-  placeKeyValues[placeId] = db;
-  await db.load();
-  return db;
-};
-
-let ipfsNode: Ipfs | null;
-const privateIpfsNodes: Record<string, Ipfs> = {};
-
-export const getIpfsNode = async (): Promise<Ipfs> => {
-  return await ipfsMutex.runExclusive<Ipfs>(async () => {
-    if (!ipfsNode) {
-      ipfsNode = await IPFS.create({
-        start: true,
-        preload: {
-          enabled: true,
-        },
-        EXPERIMENTAL: { ipnsPubsub: true },
-        libp2p: {
-          addresses: {
-            listen: [
-              '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-              '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
-              '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
-            ],
-            announce: [],
-            noAnnounce: [],
-          },
-        },
-      });
-    }
-    return ipfsNode;
-  });
 };
 
 export const initApp = createAsyncThunk<
@@ -266,11 +144,12 @@ export const publishPlaceMessage = createAsyncThunk<
         )) || [];
     }
 
-    if (!messageFeeds[place.id]) {
+    const feed = getMessageFeedById(place.id);
+    if (feed === undefined) {
       throw new Error(`messages DB is not exists.`);
     }
 
-    await messageFeeds[place.id].add(message);
+    await feed.add(message);
     dispatch(placeMessageAdded({ pid, message, mine: true }));
   }
 );
@@ -413,9 +292,9 @@ export const createNewPlace = createAsyncThunk<
 
     const placeId = uuidv4();
     const passwordRequired = password !== undefined;
-    const placeKeyValue = await connectPlaceKeyValue({ placeId });
+    const placeKeyValue = await createPlaceKeyValue(placeId);
     const hash = password ? await digestMessage(password) : undefined;
-    const feed = await connectMessageFeed({
+    const feed = await createMessageFeed({
       placeId,
       hash,
       onMessageAdd: createMessageReceiveHandler({
