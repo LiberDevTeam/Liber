@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IpfsContent } from '~/components/ipfsContent';
+import { IpfsContent } from '~/components/ipfs-content';
 
 export const Header = styled.div`
   height: 2.5rem;

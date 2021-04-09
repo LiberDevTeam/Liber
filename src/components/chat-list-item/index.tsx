@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Place } from '~/state/ducks/places/placesSlice';
 import { useFnsLocale } from '~/state/hooks/fnsLocale';
-import { IpfsContent } from '../ipfsContent';
+import { IpfsContent } from '../ipfs-content';
 
 const activeClassName = 'selected-place';
 

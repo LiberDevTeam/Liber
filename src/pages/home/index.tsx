@@ -14,7 +14,7 @@ import {
 import FeedItemBigImage from './components/feedItemBigImage';
 import FeedItemDefault from './components/feedItemDefault';
 import { username } from '~/helpers';
-import { IpfsContent } from '~/components/ipfsContent';
+import { IpfsContent } from '~/components/ipfs-content';
 
 const Header = styled.div`
   display: flex;

@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { ChatListItem } from '../../../components/ChatListItem';
+import { ChatListItem } from '../../../components/chat-list-item';
 import { Input } from '../../../components/input';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { selectAllPlaces } from '../../../state/ducks/places/placesSlice';

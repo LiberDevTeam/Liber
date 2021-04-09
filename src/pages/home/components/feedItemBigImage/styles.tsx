@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IpfsContent } from '~/components/ipfsContent';
+import { IpfsContent } from '~/components/ipfs-content';
 
 interface RootProps {
   bgImg: string;

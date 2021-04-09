@@ -17,14 +17,14 @@ import {
   removePlace,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
-import { theme } from '~/theme';
-import { IconButton } from '../../../components/iconButton';
+import { theme } from '../../../theme';
+import { IconButton } from '../../../components/icon-button';
 import { Input } from '../../../components/input';
-import { MessageView } from '../../../components/messageView';
-import { PlaceDetailHeader } from '../../../components/placeDetailHeader';
-import { PreviewImage } from '../../../components/previewImage';
+import { MessageView } from '../../../components/message-view';
+import { PlaceDetailHeader } from '../../../components/place-detail-header';
+import { PreviewImage } from '../../../components/preview-image';
 import { SharePlaceDialog } from '../../../components/share-place-dialog';
-import { UnreadToast } from '../../../components/unreadToast';
+import { UnreadToast } from '../../../components/unread-toast';
 import { SvgAttach as AttachIcon } from '../../../icons/Attach';
 import { SvgNavigation as SendIcon } from '../../../icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
