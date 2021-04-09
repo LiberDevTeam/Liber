@@ -20,7 +20,7 @@
       }
     },
     {
-      "files": ["src/lib/ipfs/worker/**/*.ts"],
+      "files": ["src/lib/ipfs/worker/**/*.{ts,js}"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off"
       }
