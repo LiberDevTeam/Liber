@@ -29,9 +29,6 @@
     ]
   },
   "include": [
-    "src",
-    "public/service",
-    "public/worker.js",
-    "public/service.js"
+    "src"
   ]
 }
