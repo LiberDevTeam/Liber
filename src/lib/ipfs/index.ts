@@ -1,5 +1,8 @@
 import { Mutex } from 'async-mutex';
 import IPFS, { IPFS as IPFSType } from 'ipfs';
+import { main } from './worker/main';
+
+main();
 
 let ipfsNode: IPFSType | null;
 const ipfsMutex = new Mutex();

@@ -48,6 +48,8 @@
     "identity-obj-proxy": "3.0.0",
     "immer": "8.0.1",
     "ipfs": "^0.54.4",
+    "ipfs-message-port-client": "^0.5.4",
+    "ipfs-message-port-server": "^0.6.3",
     "it-to-stream": "^0.1.2",
     "jest": "26.6.0",
     "jest-circus": "26.6.3",
@@ -103,6 +105,7 @@
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "7.13.10",
+    "@babel/preset-env": "^7.13.15",
     "@craco/craco": "^6.1.1",
     "@storybook/addon-actions": "^6.1.21",
     "@storybook/addon-essentials": "^6.1.21",
