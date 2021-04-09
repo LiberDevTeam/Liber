@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconButton } from '~/components/iconButton';
+import { IconButton } from '~/components/icon-button';
 import { SvgClose as CancelIcon } from '../../icons/Close';
 
 const Root = styled.div`

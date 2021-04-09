@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Button } from '~/components/button';
-import { IconButton } from '~/components/iconButton';
+import { IconButton } from '~/components/icon-button';
 import { SvgArrowIosBack as BackIcon } from '../../icons/ArrowIosBack';
 import { SvgMoreVertical as MenuIcon } from '../../icons/MoreVertical';
 import { SvgInfo as InfoIcon } from '../../icons/Info';
@@ -13,7 +13,7 @@ import { SvgPeople as PeopleIcon } from '../../icons/People';
 import { SvgLogOut as LeaveIcon } from '../../icons/LogOut';
 import { SvgEdit2 as EditIcon } from '../../icons/Edit2';
 import { SvgBot as BotIcon } from '../../icons/Bot';
-import { IpfsContent } from '../ipfsContent';
+import { IpfsContent } from '../ipfs-content';
 import { useTranslation } from 'react-i18next';
 
 const Root = styled.header`

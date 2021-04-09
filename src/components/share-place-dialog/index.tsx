@@ -3,7 +3,7 @@ import styled, { ThemeConsumer } from 'styled-components';
 import copy from 'copy-to-clipboard';
 import { Modal } from '../modal';
 import { Input } from '../input';
-import { IconButton } from '../iconButton';
+import { IconButton } from '../icon-button';
 import { SvgCopy as CopyIcon } from '../../icons/Copy';
 import { SvgCheckmark as CheckIcon } from '../../icons/Checkmark';
 

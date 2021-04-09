@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { SvgArrowIosBack as BackIcon } from '../icons/ArrowIosBack';
-import { BottomNavigation } from '../components/bottomNavigation';
-import { PageTitle } from '../components/pageTitle';
+import { BottomNavigation } from '../components/bottom-navigation';
+import { PageTitle } from '../components/page-title';
 
 const Root = styled.div`
   display: flex;

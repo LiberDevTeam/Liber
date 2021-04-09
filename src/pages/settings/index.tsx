@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import BaseLayout from '~/templates';
-import { PageTitle } from '~/components/pageTitle';
-import { ToggleSwitch } from '~/components/toggleSwitch';
+import { PageTitle } from '~/components/page-title';
+import { ToggleSwitch } from '~/components/toggle-switch';
 import styled, { keyframes } from 'styled-components';
 import { Button } from '../../components/button';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,8 +16,8 @@ import {
   Autorenew as AutorenewIcon,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import { SettingSection } from '~/components/settingSection';
-import { TextFormWithSubmit } from '~/components/textformWithSubmit';
+import { SettingSection } from '~/components/setting-section';
+import { TextFormWithSubmit } from '~/components/textform-with-submit';
 import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
 import { useTranslation } from 'react-i18next';
 

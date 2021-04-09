@@ -1,5 +1,5 @@
 import React from 'react';
-import { SideNavLink } from '~/components/sideNavLink';
+import { SideNavLink } from '~/components/side-nav-link';
 import {
   Search as SearchIcon,
   Add as AddIcon,
@@ -43,7 +43,7 @@ const SubHeader = styled.div`
 `;
 
 export const SideNavigation: React.FC = React.memo(function SideNavigation() {
-  const {t} = useTranslation(['common']);
+  const { t } = useTranslation(['common']);
   return (
     <Root>
       <AppName>

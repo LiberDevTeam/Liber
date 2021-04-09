@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { fromUnixTime } from 'date-fns';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
-import { IpfsContent } from '../ipfsContent';
+import { IpfsContent } from '../ipfs-content';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;

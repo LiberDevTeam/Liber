@@ -1,5 +1,5 @@
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -9,7 +9,7 @@ import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
 import { Input } from '../../../components/input';
-import { PreviewImage } from '../../../components/previewImage';
+import { PreviewImage } from '../../../components/preview-image';
 import { Textarea } from '../../../components/textarea';
 import { categories } from '../../../state/ducks/places/placesSlice';
 
