@@ -34,11 +34,11 @@ import BaseLayout from '../../../templates';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
 const Root = styled.div`
+  flex: 1;
   display: flex;
   flex-flow: column;
-  width: 100%;
-  height: 100%;
   padding-bottom: ${(props) => props.theme.space[10]}px;
+  overflow: hidden;
 `;
 
 const InputFile = styled.input`

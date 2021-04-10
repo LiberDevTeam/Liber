@@ -11,12 +11,12 @@ import {
   Body,
   Content,
   Header,
-} from './styles';
+} from './elements';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addIpfsContent,
   selectIpfsContentByCid,
-} from '~/state/ducks/p2p/ipfsContentsSlice';
+} from '../../../../state/ducks/p2p/ipfsContentsSlice';
 import { getIpfsNode } from '../../../../lib/ipfs';
 
 interface FeedItemBigImageProps {
@@ -72,7 +72,7 @@ const Component: React.FC<ComponentProps> = ({
         dispatch(addIpfsContent({ cid: bgCid }));
       }
     })();
-  }, [dispatch, bgContent]);
+  }, [dispatch, bgContent, bgCid]);
 
   const time = fromUnixTime(timestamp);
   return (

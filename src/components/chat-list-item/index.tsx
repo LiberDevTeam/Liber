@@ -115,7 +115,6 @@ const UnreadCount = styled.div`
 
 const calcStatusFromTime = (time: Date): ActiveStatus => {
   const diff = differenceInHours(new Date(), time);
-  console.log(diff);
 
   if (diff > 24) {
     return 'inactive';

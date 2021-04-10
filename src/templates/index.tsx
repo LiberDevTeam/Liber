@@ -6,13 +6,11 @@ import { BottomNavigation } from '../components/bottom-navigation';
 import { PageTitle } from '../components/page-title';
 
 const Root = styled.div`
+  flex: 1;
   display: flex;
   flex-flow: column;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: white;
   padding-top: ${(props) => props.theme.space[15]}px;
+  overflow: hidden;
 `;
 
 const Header = styled.header`
@@ -37,7 +35,7 @@ const Description = styled.div`
 `;
 
 const SpNavigation = styled.nav`
-  position: fixed;
+  position: sticky;
   width: 100%;
   bottom: 0;
   padding: ${(props) => props.theme.fontSizes.xs} 0;
@@ -47,9 +45,10 @@ const SpNavigation = styled.nav`
 `;
 
 const Main = styled.main`
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
   color: ${(props) => props.theme.colors.primaryText};
@@ -73,18 +72,20 @@ const BaseLayout: React.FC<Props> = ({
   return (
     <>
       <Root>
-        <Header>
-          <div>
-            {backTo && (
-              <BackLink to="/places">
-                <BackIcon />
-              </BackLink>
-            )}
-            {title && <PageTitle>{title}</PageTitle>}
-            {description && <Description>{description}</Description>}
-          </div>
-          <div>{headerRightItem}</div>
-        </Header>
+        {title ? (
+          <Header>
+            <div>
+              {backTo && (
+                <BackLink to="/places">
+                  <BackIcon />
+                </BackLink>
+              )}
+              <PageTitle>{title}</PageTitle>
+              {description && <Description>{description}</Description>}
+            </div>
+            <div>{headerRightItem}</div>
+          </Header>
+        ) : null}
 
         <Main>{children}</Main>
       </Root>

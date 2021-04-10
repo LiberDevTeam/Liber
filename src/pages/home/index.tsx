@@ -1,20 +1,24 @@
 import React, { useEffect } from 'react';
-import BaseLayout from '~/templates';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
-import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
-import { selectMe } from '~/state/ducks/me/meSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
+import { IpfsContent } from '../../components/ipfs-content';
+import { username } from '../../helpers';
+import { SvgBellOutline as BellOutlineIcon } from '../../icons/BellOutline';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
 import {
   Appearance,
   FeedItem,
   fetchFeedItems,
+  ItemKind,
   selectFeed,
-} from '~/state/ducks/feed/feedSlice';
-import FeedItemBigImage from './components/feedItemBigImage';
-import FeedItemDefault from './components/feedItemDefault';
-import { username } from '~/helpers';
-import { IpfsContent } from '~/components/ipfs-content';
+} from '../../state/ducks/feed/feedSlice';
+import { selectMe } from '../../state/ducks/me/meSlice';
+import BaseLayout from '../../templates';
+import { theme } from '../../theme';
+import FeedItemDefault from './components/feed-item';
+import FeedItemBigImage from './components/feed-item-big-image';
 
 const Header = styled.div`
   display: flex;
@@ -61,13 +65,25 @@ const Username = styled.div`
 `;
 
 const Feed = styled.div`
-  padding-bottom: 5rem;
+  flex: 1;
 `;
 
 const ItemContainer = styled.div`
+  display: flex;
   border-bottom: ${(props) => props.theme.border.grayLight.thin};
-  padding: ${(props) => props.theme.space[7]}px 0;
+  padding: ${(props) => props.theme.space[4]}px 0;
 `;
+
+const feedHeight = {
+  [Appearance.DEFAULT]: {
+    [ItemKind.MESSAGE]: 320 + theme.space[4],
+    [ItemKind.PLACE]: 400 + theme.space[4],
+  },
+  [Appearance.BIG_CARD]: {
+    [ItemKind.MESSAGE]: 620 + theme.space[4],
+    [ItemKind.PLACE]: 800 + theme.space[4],
+  },
+};
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -76,7 +92,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchFeedItems());
-  }, []);
+  }, [dispatch]);
 
   return (
     <BaseLayout>
@@ -97,11 +113,26 @@ const HomePage: React.FC = () => {
       <Greeting>Hello 😊</Greeting>
       <Username>{username(me)}</Username>
       <Feed>
-        {feed.items.map((item) => (
-          <ItemContainer key={item.id}>
-            <Item item={item} />
-          </ItemContainer>
-        ))}
+        <AutoSizer>
+          {({ height, width }) => (
+            <VariableSizeList
+              height={height}
+              itemCount={feed.items.length}
+              itemSize={(index) => {
+                return feedHeight[feed.items[index].appearance][
+                  feed.items[index].kind
+                ];
+              }}
+              width={width}
+            >
+              {({ index, style }) => (
+                <ItemContainer key={feed.items[index].id} style={style}>
+                  <Item item={feed.items[index]} />
+                </ItemContainer>
+              )}
+            </VariableSizeList>
+          )}
+        </AutoSizer>
       </Feed>
     </BaseLayout>
   );
