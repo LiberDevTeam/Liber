@@ -30,8 +30,11 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html, body, #root {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: white;
   }
 
   * {
@@ -54,7 +57,6 @@ export const GlobalStyles = createGlobalStyle`
 `;
 
 const colors = {
-  primary: '#2e79f6',
   lightText: '#fcfdfe',
   lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
@@ -75,8 +77,10 @@ const colors = {
   white: '#ffffff',
 
   // new design below
+  primary: '#2e79f6',
   gray: '#e1e4e6',
-  grayLight: '#edf1f2',
+  grayLighter: '#edf1f2',
+  grayLight: '#F5F8FA',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
 };
@@ -178,8 +182,17 @@ export const theme = {
     gray: {
       thin: `1px solid ${colors.gray}`,
     },
+    grayLighter: {
+      thin: `1px solid ${colors.grayLighter}`,
+      light: `2px solid ${colors.grayLighter}`,
+    },
     grayLight: {
       thin: `1px solid ${colors.grayLight}`,
+      light: `2px solid ${colors.grayLight}`,
+    },
+    primary: {
+      thin: `1px solid ${colors.primary}`,
+      light: `2px solid ${colors.primary}`,
     },
   },
   linearGradient: {

@@ -2,7 +2,15 @@ import React from 'react';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
-import { Avatar, Header, Timestamp, Title, Text, Attachment } from './styles';
+import {
+  Avatar,
+  Header,
+  Timestamp,
+  Title,
+  Text,
+  Attachment,
+  Root,
+} from './elements';
 import { fromUnixTime } from 'date-fns';
 
 interface FeedItemDefaultProps {
@@ -54,7 +62,7 @@ const Component: React.FC<ComponentProps> = ({
 }) => {
   const time = fromUnixTime(timestamp);
   return (
-    <>
+    <Root>
       <Header>
         <Title>
           {avatarCid && <Avatar cid={avatarCid}></Avatar>}
@@ -67,7 +75,7 @@ const Component: React.FC<ComponentProps> = ({
         attachmentCidList.map((cid) => (
           <Attachment cid={cid} key={`${id}-${cid}`} />
         ))}
-    </>
+    </Root>
   );
 };
 

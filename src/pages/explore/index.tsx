@@ -3,10 +3,11 @@ import { Input } from '~/components/input';
 import BaseLayout from '~/templates';
 import styled from 'styled-components';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
+import { Tabs } from '~/components/tabs';
+import { TabPanel } from 'react-tabs';
 
 const Root = styled.div`
   width: 100%;
@@ -15,7 +16,11 @@ const Root = styled.div`
 
 const TAB_POST = 'post';
 const TAB_PLACE = 'place';
-const TAB_INDEX = [TAB_POST, TAB_PLACE];
+const TAB_LIST = [TAB_POST, TAB_PLACE];
+const TAB_TITLE = {
+  [TAB_POST]: 'Post',
+  [TAB_PLACE]: 'Place',
+};
 
 export const Explore: React.FC = React.memo(function Explore() {
   const dispatch = useDispatch();
@@ -30,7 +35,7 @@ export const Explore: React.FC = React.memo(function Explore() {
   );
 
   const handleSelect = useCallback((index: number) => {
-    dispatch(push(`/explore/${TAB_INDEX[index]}`));
+    dispatch(push(`/explore/${TAB_LIST[index]}`));
   }, []);
 
   return (
@@ -42,14 +47,13 @@ export const Explore: React.FC = React.memo(function Explore() {
           onChange={handleSearchTextChange}
           placeholder="Search"
         />
+
         <Tabs
-          selectedIndex={TAB_INDEX.findIndex((index) => index === tab)}
+          tabList={TAB_LIST}
+          tabTitle={TAB_TITLE}
+          selectedTab={tab || TAB_POST}
           onSelect={handleSelect}
         >
-          <TabList>
-            <Tab>Post</Tab>
-            <Tab>Places</Tab>
-          </TabList>
           <TabPanel>
             <SearchResultPost searchText={searchText} />
           </TabPanel>

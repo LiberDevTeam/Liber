@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 
+export const Root = styled.div`
+  flex: 1;
+`;
+
 export const Header = styled.div`
   height: 2.5rem;
   display: flex;
