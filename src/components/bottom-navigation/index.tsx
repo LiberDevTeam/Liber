@@ -26,7 +26,7 @@ export const BottomNavigation: React.FC = React.memo(
         <BottomNavLink
           exact
           icon={<SearchIcon width={24} height={24} />}
-          to="/explore"
+          to="/explore/post"
         >
           Explore
         </BottomNavLink>

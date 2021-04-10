@@ -1,9 +1,14 @@
 import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import { SvgArrowIosBack as BackIcon } from '../icons/ArrowIosBack';
+import { BackLink } from '~/components/back-link';
 import { BottomNavigation } from '../components/bottom-navigation';
-import { PageTitle } from '../components/page-title';
+
+const PageTitle = styled.h1`
+  font-size: ${(props) => props.theme.fontSizes['2xl']};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
+  padding-bottom: ${(props) => props.theme.space[4]}px;
+`;
 
 const Root = styled.div`
   display: flex;
@@ -18,14 +23,7 @@ const Root = styled.div`
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
-  padding: 0 ${(props) => props.theme.space[7]}px;
-`;
-
-const BackLink = styled(Link)`
-  display: block;
-  width: 26px;
-  height: 26px;
-  margin-bottom: ${(props) => props.theme.space[5]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const Description = styled.div`
@@ -53,7 +51,7 @@ const Main = styled.main`
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
   color: ${(props) => props.theme.colors.primaryText};
-  padding: 0 ${(props) => props.theme.space[7]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 interface Props {
@@ -75,17 +73,12 @@ const BaseLayout: React.FC<Props> = ({
       <Root>
         <Header>
           <div>
-            {backTo && (
-              <BackLink to="/places">
-                <BackIcon />
-              </BackLink>
-            )}
+            {backTo && <BackLink backTo={backTo} />}
             {title && <PageTitle>{title}</PageTitle>}
             {description && <Description>{description}</Description>}
           </div>
           <div>{headerRightItem}</div>
         </Header>
-
         <Main>{children}</Main>
       </Root>
       <Switch>
