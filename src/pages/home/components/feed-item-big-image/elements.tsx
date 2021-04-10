@@ -11,12 +11,12 @@ export const Root = styled.div<RootProps>`
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  height: 25rem;
   width: 100%;
   border-radius: ${(props) => props.theme.radii.medium}px;
   display: flex;
   align-items: flex-end;
   padding: ${(props) => props.theme.space[3]}px;
+  flex: 1;
 `;
 
 export const Content = styled.div``;

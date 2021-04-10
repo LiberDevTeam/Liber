@@ -34,8 +34,6 @@ export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
     return null;
   }
 
-  console.log(content);
-
   switch (content.fileType.mime) {
     case 'image/apng':
     case 'image/avif':
