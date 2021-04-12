@@ -1,33 +1,19 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Input } from '~/components/input';
 import BaseLayout from '~/templates';
 import styled, { css } from 'styled-components';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Tabs } from '~/components/tabs';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeList } from 'react-window';
-import { Appearance, FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
-import { theme } from '~/theme';
-import {
-  fetchSearchPostResult,
-  selectSearchPostResult,
-} from '~/state/ducks/search/searchSlice';
-import FeedItemDefault from '../home/components/feed-item';
-import FeedItemBigImage from '../home/components/feed-item-big-image';
 import { TabPanel as BaseTabPanel } from 'react-tabs';
+import { SearchPostResult } from './component/search-post-result';
+import { SearchPlaceResult } from './component/search-place-result';
 
 const Root = styled.div`
   width: 100%;
   height: 100%;
-`;
-
-const ItemContainer = styled.div`
-  display: flex;
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
-  padding: ${(props) => props.theme.space[6]}px 0;
 `;
 
 const TabPanelContainer = styled.div`
@@ -92,7 +78,7 @@ export const Explore: React.FC = React.memo(function Explore() {
               <SearchPostResult searchText={searchText} />
             </TabPanel>
             <TabPanel hide={tab !== TAB_PLACE}>
-              <SearchResultPlace searchText={searchText} />
+              <SearchPlaceResult searchText={searchText} />
             </TabPanel>
           </TabPanelContainer>
         </Tabs>
@@ -100,84 +86,3 @@ export const Explore: React.FC = React.memo(function Explore() {
     </BaseLayout>
   );
 });
-
-interface SearchPostResultProps {
-  searchText: string;
-}
-
-const feedHeight = {
-  [Appearance.DEFAULT]: {
-    [ItemKind.MESSAGE]: 320 + theme.space[14],
-    [ItemKind.PLACE]: 400 + theme.space[4],
-  },
-  [Appearance.BIG_CARD]: {
-    [ItemKind.MESSAGE]: 620 + theme.space[4],
-    [ItemKind.PLACE]: 800 + theme.space[4],
-  },
-};
-
-export const SearchPostResult: React.FC<SearchPostResultProps> = React.memo(
-  function SearchResultPost({ searchText }) {
-    const dispatch = useDispatch();
-    const result = useSelector(selectSearchPostResult);
-
-    useEffect(() => {
-      if (result.length > 1) {
-        dispatch(
-          fetchSearchPostResult({
-            searchText,
-            lastTimestamp: result[result.length - 1].timestamp,
-          })
-        );
-      } else {
-        dispatch(fetchSearchPostResult({ searchText }));
-      }
-    }, [searchText]);
-
-    return (
-      <AutoSizer>
-        {({ height, width }) => (
-          <VariableSizeList
-            height={height}
-            itemCount={result.length}
-            itemSize={(index) => {
-              return feedHeight[result[index].appearance][result[index].kind];
-            }}
-            width={width}
-          >
-            {({ index, style }) => (
-              <ItemContainer key={result[index].id} style={style}>
-                <SearchPostResultItem item={result[index]} />
-              </ItemContainer>
-            )}
-          </VariableSizeList>
-        )}
-      </AutoSizer>
-    );
-  }
-);
-
-interface SearchPostResultItemProps {
-  item: FeedItem;
-}
-
-const SearchPostResultItem: React.FC<SearchPostResultItemProps> = ({
-  item,
-}) => {
-  switch (item.appearance) {
-    case Appearance.BIG_CARD:
-      return <FeedItemBigImage item={item} />;
-    case Appearance.DEFAULT:
-      return <FeedItemDefault item={item} />;
-  }
-};
-
-interface SearchResultPlaceProps {
-  searchText: string;
-}
-
-export const SearchResultPlace: React.FC<SearchResultPlaceProps> = React.memo(
-  function SearchResultPlace({ searchText }) {
-    return <>Place{searchText}</>;
-  }
-);

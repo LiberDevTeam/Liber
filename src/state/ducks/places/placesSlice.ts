@@ -40,19 +40,22 @@ export enum PlacePermission {
 // UserId: PlacePermission
 export type PlacePermissions = Record<string, PlacePermission>;
 
-export interface Place {
+export interface PlaceInfo {
   id: string;
   name: string;
   description: string;
   avatarCid: string;
+  passwordRequired: boolean;
+  createdAt: number;
+  category: number;
+}
+
+export interface Place extends PlaceInfo {
   swarmKey?: string;
   invitationUrl: string;
   timestamp: number; // the timestamp any user in the place acted at
-  createdAt: number;
   messageIds: string[];
   unreadMessages: string[];
-  passwordRequired: boolean;
-  category: number;
   hash?: string;
   permissions: PlacePermissions;
   // orbit db id
