@@ -6,13 +6,26 @@ import {
 } from '~/state/ducks/search/searchSlice';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import styled from 'styled-components';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeGrid } from 'react-window';
 import { PlaceInfo } from '~/state/ducks/places/placesSlice';
+import { IpfsContent } from '~/components/ipfs-content';
+import { theme } from '~/theme';
 
 const ItemContainer = styled.div`
-  display: flex;
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
-  padding: ${(props) => props.theme.space[6]}px 0;
+  padding: ${(props) => props.theme.space[2]}px
+    ${(props) => props.theme.space[2]}px;
+`;
+
+const ItemRoot = styled.div``;
+
+const BackgroundImg = styled(IpfsContent)<{ width: number; height: number }>`
+  object-fit: cover;
+
+  position: absolute;
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
+  overflow: hidden;
+  border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 
 interface SearchPlaceResultProps {
@@ -36,30 +49,47 @@ export const SearchPlaceResult: React.FC<SearchPlaceResultProps> = React.memo(
     return (
       <AutoSizer>
         {({ height, width }) => (
-          <FixedSizeList
+          <FixedSizeGrid
             height={height}
-            itemCount={result.length}
-            itemSize={50}
+            columnCount={2}
+            columnWidth={width / 2}
+            rowCount={result.length / 2}
+            rowHeight={200}
             width={width}
           >
-            {({ index, style }) => (
-              <ItemContainer key={result[index].id} style={style}>
-                <SearchPlaceResultItem item={result[index]} />
-              </ItemContainer>
-            )}
-          </FixedSizeList>
+            {({ rowIndex, columnIndex, style }) => {
+              const index = rowIndex * 2 + columnIndex;
+              return (
+                <ItemContainer key={`${result[index].id}`} style={style}>
+                  <Item
+                    item={result[index]}
+                    width={width / 2 - theme.space[2] * 2}
+                    height={200 - theme.space[2] * 2}
+                  />
+                </ItemContainer>
+              );
+            }}
+          </FixedSizeGrid>
         )}
       </AutoSizer>
     );
   }
 );
 
-interface SearchPlaceResultItemProps {
+interface ItemProps {
   item: PlaceInfo;
+  width: number;
+  height: number;
 }
 
-const SearchPlaceResultItem: React.FC<SearchPlaceResultItemProps> = ({
+const Item: React.FC<ItemProps> = React.memo(function Item({
   item,
-}) => {
-  return <>hoge</>;
-};
+  width,
+  height,
+}) {
+  return (
+    <ItemRoot>
+      <BackgroundImg cid={item.avatarCid} width={width} height={height} />
+    </ItemRoot>
+  );
+});
