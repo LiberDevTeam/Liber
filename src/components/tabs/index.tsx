@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import {
   Tab as BaseTab,
   Tabs as BaseTabs,
   TabList as BaseTabList,
+  TabPanel as BaseTabPanel,
 } from 'react-tabs';
 import styled, { css } from 'styled-components';
 
@@ -12,6 +13,7 @@ const TabList = styled(BaseTabList)`
   padding: 0;
   border-bottom: ${(props) => props.theme.border.grayLighter.light};
 `;
+
 const Tab = styled(BaseTab)<{ active: boolean }>`
   list-style: none;
   padding: ${(props) => props.theme.space[2]}px
@@ -57,3 +59,8 @@ export const Tabs: React.FC<TabsProps> = React.memo(function Tabs({
     </BaseTabs>
   );
 });
+
+interface TabPanelProps {
+  hide?: boolean;
+  children: React.ReactNode;
+}

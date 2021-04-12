@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { BackLink } from '~/components/back-link';
@@ -59,6 +59,7 @@ interface Props {
   backTo?: string;
   description?: string;
   headerRightItem?: React.ReactNode;
+  style?: CSSProperties;
 }
 
 const BaseLayout: React.FC<Props> = ({
@@ -67,10 +68,11 @@ const BaseLayout: React.FC<Props> = ({
   title,
   description,
   headerRightItem,
+  style,
 }) => {
   return (
     <>
-      <Root>
+      <Root style={style}>
         {title ? (
           <Header>
             <div>
