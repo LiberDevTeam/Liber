@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
-import { Cancel as CancelIcon } from '@material-ui/icons';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const Root = styled.div`
   display: inline-flex;

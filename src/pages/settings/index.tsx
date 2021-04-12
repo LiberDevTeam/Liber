@@ -10,11 +10,9 @@ import {
   updateUsername,
   updateIsolationMode,
 } from '../../state/ducks/me/meSlice';
-import {
-  CloudDownload as DownloadIcon,
-  CloudUpload as ImportIcon,
-  Autorenew as AutorenewIcon,
-} from '@material-ui/icons';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
+import ImportIcon from '@material-ui/icons/CloudUpload';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import { Link } from 'react-router-dom';
 import { SettingSection } from '~/components/setting-section';
 import { TextFormWithSubmit } from '~/components/textform-with-submit';
