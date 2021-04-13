@@ -20,7 +20,7 @@ const TabPanelContainer = styled.div`
   height: 100%;
 `;
 
-const TabPanel = styled(BaseTabPanel)<{ hide: boolean }>`
+const TabPanel = styled(BaseTabPanel)<{ hide?: boolean }>`
   flex: 1;
   height: 100vh;
   ${(props) =>
@@ -40,7 +40,7 @@ const TAB_TITLE = {
 
 export const Explore: React.FC = React.memo(function Explore() {
   const dispatch = useDispatch();
-  const { tab } = useParams<{ tab: string }>();
+  const { tab = TAB_POST } = useParams<{ tab: string }>();
   const [searchText, setSearchText] = useState('');
 
   const handleSearchTextChange = useCallback(
@@ -70,7 +70,7 @@ export const Explore: React.FC = React.memo(function Explore() {
         <Tabs
           tabList={TAB_LIST}
           tabTitle={TAB_TITLE}
-          selectedTab={tab || TAB_POST}
+          selectedTab={tab}
           onSelect={handleSelect}
         >
           <TabPanelContainer>

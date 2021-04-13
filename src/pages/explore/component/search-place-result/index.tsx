@@ -20,12 +20,26 @@ const ItemRoot = styled.div``;
 
 const BackgroundImg = styled(IpfsContent)<{ width: number; height: number }>`
   object-fit: cover;
-
   position: absolute;
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
-  overflow: hidden;
   border-radius: ${(props) => props.theme.radii.medium}px;
+  z-index: -1;
+`;
+
+const Container = styled.div`
+  bottom: 20px;
+  position: absolute;
+  left: 15px;
+  color: ${(props) => props.theme.colors.white};
+`;
+const Title = styled.h2`
+  font-size: ${(props) => props.theme.fontSizes.lg};
+  font-weight: ${(props) => props.theme.fontWeights.medium};
+`;
+const Description = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.md};
+  font-weight: ${(props) => props.theme.fontWeights.thin};
 `;
 
 interface SearchPlaceResultProps {
@@ -90,6 +104,10 @@ const Item: React.FC<ItemProps> = React.memo(function Item({
   return (
     <ItemRoot>
       <BackgroundImg cid={item.avatarCid} width={width} height={height} />
+      <Container>
+        <Title>{item.name}</Title>
+        <Description>{item.description}</Description>
+      </Container>
     </ItemRoot>
   );
 });

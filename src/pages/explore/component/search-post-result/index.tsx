@@ -25,11 +25,11 @@ interface SearchPostResultProps {
 const feedHeight = {
   [Appearance.DEFAULT]: {
     [ItemKind.MESSAGE]: 320 + theme.space[14],
-    [ItemKind.PLACE]: 400 + theme.space[4],
+    [ItemKind.PLACE]: 320 + theme.space[4],
   },
   [Appearance.BIG_CARD]: {
-    [ItemKind.MESSAGE]: 620 + theme.space[4],
-    [ItemKind.PLACE]: 800 + theme.space[4],
+    [ItemKind.MESSAGE]: 500 + theme.space[4],
+    [ItemKind.PLACE]: 500 + theme.space[4],
   },
 };
 
