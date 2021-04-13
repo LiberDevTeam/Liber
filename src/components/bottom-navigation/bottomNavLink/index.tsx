@@ -29,7 +29,8 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 const LinkText = styled.span`
-  padding-top: ${(props) => props.theme.space[3]}px;
+  padding: ${(props) => props.theme.space[1]}px 0
+    ${(props) => props.theme.space[3]}px;
 `;
 
 export interface BottomNavLinkProps {
