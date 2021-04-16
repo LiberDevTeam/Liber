@@ -1,9 +1,14 @@
-import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import React, { CSSProperties } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import { SvgArrowIosBack as BackIcon } from '../icons/ArrowIosBack';
+import { BackLink } from '~/components/back-link';
 import { BottomNavigation } from '../components/bottom-navigation';
-import { PageTitle } from '../components/page-title';
+
+const PageTitle = styled.h1`
+  font-size: ${(props) => props.theme.fontSizes['2xl']};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
+  padding-bottom: ${(props) => props.theme.space[1]}px;
+`;
 
 const Root = styled.div`
   flex: 1;
@@ -16,14 +21,7 @@ const Root = styled.div`
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
-  padding: 0 ${(props) => props.theme.space[7]}px;
-`;
-
-const BackLink = styled(Link)`
-  display: block;
-  width: 26px;
-  height: 26px;
-  margin-bottom: ${(props) => props.theme.space[5]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const Description = styled.div`
@@ -32,6 +30,7 @@ const Description = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   word-break: break-all;
   margin-top: ${(props) => props.theme.space[1]}px;
+  padding-bottom: ${(props) => props.theme.space[8]}px;
 `;
 
 const SpNavigation = styled.nav`
@@ -52,7 +51,7 @@ const Main = styled.main`
   background: ${(props) => props.theme.colors.bg};
   border-radius: ${(props) => props.theme.radii.large}px;
   color: ${(props) => props.theme.colors.primaryText};
-  padding: 0 ${(props) => props.theme.space[7]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 interface Props {
@@ -60,6 +59,7 @@ interface Props {
   backTo?: string;
   description?: string;
   headerRightItem?: React.ReactNode;
+  style?: CSSProperties;
 }
 
 const BaseLayout: React.FC<Props> = ({
@@ -68,25 +68,21 @@ const BaseLayout: React.FC<Props> = ({
   title,
   description,
   headerRightItem,
+  style,
 }) => {
   return (
     <>
-      <Root>
+      <Root style={style}>
         {title ? (
           <Header>
             <div>
-              {backTo && (
-                <BackLink to="/places">
-                  <BackIcon />
-                </BackLink>
-              )}
+              {backTo && <BackLink backTo={backTo} />}
               <PageTitle>{title}</PageTitle>
               {description && <Description>{description}</Description>}
             </div>
             <div>{headerRightItem}</div>
           </Header>
         ) : null}
-
         <Main>{children}</Main>
       </Root>
       <Switch>

@@ -12,6 +12,7 @@ import { initApp } from './state/ducks/p2p/p2pSlice';
 import { SettingsPage } from './pages/settings';
 import { TrackerProvider } from './state/contexts/tracker';
 import { JoinPlace } from './pages/places/join';
+import { Explore } from './pages/explore';
 
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
@@ -26,6 +27,7 @@ export const Routes: React.FC = () => (
           path="/places/:placeId/join/:address"
           render={() => <JoinPlace />}
         />
+        <Route path="/explore/:tab?" render={() => <Explore />} />
         <Route path="/places/:pid?/:swarmKey?" render={() => <ChatDetail />} />
         <Route exact path="/settings" render={() => <SettingsPage />} />
         <Route render={() => <NotFoundPage />} />

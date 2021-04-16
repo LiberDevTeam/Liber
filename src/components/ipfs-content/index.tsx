@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,11 +12,16 @@ import { getIpfsNode } from '../../lib/ipfs';
 interface IpfsContentProps {
   cid: string;
   className?: string;
+  style?: CSSProperties;
 }
 
 const Image = styled.img``;
 
-export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
+export const IpfsContent: React.FC<IpfsContentProps> = ({
+  className,
+  cid,
+  style,
+}) => {
   const dispatch = useDispatch();
   const content = useSelector(selectIpfsContentByCid(cid));
   const [ipfsNode, setIpfsNode] = useState<Ipfs>();
@@ -41,7 +46,9 @@ export const IpfsContent: React.FC<IpfsContentProps> = ({ className, cid }) => {
     case 'image/jpeg':
     case 'image/png':
     case 'image/webp':
-      return <Image className={className} src={content.dataUrl} />;
+      return (
+        <Image className={className} src={content.dataUrl} style={style} />
+      );
   }
 
   if (content.fileType.mime.includes('audio/')) {
