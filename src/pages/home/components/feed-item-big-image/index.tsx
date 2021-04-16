@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react';
-import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
-import { shortenUid } from '~/helpers';
 import { fromUnixTime } from 'date-fns';
-import { formatTime } from '~/helpers/time';
-import {
-  Avatar,
-  Root,
-  Title,
-  Timestamp,
-  Body,
-  Content,
-  Header,
-} from './elements';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { shortenUid } from '~/helpers';
+import { formatTime } from '~/helpers/time';
+import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
+import { getIpfsNode } from '../../../../lib/ipfs';
 import {
   downloadIpfsContent,
   selectIpfsContentByCid,
 } from '../../../../state/ducks/p2p/ipfsContentsSlice';
-import { getIpfsNode } from '../../../../lib/ipfs';
+import {
+  Avatar,
+  Body,
+  Content,
+  Header,
+  Root,
+  Timestamp,
+  Title,
+} from './elements';
 
 interface FeedItemBigImageProps {
   item: FeedItem;

@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import { SvgArrowIosBack as BackIcon } from '../../icons/ArrowIosBack';
 
 const Root = styled(Link)`

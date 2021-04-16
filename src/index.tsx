@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import '~/lib/i18n';
-import { store } from './state/store';
+import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistor } from '~/state/store';
 import { ThemeProvider } from 'styled-components';
-import { theme, GlobalStyles } from './theme';
 import { Normalize } from 'styled-normalize';
-import ReactModal from 'react-modal';
+import '~/lib/i18n';
+import { persistor } from '~/state/store';
+import App from './App';
+import { store } from './state/store';
+import { GlobalStyles, theme } from './theme';
 
 ReactModal.setAppElement('#root');
 

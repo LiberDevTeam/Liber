@@ -1,15 +1,15 @@
-import React from 'react';
-import { SideNavLink } from '~/components/side-nav-link';
 import {
-  Search as SearchIcon,
   Add as AddIcon,
   Forum as MessagesIcon,
+  Search as SearchIcon,
   Settings as SettingsIcon,
 } from '@material-ui/icons';
-import styled from 'styled-components';
-import liberLogo from '~/logo.svg';
-import logoText from '~/logo-text.png';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import { SideNavLink } from '~/components/side-nav-link';
+import logoText from '~/logo-text.png';
+import liberLogo from '~/logo.svg';
 
 const Root = styled.div`
   width: 244px;

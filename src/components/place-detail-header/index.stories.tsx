@@ -1,6 +1,6 @@
+import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { PlaceDetailHeader, PlaceDetailHeaderProps } from '.';
-import { Story } from '@storybook/react/types-6-0';
 
 export default {
   component: PlaceDetailHeader,

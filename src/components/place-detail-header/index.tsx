@@ -1,19 +1,19 @@
 import Dropdown from 'rc-dropdown';
 import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import { Button } from '~/components/button';
 import { IconButton } from '~/components/icon-button';
-import { SvgMoreVertical as MenuIcon } from '../../icons/MoreVertical';
-import { SvgInfo as InfoIcon } from '../../icons/Info';
-import { SvgPersonAdd as InviteIcon } from '../../icons/PersonAdd';
-import { SvgPeople as PeopleIcon } from '../../icons/People';
-import { SvgLogOut as LeaveIcon } from '../../icons/LogOut';
-import { SvgEdit2 as EditIcon } from '../../icons/Edit2';
 import { SvgBot as BotIcon } from '../../icons/Bot';
-import { IpfsContent } from '../ipfs-content';
-import { useTranslation } from 'react-i18next';
+import { SvgEdit2 as EditIcon } from '../../icons/Edit2';
+import { SvgInfo as InfoIcon } from '../../icons/Info';
+import { SvgLogOut as LeaveIcon } from '../../icons/LogOut';
+import { SvgMoreVertical as MenuIcon } from '../../icons/MoreVertical';
+import { SvgPeople as PeopleIcon } from '../../icons/People';
+import { SvgPersonAdd as InviteIcon } from '../../icons/PersonAdd';
 import { BackLink } from '../back-link';
+import { IpfsContent } from '../ipfs-content';
 
 const Root = styled.header`
   display: flex;

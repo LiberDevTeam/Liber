@@ -1,17 +1,17 @@
+import { fromUnixTime } from 'date-fns';
 import React from 'react';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
 import {
+  Attachment,
   Avatar,
   Header,
+  Root,
+  Text,
   Timestamp,
   Title,
-  Text,
-  Attachment,
-  Root,
 } from './elements';
-import { fromUnixTime } from 'date-fns';
 
 interface FeedItemDefaultProps {
   item: FeedItem;

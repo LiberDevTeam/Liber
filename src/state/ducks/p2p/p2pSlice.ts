@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
-import FileType from 'file-type/browser';
 import { v4 as uuidv4 } from 'uuid';
 import {
   connectMessageFeed,
@@ -12,17 +11,13 @@ import {
   readMessagesFromFeed,
 } from '../../../lib/db';
 import { getIpfsNode } from '../../../lib/ipfs';
-import { readAsDataURL } from '../../../lib/readFile';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
 } from '../../../state/actionCreater';
 import { selectMe, updateId } from '../../../state/ducks/me/meSlice';
-import {
-  addIpfsContent,
-  ipfsContentAdded,
-} from '../../../state/ducks/p2p/ipfsContentsSlice';
+import { addIpfsContent } from '../../../state/ducks/p2p/ipfsContentsSlice';
 import { Message } from '../../../state/ducks/places/messagesSlice';
 import {
   Place,

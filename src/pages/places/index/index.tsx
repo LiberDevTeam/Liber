@@ -1,16 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import { SvgPlus as AddIcon } from '../../../icons/Plus';
 import { push } from 'connected-react-router';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { IconButtonCircle } from '~/components/icon-button-circle';
+import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { ChatListItem } from '../../../components/chat-list-item';
 import { Input } from '../../../components/input';
-import { SvgSearch as SearchIcon } from '~/icons/Search';
+import { SvgPlus as AddIcon } from '../../../icons/Plus';
 import { selectAllPlaces } from '../../../state/ducks/places/placesSlice';
 import { RootState } from '../../../state/store';
 import BaseLayout from '../../../templates';
-import { IconButtonCircle } from '~/components/icon-button-circle';
 
 const Root = styled.div`
   display: flex;

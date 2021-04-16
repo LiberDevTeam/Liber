@@ -1,6 +1,6 @@
+import { fromUnixTime } from 'date-fns';
 import React from 'react';
 import styled from 'styled-components';
-import { fromUnixTime } from 'date-fns';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
 import { IpfsContent } from '../ipfs-content';
 

@@ -1,7 +1,7 @@
+import { InsertPhoto as ImageIcon } from '@material-ui/icons';
+import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { Button, ButtonProps } from '.';
-import { Story } from '@storybook/react/types-6-0';
-import { InsertPhoto as ImageIcon } from '@material-ui/icons';
 
 export default {
   component: Button,

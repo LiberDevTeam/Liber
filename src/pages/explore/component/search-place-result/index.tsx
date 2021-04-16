@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeGrid } from 'react-window';
+import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfs-content';
+import { PlaceInfo } from '~/state/ducks/places/placesSlice';
 import {
   fetchSearchPlaceResult,
   selectSearchPlaceResult,
 } from '~/state/ducks/search/searchSlice';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import styled from 'styled-components';
-import { FixedSizeGrid } from 'react-window';
-import { PlaceInfo } from '~/state/ducks/places/placesSlice';
-import { IpfsContent } from '~/components/ipfs-content';
 import { theme } from '~/theme';
 
 const ItemContainer = styled.div`

@@ -1,12 +1,12 @@
 import {
-  createSlice,
   createEntityAdapter,
-  PayloadAction,
+  createSlice,
   EntityId,
+  PayloadAction,
 } from '@reduxjs/toolkit';
 import {
-  placeMessageAdded,
   placeAdded,
+  placeMessageAdded,
   placeMessagesAdded,
 } from '~/state/actionCreater';
 import { RootState } from '~/state/store';

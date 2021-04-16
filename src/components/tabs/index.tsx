@@ -1,9 +1,8 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import {
   Tab as BaseTab,
-  Tabs as BaseTabs,
   TabList as BaseTabList,
-  TabPanel as BaseTabPanel,
+  Tabs as BaseTabs,
 } from 'react-tabs';
 import styled, { css } from 'styled-components';
 
