@@ -75,7 +75,7 @@ const Feed = styled.div`
 
 const ItemContainer = styled.div`
   display: flex;
-  border-bottom: ${(props) => props.theme.border.grayLight.thin};
+  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 
@@ -85,8 +85,8 @@ const feedHeight = {
     [ItemKind.PLACE]: 320 + theme.space[4],
   },
   [Appearance.BIG_CARD]: {
-    [ItemKind.MESSAGE]: 620 + theme.space[4],
-    [ItemKind.PLACE]: 800 + theme.space[4],
+    [ItemKind.MESSAGE]: 500 + theme.space[4],
+    [ItemKind.PLACE]: 500 + theme.space[4],
   },
 };
 

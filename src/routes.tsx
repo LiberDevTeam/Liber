@@ -29,6 +29,7 @@ export const Routes: React.FC = () => (
           path="/places/:placeId/join/:address"
           render={() => <JoinPlace />}
         />
+        <Route path="/explore/:tab?" render={() => <Explore />} />
         <Route path="/places/:pid?/:swarmKey?" render={() => <ChatDetail />} />
         <Route path="/explore/:tab?" render={() => <Explore />} />
         <Route exact path="/profile" render={() => <ProfilePage />} />

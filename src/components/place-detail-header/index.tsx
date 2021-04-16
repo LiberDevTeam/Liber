@@ -1,11 +1,9 @@
 import Dropdown from 'rc-dropdown';
 import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Button } from '~/components/button';
 import { IconButton } from '~/components/icon-button';
-import { SvgArrowIosBack as BackIcon } from '../../icons/ArrowIosBack';
 import { SvgMoreVertical as MenuIcon } from '../../icons/MoreVertical';
 import { SvgInfo as InfoIcon } from '../../icons/Info';
 import { SvgPersonAdd as InviteIcon } from '../../icons/PersonAdd';
@@ -15,15 +13,12 @@ import { SvgEdit2 as EditIcon } from '../../icons/Edit2';
 import { SvgBot as BotIcon } from '../../icons/Bot';
 import { IpfsContent } from '../ipfs-content';
 import { useTranslation } from 'react-i18next';
+import { BackLink } from '../back-link';
 
 const Root = styled.header`
   display: flex;
   align-items: center;
   position: relative;
-`;
-const BackLink = styled(Link)`
-  width: 26px;
-  height: 26px;
 `;
 
 const Avatar = styled(IpfsContent)`
@@ -114,9 +109,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
 
     return (
       <Root>
-        <BackLink to="/places">
-          <BackIcon />
-        </BackLink>
+        <BackLink backTo="/places" />
         <Avatar cid={avatarCid} />
         <TitleBox>
           <Title>{name}</Title>
