@@ -1,5 +1,113 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import BaseLayout from '~/templates';
+import styled from 'styled-components';
+import { Input as BaseInput } from '~/components/input';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { readAsDataURL } from '~/lib/readFile';
+import { UploadPhoto } from '~/components/upload-photo';
+import { selectMe, updateProfile } from '~/state/ducks/me/meSlice';
+import { Button } from '../../../components/button';
+import { push } from 'connected-react-router';
+import { selectIpfsContentByCid } from '~/state/ducks/p2p/ipfsContentsSlice';
+
+const Label = styled.h2`
+  font-weight: ${(props) => props.theme.fontWeights.normal};
+  color: ${(props) => props.theme.colors.secondaryText};
+  font-size: ${(props) => props.theme.fontSizes.md};
+  margin-bottom: ${(props) => props.theme.space[2]}px;
+`;
+
+const Form = styled.form`
+  padding: 0 ${(props) => props.theme.space[5]}px;
+`;
+
+const Input = styled(BaseInput)`
+  margin-bottom: ${(props) => props.theme.space[9]}px;
+`;
+
+const SubmitButton = styled(Button)`
+  width: 100%;
+  font-weight: ${(props) => props.theme.fontWeights.semibold};
+`;
+
+const validationSchema = yup.object({});
+
+export interface FormValues {
+  avatar: File | null;
+  username: string;
+}
 
 export const ProfileEditPage: React.FC = () => {
-  return <>profileedit</>;
+  const dispatch = useDispatch();
+  const me = useSelector(selectMe);
+  const avatar = useSelector(selectIpfsContentByCid(me.avatarCid));
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    (avatar && avatar.dataUrl) || null
+  );
+  console.log(avatar?.file);
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      avatar: (avatar && avatar.file) || null,
+      username: me.username || '',
+    },
+    validationSchema,
+    async onSubmit({ avatar, username }) {
+      dispatch(
+        updateProfile({
+          avatar,
+          username,
+        })
+      );
+      dispatch(push('/profile'));
+    },
+  });
+
+  useEffect(() => {
+    if (formik.values.avatar) {
+      readAsDataURL(formik.values.avatar).then((file) => {
+        setAvatarPreview(file);
+      });
+    } else {
+      setAvatarPreview(null);
+    }
+  }, [formik.values.avatar]);
+
+  const handleChange = useCallback((file: File | null) => {
+    console.log(file);
+    formik.setFieldValue('avatar', file);
+  }, []);
+
+  return (
+    <BaseLayout
+      backTo="/profile"
+      title="Edit Profile"
+      description="Edit your personal info"
+    >
+      <Form onSubmit={formik.handleSubmit}>
+        <UploadPhoto
+          name="avatar"
+          onChange={handleChange}
+          previewSrc={avatarPreview}
+          disabled={formik.isSubmitting}
+        />
+        <Label>Name</Label>
+        <Input
+          name="username"
+          placeholder="Input Your Name"
+          value={formik.values.username}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
+        />
+        <SubmitButton
+          height={50}
+          shape="rounded"
+          text="UPDATE"
+          variant="solid"
+          type="submit"
+        />
+      </Form>
+    </BaseLayout>
+  );
 };

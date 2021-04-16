@@ -24,6 +24,9 @@ const Header = styled.div`
 
 const Avatar = styled(IpfsContent)`
   border-radius: ${(props) => props.theme.radii.round};
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 `;
 
 const AvatarContainer = styled.div`

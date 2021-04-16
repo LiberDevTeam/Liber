@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addIpfsContent,
+  downloadIpfsContent,
   selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
 import { IPFS as Ipfs } from 'ipfs';
@@ -30,7 +30,7 @@ export const IpfsContent: React.FC<IpfsContentProps> = ({
     (async () => {
       if (!content) {
         setIpfsNode(await getIpfsNode());
-        dispatch(addIpfsContent({ cid }));
+        dispatch(downloadIpfsContent({ cid }));
       }
     })();
   }, [dispatch, cid, content]);

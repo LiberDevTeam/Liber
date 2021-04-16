@@ -217,7 +217,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
       const files = Array.from(attachmentRef.current?.files);
       const previews = await Promise.all(
         Array.from(files).map(async (file, i) => {
-          console.log(file.type);
           return await readAsDataURL(file);
         })
       );

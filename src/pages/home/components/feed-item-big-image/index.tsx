@@ -14,7 +14,7 @@ import {
 } from './elements';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addIpfsContent,
+  downloadIpfsContent,
   selectIpfsContentByCid,
 } from '../../../../state/ducks/p2p/ipfsContentsSlice';
 import { getIpfsNode } from '../../../../lib/ipfs';
@@ -69,7 +69,7 @@ const Component: React.FC<ComponentProps> = ({
     (async () => {
       if (!bgContent) {
         await getIpfsNode();
-        dispatch(addIpfsContent({ cid: bgCid }));
+        dispatch(downloadIpfsContent({ cid: bgCid }));
       }
     })();
   }, [dispatch, bgContent, bgCid]);
