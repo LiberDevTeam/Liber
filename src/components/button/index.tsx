@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 type ButtonVariant = 'solid' | 'outline' | 'text';
 
 interface RootProps {
+  height: number;
   rounded: boolean;
   variant: ButtonVariant;
   disabled: boolean;
@@ -13,7 +14,7 @@ const Root = styled.button<RootProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: ${(props) => props.height}px;
 
   color: ${(props) => props.theme.colors.primary};
   font-family: ${(props) => props.theme.fontFamily.body};
@@ -28,7 +29,7 @@ const Root = styled.button<RootProps>`
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-style: solid;
   border-radius: ${(props) =>
-    props.rounded ? props.theme.radii.large : props.theme.radii.medium}px;
+    props.rounded ? props.height / 2 : props.theme.radii.medium}px;
 
   &:focus {
     box-shadow: ${(props) => props.theme.colors.lightPrimary} 0px 0px 0px 2px;
@@ -82,6 +83,7 @@ export interface ButtonProps
   text: string;
   icon?: React.ReactNode;
   disabled?: boolean;
+  height?: number;
 }
 
 export const Button: React.FC<ButtonProps> = React.memo(function Button({
@@ -90,6 +92,7 @@ export const Button: React.FC<ButtonProps> = React.memo(function Button({
   text,
   shape,
   disabled = false,
+  height = 40,
   ...args
 }) {
   return (
@@ -97,6 +100,7 @@ export const Button: React.FC<ButtonProps> = React.memo(function Button({
       rounded={shape === 'rounded'}
       variant={variant}
       disabled={disabled}
+      height={height}
       {...args}
     >
       {icon ? <IconWrapper>{icon}</IconWrapper> : null}

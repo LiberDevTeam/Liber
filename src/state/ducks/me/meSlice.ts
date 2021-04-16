@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '~/state/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppDispatch, RootState } from '~/state/store';
+import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/usersSlice';
 
 export interface Settings {
@@ -21,6 +22,20 @@ const initialState: MeState = {
   avatarCid: '',
 };
 
+export const updateProfile = createAsyncThunk<
+  void,
+  { avatar: File | null; username: string },
+  { dispatch: AppDispatch }
+>('me/updateProfile', async ({ avatar, username }, { dispatch }) => {
+  if (!avatar) {
+    dispatch(profileUpdated({ username, avatarCid: '' }));
+    return;
+  }
+
+  const avatarCid = await addIpfsContent(dispatch, avatar);
+  dispatch(profileUpdated({ username, avatarCid }));
+});
+
 export const meSlice = createSlice({
   name: 'me',
   initialState,
@@ -31,8 +46,12 @@ export const meSlice = createSlice({
     updateIsolationMode: (state, action: PayloadAction<boolean>) => {
       state.settings.isIsolation = action.payload;
     },
-    updateUsername: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
+    profileUpdated: (
+      state,
+      action: PayloadAction<{ username: string; avatarCid: string }>
+    ) => {
+      state.username = action.payload.username;
+      state.avatarCid = action.payload.avatarCid;
     },
   },
 });
@@ -40,7 +59,7 @@ export const meSlice = createSlice({
 export const {
   updateIsolationMode,
   updateId,
-  updateUsername,
+  profileUpdated,
 } = meSlice.actions;
 
 export const selectMe = (state: RootState): typeof state.me => state.me;

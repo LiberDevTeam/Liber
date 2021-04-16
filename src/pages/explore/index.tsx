@@ -14,6 +14,7 @@ import { SearchPlaceResult } from './component/search-place-result';
 const Root = styled.div`
   width: 100%;
   height: 100%;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const TabPanelContainer = styled.div`

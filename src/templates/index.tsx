@@ -1,12 +1,13 @@
 import React, { CSSProperties } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import { BackLink } from '~/components/back-link';
+import { BackLink as BaseBackLink } from '~/components/back-link';
 import { BottomNavigation } from '../components/bottom-navigation';
 
 const PageTitle = styled.h1`
   font-size: ${(props) => props.theme.fontSizes['2xl']};
   font-weight: ${(props) => props.theme.fontWeights.bold};
+  color: ${(props) => props.theme.colors.primaryText};
   padding-bottom: ${(props) => props.theme.space[1]}px;
 `;
 
@@ -47,11 +48,11 @@ const Main = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  background: ${(props) => props.theme.colors.bg};
-  border-radius: ${(props) => props.theme.radii.large}px;
   color: ${(props) => props.theme.colors.primaryText};
-  padding: 0 ${(props) => props.theme.space[5]}px;
+`;
+
+const BackLink = styled(BaseBackLink)`
+  margin-bottom: ${(props) => props.theme.space[6]}px;
 `;
 
 interface Props {
@@ -73,11 +74,11 @@ const BaseLayout: React.FC<Props> = ({
   return (
     <>
       <Root style={style}>
-        {title ? (
+        {title || headerRightItem ? (
           <Header>
             <div>
               {backTo && <BackLink backTo={backTo} />}
-              <PageTitle>{title}</PageTitle>
+              {title && <PageTitle>{title}</PageTitle>}
               {description && <Description>{description}</Description>}
             </div>
             <div>{headerRightItem}</div>

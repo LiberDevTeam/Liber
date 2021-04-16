@@ -24,7 +24,7 @@ const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
         <Component
           id={item.id}
           attachmentCidList={item.attachmentCidList}
-          title={item.author.username || shortenUid(item.author.id)}
+          title={item.author.username || shortenUid(item.author)}
           avatarCid={item.author.avatarCid}
           text={item.text}
           timestamp={item.timestamp}

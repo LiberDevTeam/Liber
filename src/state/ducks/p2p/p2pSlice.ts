@@ -19,7 +19,10 @@ import {
   placeMessagesAdded,
 } from '../../../state/actionCreater';
 import { selectMe, updateId } from '../../../state/ducks/me/meSlice';
-import { ipfsContentAdded } from '../../../state/ducks/p2p/ipfsContentsSlice';
+import {
+  addIpfsContent,
+  ipfsContentAdded,
+} from '../../../state/ducks/p2p/ipfsContentsSlice';
 import { Message } from '../../../state/ducks/places/messagesSlice';
 import {
   Place,
@@ -73,7 +76,9 @@ export const initApp = createAsyncThunk<
 
   const ipfsNode = await getIpfsNode();
 
-  dispatch(updateId((await ipfsNode.id()).id));
+  if (!state.me.id) {
+    dispatch(updateId((await ipfsNode.id()).id));
+  }
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -120,26 +125,7 @@ export const publishPlaceMessage = createAsyncThunk<
       message.attachmentCidList =
         (await Promise.all(
           attachments.map(async (file) => {
-            const content = await (await getIpfsNode()).add({
-              path: file.name,
-              content: file,
-            });
-
-            const cid = content.cid.toBaseEncodedString();
-            const fileType = await FileType.fromStream(file.stream());
-            if (!fileType) {
-              throw new Error('unsupported file format');
-            }
-            const dataUrl = await readAsDataURL(file);
-            dispatch(
-              ipfsContentAdded({
-                cid,
-                fileType,
-                dataUrl,
-              })
-            );
-
-            return cid;
+            return await addIpfsContent(dispatch, file);
           })
         )) || [];
     }
@@ -277,11 +263,7 @@ export const createNewPlace = createAsyncThunk<
   ) => {
     const { me } = getState();
 
-    const node = await getIpfsNode();
-    const file = await node.add({
-      path: avatar.name,
-      content: avatar,
-    });
+    const cid = await addIpfsContent(dispatch, avatar);
 
     let swarmKey;
     if (isPrivate) {
@@ -304,7 +286,6 @@ export const createNewPlace = createAsyncThunk<
       }),
     });
 
-    const cid = file.cid.toBaseEncodedString();
     const timestamp = getUnixTime(new Date());
     const invitationUrl = await buildInvitationUrl(
       placeId,
@@ -337,19 +318,6 @@ export const createNewPlace = createAsyncThunk<
     });
 
     dispatch(placeAdded({ place, messages: [] }));
-
-    const fileType = await FileType.fromStream(avatar.stream());
-    if (!fileType) {
-      throw new Error('unsupported file format');
-    }
-
-    dispatch(
-      ipfsContentAdded({
-        cid,
-        dataUrl: await readAsDataURL(avatar),
-        fileType,
-      })
-    );
     dispatch(push(`/places/${placeId}`));
   }
 );

@@ -5,11 +5,7 @@ import { ToggleSwitch } from '~/components/toggle-switch';
 import styled, { keyframes } from 'styled-components';
 import { Button } from '../../components/button';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectMe,
-  updateUsername,
-  updateIsolationMode,
-} from '../../state/ducks/me/meSlice';
+import { selectMe, updateIsolationMode } from '../../state/ducks/me/meSlice';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import ImportIcon from '@material-ui/icons/CloudUpload';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
@@ -64,8 +60,6 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
   const { t } = useTranslation(['common', 'settings']);
-  const handleUsernameChange = (username: string) =>
-    dispatch(updateUsername(username));
   const handleExportBackup = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       await downloadIdbBackup();
@@ -97,13 +91,7 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
     <BaseLayout>
       <PageTitle>{PAGE_TITLE}</PageTitle>
       <Contents>
-        <SettingSection title={t('common:Username')}>
-          <TextFormWithSubmit
-            buttonName={t('settings:Update')}
-            defaultText={me.username}
-            onSubmit={handleUsernameChange}
-          />
-        </SettingSection>
+        <SettingSection title={t('common:Username')}></SettingSection>
 
         <SettingSection title={t('settings:Backup')}>
           <BackupButtons>

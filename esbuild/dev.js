@@ -7,4 +7,7 @@ require('esbuild')
   .then(() => {
     console.log(`Run server at http://localhost:${PORT}`);
   })
-  .catch(() => process.exit(1));
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });

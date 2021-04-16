@@ -79,6 +79,7 @@ const colors = {
   // new design below
   primary: '#2e79f6',
   gray: '#e1e4e6',
+  gray1: '#8FA7B3',
   grayLighter: '#edf1f2',
   grayLight: '#F5F8FA',
   primaryText: '#26404d',
@@ -178,6 +179,7 @@ export const theme = {
   border: {
     white: {
       thin: `1px solid ${colors.white}`,
+      light: `2px solid ${colors.white}`,
     },
     gray: {
       thin: `1px solid ${colors.gray}`,
