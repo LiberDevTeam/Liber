@@ -24,6 +24,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: ${(props) => props.theme.space[10]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const Avatar = styled(IpfsContent)`
@@ -57,15 +58,19 @@ const Greeting = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.light};
   color: ${(props) => props.theme.colors.secondaryText};
   margin-bottom: ${(props) => props.theme.space[3]}px;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const Username = styled.div`
   font-size: ${(props) => props.theme.fontSizes['4xl']};
   font-weight: ${(props) => props.theme.fontWeights.bold};
+  padding: 0 ${(props) => props.theme.space[5]}px;
+  margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
 const Feed = styled.div`
   flex: 1;
+  padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
 const ItemContainer = styled.div`
@@ -76,8 +81,8 @@ const ItemContainer = styled.div`
 
 const feedHeight = {
   [Appearance.DEFAULT]: {
-    [ItemKind.MESSAGE]: 320 + theme.space[4],
-    [ItemKind.PLACE]: 400 + theme.space[4],
+    [ItemKind.MESSAGE]: 320 + theme.space[14],
+    [ItemKind.PLACE]: 320 + theme.space[4],
   },
   [Appearance.BIG_CARD]: {
     [ItemKind.MESSAGE]: 620 + theme.space[4],
@@ -85,7 +90,7 @@ const feedHeight = {
   },
 };
 
-const HomePage: React.FC = () => {
+export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
   const feed = useSelector(selectFeed);
@@ -150,5 +155,3 @@ const Item: React.FC<ItemProps> = ({ item }) => {
       return <FeedItemDefault item={item} />;
   }
 };
-
-export default HomePage;

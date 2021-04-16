@@ -68,8 +68,8 @@ const colors = {
   bg4: '#c4c4c4',
   bgPrimary: '#f2f7ff',
   bgGreen: '#E5FFE8',
-  bgBlue: '#e5f7ff',
   bgGray: '#f5f8fa',
+  bgBlue: '#e5f7ff',
   modalBg: '#00000077',
   border: '#f0f5fa',
   green: '#1fbb2f',
@@ -79,7 +79,8 @@ const colors = {
 
   // new design below
   gray: '#e1e4e6',
-  grayLight: '#edf1f2',
+  grayLighter: '#edf1f2',
+  grayLight: '#f5f8fa',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
 };
@@ -183,6 +184,10 @@ export const theme = {
     },
     grayLight: {
       thin: `1px solid ${colors.grayLight}`,
+    },
+    grayLighter: {
+      thin: `1px solid ${colors.grayLighter}`,
+      light: `2px solid ${colors.grayLighter}`,
     },
   },
   linearGradient: {

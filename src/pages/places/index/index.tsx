@@ -10,6 +10,7 @@ import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { selectAllPlaces } from '../../../state/ducks/places/placesSlice';
 import { RootState } from '../../../state/store';
 import BaseLayout from '../../../templates';
+import { IconButtonCircle } from '~/components/icon-button-circle';
 
 const Root = styled.div`
   display: flex;
@@ -29,17 +30,6 @@ const ListContainer = styled.div`
   &:last-child {
     flex-grow: 1;
   }
-`;
-
-const AddButton = styled.button`
-  display: inline-flex;
-  width: 54px;
-  height: 54px;
-  justify-content: center;
-  align-items: center;
-  border-radius: ${(props) => props.theme.radii.round};
-  background: transparent;
-  border: ${(props) => props.theme.border.gray.thin};
 `;
 
 const List = styled.div`
@@ -78,9 +68,10 @@ export const Places: React.FC = React.memo(function Places() {
       title="Chats"
       description="Messages with your friends"
       headerRightItem={
-        <AddButton onClick={handleOnClickNew}>
-          <AddIcon width={24} height={24} />
-        </AddButton>
+        <IconButtonCircle
+          icon={<AddIcon width={24} height={24} />}
+          onClick={handleOnClickNew}
+        />
       }
     >
       <Root>

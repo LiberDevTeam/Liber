@@ -29,7 +29,7 @@ const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
       return (
         <Component
           bgCid={item.attachmentCidList[0]}
-          title={item.author.username || shortenUid(item.author.id)}
+          title={item.author.username || shortenUid(item.author)}
           avatarCid={item.author.avatarCid}
           text={item.text}
           timestamp={item.timestamp}

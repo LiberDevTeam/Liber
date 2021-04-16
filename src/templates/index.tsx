@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { SvgArrowIosBack as BackIcon } from '../icons/ArrowIosBack';
@@ -60,6 +60,7 @@ interface Props {
   backTo?: string;
   description?: string;
   headerRightItem?: React.ReactNode;
+  style?: CSSProperties;
 }
 
 const BaseLayout: React.FC<Props> = ({
@@ -68,11 +69,12 @@ const BaseLayout: React.FC<Props> = ({
   title,
   description,
   headerRightItem,
+  style,
 }) => {
   return (
     <>
-      <Root>
-        {title ? (
+      <Root style={style}>
+        {title || headerRightItem ? (
           <Header>
             <div>
               {backTo && (
@@ -80,7 +82,7 @@ const BaseLayout: React.FC<Props> = ({
                   <BackIcon />
                 </BackLink>
               )}
-              <PageTitle>{title}</PageTitle>
+              {title && <PageTitle>{title}</PageTitle>}
               {description && <Description>{description}</Description>}
             </div>
             <div>{headerRightItem}</div>
