@@ -1,19 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import BaseLayout from '~/templates';
-import { PageTitle } from '~/components/page-title';
-import { ToggleSwitch } from '~/components/toggle-switch';
-import styled, { keyframes } from 'styled-components';
-import { Button } from '../../components/button';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectMe, updateIsolationMode } from '../../state/ducks/me/meSlice';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import ImportIcon from '@material-ui/icons/CloudUpload';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
-import { Link } from 'react-router-dom';
-import { SettingSection } from '~/components/setting-section';
-import { TextFormWithSubmit } from '~/components/textform-with-submit';
-import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
+import { PageTitle } from '~/components/page-title';
+import { SettingSection } from '~/components/setting-section';
+import { ToggleSwitch } from '~/components/toggle-switch';
+import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
+import BaseLayout from '~/templates';
+import { Button } from '../../components/button';
+import { selectMe, updateIsolationMode } from '../../state/ducks/me/meSlice';
 
 const PAGE_TITLE = 'Settings';
 

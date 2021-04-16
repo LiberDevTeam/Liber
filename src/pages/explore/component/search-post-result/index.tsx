@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { VariableSizeList } from 'react-window';
+import styled from 'styled-components';
 import FeedItemDefault from '~/pages/home/components/feed-item';
 import FeedItemBigImage from '~/pages/home/components/feed-item-big-image';
-import { Appearance, ItemKind, FeedItem } from '~/state/ducks/feed/feedSlice';
+import { Appearance, FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
 import {
-  selectSearchPostResult,
   fetchSearchPostResult,
+  selectSearchPostResult,
 } from '~/state/ducks/search/searchSlice';
 import { theme } from '~/theme';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import styled from 'styled-components';
-import { VariableSizeList } from 'react-window';
 
 const ItemContainer = styled.div`
   display: flex;

@@ -1,11 +1,11 @@
 import React from 'react';
+import styled from 'styled-components';
 import { BottomNavLink } from '~/components/bottom-navigation/bottomNavLink';
-import { SvgPeople as ProfileIcon } from '~/icons/People';
-import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { SvgHome as HomeIcon } from '~/icons/Home';
 import { SvgMessageSquare as MessagesIcon } from '~/icons/MessageSquare';
+import { SvgPeople as ProfileIcon } from '~/icons/People';
+import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { SvgShoppingBag as MarketplaceIcon } from '~/icons/ShoppingBag';
-import styled from 'styled-components';
 
 const Root = styled.div`
   display: flex;

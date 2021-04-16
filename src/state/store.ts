@@ -1,24 +1,24 @@
+import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
 import {
+  Action,
   configureStore,
   ThunkAction,
-  Action,
   ThunkDispatch,
 } from '@reduxjs/toolkit';
-import { createHashHistory } from 'history';
-import placesReducer from '~/state/ducks/places/placesSlice';
-import meReducer from '~/state/ducks/me/meSlice';
-import feedReducer from '~/state/ducks/feed/feedSlice';
-import usersReducer from '~/state/ducks/users/usersSlice';
-import searchReducer from '~/state/ducks/search/searchSlice';
-import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
-import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
-import { persistStore, persistReducer } from 'redux-persist';
-import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
-import { combineReducers } from 'redux';
-import { enableMapSet } from 'immer';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
-import thunk from 'redux-thunk';
+import { createHashHistory } from 'history';
+import { enableMapSet } from 'immer';
 import { useDispatch } from 'react-redux';
+import { combineReducers } from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import thunk from 'redux-thunk';
+import feedReducer from '~/state/ducks/feed/feedSlice';
+import meReducer from '~/state/ducks/me/meSlice';
+import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
+import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
+import placesReducer from '~/state/ducks/places/placesSlice';
+import searchReducer from '~/state/ducks/search/searchSlice';
+import usersReducer from '~/state/ducks/users/usersSlice';
 
 export const history = createHashHistory();
 

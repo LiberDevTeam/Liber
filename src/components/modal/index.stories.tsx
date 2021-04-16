@@ -1,7 +1,7 @@
-import React from 'react';
-import { Modal, ModalProps } from '.';
 import { Story } from '@storybook/react/types-6-0';
+import React from 'react';
 import ReactModal from 'react-modal';
+import { Modal, ModalProps } from '.';
 
 ReactModal.setAppElement('#root');
 

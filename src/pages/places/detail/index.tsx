@@ -1,6 +1,7 @@
-import 'emoji-mart/css/emoji-mart.css';
 import Observer from '@researchgate/react-intersection-observer';
 import { push } from 'connected-react-router';
+import { BaseEmoji, Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
 import { useFormik } from 'formik';
 import { lighten } from 'polished';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -17,7 +18,6 @@ import {
   removePlace,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
-import { theme } from '../../../theme';
 import { IconButton } from '../../../components/icon-button';
 import { Input } from '../../../components/input';
 import { MessageView } from '../../../components/message-view';
@@ -31,7 +31,7 @@ import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
 import { selectMe } from '../../../state/ducks/me/meSlice';
 import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
 import BaseLayout from '../../../templates';
-import { Picker, BaseEmoji } from 'emoji-mart';
+import { theme } from '../../../theme';
 
 const Root = styled.div`
   flex: 1;

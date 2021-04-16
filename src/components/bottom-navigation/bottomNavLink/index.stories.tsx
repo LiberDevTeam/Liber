@@ -1,7 +1,7 @@
+import { Search as SearchIcon } from '@material-ui/icons';
+import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { BottomNavLink, BottomNavLinkProps } from '.';
-import { Story } from '@storybook/react/types-6-0';
-import { Search as SearchIcon } from '@material-ui/icons';
 
 export default {
   component: BottomNavLink,

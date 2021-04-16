@@ -1,19 +1,19 @@
+import { push } from 'connected-react-router';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IconButtonCircle } from '~/components/icon-button-circle';
+import { shortenUid, username } from '~/helpers';
 import { SvgEdit2 as EditIcon } from '~/icons/Edit2';
+import { SvgSettings as SettingsIcon } from '~/icons/Settings';
+import { SvgSmilingFace as SmilingFaceIcon } from '~/icons/SmilingFace';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { IpfsContent } from '../../components/ipfs-content';
-import BaseLayout from '../../templates';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
-import { shortenUid, username } from '~/helpers';
-import { Link } from 'react-router-dom';
 import { SvgBot as BotIcon } from '../../icons/Bot';
-import { SvgSmilingFace as SmilingFaceIcon } from '~/icons/SmilingFace';
-import { SvgSettings as SettingsIcon } from '~/icons/Settings';
 import { SvgChevronRight as ChevronRightIcon } from '../../icons/ChevronRight';
-import { push } from 'connected-react-router';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
+import BaseLayout from '../../templates';
 
 const Header = styled.div`
   display: flex;

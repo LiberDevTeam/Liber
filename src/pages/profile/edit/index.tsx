@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import BaseLayout from '~/templates';
-import styled from 'styled-components';
-import { Input as BaseInput } from '~/components/input';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
-import { readAsDataURL } from '~/lib/readFile';
-import { UploadPhoto } from '~/components/upload-photo';
-import { selectMe, updateProfile } from '~/state/ducks/me/meSlice';
-import { Button } from '../../../components/button';
 import { push } from 'connected-react-router';
+import { useFormik } from 'formik';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import { Input as BaseInput } from '~/components/input';
+import { UploadPhoto } from '~/components/upload-photo';
+import { readAsDataURL } from '~/lib/readFile';
+import { selectMe, updateProfile } from '~/state/ducks/me/meSlice';
 import { selectIpfsContentByCid } from '~/state/ducks/p2p/ipfsContentsSlice';
+import BaseLayout from '~/templates';
+import { Button } from '../../../components/button';
 
 const Label = styled.h2`
   font-weight: ${(props) => props.theme.fontWeights.normal};

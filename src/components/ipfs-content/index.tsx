@@ -1,12 +1,12 @@
+import { IPFS as Ipfs } from 'ipfs';
 import React, { CSSProperties, useEffect, useState } from 'react';
-import styled from 'styled-components';
 import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 import {
   downloadIpfsContent,
   selectIpfsContentByCid,
 } from '~/state/ducks/p2p/ipfsContentsSlice';
-import { IPFS as Ipfs } from 'ipfs';
 import { getIpfsNode } from '../../lib/ipfs';
 
 interface IpfsContentProps {
