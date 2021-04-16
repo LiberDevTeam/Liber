@@ -101,7 +101,7 @@ export const initApp = createAsyncThunk<
 export const publishPlaceMessage = createAsyncThunk<
   void,
   { text: string; pid: string; attachments?: File[] },
-  { dispatch: AppThunkDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/publishPlaceMessage',
   async ({ pid, text, attachments }, { dispatch, getState }) => {
