@@ -31,9 +31,7 @@ export const addIpfsContent = async (dispatch: AppDispatch, file: File) => {
   if (!fileType) {
     throw new Error('unsupported file format');
   }
-  console.log(file);
   const dataUrl = await readAsDataURL(file);
-  console.log(file);
   dispatch(
     ipfsContentAdded({
       file,
@@ -87,7 +85,6 @@ export const ipfsContentsSlice = createSlice({
   initialState: ipfsContentsAdapter.getInitialState(),
   reducers: {
     ipfsContentAdded(state, action: PayloadAction<IpfsContent>) {
-      console.log(action.payload);
       ipfsContentsAdapter.upsertOne(state, action.payload);
     },
   },

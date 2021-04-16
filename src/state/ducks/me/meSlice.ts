@@ -32,7 +32,6 @@ export const updateProfile = createAsyncThunk<
     return;
   }
 
-  console.log(avatar);
   const avatarCid = await addIpfsContent(dispatch, avatar);
   dispatch(profileUpdated({ username, avatarCid }));
 });

@@ -46,7 +46,6 @@ export const ProfileEditPage: React.FC = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     (avatar && avatar.dataUrl) || null
   );
-  console.log(avatar?.file);
   const formik = useFormik<FormValues>({
     initialValues: {
       avatar: (avatar && avatar.file) || null,
@@ -75,7 +74,6 @@ export const ProfileEditPage: React.FC = () => {
   }, [formik.values.avatar]);
 
   const handleChange = useCallback((file: File | null) => {
-    console.log(file);
     formik.setFieldValue('avatar', file);
   }, []);
 
