@@ -16,6 +16,7 @@ interface Props {
   checked: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   className?: string;
+  disabled?: boolean;
 }
 
 export const Checkbox: React.FC<Props> = React.memo(function Checkbox({
@@ -23,6 +24,7 @@ export const Checkbox: React.FC<Props> = React.memo(function Checkbox({
   checked,
   onChange,
   className,
+  disabled,
 }) {
   return (
     <Root className={className}>
@@ -31,6 +33,7 @@ export const Checkbox: React.FC<Props> = React.memo(function Checkbox({
         type="checkbox"
         checked={checked}
         onChange={onChange}
+        disabled={disabled}
       />
       {checked ? <SvgCheckboxChecked /> : <SvgCheckboxUnchecked />}
     </Root>

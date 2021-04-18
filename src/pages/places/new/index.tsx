@@ -187,6 +187,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               name="isPrivate"
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
             />
             Make Private?
           </FlagLabel>
@@ -202,6 +203,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               name="setPassword"
               checked={formik.values.setPassword}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
             />
             Set Password?
           </FlagLabel>
@@ -224,6 +226,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               name="readOnly"
               checked={formik.values.readOnly}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
             />
             {t('newPlaces: Read Only?')}
           </FlagLabel>
