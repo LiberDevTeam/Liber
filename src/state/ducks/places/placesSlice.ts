@@ -13,20 +13,20 @@ import { RootState } from '~/state/store';
 import { Message, selectMessageById } from './messagesSlice';
 
 export const categories = [
-  'Discussion and Stories',
-  'Emotional Reaction Fuel',
-  'Entertainment - Gaming',
-  'Entertainment - Television',
-  'Entertainment - Other (Movies/Music/Franchies/Misc)',
-  'Humor',
-  'Images, Gifs, and Videos',
-  'Learning and Thinking',
-  'Lifestyle and Help',
-  'News and Issues',
-  'Travel',
-  'Race, Gender, and Identity',
-  'Sports',
-  'Technology',
+  'DISCUSSION_AND_STORIES',
+  'EMOTIONAL_REACTION_FUEL',
+  'ENTERTAINMENT_GAMING',
+  'ENTERTAINMENT_TELEVISION',
+  'ENTERTAINMENT_OTHER',
+  'HUMOR',
+  'IMAGES_GIFS_AND_VIDEOS',
+  'LEARNING_AND_THINKING',
+  'LIFESTYLE_AND_HELP',
+  'NEWS_AND_ISSUES',
+  'TRAVEL',
+  'RACE_GENDER_AND_IDENTITY',
+  'SPORTS',
+  'TECHNOLOGY',
 ];
 
 export enum PlacePermission {
@@ -46,6 +46,7 @@ export interface PlaceInfo {
   description: string;
   avatarCid: string;
   passwordRequired: boolean;
+  readOnly: boolean;
   createdAt: number;
   category: number;
 }

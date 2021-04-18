@@ -6,8 +6,8 @@ const Root = styled.div`
   width: 100%;
   position: relative;
   background: ${(props) => props.theme.colors.bgGray};
-  font-weight: ${(props) => props.theme.fontWeights.normal};
-  font-size: ${(props) => props.theme.fontSizes.sm};
+  font-weight: ${(props) => props.theme.fontWeights.thin};
+  font-size: ${(props) => props.theme.fontSizes.md};
   line-height: ${(props) => props.theme.fontSizes.xl};
   border-radius: ${(props) => props.theme.radii.xl}px;
   padding: ${(props) => `${props.theme.space[4]}px ${props.theme.space[5]}px`};
