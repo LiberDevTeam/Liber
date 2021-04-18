@@ -176,7 +176,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
           rows={8}
-          maxLength={250}
+          maxLength={200}
         />
 
         <Subtitle>Other Options</Subtitle>

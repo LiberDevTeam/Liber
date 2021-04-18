@@ -254,7 +254,7 @@ export const createNewPlace = createAsyncThunk<
 >(
   'p2p/createNewPlace',
   async (
-    { name, description, isPrivate, avatar, password, category },
+    { name, description, isPrivate, avatar, password, category, readOnly },
     { dispatch, getState }
   ) => {
     const { me } = getState();
