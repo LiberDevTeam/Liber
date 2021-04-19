@@ -134,13 +134,26 @@ const Attachments = styled.div`
   position: absolute;
   bottom: 100%;
   margin-bottom: ${(props) => props.theme.space[3]}px;
+  display: flex;
+  overflow-x: scroll;
+  align-items: center;
+  width: 100%;
+`;
+
+const Attachment = styled(PreviewImage)`
+  margin: 9px ${(props) => props.theme.space[3]}px
+    ${(props) => props.theme.space[2]}px;
 `;
 
 const Footer = styled.footer`
-  display: flex;
   position: relative;
+`;
+
+const Controlls = styled.div`
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 ${(props) => props.theme.space[3]}px;
 `;
 
 const EmojiPickerContainer = styled.div`
@@ -187,6 +200,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
       formik.validateForm();
       messageInputRef.current?.focus();
       messagesBottomRef.current?.scrollIntoView();
+
+      setAttachmentPreviews([]);
+      setAttachments([]);
     },
   });
 
@@ -205,9 +221,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   );
 
   const handleRemoveAvatar = useCallback((idx: number) => {
-    if (attachmentRef.current) {
-      attachmentRef.current.value = '';
-    }
     setAttachments((prev) => prev.filter((_, i) => i != idx));
     setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
   }, []);
@@ -223,6 +236,8 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
       setAttachments((prev) => [...prev, ...files]);
       setAttachmentPreviews((prev) => [...prev, ...previews]);
+
+      attachmentRef.current.value = '';
     }
   };
 
@@ -290,8 +305,8 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             {attachmentPreviews ? (
               <Attachments>
                 {attachmentPreviews.map((preview, i) => (
-                  <PreviewImage
-                    key={attachments[i].name}
+                  <Attachment
+                    key={`${i}${attachments[i].name}`}
                     src={preview}
                     onRemove={() => handleRemoveAvatar(i)}
                   />
@@ -327,52 +342,54 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             ) : null}
 
             <Form onSubmit={formik.handleSubmit}>
-              <MessageInput
-                innerRef={messageInputRef}
-                name="text"
-                placeholder="Message..."
-                value={formik.values.text}
-                onChange={formik.handleChange}
-                disabled={formik.isSubmitting}
-                actions={
-                  <MessageActions>
-                    <IconButton
-                      type="button"
-                      icon={<StickerIcon width={24} height={24} />}
-                      onClick={() => {
-                        setShowEmojiPicker(!showEmojiPicker);
-                      }}
-                    />
-                    <UploadFileButtonGroup>
+              <Controlls>
+                <MessageInput
+                  innerRef={messageInputRef}
+                  name="text"
+                  placeholder="Message..."
+                  value={formik.values.text}
+                  onChange={formik.handleChange}
+                  disabled={formik.isSubmitting}
+                  actions={
+                    <MessageActions>
                       <IconButton
                         type="button"
-                        icon={<AttachIcon width={24} height={24} />}
-                        onClick={() => null}
-                        title="Attach file"
-                        disabled={formik.isSubmitting}
-                        color={theme.colors.secondaryText}
+                        icon={<StickerIcon width={24} height={24} />}
+                        onClick={() => {
+                          setShowEmojiPicker(!showEmojiPicker);
+                        }}
                       />
-                      <InputFile
-                        ref={attachmentRef}
-                        name="attachment"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleChangeAttachment}
-                      />
-                    </UploadFileButtonGroup>
-                  </MessageActions>
-                }
-              />
+                      <UploadFileButtonGroup>
+                        <IconButton
+                          type="button"
+                          icon={<AttachIcon width={24} height={24} />}
+                          onClick={() => null}
+                          title="Attach file"
+                          disabled={formik.isSubmitting}
+                          color={theme.colors.secondaryText}
+                        />
+                        <InputFile
+                          ref={attachmentRef}
+                          name="attachment"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleChangeAttachment}
+                        />
+                      </UploadFileButtonGroup>
+                    </MessageActions>
+                  }
+                />
 
-              <StyledIconButton
-                title="Send"
-                type="submit"
-                disabled={
-                  formik.values.text === '' && attachmentPreviews.length === 0
-                }
-              >
-                <SendIcon width={20} height={20} />
-              </StyledIconButton>
+                <StyledIconButton
+                  title="Send"
+                  type="submit"
+                  disabled={
+                    formik.values.text === '' && attachmentPreviews.length === 0
+                  }
+                >
+                  <SendIcon width={20} height={20} />
+                </StyledIconButton>
+              </Controlls>
             </Form>
           </Footer>
         </Root>

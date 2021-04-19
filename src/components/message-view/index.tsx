@@ -60,6 +60,7 @@ const Attachment = styled(IpfsContent)`
 `;
 
 export interface MessageViewProps {
+  id: string;
   name: string;
   timestamp: number;
   text?: string;
@@ -70,6 +71,7 @@ export interface MessageViewProps {
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({
+    id,
     name,
     timestamp,
     text,
@@ -94,7 +96,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
             </Timestamp>
           </Text>
           {attachmentCidList
-            ? attachmentCidList.map((cid) => <Attachment key={cid} cid={cid} />)
+            ? attachmentCidList.map((cid) => (
+                <Attachment key={`${id}-${cid}`} cid={cid} />
+              ))
             : null}
         </Body>
       </Root>
