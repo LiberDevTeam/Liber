@@ -1,9 +1,9 @@
 import { push } from 'connected-react-router';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IconButtonCircle } from '~/components/icon-button-circle';
+import { Menu, MenuItem, MenuTitle } from '~/components/icon-menu';
 import { shortenUid, username } from '~/helpers';
 import { SvgEdit2 as EditIcon } from '~/icons/Edit2';
 import { SvgSettings as SettingsIcon } from '~/icons/Settings';
@@ -11,7 +11,6 @@ import { SvgSmilingFace as SmilingFaceIcon } from '~/icons/SmilingFace';
 import { selectMe } from '~/state/ducks/me/meSlice';
 import { IpfsContent } from '../../components/ipfs-content';
 import { SvgBot as BotIcon } from '../../icons/Bot';
-import { SvgChevronRight as ChevronRightIcon } from '../../icons/ChevronRight';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
 import BaseLayout from '../../templates';
 
@@ -19,7 +18,8 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: ${(props) => props.theme.space[6]}px;
+  padding-bottom: ${(props) => props.theme.space[6]}px;
+  border-bottom: ${(props) => props.theme.border.grayLighter.light};
 `;
 
 const Avatar = styled(IpfsContent)`
@@ -52,55 +52,6 @@ const ID = styled.div`
   margin-bottom: ${(props) => props.theme.space[2]}px;
 `;
 
-const Menu = styled.div`
-  border-top: ${(props) => props.theme.border.grayLighter.light};
-  padding-top: ${(props) => props.theme.space[7]}px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const MenuTitle = styled.div`
-  font-weight: ${(props) => props.theme.fontWeights.semibold};
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  padding-left: ${(props) => props.theme.space[8]}px;
-  padding-bottom: ${(props) => props.theme.space[8]}px;
-`;
-
-const MenuItem = styled(Link)`
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
-  text-decoration: none;
-  color: ${(props) => props.theme.colors.primaryText};
-  padding: 0 ${(props) => props.theme.space[7]}px;
-  padding-bottom: ${(props) => props.theme.space[4]}px;
-  display: flex;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.space[4]}px;
-  justify-content: space-between;
-`;
-
-const LeftGroup = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-interface StyledIconProps {
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-}
-
-const StyledIcon: React.FC<StyledIconProps> = React.memo(function StyledIcon({
-  icon,
-}) {
-  const Icon = styled(icon)`
-    width: 48px;
-    height: 48px;
-    border-radius: ${(props) => props.theme.radii.round};
-    background: ${(props) => props.theme.colors.bgGray};
-    padding: ${(props) => props.theme.space[3]}px;
-    margin-right: ${(props) => props.theme.space[3]}px;
-  `;
-  return <Icon />;
-});
-
 export const ProfilePage: React.FC = () => {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
@@ -131,26 +82,14 @@ export const ProfilePage: React.FC = () => {
       </Header>
       <Menu>
         <MenuTitle>Others</MenuTitle>
-        <MenuItem to="/bots">
-          <LeftGroup>
-            <StyledIcon icon={BotIcon} />
-            Bots
-          </LeftGroup>
-          <ChevronRightIcon width={24} height={24} />
+        <MenuItem to="/bots" icon={BotIcon}>
+          Bots
         </MenuItem>
-        <MenuItem to="/stickers">
-          <LeftGroup>
-            <StyledIcon icon={SmilingFaceIcon} />
-            Stickers
-          </LeftGroup>
-          <ChevronRightIcon width={24} height={24} />
+        <MenuItem to="/stickers" icon={SmilingFaceIcon}>
+          Stickers
         </MenuItem>
-        <MenuItem to="/settings">
-          <LeftGroup>
-            <StyledIcon icon={SettingsIcon} />
-            Settings
-          </LeftGroup>
-          <ChevronRightIcon width={24} height={24} />
+        <MenuItem to="/settings" icon={SettingsIcon}>
+          Settings
         </MenuItem>
       </Menu>
     </BaseLayout>
