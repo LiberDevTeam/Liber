@@ -1,15 +1,17 @@
 import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { Select } from '~/components/select';
+import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
+import { Checkbox as BaseCheckbox } from '../../../components/checkbox';
 import { Input } from '../../../components/input';
-import { PreviewImage } from '../../../components/preview-image';
 import { Textarea } from '../../../components/textarea';
 import { categories } from '../../../state/ducks/places/placesSlice';
 
@@ -18,44 +20,65 @@ const PAGE_TITLE = 'New Chat';
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  padding: 0 ${(props) => props.theme.space[5]}px
+    ${(props) => props.theme.space[5]}px;
 `;
 
 const InputText = styled(Input)`
-  margin-top: ${(props) => props.theme.space[8]}px;
-`;
-const InputDescription = styled(Textarea)`
-  margin-top: ${(props) => props.theme.space[5]}px;
-`;
-const PrivateFlagGroup = styled.div`
   margin-top: ${(props) => props.theme.space[5]}px;
 `;
 
-const InputFile = styled.input`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  opacity: 0;
+const InputPassword = styled(Input)`
+  margin-top: ${(props) => props.theme.space[4]}px;
 `;
-const UploadFileButtonGroup = styled.div`
-  position: relative;
-  &:active {
-    opacity: 0.8;
-  }
+
+const InputDescription = styled(Textarea)`
+  margin-top: ${(props) => props.theme.space[5]}px;
+  margin-bottom: ${(props) => props.theme.space[15]}px;
+  font-weight: ${(props) => props.theme.fontWeights.thin};
 `;
 
 const SubmitButton = styled(Button)`
-  margin-top: ${(props) => props.theme.space[8]}px;
+  margin-top: ${(props) => props.theme.space[4]}px;
+`;
+
+const Subtitle = styled.h2`
+  font-size: ${(props) => props.theme.fontSizes.lg};
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
+
+const OptionGroup = styled.div`
+  margin-bottom: ${(props) => props.theme.space[4]}px;
+  padding-bottom: ${(props) => props.theme.space[4]}px;
+  border-bottom: ${(props) => props.theme.border.grayLight.thin};
+`;
+
+const FlagLabel = styled.label`
+  align-items: center;
+  display: flex;
+  font-weight: ${(props) => props.theme.fontWeights.medium};
+  margin-bottom: ${(props) => props.theme.space[1]}px;
+`;
+
+const Description = styled.div`
+  margin-left: ${(props) => props.theme.space[8]}px;
+  color: ${(props) => props.theme.colors.secondaryText};
+  font-weight: ${(props) => props.theme.fontWeights.thin};
+`;
+
+const Checkbox = styled(BaseCheckbox)`
+  margin-right: ${(props) => props.theme.space[3]}px;
 `;
 
 interface FormValues {
+  avatar: File | null;
+  category: number;
   name: string;
   description: string;
   isPrivate: boolean;
-  avatar: File | null;
-  password?: string;
-  category: number;
+  setPassword: boolean;
+  password: string;
+  readOnly: boolean;
 }
 
 const validationSchema = yup.object({
@@ -70,24 +93,28 @@ const validationSchema = yup.object({
 export const NewPlace: React.FC = React.memo(function NewPlace() {
   const dispatch = useDispatch();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const avatarInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation(['newPlaces', 'categories']);
   const formik = useFormik<FormValues>({
     initialValues: {
-      name: '',
-      description: '',
-      isPrivate: false,
       avatar: null,
       category: 0,
+      name: '',
+      description: '',
+      setPassword: false,
+      isPrivate: false,
+      readOnly: false,
+      password: '',
     },
     validationSchema,
     async onSubmit({
+      avatar,
+      category,
       name,
       description,
       isPrivate,
-      avatar,
+      setPassword,
       password,
-      category,
+      readOnly,
     }) {
       if (avatar) {
         dispatch(
@@ -96,8 +123,9 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             description,
             isPrivate,
             avatar,
-            password,
+            password: setPassword ? password : '',
             category,
+            readOnly,
           })
         );
       }
@@ -109,22 +137,14 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       readAsDataURL(formik.values.avatar).then((file) => {
         setAvatarPreview(file);
       });
+    } else {
+      setAvatarPreview(null);
     }
   }, [formik.values.avatar]);
 
-  const handleChangeImage = async () => {
-    if (avatarInputRef.current?.files && avatarInputRef.current.files[0]) {
-      formik.setFieldValue('avatar', avatarInputRef.current.files[0]);
-    }
-  };
-
-  const handleRemoveAvatar = useCallback(() => {
-    if (avatarInputRef.current) {
-      avatarInputRef.current.value = '';
-    }
-    setAvatarPreview(null);
-    formik.setFieldValue('avatar', null);
-  }, [formik]);
+  const handleChangeImage = useCallback((file: File | null) => {
+    formik.setFieldValue('avatar', file);
+  }, []);
 
   return (
     <BaseLayout
@@ -133,6 +153,15 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       description={t('newPlaces:Please fill out a form and submit it')}
     >
       <Form onSubmit={formik.handleSubmit}>
+        <UploadPhoto
+          name="avatar"
+          onChange={handleChangeImage}
+          previewSrc={avatarPreview}
+          disabled={formik.isSubmitting}
+        />
+
+        <Select id="chat_category" name="category" options={categories} />
+
         <InputText
           name="name"
           placeholder={t('newPlaces:Name')}
@@ -146,59 +175,73 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           value={formik.values.description}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
-        />
-        <InputText
-          name="password"
-          type="password"
-          placeholder={t('newPlaces:Password')}
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
+          rows={8}
+          maxLength={200}
         />
 
-        {avatarPreview ? (
-          <PreviewImage src={avatarPreview} onRemove={handleRemoveAvatar} />
-        ) : null}
-        <UploadFileButtonGroup>
-          <Button
-            text={t('newPlaces:Select Thumbnail Image')}
-            shape="square"
-            type="button"
-          />
-          <InputFile
-            ref={avatarInputRef}
-            name="avatar"
-            type="file"
-            accept="image/*"
-            onChange={handleChangeImage}
-          />
-        </UploadFileButtonGroup>
+        <Subtitle>Other Options</Subtitle>
 
-        <select id="category" name="category">
-          {categories.map((value, index) => (
-            <option key={value} value={index}>
-              {t(`categories:${value}`)}
-            </option>
-          ))}
-        </select>
-
-        <PrivateFlagGroup role="group">
-          <label>
-            <input
+        <OptionGroup>
+          <FlagLabel>
+            <Checkbox
               name="isPrivate"
-              type="checkbox"
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
             />
-            {t('newPlaces:Make private')}
-          </label>
-        </PrivateFlagGroup>
+            Make Private?
+          </FlagLabel>
+          <Description>
+            If checked, your new place won’t be indexed in the Liber Search
+            Engine.
+          </Description>
+        </OptionGroup>
+
+        <OptionGroup>
+          <FlagLabel>
+            <Checkbox
+              name="setPassword"
+              checked={formik.values.setPassword}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+            />
+            Set Password?
+          </FlagLabel>
+          <Description>
+            You can change this flag also after this started
+          </Description>
+          <InputPassword
+            name="password"
+            type="password"
+            placeholder={t('newPlaces:Password')}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+          />
+        </OptionGroup>
+
+        <OptionGroup>
+          <FlagLabel>
+            <Checkbox
+              name="readOnly"
+              checked={formik.values.readOnly}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+            />
+            {t('newPlaces: Read Only?')}
+          </FlagLabel>
+          <Description>
+            If checked, only the people who has a privileged role can post a
+            message in the place. You can change this flag after created
+          </Description>
+        </OptionGroup>
 
         <SubmitButton
-          shape="square"
+          shape="rounded"
           text={t('newPlaces:Start')}
           variant="solid"
           type="submit"
+          height={50}
           disabled={
             formik.isSubmitting ||
             formik.isValid === false ||

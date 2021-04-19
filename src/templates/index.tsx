@@ -16,7 +16,6 @@ const Root = styled.div`
   display: flex;
   flex-flow: column;
   padding-top: ${(props) => props.theme.space[15]}px;
-  overflow: hidden;
 `;
 
 const Header = styled.header`

@@ -15,7 +15,11 @@ interface IpfsContentProps {
   style?: CSSProperties;
 }
 
-const Image = styled.img``;
+const Image = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+`;
 
 export const IpfsContent: React.FC<IpfsContentProps> = ({
   className,

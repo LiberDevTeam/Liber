@@ -247,13 +247,14 @@ export const createNewPlace = createAsyncThunk<
     description: string;
     isPrivate: boolean;
     avatar: File;
-    password?: string;
+    password: string;
+    readOnly: boolean;
   },
   { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/createNewPlace',
   async (
-    { name, description, isPrivate, avatar, password, category },
+    { name, description, isPrivate, avatar, password, category, readOnly },
     { dispatch, getState }
   ) => {
     const { me } = getState();
@@ -268,7 +269,7 @@ export const createNewPlace = createAsyncThunk<
     }
 
     const placeId = uuidv4();
-    const passwordRequired = password !== undefined;
+    const passwordRequired = !!password;
     const placeKeyValue = await createPlaceKeyValue(placeId);
     const hash = password ? await digestMessage(password) : undefined;
     const feed = await createMessageFeed({
@@ -303,6 +304,7 @@ export const createNewPlace = createAsyncThunk<
       category,
       messageIds: [],
       unreadMessages: [],
+      readOnly,
       permissions: { [me.id]: PlacePermission.AUTHOR },
     };
 

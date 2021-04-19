@@ -73,8 +73,6 @@ const colors = {
   border: '#f0f5fa',
   green: '#1fbb2f',
   yellow: '#e8eb5c',
-  red: '#df2121',
-  white: '#ffffff',
 
   // new design below
   primary: '#2e79f6',
@@ -84,6 +82,8 @@ const colors = {
   grayLight: '#F5F8FA',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
+  red: '#F64640',
+  white: '#ffffff',
 };
 
 const fontSizes = {
