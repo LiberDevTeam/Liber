@@ -5,7 +5,7 @@ import LogoSVG from '../../logo.svg';
 
 export default {
   component: PreviewImage,
-  title: 'molecules/PreviewImage',
+  title: 'upload-photo/PreviewImage',
   argTypes: {
     onRemove: {
       action: 'onRemove',

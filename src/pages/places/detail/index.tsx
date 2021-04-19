@@ -287,6 +287,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           <Messages>
             {messages.map((m) => (
               <MessageView
+                id={m.id}
                 key={m.id}
                 name={m.uid}
                 timestamp={m.timestamp}
