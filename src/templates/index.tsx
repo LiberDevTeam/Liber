@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { BackLink as BaseBackLink } from '~/components/back-link';
@@ -59,7 +59,6 @@ interface Props {
   backTo?: string;
   description?: string;
   headerRightItem?: React.ReactNode;
-  style?: CSSProperties;
 }
 
 const BaseLayout: React.FC<Props> = ({
@@ -68,11 +67,10 @@ const BaseLayout: React.FC<Props> = ({
   title,
   description,
   headerRightItem,
-  style,
 }) => {
   return (
     <>
-      <Root style={style}>
+      <Root>
         {title || headerRightItem ? (
           <Header>
             <div>
@@ -85,17 +83,19 @@ const BaseLayout: React.FC<Props> = ({
         ) : null}
         <Main>{children}</Main>
       </Root>
-      <Switch>
-        <Route path="/places/*" component={() => null} />
-        <Route
-          path="*"
-          component={() => (
-            <SpNavigation>
-              <BottomNavigation />
-            </SpNavigation>
-          )}
-        />
-      </Switch>
+      {!backTo && (
+        <Switch>
+          <Route path="/places/*" component={() => null} />
+          <Route
+            path="*"
+            component={() => (
+              <SpNavigation>
+                <BottomNavigation />
+              </SpNavigation>
+            )}
+          />
+        </Switch>
+      )}
     </>
   );
 };
