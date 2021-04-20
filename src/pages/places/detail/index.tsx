@@ -21,7 +21,6 @@ import {
 import { IconButton } from '../../../components/icon-button';
 import { Input } from '../../../components/input';
 import { MessageView } from '../../../components/message-view';
-import { PlaceDetailHeader } from '../../../components/place-detail-header';
 import { PreviewImage } from '../../../components/preview-image';
 import { SharePlaceDialog } from '../../../components/share-place-dialog';
 import { UnreadToast } from '../../../components/unread-toast';
@@ -32,13 +31,11 @@ import { selectMe } from '../../../state/ducks/me/meSlice';
 import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
 import BaseLayout from '../../../templates';
 import { theme } from '../../../theme';
+import { PlaceDetailHeader } from './components/place-detail-header';
 
 const Root = styled.div`
-  flex: 1;
-  display: flex;
-  flex-flow: column;
-  padding-bottom: ${(props) => props.theme.space[10]}px;
-  overflow: hidden;
+  padding: ${(props) =>
+    `${props.theme.space[14]}px 0 ${props.theme.space[22]}px`};
 `;
 
 const InputFile = styled.input`
@@ -146,7 +143,14 @@ const Attachment = styled(PreviewImage)`
 `;
 
 const Footer = styled.footer`
-  position: relative;
+  position: fixed;
+  background: ${(props) => props.theme.colors.white};
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: ${(props) =>
+    `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
+  border-top: ${(props) => props.theme.border.grayLight.light};
 `;
 
 const Controlls = styled.div`
