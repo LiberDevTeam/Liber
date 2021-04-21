@@ -164,8 +164,8 @@ export const theme = {
   fontSizes,
   fontFamily,
   breakpoints,
-  space: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
-  sizes: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
+  space: [...Array(25).keys()].map((n) => n * 4),
+  sizes: [...Array(25).keys()].map((n) => n * 4),
   shadows: {
     0: 'none',
     1: 'rgba(0,0,0,0.2) 0 .2rem .5rem',
