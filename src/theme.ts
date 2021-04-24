@@ -54,6 +54,15 @@ export const GlobalStyles = createGlobalStyle`
   dd {
     margin: 0;
   }
+
+  a {
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
 `;
 
 const colors = {

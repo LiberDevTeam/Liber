@@ -18,7 +18,13 @@ import { SvgPersonAdd as InviteIcon } from '../../../../../icons/PersonAdd';
 const Root = styled.header`
   display: flex;
   align-items: center;
-  position: relative;
+  position: fixed;
+  width: 100%;
+  background: ${(props) => props.theme.colors.white};
+  padding: ${(props) =>
+    `${props.theme.space[12]}px 0 ${props.theme.space[2]}px`};
+  top: 0;
+  border-bottom: ${(props) => props.theme.border.grayLight.light};
 `;
 
 const Avatar = styled(IpfsContent)`

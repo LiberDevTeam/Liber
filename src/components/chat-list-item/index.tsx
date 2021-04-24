@@ -19,7 +19,6 @@ const Root = styled(NavLink)`
   width: 100%;
   padding: ${(props) => props.theme.space[1]}px;
   border-radius: ${(props) => props.theme.radii.medium}px;
-  text-decoration: none;
   align-items: center;
 
   &.${activeClassName} {
