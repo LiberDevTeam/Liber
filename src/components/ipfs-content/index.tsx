@@ -1,5 +1,4 @@
 import React, { CSSProperties, memo, useEffect, useState } from 'react';
-import ReactPlayer from 'react-player';
 import styled from 'styled-components';
 
 interface IpfsContentProps {
@@ -52,23 +51,14 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
     }
 
     if (mimeType.includes('audio/')) {
-      return (
-        <ReactPlayer
-          url={url}
-          config={{ file: { forceAudio: true } }}
-          height={60}
-          controls
-        />
-      );
+      return <audio controls src={url}></audio>;
     }
 
     if (mimeType.includes('video/')) {
       return (
-        <ReactPlayer
-          url={url}
-          config={{ file: { forceVideo: true } }}
-          controls
-        />
+        <video controls>
+          <source src={url} type={mimeType} />
+        </video>
       );
     }
 

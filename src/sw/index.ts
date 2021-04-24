@@ -1,6 +1,6 @@
 import { Mutex } from 'async-mutex';
+import FileType from 'file-type/browser';
 import IPFS, { IPFS as IPFSType } from 'ipfs';
-import { getResponse } from 'ipfs-http-response';
 import { CacheableResponse } from 'workbox-cacheable-response';
 import { registerRoute } from 'workbox-routing';
 
@@ -21,26 +21,58 @@ const cacheable = new CacheableResponse({
   statuses: [0, 200],
 });
 
+const readIPFSContent = async (stream: AsyncIterable<Uint8Array>) => {
+  const uint8arr = [];
+  for await (const chunk of stream) {
+    uint8arr.push(chunk);
+  }
+  return new Blob(uint8arr);
+};
+
+const createPartialContentResponse = async (res: Response) => {
+  const ab = await res.arrayBuffer();
+  return new Response(ab, {
+    status: 206,
+    headers: res.headers,
+  });
+};
+
 const imageHandler = async ({ url }: { url: URL }) => {
   const ipfsNode = await getIpfsNode();
   const match = url.pathname.match(cidRegex);
   const cache = await caches.open('ipfs-content-cache');
 
   if (!match) {
-    return new Response();
+    return new Response('', { status: 404 });
   }
 
   const cachedResponse = await cache.match(match[1]);
   if (cachedResponse) {
-    return cachedResponse;
+    return createPartialContentResponse(cachedResponse);
   }
 
-  const response = await getResponse(ipfsNode, `/ipfs/${match[1]}`);
+  const content = await readIPFSContent(await ipfsNode.cat(match[1]));
+  const contentType = await FileType.fromBlob(content);
+  const headers = new Headers();
+  console.log(contentType);
+
+  headers.append('Content-Type', contentType?.mime || '');
+  headers.append('Content-Length', `${content.size}`);
+  headers.append(
+    'Content-Range',
+    `bytes 0-${content.size - 1}/${content.size}`
+  );
+
+  const response = new Response(content, {
+    status: 200,
+    headers,
+  });
 
   if (cacheable.isResponseCacheable(response)) {
     cache.put(match[1], response.clone());
   }
-  return response;
+
+  return createPartialContentResponse(response);
 };
 
 registerRoute(new RegExp('/view/.*'), imageHandler);
