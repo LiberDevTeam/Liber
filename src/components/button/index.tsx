@@ -24,7 +24,7 @@ const Root = styled.button<RootProps>`
   cursor: pointer;
 
   background: ${(props) => props.theme.colors.bg};
-  padding: 0px 20px;
+  padding: ${(props) => `0 ${props.theme.space[5]}px`};
 
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-style: solid;
@@ -92,7 +92,7 @@ export const Button: React.FC<ButtonProps> = React.memo(function Button({
   text,
   shape,
   disabled = false,
-  height = 40,
+  height = 48,
   ...args
 }) {
   return (

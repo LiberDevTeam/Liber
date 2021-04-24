@@ -13,7 +13,7 @@ const Root = styled.div`
   padding: ${(props) => `${props.theme.space[4]}px ${props.theme.space[5]}px`};
 `;
 
-const InnerInput = styled.input<{ hasIcon: boolean }>`
+const InnerInput = styled.input<{ hasIcon: boolean; textCenter?: boolean }>`
   display: block;
   background: none;
   width: 100%;
@@ -25,6 +25,12 @@ const InnerInput = styled.input<{ hasIcon: boolean }>`
   ::placeholder {
     color: ${(props) => props.theme.colors.secondaryText};
   }
+
+  ${(props) =>
+    props.textCenter &&
+    css`
+      text-align: center;
+    `}
 
   ${(props) =>
     props.hasIcon &&
@@ -49,6 +55,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     | null
     | undefined;
   actions?: React.ReactNode;
+  textCenter?: boolean;
 }
 
 export const Input: React.FC<InputProps> = React.memo(function Input({

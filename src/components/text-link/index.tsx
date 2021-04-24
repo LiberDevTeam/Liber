@@ -8,7 +8,6 @@ const StyledTextLink = styled(Link)`
   height: 48px;
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.lg};
-  text-decoration: none;
 `;
 
 const LinkText = styled.span``;

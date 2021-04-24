@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Tab as BaseTab,
   TabList as BaseTabList,
+  TabPanel as BaseTabPanel,
   Tabs as BaseTabs,
 } from 'react-tabs';
 import styled, { css } from 'styled-components';
@@ -24,6 +25,20 @@ const Tab = styled(BaseTab)<{ active: boolean }>`
     css`
       color: ${(props) => props.theme.colors.primary};
       border-bottom: ${(props) => props.theme.border.primary.light};
+    `}
+`;
+
+export const TabPanels = styled.div`
+  height: 100%;
+`;
+
+export const TabPanel = styled(BaseTabPanel)<{ hide?: boolean }>`
+  flex: 1;
+  height: 100vh;
+  ${(props) =>
+    props.hide &&
+    css`
+      display: none;
     `}
 `;
 

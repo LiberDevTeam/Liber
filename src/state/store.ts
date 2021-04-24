@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
+import botsReducer from '~/state/ducks/bots/botsSlice';
 import feedReducer from '~/state/ducks/feed/feedSlice';
 import meReducer from '~/state/ducks/me/meSlice';
 import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
@@ -77,6 +78,7 @@ const reducers = combineReducers({
   feed: feedReducer,
   users: usersReducer,
   search: searchReducer,
+  bots: botsReducer,
   router: connectRouter(history),
 });
 
