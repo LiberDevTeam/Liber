@@ -80,7 +80,6 @@ const colors = {
   bgGray: '#f5f8fa',
   modalBg: '#00000077',
   border: '#f0f5fa',
-  green: '#1fbb2f',
   yellow: '#e8eb5c',
 
   // new design below
@@ -93,6 +92,7 @@ const colors = {
   secondaryText: '#8fa7b2',
   red: '#F64640',
   white: '#ffffff',
+  green: '#1fbb2f',
 };
 
 const fontSizes = {
