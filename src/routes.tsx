@@ -67,9 +67,9 @@ export const Routes: React.FC = () => (
         <Route path="/bots/:id" render={() => <BotDetailPage />} />
         <Route exact path="/bots" render={() => <BotsPage />} />
 
-        <Route exact path="/stickers/:tab" render={() => <StickersPage />} />
         <Route exact path="/stickers/new" render={() => <StickerNewPage />} />
         <Route path="/stickers/:id" render={() => <StickerDetailPage />} />
+        <Route exact path="/stickers" render={() => <StickersPage />} />
 
         <Route exact path="/settings" render={() => <SettingsPage />} />
 

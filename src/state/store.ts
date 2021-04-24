@@ -19,6 +19,7 @@ import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
 import placesReducer from '~/state/ducks/places/placesSlice';
 import searchReducer from '~/state/ducks/search/searchSlice';
+import stickersReducer from '~/state/ducks/stickers/stickersSlice';
 import usersReducer from '~/state/ducks/users/usersSlice';
 
 export const history = createHashHistory();
@@ -79,6 +80,7 @@ const reducers = combineReducers({
   users: usersReducer,
   search: searchReducer,
   bots: botsReducer,
+  stickers: stickersReducer,
   router: connectRouter(history),
 });
 

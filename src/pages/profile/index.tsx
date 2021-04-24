@@ -82,10 +82,10 @@ export const ProfilePage: React.FC = () => {
       </Header>
       <Menu>
         <MenuTitle>Others</MenuTitle>
-        <MenuItem to="/bots/listing" icon={BotIcon}>
+        <MenuItem to="/bots?tab=listing" icon={BotIcon}>
           Bots
         </MenuItem>
-        <MenuItem to="/stickers" icon={SmilingFaceIcon}>
+        <MenuItem to="/stickers?tab=listing" icon={SmilingFaceIcon}>
           Stickers
         </MenuItem>
         <MenuItem to="/settings" icon={SettingsIcon}>
