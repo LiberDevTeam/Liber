@@ -11,7 +11,9 @@
 # production
 /build
 
-/public/bundle.*
+/public/main.js
+/public/main.css
+/public/sw.js
 
 # misc
 .DS_Store

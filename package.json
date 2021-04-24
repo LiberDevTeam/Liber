@@ -52,6 +52,7 @@
     "immer": "8.0.1",
     "ipfs": "^0.54.4",
     "ipfs-core": "^0.5.4",
+    "ipfs-http-response": "^0.6.4",
     "it-to-stream": "^0.1.2",
     "jest": "26.6.0",
     "jest-circus": "26.6.3",
@@ -106,7 +107,8 @@
     "wcag-contrast": "^3.0.0",
     "web-vitals": "^1.0.1",
     "webpack-manifest-plugin": "3.1.0",
-    "workbox-webpack-plugin": "6.1.1",
+    "workbox-cacheable-response": "^6.1.5",
+    "workbox-routing": "^6.1.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {
@@ -190,6 +192,7 @@
   "scripts": {
     "build": "node ./esbuild/build.js",
     "start": "node ./esbuild/dev.js",
+    "build:sw": "node ./esbuild/sw.js",
     "test": "craco test",
     "gen": "scaffdog generate",
     "storybook": "start-storybook -p 6006 -s public",

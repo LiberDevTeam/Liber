@@ -7,9 +7,14 @@ const { commonConfig } = require('./config');
 const PORT = 3000;
 
 require('esbuild')
-  .serve({ servedir: 'public' }, commonConfig)
+  .serve(
+    { servedir: path.join(__dirname, '../public'), port: PORT + 1 },
+    commonConfig
+  )
   .then((result) => {
     console.log(`Run server at https://localhost:${PORT}`);
+    console.log(`Run server at http://localhost:${PORT + 1}`);
+    console.log(result);
 
     // The result tells us where esbuild's local server is
     const { host, port } = result;

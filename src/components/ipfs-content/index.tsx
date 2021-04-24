@@ -1,13 +1,5 @@
-import { IPFS as Ipfs } from 'ipfs';
-import React, { CSSProperties, useEffect, useState } from 'react';
-import ReactPlayer from 'react-player';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { CSSProperties, memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {
-  downloadIpfsContent,
-  selectIpfsContentByCid,
-} from '~/state/ducks/p2p/ipfsContentsSlice';
-import { getIpfsNode } from '../../lib/ipfs';
 
 interface IpfsContentProps {
   cid: string;
@@ -21,60 +13,55 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-export const IpfsContent: React.FC<IpfsContentProps> = ({
-  className,
-  cid,
-  style,
-}) => {
-  const dispatch = useDispatch();
-  const content = useSelector(selectIpfsContentByCid(cid));
-  const [ipfsNode, setIpfsNode] = useState<Ipfs>();
+export const IpfsContent: React.FC<IpfsContentProps> = memo(
+  function IpfsContent({ className, cid, style }) {
+    const [mimeType, setMimeType] = useState<string | null>(null);
+    const [content, setContent] = useState<string | null>(null);
+    const url = `/view/${cid}`;
 
-  useEffect(() => {
-    (async () => {
-      if (!content) {
-        setIpfsNode(await getIpfsNode());
-        dispatch(downloadIpfsContent({ cid }));
+    useEffect(() => {
+      if (content === null) {
+        fetch(url)
+          .then((res) => {
+            setMimeType(res.headers.get('Content-Type'));
+            return res.blob();
+          })
+          .then((blob) => {
+            setContent(URL.createObjectURL(blob));
+          });
       }
-    })();
-  }, [dispatch, cid, content]);
+    }, [url, content]);
 
-  if (!content) {
-    return null;
-  }
+    if (!content) {
+      return null;
+    }
 
-  switch (content.fileType.mime) {
-    case 'image/apng':
-    case 'image/avif':
-    case 'image/gif':
-    case 'image/jpeg':
-    case 'image/png':
-    case 'image/webp':
+    if (!mimeType) {
+      return <>unsupported format</>;
+    }
+
+    switch (mimeType) {
+      case 'image/apng':
+      case 'image/avif':
+      case 'image/gif':
+      case 'image/jpeg':
+      case 'image/png':
+      case 'image/webp':
+        return <Image className={className} src={url} style={style} />;
+    }
+
+    if (mimeType.includes('audio/')) {
+      return <audio controls src={url}></audio>;
+    }
+
+    if (mimeType.includes('video/')) {
       return (
-        <Image className={className} src={content.dataUrl} style={style} />
+        <video controls>
+          <source src={url} type={mimeType} />
+        </video>
       );
-  }
+    }
 
-  if (content.fileType.mime.includes('audio/')) {
-    return <ReactPlayer src={content.dataUrl} forceAudio />;
+    return <>unsupported format</>;
   }
-
-  if (content.fileType.mime.includes('video/')) {
-    return (
-      <ReactPlayer
-        src={''}
-        forceVideo
-        config={{
-          file: {
-            hlsOptions: {
-              ipfs: ipfsNode,
-              ipfsHash: cid,
-            },
-          },
-        }}
-      />
-    );
-  }
-
-  return <>unsupported format</>;
-};
+);
