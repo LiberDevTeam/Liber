@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 
 const resolve = {
@@ -15,13 +16,16 @@ const resolve = {
     });
   },
 };
-
 const plugins = [resolve];
 
+exports.plugins = plugins;
+
 const paths = {
-  outfile: path.join(__dirname, '../public/bundle.js'),
+  outdir: path.join(__dirname, '../public'),
   inject: path.join(__dirname, './shims.js'),
-  entryPoints: [path.join(__dirname, '../src/index.tsx')],
+  entryPoints: {
+    main: path.join(__dirname, '../src/index.tsx'),
+  },
 };
 
 exports.commonConfig = {
@@ -30,7 +34,8 @@ exports.commonConfig = {
   plugins,
   define: {
     global: 'window',
+    APP_PUBLIC_URL: JSON.stringify(process.env.PUBLIC_URL),
   },
   inject: [paths.inject],
-  outfile: paths.outfile,
+  outdir: paths.outdir,
 };

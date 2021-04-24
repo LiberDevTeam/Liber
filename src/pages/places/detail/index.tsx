@@ -377,7 +377,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
                           ref={attachmentRef}
                           name="attachment"
                           type="file"
-                          accept="image/*"
+                          accept="image/*,audio/*,video/*"
                           onChange={handleChangeAttachment}
                         />
                       </UploadFileButtonGroup>
