@@ -24,10 +24,10 @@
   "scripts": {
     "compile": "truffle compile",
     "console": "truffle console",
-    "generate-types": "npx typechain --target truffle-v5 --outDir @types build/contracts/*.json",
+    "generate-types": "npx typechain --target truffle-v5 --outDir @types ./build/contracts/*.json",
+    "lint:sol": "solhint --fix ./contracts/**/*.sol",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "postinstall": "npx truffle compile && npm run generate-types",
-    "test": "truffle test",
-    "lint:sol": "solhint --fix contracts/**/*.sol"
+    "test": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test"
   }
 }

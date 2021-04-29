@@ -51,6 +51,7 @@ typings/
 @types/
 build/
 migrations/
+test/
 
 # Optional npm cache directory
 .npm
