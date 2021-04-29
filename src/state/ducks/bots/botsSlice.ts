@@ -1,14 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '~/state/store';
 
+export interface TestCase {
+  name: string;
+  input: string;
+  output: string;
+}
+
 export interface Bot {
   id: string;
   uid: string;
   name: string;
+  category: string;
   description: string;
   avatar: string;
   price: number;
+  document: string;
   code: string;
+  testCases: TestCase[];
   created: number;
   purchased?: number;
 }
