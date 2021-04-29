@@ -14,14 +14,14 @@ const TabList = styled(BaseTabList)`
   border-bottom: ${(props) => props.theme.border.grayLighter.light};
 `;
 
-const Tab = styled(BaseTab)<{ active: boolean }>`
+const Tab = styled(BaseTab)<{ active: string }>`
   list-style: none;
   padding: ${(props) => props.theme.space[2]}px
     ${(props) => props.theme.space[4]}px ${(props) => props.theme.space[3]}px;
   min-width: 100px;
   text-align: center;
   ${(props) =>
-    props.active &&
+    props.active === 'true' &&
     css`
       color: ${(props) => props.theme.colors.primary};
       border-bottom: ${(props) => props.theme.border.primary.light};
@@ -64,7 +64,7 @@ export const Tabs: React.FC<TabsProps> = React.memo(function Tabs({
     >
       <TabList>
         {tabList.map((tab) => (
-          <Tab key={tab} active={tab === selectedTab}>
+          <Tab key={tab} active={(tab === selectedTab).toString()}>
             {tabTitle[tab]}
           </Tab>
         ))}
@@ -73,8 +73,3 @@ export const Tabs: React.FC<TabsProps> = React.memo(function Tabs({
     </BaseTabs>
   );
 });
-
-interface TabPanelProps {
-  hide?: boolean;
-  children: React.ReactNode;
-}
