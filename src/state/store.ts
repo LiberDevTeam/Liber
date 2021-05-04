@@ -27,54 +27,22 @@ enableMapSet();
 
 const debug = true;
 
-const mePersistConfig = {
-  key: 'me',
+const persistConfig = {
+  key: 'root',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
     version: 1,
   }),
+  whitelist: ['me', 'places', 'placeMessages', 'ipfsContents'],
   debug,
-};
-
-const placesPersistConfig = {
-  key: 'places',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
-  // whitelist: ['messages', 'places'],
-  debug,
-};
-
-const placeMessagesPersistConfig = {
-  key: 'placeMessages',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
-  debug,
-};
-
-const ipfsContentsPersistConfig = {
-  key: 'ipfsContents',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
 };
 
 const reducers = combineReducers({
-  me: persistReducer(mePersistConfig, meReducer),
-  places: persistReducer(placesPersistConfig, placesReducer),
-  placeMessages: persistReducer(
-    placeMessagesPersistConfig,
-    placeMessagesReducer
-  ),
-  ipfsContents: persistReducer(ipfsContentsPersistConfig, ipfsContentsReducer),
+  me: meReducer,
+  places: placesReducer,
+  placeMessages: placeMessagesReducer,
+  ipfsContents: ipfsContentsReducer,
   feed: feedReducer,
   users: usersReducer,
   search: searchReducer,
@@ -83,7 +51,7 @@ const reducers = combineReducers({
 });
 
 export const store = configureStore({
-  reducer: reducers,
+  reducer: persistReducer(persistConfig, reducers),
   middleware: [thunk, routerMiddleware(history)],
 });
 

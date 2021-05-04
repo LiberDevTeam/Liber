@@ -4,19 +4,20 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import {
   connectMessageFeed,
-  connectPlaceKeyValue,
   createMessageFeed,
-  createPlaceKeyValue,
   getMessageFeedById,
   readMessagesFromFeed,
-} from '../../../lib/db';
-import { getIpfsNode } from '../../../lib/ipfs';
+} from '../../../lib/db/message';
+import {
+  connectPlaceKeyValue,
+  createPlaceKeyValue,
+} from '../../../lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
 } from '../../../state/actionCreater';
-import { selectMe, updateId } from '../../../state/ducks/me/meSlice';
+import { selectMe } from '../../../state/ducks/me/meSlice';
 import { addIpfsContent } from '../../../state/ducks/p2p/ipfsContentsSlice';
 import { Message } from '../../../state/ducks/places/messagesSlice';
 import {
@@ -28,8 +29,6 @@ import {
   setHash,
 } from '../../../state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '../../../state/store';
-import { addUser, User } from '../users/usersSlice';
-
 async function digestMessage(message: string): Promise<string> {
   const msgUint8 = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -68,12 +67,6 @@ export const initApp = createAsyncThunk<
 >('p2p/initApp', async (_, thunkAPI) => {
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
-
-  const ipfsNode = await getIpfsNode();
-
-  if (!state.me.id) {
-    dispatch(updateId((await ipfsNode.id()).id));
-  }
 
   selectAllPlaces(state).forEach(async (place) => {
     connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
@@ -168,6 +161,7 @@ export const joinPlace = createAsyncThunk<
     messageIds: [],
     unreadMessages: [],
     permissions: placeKeyValue.get('permissions') as PlacePermissions,
+    readOnly: placeKeyValue.get('readOnly') as boolean,
   };
 
   if (place.passwordRequired) {
@@ -321,21 +315,4 @@ export const createNewPlace = createAsyncThunk<
 
 const buildInvitationUrl = async (placeId: string, address: string) => {
   return `${window.location.protocol}//${window.location.host}/#/places/${placeId}/join/${address}`;
-};
-
-export const lookupAndStoreUser = createAsyncThunk<
-  void,
-  { id: string },
-  { dispatch: AppDispatch; state: RootState }
->('p2p/lookupAndStoreUserr', async ({ id }, { dispatch, getState }) => {
-  const user = lookupUser(id);
-  dispatch(addUser(user));
-});
-
-const lookupUser = (id: string): User => {
-  // TODO fetch from OrbitDB instead
-  return {
-    id,
-    username: 'usename',
-  };
 };

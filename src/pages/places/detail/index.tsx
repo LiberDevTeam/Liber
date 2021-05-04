@@ -1,4 +1,5 @@
 import Observer from '@researchgate/react-intersection-observer';
+import { immutable as arrayUniq } from 'array-unique';
 import { push } from 'connected-react-router';
 import { BaseEmoji, Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -29,6 +30,7 @@ import { SvgNavigation as SendIcon } from '../../../icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
 import { selectMe } from '../../../state/ducks/me/meSlice';
 import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
+import { loadUsers } from '../../../state/ducks/users/usersSlice';
 import BaseLayout from '../../../templates';
 import { theme } from '../../../theme';
 import { PlaceDetailHeader } from './components/place-detail-header';
@@ -132,7 +134,7 @@ const Attachments = styled.div`
   bottom: 100%;
   margin-bottom: ${(props) => props.theme.space[3]}px;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   align-items: center;
   width: 100%;
 `;
@@ -179,6 +181,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const { pid } = useParams<{ pid: string }>();
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
+  const userIds = arrayUniq(messages.map((m) => m.uid));
   const me = useSelector(selectMe);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -209,6 +212,14 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
       setAttachments([]);
     },
   });
+
+  useEffect(() => {
+    dispatch(
+      loadUsers({
+        userIds,
+      })
+    );
+  }, [dispatch, JSON.stringify(userIds)]);
 
   // Scroll to bottom when open chat
   useEffect(() => {
@@ -292,13 +303,12 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             {messages.map((m) => (
               <MessageView
                 id={m.id}
+                uid={m.uid}
                 key={m.id}
-                name={m.uid}
                 timestamp={m.timestamp}
                 text={m.text}
                 attachmentCidList={m.attachmentCidList}
                 mine={m.uid === me.id}
-                userImage={''}
               />
             ))}
             <Observer onChange={handleIntersection}>

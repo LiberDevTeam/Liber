@@ -1,7 +1,11 @@
 import { fromUnixTime } from 'date-fns';
 import React from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
+import { selectUserById, User } from '../../state/ducks/users/usersSlice';
+import { RootState } from '../../state/store';
 import { IpfsContent } from '../ipfs-content';
 
 const Root = styled.div<{ mine: boolean }>`
@@ -10,6 +14,7 @@ const Root = styled.div<{ mine: boolean }>`
 `;
 
 const UserImage = styled.img`
+  display: inline-block;
   width: ${(props) => props.theme.space[7]}px;
   height: ${(props) => props.theme.space[7]}px;
   border-radius: ${(props) => props.theme.radii.round};
@@ -61,34 +66,33 @@ const Attachment = styled(IpfsContent)`
 
 export interface MessageViewProps {
   id: string;
-  name: string;
+  uid: string;
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
   mine: boolean;
-  userImage: string;
 }
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
-  function MessageView({
-    id,
-    name,
-    timestamp,
-    text,
-    attachmentCidList,
-    mine,
-    userImage,
-  }) {
+  function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
     const time = fromUnixTime(timestamp);
+
+    const user = useSelector<RootState, User | undefined>(
+      (state) => selectUserById(state.users, uid),
+      shallowEqual
+    );
+
     return (
       <Root mine={mine}>
-        {mine ? null : (
+        {user?.avatarCid ? (
           <div>
-            <UserImage src={userImage} />
+            <UserImage src={`/view/${user.avatarCid}`} alt={uid} />
           </div>
+        ) : (
+          <DefaultUserAvatarIcon width={28} height={28} />
         )}
         <Body>
-          {mine ? null : <UserName>{name}</UserName>}
+          {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
           <Text mine={mine}>
             {text}
             <Timestamp title={formatTimeStrict(time)}>
