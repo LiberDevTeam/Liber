@@ -1,10 +1,17 @@
-import React, { CSSProperties, memo, useEffect, useState } from 'react';
+import React, {
+  CSSProperties,
+  memo,
+  ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 
 interface IpfsContentProps {
   cid: string;
   className?: string;
   style?: CSSProperties;
+  fallbackComponent?: ReactElement;
 }
 
 const Image = styled.img`
@@ -14,7 +21,7 @@ const Image = styled.img`
 `;
 
 export const IpfsContent: React.FC<IpfsContentProps> = memo(
-  function IpfsContent({ className, cid, style }) {
+  function IpfsContent({ className, cid, style, fallbackComponent }) {
     const [mimeType, setMimeType] = useState<string | null>(null);
     const [content, setContent] = useState<string | null>(null);
     const url = `/view/${cid}`;
@@ -33,11 +40,11 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
     }, [url, content]);
 
     if (!content) {
-      return null;
+      return fallbackComponent ?? null;
     }
 
     if (!mimeType) {
-      return <>unsupported format</>;
+      return fallbackComponent ?? <>unsupported format</>;
     }
 
     switch (mimeType) {

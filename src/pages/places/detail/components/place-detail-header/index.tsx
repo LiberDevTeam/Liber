@@ -28,9 +28,18 @@ const Root = styled.header`
 `;
 
 const Avatar = styled(IpfsContent)`
+  display: inline-block;
   width: 56px;
   height: 56px;
   border-radius: ${(props) => props.theme.radii.round};
+  margin-left: ${(props) => props.theme.space[2]}px;
+`;
+
+const AvatarPlaceholder = styled.div`
+  width: 56px;
+  height: 56px;
+  border-radius: ${(props) => props.theme.radii.round};
+  background: ${(props) => props.theme.colors.bgGray};
   margin-left: ${(props) => props.theme.space[2]}px;
 `;
 
@@ -116,7 +125,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     return (
       <Root>
         <BackLink backTo="/places" />
-        <Avatar cid={avatarCid} />
+        <Avatar cid={avatarCid} fallbackComponent={<AvatarPlaceholder />} />
         <TitleBox>
           <Title>{name}</Title>
           <MemberCount>{memberCount} Members</MemberCount>
