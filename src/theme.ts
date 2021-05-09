@@ -68,7 +68,7 @@ const colors = {
   grayLight: '#F5F8FA',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
-  red: '#F64640',
+  red: '#df2121',
   white: '#ffffff',
   green: '#1fbb2f',
 };
