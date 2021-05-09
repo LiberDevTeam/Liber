@@ -13,12 +13,22 @@ import { PersonBlock } from '../../icons/PersonBlock';
 import { SvgSlash as BanIcon } from '../../icons/Slash';
 import { UserAvatar } from '../user-avatar';
 
+const Handle = styled.div`
+  width: 50px;
+  height: 3px;
+  background: ${(props) => props.theme.colors.primaryText};
+  border-radius: ${(props) => props.theme.radii.large};
+  margin: auto;
+  opacity: 0.15;
+`;
+
 const Header = styled.div`
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
   border-bottom: 1px solid ${(props) => props.theme.colors.grayLighter};
   padding-bottom: ${(props) => props.theme.space[4]}px;
+  margin-top: ${(props) => props.theme.space[10]}px;
 `;
 
 const UserName = styled.span`
@@ -90,7 +100,7 @@ const modalStyle = {
   content: {
     inset: 'auto auto 0px auto',
     borderRadius: `${theme.radii.large}px ${theme.radii.large}px 0 0`,
-    padding: `${theme.space[12]}px ${theme.space[6]}px`,
+    padding: theme.space[6],
     border: 'none',
     width: '100%',
   },
@@ -136,6 +146,7 @@ export const UserMenu: React.FC = React.memo(function UserMenu() {
 
   return (
     <ReactModal isOpen onRequestClose={handleCloseRequest} style={modalStyle}>
+      <Handle />
       <Header>
         <UserAvatar userId={user.id} size={54} />
         <div>
