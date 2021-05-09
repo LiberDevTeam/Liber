@@ -1,28 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: 'Delecta';
-    font-style: normal;
-    font-weight: 400;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA.OTF);
-  }
-
-  @font-face {
-    font-family: 'Delecta';
-    font-style: normal;
-    font-weight: 500;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-MEDIUM.OTF);
-  }
-
-  @font-face {
-    font-family: 'Delecta';
-    font-style: bold;
-    font-weight: 700;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-BOLD.OTF);
-  }
-
-
   *,
   *::before,
   *::after {

@@ -2,11 +2,11 @@ import { fromUnixTime } from 'date-fns';
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfs-content';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
-import { selectUserById, User } from '../../state/ducks/users/usersSlice';
-import { RootState } from '../../state/store';
-import { IpfsContent } from '../ipfs-content';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
+import { selectUserById, User } from '~/state/ducks/users/usersSlice';
+import { RootState } from '~/state/store';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
