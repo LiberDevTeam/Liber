@@ -1,23 +1,17 @@
 import { fromUnixTime } from 'date-fns';
-import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
+import { UserAvatar } from '~/components/user-avatar';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
+import { setSelectedUser } from '~/state/ducks/selected-user';
 import { selectUserById, User } from '~/state/ducks/users/usersSlice';
 import { RootState } from '~/state/store';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
   justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
-`;
-
-const UserImage = styled.img`
-  display: inline-block;
-  width: ${(props) => props.theme.space[7]}px;
-  height: ${(props) => props.theme.space[7]}px;
-  border-radius: ${(props) => props.theme.radii.round};
 `;
 
 const UserName = styled.span`
@@ -76,21 +70,24 @@ export interface MessageViewProps {
 export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
     const time = fromUnixTime(timestamp);
+    const dispatch = useDispatch();
 
     const user = useSelector<RootState, User | undefined>(
       (state) => selectUserById(state.users, uid),
       shallowEqual
     );
 
+    const handleClickUser = useCallback(() => {
+      if (user?.id) {
+        dispatch(setSelectedUser(user.id));
+      }
+    }, [user?.id, dispatch]);
+
     return (
       <Root mine={mine}>
-        {user?.avatarCid ? (
-          <div>
-            <UserImage src={`/view/${user.avatarCid}`} alt={uid} />
-          </div>
-        ) : (
-          <DefaultUserAvatarIcon width={28} height={28} />
-        )}
+        <div onClick={handleClickUser}>
+          <UserAvatar userId={uid} />
+        </div>
         <Body>
           {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
           <Text mine={mine}>

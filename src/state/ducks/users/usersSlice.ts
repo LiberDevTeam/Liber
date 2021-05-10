@@ -48,6 +48,5 @@ export const usersSlice = createSlice({
   },
 });
 
-export const selectUserById = usersAdapter.getSelectors().selectById;
-
-export default usersSlice.reducer;
+const { selectById } = usersAdapter.getSelectors();
+export const selectUserById = selectById;

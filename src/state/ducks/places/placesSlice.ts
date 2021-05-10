@@ -62,6 +62,8 @@ export interface Place extends PlaceInfo {
   // orbit db id
   feedAddress: string;
   keyValAddress: string;
+  // user ids
+  bannedUsers: string[];
 }
 
 const messageSort = (a: Message, b: Message): number =>
