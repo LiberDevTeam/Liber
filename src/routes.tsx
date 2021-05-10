@@ -51,7 +51,7 @@ export const Routes: React.FC = () => (
         <Route exact path="/profile" render={() => <ProfilePage />} />
         <Route exact path="/profile/edit" render={() => <ProfileEditPage />} />
 
-        <Route path="/marketplace/:kind" render={() => <MarketplacePage />} />
+        <Route path="/marketplace/:kind?" render={() => <MarketplacePage />} />
 
         <Route exact path="/bots/new" render={() => <BotNewPage />} />
         <Route path="/bots/:id" render={() => <BotDetailPage />} />

@@ -1,5 +1,10 @@
 import React, { memo } from 'react';
+import { Bot } from '~/state/ducks/bots/botsSlice';
 
-export const StickerItem: React.FC = memo(function StickerItems({}) {
-  return <>sticker item</>;
+interface Props {
+  bot: Bot;
+}
+
+export const BotItem: React.FC<Props> = memo(function BotItem({}) {
+  return <>bot item</>;
 });

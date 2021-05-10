@@ -62,7 +62,9 @@ interface Props {}
 export const MarketplacePage: React.FC<Props> = React.memo(
   function MarketplacePage({}) {
     const dispatch = useDispatch();
-    const { kind } = useParams<{ kind: MarketplaceKind }>();
+    const { kind = MarketplaceKind.Bots } = useParams<{
+      kind?: MarketplaceKind;
+    }>();
     const { tab = MarketplaceTabPanel.Ranking } = useQuery<{
       tab: MarketplaceTabPanel;
     }>();

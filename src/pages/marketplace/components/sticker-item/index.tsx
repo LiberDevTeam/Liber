@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
-import { TabKind } from '../constants';
+import { Sticker } from '~/state/ducks/stickers/stickersSlice';
 
 interface Props {
-  tab: TabKind;
+  sticker: Sticker;
 }
 
-export const StickerItems: React.FC<Props> = memo(function StickerItems({}) {
+export const StickerItem: React.FC<Props> = memo(function StickerItem({}) {
   return <>sticker item</>;
 });
