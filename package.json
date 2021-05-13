@@ -179,9 +179,6 @@
   },
   "main": "src/index.js",
   "private": true,
-  "resolutions": {
-    "immer": "8.0.0"
-  },
   "browser": {
     "crypto": "crypto-browserify",
     "stream": "stream-browserify",
