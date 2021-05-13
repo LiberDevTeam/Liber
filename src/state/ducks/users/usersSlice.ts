@@ -40,8 +40,12 @@ export const usersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loadUsers.pending, (state, action) => {})
-      .addCase(loadUsers.rejected, (state, action) => {})
+      .addCase(loadUsers.pending, (state, action) => {
+        // TODO: add implementations
+      })
+      .addCase(loadUsers.rejected, (state, action) => {
+        // TODO: add implementations
+      })
       .addCase(loadUsers.fulfilled, (state, action) => {
         usersAdapter.addMany(state, action.payload);
       });

@@ -1,7 +1,7 @@
-import CancelIcon from '@material-ui/icons/Cancel';
-import React from 'react';
+import { FC, memo } from 'react';
 import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
+import { SvgClose } from '~/icons/Close';
 
 const Root = styled.div`
   display: inline-flex;
@@ -30,15 +30,21 @@ export interface UnreadToastProps {
 }
 
 // TODO: update style
-export const UnreadToast: React.FC<UnreadToastProps> = React.memo(
-  function UnreadToast({ messageCount, onClick, onClose, className }) {
-    return (
-      <Root className={className}>
-        <MainButton
-          onClick={onClick}
-        >{`${messageCount} new messages`}</MainButton>
-        <CloseButton icon={<CancelIcon />} onClick={onClose} />
-      </Root>
-    );
-  }
-);
+export const UnreadToast: FC<UnreadToastProps> = memo(function UnreadToast({
+  messageCount,
+  onClick,
+  onClose,
+  className,
+}) {
+  return (
+    <Root className={className}>
+      <MainButton
+        onClick={onClick}
+      >{`${messageCount} new messages`}</MainButton>
+      <CloseButton
+        icon={<SvgClose width={24} height={24} />}
+        onClick={onClose}
+      />
+    </Root>
+  );
+});

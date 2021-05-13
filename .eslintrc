@@ -10,7 +10,9 @@
   ],
   "rules": {
     // 2重管理になるのでreact/prop-types側の警告はoff
-    "react/prop-types": [0]
+    "react/prop-types": [0],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off"
   },
   "overrides": [
     {

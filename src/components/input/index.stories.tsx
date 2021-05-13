@@ -1,6 +1,5 @@
-import { Search as SearchIcon } from '@material-ui/icons';
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
+import { SvgSearch } from '~/icons/Search';
 import { Input } from '.';
 
 export default {
@@ -16,6 +15,6 @@ Default.args = {
 
 export const Icon = Template.bind({});
 Icon.args = {
-  icon: <SearchIcon />,
+  icon: <SvgSearch width={24} height={24} />,
   placeholder: 'Search',
 };
