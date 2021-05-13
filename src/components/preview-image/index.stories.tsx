@@ -1,7 +1,6 @@
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
+import LogoSVG from '~/logo.svg';
 import { PreviewImage, PreviewImageProps } from '.';
-import LogoSVG from '../../logo.svg';
 
 export default {
   component: PreviewImage,

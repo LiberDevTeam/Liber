@@ -1,6 +1,5 @@
-import { Search as SearchIcon } from '@material-ui/icons';
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
+import { SvgSearch } from '~/icons/Search';
 import { BottomNavLink, BottomNavLinkProps } from '.';
 
 export default {
@@ -14,6 +13,6 @@ const Template: Story<BottomNavLinkProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   to: '/',
-  icon: <SearchIcon />,
+  icon: <SvgSearch width={24} height={24} />,
   children: 'Link',
 };

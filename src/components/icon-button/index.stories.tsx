@@ -1,6 +1,5 @@
-import { Close as CloseIcon } from '@material-ui/icons';
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
+import { SvgClose } from '~/icons/Close';
 import { IconButton, IconButtonProps } from '.';
 
 export default {
@@ -11,5 +10,5 @@ export default {
 const Template: Story<IconButtonProps> = (args) => <IconButton {...args} />;
 export const Default = Template.bind({});
 Default.args = {
-  icon: <CloseIcon />,
+  icon: <SvgClose width={24} height={24} />,
 };
