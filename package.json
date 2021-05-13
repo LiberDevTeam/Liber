@@ -114,7 +114,6 @@
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "7.13.10",
-    "@craco/craco": "^6.1.1",
     "@storybook/addon-actions": "^6.1.21",
     "@storybook/addon-essentials": "^6.1.21",
     "@storybook/addon-links": "^6.1.21",
@@ -193,7 +192,7 @@
     "build": "node ./esbuild/build.js",
     "start": "node ./esbuild/dev.js",
     "build:sw": "node ./esbuild/sw.js",
-    "test": "craco test",
+    "test": "tsc --noEmit",
     "gen": "scaffdog generate",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
