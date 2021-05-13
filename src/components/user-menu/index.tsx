@@ -13,6 +13,10 @@ import { PersonBlock } from '../../icons/PersonBlock';
 import { SvgSlash as BanIcon } from '../../icons/Slash';
 import { UserAvatar } from '../user-avatar';
 
+export interface UserMenuProps {
+  onBan: (userId: string) => void;
+}
+
 const Handle = styled.div`
   width: 50px;
   height: 3px;
@@ -111,7 +115,9 @@ const MenuKeys = {
   BAN: 'BAN',
 };
 
-export const UserMenu: React.FC = React.memo(function UserMenu() {
+export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
+  onBan,
+}) {
   const dispatch = useDispatch();
   const user = useAppSelector((state) =>
     state.selectedUser
@@ -129,16 +135,24 @@ export const UserMenu: React.FC = React.memo(function UserMenu() {
     dispatch(clearSelectedUser());
   }, [dispatch]);
 
-  const handleMenuClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    switch (e.currentTarget.dataset.menuKey) {
-      case MenuKeys.BLOCK:
-        // TODO: implement
-        break;
-      case MenuKeys.BAN:
-        // TODO: implement
-        break;
-    }
-  }, []);
+  const handleMenuClick = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      if (!user) {
+        return;
+      }
+
+      switch (e.currentTarget.dataset.menuKey) {
+        case MenuKeys.BLOCK:
+          // TODO: implement
+          break;
+        case MenuKeys.BAN:
+          onBan(user.id);
+          break;
+      }
+      dispatch(clearSelectedUser());
+    },
+    [onBan, user, dispatch]
+  );
 
   if (!user) {
     return null;
@@ -170,7 +184,7 @@ export const UserMenu: React.FC = React.memo(function UserMenu() {
           </MenuItem>
         </li>
         <li>
-          <MenuItem data-menu-key={MenuKeys.BLOCK} onClick={handleMenuClick}>
+          <MenuItem data-menu-key={MenuKeys.BAN} onClick={handleMenuClick}>
             <BanIcon width={28} height={28} />
             Ban
           </MenuItem>
