@@ -66,11 +66,10 @@ export const connectMessageFeed = async ({
     onMessageAdd(readMessagesFromFeed(db));
   });
   messageFeeds[placeId] = db;
+
   return new Promise<FeedStore<Message>>((resolve) => {
-    db.events.on('replicate.progress', (_0, _1, _2, progress, have) => {
-      if (progress === have) {
-        resolve(db);
-      }
+    db.events.on('ready', () => {
+      resolve(db);
     });
     db.load();
   });

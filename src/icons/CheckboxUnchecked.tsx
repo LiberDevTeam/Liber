@@ -16,7 +16,7 @@ export const SvgCheckboxUnchecked: React.FC<React.SVGProps<SVGSVGElement>> = (
       rx="16"
       fill="white"
       stroke="#8FA7B3"
-      stroke-width="8"
+      strokeWidth="8"
     />
   </svg>
 );

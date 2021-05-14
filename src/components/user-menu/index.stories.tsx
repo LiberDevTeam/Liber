@@ -1,5 +1,4 @@
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
 import { UserMenu, UserMenuProps } from './';
 
 export default {

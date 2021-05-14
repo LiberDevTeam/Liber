@@ -9,7 +9,7 @@ const PORT = 3000;
 require('esbuild')
   .serve(
     { servedir: path.join(__dirname, '../public'), port: PORT + 1 },
-    commonConfig
+    { ...commonConfig, sourcemap: true }
   )
   .then((result) => {
     console.log(`Run server at https://localhost:${PORT}`);

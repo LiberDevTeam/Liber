@@ -1,9 +1,12 @@
 import {
+  createAsyncThunk,
   createEntityAdapter,
   createSlice,
   EntityId,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import unique from 'array-unique';
+import { connectPlaceKeyValue } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
@@ -11,6 +14,8 @@ import {
 } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
 import { Message, selectMessageById } from './messagesSlice';
+
+const MODULE_NAME = 'places';
 
 export const categories = [
   'DISCUSSION_AND_STORIES',
@@ -73,6 +78,25 @@ const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
 
+export const banUser = createAsyncThunk<
+  void,
+  { placeId: string; userId: string },
+  { state: RootState }
+>(`${MODULE_NAME}/ban`, async ({ placeId, userId }, { getState }) => {
+  const state = getState();
+  const place = selectPlaceById(placeId)(state);
+
+  if (place) {
+    const placeDB = await connectPlaceKeyValue({
+      placeId,
+      address: place.keyValAddress,
+    });
+
+    const bannedUsers = placeDB.get('bannedUsers') as string[];
+    await placeDB.set('bannedUsers', unique(bannedUsers.concat(userId)));
+  }
+});
+
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
@@ -131,6 +155,11 @@ export const placesSlice = createSlice({
         if (place) {
           placesAdapter.addOne(state, place);
         }
+      })
+      .addCase(banUser.fulfilled, (state, action) => {
+        state.entities[action.meta.arg.placeId]?.bannedUsers.push(
+          action.meta.arg.userId
+        );
       });
   },
 });
