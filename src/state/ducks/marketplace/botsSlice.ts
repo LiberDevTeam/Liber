@@ -10,7 +10,7 @@ import {
   marketplaceSearchBots,
 } from '~/api';
 import { AppDispatch, RootState } from '~/state/store';
-import { Bot } from '../bots/botsSlice';
+import { Bot, tmpListingOn } from '../bots/botsSlice';
 
 const botsAdapter = createEntityAdapter<Bot>();
 
@@ -25,6 +25,7 @@ export const fetchSearchResult = createAsyncThunk<
     const { botIds } = await res.json();
 
     // TODO: fetch and store bots information from orbitdb
+    dispatch(addBots(tmpListingOn));
 
     dispatch(paginateSearchResult({ page, botIds }));
   }
@@ -39,8 +40,9 @@ export const fetchRanking = createAsyncThunk<
   const { botIds } = await res.json();
 
   // TODO: fetch and store bots information from orbitdb
+  dispatch(addBots(tmpListingOn));
 
-  dispatch(paginateSearchResult({ page, botIds }));
+  dispatch(paginateRanking({ page, botIds }));
 });
 
 export const fetchNew = createAsyncThunk<
@@ -52,8 +54,9 @@ export const fetchNew = createAsyncThunk<
   const { botIds } = await res.json();
 
   // TODO: fetch and store bots information from orbitdb
+  dispatch(addBots(tmpListingOn));
 
-  dispatch(paginateSearchResult({ page, botIds }));
+  dispatch(paginateNew({ page, botIds }));
 });
 
 export const botsSlice = createSlice({
@@ -91,10 +94,19 @@ export const botsSlice = createSlice({
       const { page, botIds } = action.payload;
       state.searchResultIdsByPage[page] = botIds;
     },
+    clearSearchResult: (state) => {
+      state.searchResultIdsByPage = {};
+    },
   },
 });
 
-export const { paginateSearchResult } = botsSlice.actions;
+export const {
+  addBots,
+  paginateNew,
+  paginateRanking,
+  paginateSearchResult,
+  clearSearchResult,
+} = botsSlice.actions;
 
 const selectors = botsAdapter.getSelectors();
 export const selectSearchResultIdsByPage = (page: number) => (

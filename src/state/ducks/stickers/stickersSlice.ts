@@ -18,7 +18,7 @@ export interface StickersState {
   listingOn: Sticker[];
 }
 
-const tmpPurchased = [
+export const tmpPurchased = [
   {
     id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
@@ -231,7 +231,7 @@ const tmpPurchased = [
   },
 ];
 
-const tmpListingOn = [
+export const tmpListingOn = [
   {
     id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
@@ -249,7 +249,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '10C095752-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -264,7 +264,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C95754-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -279,7 +279,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C95755-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -294,7 +294,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C95756-A668-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -309,7 +309,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C95753-A669-4BCB-A61C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -324,7 +324,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A62C-7083585BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -339,7 +339,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083584BDCD2',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -354,7 +354,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD3',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -369,7 +369,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD4',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -384,7 +384,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD5',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'aaaaa',
@@ -399,7 +399,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD7',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -414,7 +414,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD6',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description:
@@ -430,7 +430,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD21',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -445,7 +445,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD23',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -460,7 +460,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD24',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',
@@ -475,7 +475,7 @@ const tmpListingOn = [
     purchased: 1619271130,
   },
   {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
+    id: '9C095752-A668-4BCB-A61C-7083585BDCD27',
     uid: '94801C77-68E9-4193-B253-C91983477A0D',
     name: 'バク',
     description: 'モデルやってます。性別はありません',

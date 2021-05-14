@@ -18,7 +18,6 @@ const Tab = styled(BaseTab)<{ active: string }>`
   list-style: none;
   padding: ${(props) => props.theme.space[2]}px
     ${(props) => props.theme.space[4]}px ${(props) => props.theme.space[3]}px;
-  min-width: 100px;
   text-align: center;
   ${(props) =>
     props.active === 'true' &&
@@ -29,12 +28,11 @@ const Tab = styled(BaseTab)<{ active: string }>`
 `;
 
 export const TabPanels = styled.div`
-  height: 100%;
+  overflow: scroll;
 `;
 
 export const TabPanel = styled(BaseTabPanel)<{ hide?: boolean }>`
   flex: 1;
-  height: 100vh;
   ${(props) =>
     props.hide &&
     css`
