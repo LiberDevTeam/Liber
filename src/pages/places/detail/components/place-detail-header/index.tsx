@@ -3,17 +3,17 @@ import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
+import { BackLink } from '~/components/back-link';
 import { Button } from '~/components/button';
 import { IconButton } from '~/components/icon-button';
-import { BackLink } from '../../../../../components/back-link';
-import { IpfsContent } from '../../../../../components/ipfs-content';
-import { SvgBot as BotIcon } from '../../../../../icons/Bot';
-import { SvgEdit2 as EditIcon } from '../../../../../icons/Edit2';
-import { SvgInfo as InfoIcon } from '../../../../../icons/Info';
-import { SvgLogOut as LeaveIcon } from '../../../../../icons/LogOut';
-import { SvgMoreVertical as MenuIcon } from '../../../../../icons/MoreVertical';
-import { SvgPeople as PeopleIcon } from '../../../../../icons/People';
-import { SvgPersonAdd as InviteIcon } from '../../../../../icons/PersonAdd';
+import { IpfsContent } from '~/components/ipfs-content';
+import { SvgBot as BotIcon } from '~/icons/Bot';
+import { SvgEdit2 as EditIcon } from '~/icons/Edit2';
+import { SvgInfo as InfoIcon } from '~/icons/Info';
+import { SvgLogOut as LeaveIcon } from '~/icons/LogOut';
+import { SvgMoreVertical as MenuIcon } from '~/icons/MoreVertical';
+import { SvgPeople as PeopleIcon } from '~/icons/People';
+import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
 
 const Root = styled.header`
   display: flex;
@@ -28,9 +28,18 @@ const Root = styled.header`
 `;
 
 const Avatar = styled(IpfsContent)`
+  display: inline-block;
   width: 56px;
   height: 56px;
   border-radius: ${(props) => props.theme.radii.round};
+  margin-left: ${(props) => props.theme.space[2]}px;
+`;
+
+const AvatarPlaceholder = styled.div`
+  width: 56px;
+  height: 56px;
+  border-radius: ${(props) => props.theme.radii.round};
+  background: ${(props) => props.theme.colors.bgGray};
   margin-left: ${(props) => props.theme.space[2]}px;
 `;
 
@@ -116,7 +125,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     return (
       <Root>
         <BackLink backTo="/places" />
-        <Avatar cid={avatarCid} />
+        <Avatar cid={avatarCid} fallbackComponent={<AvatarPlaceholder />} />
         <TitleBox>
           <Title>{name}</Title>
           <MemberCount>{memberCount} Members</MemberCount>

@@ -1,18 +1,17 @@
 import { fromUnixTime } from 'date-fns';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfs-content';
+import { UserAvatar } from '~/components/user-avatar';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
-import { IpfsContent } from '../ipfs-content';
+import { setSelectedUser } from '~/state/ducks/selected-user';
+import { selectUserById, User } from '~/state/ducks/users/usersSlice';
+import { RootState } from '~/state/store';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
   justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
-`;
-
-const UserImage = styled.img`
-  width: ${(props) => props.theme.space[7]}px;
-  height: ${(props) => props.theme.space[7]}px;
-  border-radius: ${(props) => props.theme.radii.round};
 `;
 
 const UserName = styled.span`
@@ -61,34 +60,36 @@ const Attachment = styled(IpfsContent)`
 
 export interface MessageViewProps {
   id: string;
-  name: string;
+  uid: string;
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
   mine: boolean;
-  userImage: string;
 }
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
-  function MessageView({
-    id,
-    name,
-    timestamp,
-    text,
-    attachmentCidList,
-    mine,
-    userImage,
-  }) {
+  function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
     const time = fromUnixTime(timestamp);
+    const dispatch = useDispatch();
+
+    const user = useSelector<RootState, User | undefined>(
+      (state) => selectUserById(state.users, uid),
+      shallowEqual
+    );
+
+    const handleClickUser = useCallback(() => {
+      if (user?.id) {
+        dispatch(setSelectedUser(user.id));
+      }
+    }, [user?.id, dispatch]);
+
     return (
       <Root mine={mine}>
-        {mine ? null : (
-          <div>
-            <UserImage src={userImage} />
-          </div>
-        )}
+        <div onClick={handleClickUser}>
+          <UserAvatar userId={uid} />
+        </div>
         <Body>
-          {mine ? null : <UserName>{name}</UserName>}
+          {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
           <Text mine={mine}>
             {text}
             <Timestamp title={formatTimeStrict(time)}>

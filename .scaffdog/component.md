@@ -1,5 +1,5 @@
 ---
-name: 'atoms'
+name: 'component'
 root: 'src/components/'
 output: '**/*'
 ignore: []
@@ -28,7 +28,7 @@ import { Story } from '@storybook/react/types-6-0';
 
 export default {
   component: {{ inputs.name | pascal }},
-  title: 'atoms/{{ inputs.name | pascal }}',
+  title: 'molecules/{{ inputs.name | pascal }}',
 }
 
 const Template: Story<{{ inputs.name | pascal }}Props> = (args) => <{{ inputs.name | pascal }} {...args} />;

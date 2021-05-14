@@ -1,6 +1,5 @@
-import { InsertPhoto as ImageIcon } from '@material-ui/icons';
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
+import { SvgPeople } from '~/icons/People';
 import { Button, ButtonProps } from '.';
 
 export default {
@@ -57,7 +56,7 @@ export const All: Story = (args) => (
       onClick={args.onClick}
     />
     <Button
-      icon={<ImageIcon />}
+      icon={<SvgPeople />}
       shape="square"
       variant="solid"
       text={args.text}

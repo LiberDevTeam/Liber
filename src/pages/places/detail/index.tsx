@@ -1,4 +1,5 @@
 import Observer from '@researchgate/react-intersection-observer';
+import { immutable as arrayUniq } from 'array-unique';
 import { push } from 'connected-react-router';
 import { BaseEmoji, Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -8,7 +9,18 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { IconButton } from '~/components/icon-button';
+import { Input } from '~/components/input';
+import { MessageView } from '~/components/message-view';
+import { PreviewImage } from '~/components/preview-image';
+import { SharePlaceDialog } from '~/components/share-place-dialog';
+import { UnreadToast } from '~/components/unread-toast';
+import { UserMenu } from '~/components/user-menu';
+import { SvgAttach as AttachIcon } from '~/icons/Attach';
+import { SvgNavigation as SendIcon } from '~/icons/Navigation';
+import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
+import { selectMe } from '~/state/ducks/me/meSlice';
 import {
   openProtectedPlace,
   publishPlaceMessage,
@@ -16,21 +28,12 @@ import {
 import {
   clearUnreadMessages,
   removePlace,
+  selectPlaceById,
   selectPlaceMessagesByPID,
 } from '~/state/ducks/places/placesSlice';
-import { IconButton } from '../../../components/icon-button';
-import { Input } from '../../../components/input';
-import { MessageView } from '../../../components/message-view';
-import { PreviewImage } from '../../../components/preview-image';
-import { SharePlaceDialog } from '../../../components/share-place-dialog';
-import { UnreadToast } from '../../../components/unread-toast';
-import { SvgAttach as AttachIcon } from '../../../icons/Attach';
-import { SvgNavigation as SendIcon } from '../../../icons/Navigation';
-import { SvgSmilingFace as StickerIcon } from '../../../icons/SmilingFace';
-import { selectMe } from '../../../state/ducks/me/meSlice';
-import { selectPlaceById } from '../../../state/ducks/places/placesSlice';
-import BaseLayout from '../../../templates';
-import { theme } from '../../../theme';
+import { loadUsers } from '~/state/ducks/users/usersSlice';
+import BaseLayout from '~/templates';
+import { theme } from '~/theme';
 import { PlaceDetailHeader } from './components/place-detail-header';
 
 const Root = styled.div`
@@ -62,7 +65,7 @@ const ToastWrapper = styled.div`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding-right: ${(props) => props.theme.space[2]}px;
+  padding: ${(props) => props.theme.space[2]}px;
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
@@ -132,7 +135,7 @@ const Attachments = styled.div`
   bottom: 100%;
   margin-bottom: ${(props) => props.theme.space[3]}px;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   align-items: center;
   width: 100%;
 `;
@@ -179,6 +182,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const { pid } = useParams<{ pid: string }>();
   const place = useSelector(selectPlaceById(pid));
   const messages = useSelector(selectPlaceMessagesByPID(pid));
+  const userIds = arrayUniq(messages.map((m) => m.uid));
   const me = useSelector(selectMe);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -209,6 +213,14 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
       setAttachments([]);
     },
   });
+
+  useEffect(() => {
+    dispatch(
+      loadUsers({
+        userIds,
+      })
+    );
+  }, [dispatch, JSON.stringify(userIds)]);
 
   // Scroll to bottom when open chat
   useEffect(() => {
@@ -292,13 +304,12 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             {messages.map((m) => (
               <MessageView
                 id={m.id}
+                uid={m.uid}
                 key={m.id}
-                name={m.uid}
                 timestamp={m.timestamp}
                 text={m.text}
                 attachmentCidList={m.attachmentCidList}
                 mine={m.uid === me.id}
-                userImage={''}
               />
             ))}
             <Observer onChange={handleIntersection}>
@@ -404,6 +415,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
         url={place.invitationUrl}
         onClose={() => setOpen(false)}
       />
+      <UserMenu />
     </>
   );
 });

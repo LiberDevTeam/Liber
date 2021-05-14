@@ -1,6 +1,5 @@
 import { ConnectedRouter } from 'connected-react-router';
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { NotFoundPage } from './pages/404';
 import { BotsPage } from './pages/bots';
@@ -21,12 +20,10 @@ import { StickersPage } from './pages/stickers';
 import { StickerDetailPage } from './pages/stickers/detail';
 import { StickerNewPage } from './pages/stickers/new';
 import { TrackerProvider } from './state/contexts/tracker';
-import { initApp } from './state/ducks/p2p/p2pSlice';
-import { AppThunkDispatch, history } from './state/store';
+import { history } from './state/store';
 
 export const Routes: React.FC = () => (
   <ConnectedRouter history={history}>
-    <Initializer />
     <TrackerProvider>
       {/* your usual react-router-dom v4/v5 routing */}
       <Switch>
@@ -74,15 +71,3 @@ export const Routes: React.FC = () => (
     </TrackerProvider>
   </ConnectedRouter>
 );
-
-function Initializer() {
-  const dispatch: AppThunkDispatch = useDispatch();
-
-  useEffect(() => {
-    (async () => {
-      await dispatch(initApp());
-    })();
-  }, [dispatch]);
-
-  return null;
-}

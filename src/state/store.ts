@@ -21,8 +21,9 @@ import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
 import placesReducer from '~/state/ducks/places/placesSlice';
 import searchReducer from '~/state/ducks/search/searchSlice';
+import { selectedUserSlice } from '~/state/ducks/selected-user';
 import stickersReducer from '~/state/ducks/stickers/stickersSlice';
-import usersReducer from '~/state/ducks/users/usersSlice';
+import { usersSlice } from '~/state/ducks/users/usersSlice';
 
 export const history = createHashHistory();
 
@@ -30,66 +31,35 @@ enableMapSet();
 
 const debug = true;
 
-const mePersistConfig = {
-  key: 'me',
+const persistConfig = {
+  key: 'root',
   storage: createIdbStorage({
     name: 'liber',
     storeName: 'liber',
     version: 1,
   }),
+  whitelist: ['me', 'places', 'placeMessages', 'ipfsContents'],
   debug,
-};
-
-const placesPersistConfig = {
-  key: 'places',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
-  // whitelist: ['messages', 'places'],
-  debug,
-};
-
-const placeMessagesPersistConfig = {
-  key: 'placeMessages',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
-  debug,
-};
-
-const ipfsContentsPersistConfig = {
-  key: 'ipfsContents',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
 };
 
 const reducers = combineReducers({
-  me: persistReducer(mePersistConfig, meReducer),
-  places: persistReducer(placesPersistConfig, placesReducer),
-  placeMessages: persistReducer(
-    placeMessagesPersistConfig,
-    placeMessagesReducer
-  ),
-  ipfsContents: persistReducer(ipfsContentsPersistConfig, ipfsContentsReducer),
+  me: meReducer,
+  places: placesReducer,
+  placeMessages: placeMessagesReducer,
+  ipfsContents: ipfsContentsReducer,
   feed: feedReducer,
-  users: usersReducer,
+  users: usersSlice.reducer,
   search: searchReducer,
   bots: botsReducer,
   stickers: stickersReducer,
   router: connectRouter(history),
   marketplaceBots: marketplaceBotsReducer,
   marketplaceStickers: marketplaceStickersReducer,
+  selectedUser: selectedUserSlice.reducer,
 });
 
 export const store = configureStore({
-  reducer: reducers,
+  reducer: persistReducer(persistConfig, reducers),
   middleware: [thunk, routerMiddleware(history)],
 });
 

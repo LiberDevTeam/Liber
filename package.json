@@ -15,8 +15,6 @@
     ]
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
     "@piotr-cz/redux-persist-idb-storage": "^1.1.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@reduxjs/toolkit": "^1.5.0",
@@ -25,6 +23,8 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@types/array-unique": "^0.3.0",
+    "array-unique": "^0.3.2",
     "async-mutex": "^0.3.1",
     "bfj": "^7.0.2",
     "buffer": "^6.0.3",

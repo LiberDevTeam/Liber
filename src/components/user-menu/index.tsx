@@ -1,0 +1,181 @@
+import copy from 'copy-to-clipboard';
+import { lighten } from 'polished';
+import React, { MouseEvent, useCallback } from 'react';
+import ReactModal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { useAppSelector } from '~/hooks';
+import { clearSelectedUser } from '~/state/ducks/selected-user';
+import { selectUserById } from '~/state/ducks/users/usersSlice';
+import { theme } from '~/theme';
+import { SvgCopy as CopyIcon } from '../../icons/Copy';
+import { PersonBlock } from '../../icons/PersonBlock';
+import { SvgSlash as BanIcon } from '../../icons/Slash';
+import { UserAvatar } from '../user-avatar';
+
+const Handle = styled.div`
+  width: 50px;
+  height: 3px;
+  background: ${(props) => props.theme.colors.primaryText};
+  border-radius: ${(props) => props.theme.radii.large};
+  margin: auto;
+  opacity: 0.15;
+`;
+
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid ${(props) => props.theme.colors.grayLighter};
+  padding-bottom: ${(props) => props.theme.space[4]}px;
+  margin-top: ${(props) => props.theme.space[10]}px;
+`;
+
+const UserName = styled.span`
+  display: flex;
+  color: ${(props) => props.theme.colors.primaryText};
+  font-size: ${(props) => props.theme.fontSizes.sm};
+  font-weight: ${(props) => props.theme.fontWeights.medium};
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.space[1]}px;
+`;
+
+const UserId = styled.span`
+  color: ${(props) => props.theme.colors.secondaryText};
+`;
+
+const CopyButton = styled.button`
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  justify-content: center;
+  justify-self: right;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.bgPrimary};
+  color: ${(props) => props.theme.colors.primary};
+  border-radius: ${(props) => props.theme.radii.round};
+  border: none;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => lighten(0.1, props.theme.colors.primary)};
+  }
+
+  &:active {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => lighten(0.2, props.theme.colors.primary)};
+  }
+
+  &:disabled {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.disabled};
+  }
+
+  & > svg {
+    transform: rotate(90deg);
+  }
+`;
+
+const Menu = styled.ul`
+  display: grid;
+  grid-gap: ${(props) => props.theme.space[2]}px;
+`;
+
+const MenuItem = styled.button`
+  width: 100%;
+  text-align: left;
+  display: grid;
+  grid-gap: ${(props) => props.theme.space[3]}px;
+  color: ${(props) => props.theme.colors.red};
+  font-weight: ${(props) => props.theme.fontWeights.medium};
+  align-items: center;
+  grid-template-columns: 28px 1fr;
+  background: none;
+  border: none;
+  padding: ${(props) => props.theme.space[3]}px 0;
+`;
+
+const modalStyle = {
+  overlay: { backgroundColor: theme.colors.modalBg },
+  content: {
+    inset: 'auto auto 0px auto',
+    borderRadius: `${theme.radii.large}px ${theme.radii.large}px 0 0`,
+    padding: theme.space[6],
+    border: 'none',
+    width: '100%',
+  },
+};
+
+const MenuKeys = {
+  BLOCK: 'BLOCK',
+  BAN: 'BAN',
+};
+
+export const UserMenu: React.FC = React.memo(function UserMenu() {
+  const dispatch = useDispatch();
+  const user = useAppSelector((state) =>
+    state.selectedUser
+      ? selectUserById(state.users, state.selectedUser)
+      : undefined
+  );
+
+  const handleIdCopy = useCallback(() => {
+    if (user) {
+      copy(user.id);
+    }
+  }, [user]);
+
+  const handleCloseRequest = useCallback(() => {
+    dispatch(clearSelectedUser());
+  }, [dispatch]);
+
+  const handleMenuClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    switch (e.currentTarget.dataset.menuKey) {
+      case MenuKeys.BLOCK:
+        // TODO: implement
+        break;
+      case MenuKeys.BAN:
+        // TODO: implement
+        break;
+    }
+  }, []);
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <ReactModal isOpen onRequestClose={handleCloseRequest} style={modalStyle}>
+      <Handle />
+      <Header>
+        <UserAvatar userId={user.id} size={54} />
+        <div>
+          <UserName>{user.username}</UserName>
+          <UserId>#{user.id.slice(0, 6)}</UserId>
+        </div>
+        <CopyButton
+          type="button"
+          onClick={handleIdCopy}
+          title="Copy Link"
+          color={theme.colors.primary}
+        >
+          <CopyIcon width={24} height={24} />
+        </CopyButton>
+      </Header>
+      <Menu>
+        <li>
+          <MenuItem data-menu-key={MenuKeys.BLOCK} onClick={handleMenuClick}>
+            <PersonBlock width={28} height={28} />
+            Block
+          </MenuItem>
+        </li>
+        <li>
+          <MenuItem data-menu-key={MenuKeys.BLOCK} onClick={handleMenuClick}>
+            <BanIcon width={28} height={28} />
+            Ban
+          </MenuItem>
+        </li>
+      </Menu>
+    </ReactModal>
+  );
+});

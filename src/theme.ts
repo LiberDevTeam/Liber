@@ -1,28 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: 'Delecta';
-    font-style: normal;
-    font-weight: 400;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA.OTF);
-  }
-
-  @font-face {
-    font-family: 'Delecta';
-    font-style: normal;
-    font-weight: 500;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-MEDIUM.OTF);
-  }
-
-  @font-face {
-    font-family: 'Delecta';
-    font-style: bold;
-    font-weight: 700;
-    src: url(/fonts/ROBERT-CORSEANSCH-DELECTA-BOLD.OTF);
-  }
-
-
   *,
   *::before,
   *::after {
@@ -30,7 +8,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html, body, #root {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -90,7 +68,7 @@ const colors = {
   grayLight: '#F5F8FA',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
-  red: '#F64640',
+  red: '#df2121',
   white: '#ffffff',
   green: '#1fbb2f',
 };
