@@ -1,11 +1,10 @@
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
-import { UserMenu, UserMenuProps } from './';
+import { UserMenu } from './';
 
 export default {
   component: UserMenu,
   title: 'molecules/UserMenu',
 };
 
-const Template: Story<UserMenuProps> = (args) => <UserMenu {...args} />;
+const Template: Story = (args) => <UserMenu {...args} />;
 export const Default = Template.bind({});
