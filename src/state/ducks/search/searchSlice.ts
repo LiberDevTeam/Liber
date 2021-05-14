@@ -32,6 +32,7 @@ export const fetchSearchPostResult = createAsyncThunk<
         id: '55555-55555-55555-5555555555',
         username: 'NaDaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
+        settings: { isIsolation: false },
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
@@ -48,6 +49,7 @@ export const fetchSearchPostResult = createAsyncThunk<
         id: '55555-55555-55555-5555555555',
         username: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
+        settings: { isIsolation: false },
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
@@ -64,6 +66,7 @@ export const fetchSearchPostResult = createAsyncThunk<
         id: '55555-55555-55555-5555555555',
         username: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
+        settings: { isIsolation: false },
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
@@ -80,6 +83,7 @@ export const fetchSearchPostResult = createAsyncThunk<
         id: '55555-55555-55555-5555555555',
         username: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
+        settings: { isIsolation: false },
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
@@ -96,6 +100,7 @@ export const fetchSearchPostResult = createAsyncThunk<
         id: '55555-55555-55555-5555555555',
         username: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
+        settings: { isIsolation: false },
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
@@ -124,6 +129,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618239304,
       category: 1,
+      readOnly: false,
     },
     {
       id: '22222-22222-22222-22222-2222222222',
@@ -133,6 +139,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618239304,
       category: 2,
+      readOnly: false,
     },
     {
       id: '33333-33333-33333-33333-3333333333',
@@ -142,6 +149,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618339304,
       category: 3,
+      readOnly: false,
     },
     {
       id: '44444-44444-44444-44444-4444444444',
@@ -151,6 +159,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618449404,
       category: 4,
+      readOnly: false,
     },
     {
       id: '11111-11111-11111-11111-1111111111',
@@ -160,6 +169,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618239304,
       category: 1,
+      readOnly: false,
     },
     {
       id: '22222-22222-22222-22222-2222222222',
@@ -169,6 +179,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618239304,
       category: 2,
+      readOnly: false,
     },
     {
       id: '33333-33333-33333-33333-3333333333',
@@ -178,6 +189,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618339304,
       category: 3,
+      readOnly: false,
     },
     {
       id: '44444-44444-44444-44444-4444444444',
@@ -187,6 +199,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
       passwordRequired: false,
       createdAt: 1618449404,
       category: 4,
+      readOnly: false,
     },
   ];
 

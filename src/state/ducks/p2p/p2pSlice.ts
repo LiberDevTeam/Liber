@@ -162,6 +162,7 @@ export const joinPlace = createAsyncThunk<
     unreadMessages: [],
     permissions: placeKeyValue.get('permissions') as PlacePermissions,
     readOnly: placeKeyValue.get('readOnly') as boolean,
+    bannedUsers: placeKeyValue.get('bannedUsers') as string[],
   };
 
   if (place.passwordRequired) {
@@ -300,6 +301,7 @@ export const createNewPlace = createAsyncThunk<
       unreadMessages: [],
       readOnly,
       permissions: { [me.id]: PlacePermission.AUTHOR },
+      bannedUsers: [],
     };
 
     Object.keys(place).forEach((key) => {

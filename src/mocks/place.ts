@@ -17,4 +17,6 @@ export const dummyPlace = (id: string): Place => ({
   passwordRequired: false,
   category: 0,
   permissions: {},
+  bannedUsers: [],
+  readOnly: false,
 });
