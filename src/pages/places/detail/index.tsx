@@ -26,6 +26,7 @@ import {
   publishPlaceMessage,
 } from '~/state/ducks/p2p/p2pSlice';
 import {
+  banUser,
   clearUnreadMessages,
   removePlace,
   selectPlaceById,
@@ -241,6 +242,15 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
   }, []);
 
+  const handleBanUser = useCallback(
+    (userId: string) => {
+      if (place?.id) {
+        dispatch(banUser({ userId, placeId: place.id }));
+      }
+    },
+    [dispatch, place?.id]
+  );
+
   const handleChangeAttachment = async () => {
     if (attachmentRef.current?.files) {
       const files = Array.from(attachmentRef.current?.files);
@@ -415,7 +425,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
         url={place.invitationUrl}
         onClose={() => setOpen(false)}
       />
-      <UserMenu />
+      <UserMenu onBan={handleBanUser} />
     </>
   );
 });

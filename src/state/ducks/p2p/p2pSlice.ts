@@ -135,11 +135,16 @@ export const joinPlace = createAsyncThunk<
     address: string;
   },
   { dispatch: AppThunkDispatch; state: RootState }
->('p2p/joinPlace', async ({ placeId, address }, thunkAPI) => {
+>('pace/join', async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const { me } = thunkAPI.getState();
 
-  const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
+  const placeKeyValue = await connectPlaceKeyValue({
+    placeId,
+    address,
+    waitReplicate: true,
+  });
+
   const feedAddress = placeKeyValue.get('feedAddress') as string;
 
   if (!feedAddress) {
