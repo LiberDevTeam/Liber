@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SvgArrowIosBack as LeftIcon } from '../../icons/ArrowIosBack';
 import { SvgChevronRight as RightIcon } from '../../icons/ChevronRight';
@@ -30,6 +30,9 @@ export const Pagination: React.FC<Props> = memo(function Pagination({
   className,
 }) {
   const [page, setPage] = useState(current.toString());
+  useEffect(() => {
+    setPage(current.toString());
+  }, [current]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

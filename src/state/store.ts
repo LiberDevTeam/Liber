@@ -14,6 +14,8 @@ import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import botsReducer from '~/state/ducks/bots/botsSlice';
 import feedReducer from '~/state/ducks/feed/feedSlice';
+import marketplaceBotsReducer from '~/state/ducks/marketplace/botsSlice';
+import marketplaceStickersReducer from '~/state/ducks/marketplace/stickersSlice';
 import meReducer from '~/state/ducks/me/meSlice';
 import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
@@ -51,6 +53,8 @@ const reducers = combineReducers({
   bots: botsReducer,
   stickers: stickersReducer,
   router: connectRouter(history),
+  marketplaceBots: marketplaceBotsReducer,
+  marketplaceStickers: marketplaceStickersReducer,
   selectedUser: selectedUserSlice.reducer,
 });
 

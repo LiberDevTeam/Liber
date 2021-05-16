@@ -15,7 +15,7 @@ export interface Bot {
   description: string;
   avatar: string;
   price: number;
-  document: string;
+  docs: string;
   code: string;
   testCases: TestCase[];
   created: number;
@@ -32,7 +32,7 @@ const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
   name: 'レムタソ',
   description: '出勤簿管理',
-  document: '使い方',
+  docs: '使い方',
   avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
   price: 20,
   code: `return 'helllo'`,
@@ -41,12 +41,12 @@ const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   testCases: [],
 }));
 
-const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
+export const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
   id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
   uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
   name: 'レムタソ',
   description: '出勤簿管理',
-  document: '使い方',
+  docs: '使い方',
   avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
   price: 20,
   code: `return 'helllo'`,

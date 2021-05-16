@@ -28,12 +28,6 @@ const StyledInput = styled(Input)`
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
-const TestCaseSubtitle = styled.h2`
-  margin-bottom: ${(props) => props.theme.space[4]}px;
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  margin: ${(props) => `${props.theme.space[2]}px 0 ${props.theme.space[4]}px`};
-`;
-
 const Item = styled.div`
   position: relative;
 `;

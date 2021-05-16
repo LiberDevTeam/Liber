@@ -163,6 +163,7 @@
     "eslint-webpack-plugin": "^2.5.2",
     "husky": ">=5.1.3",
     "lint-staged": ">=10.5.4",
+    "msw": "^0.28.2",
     "prettier": "~2.2.1",
     "prettier-plugin-organize-imports": "^1.1.1",
     "scaffdog": "^1.0.0",
@@ -195,5 +196,8 @@
     "build-storybook": "build-storybook -s public",
     "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
     "prepare": "husky install"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

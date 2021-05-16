@@ -39,7 +39,7 @@ export const BottomNavigation: React.FC = React.memo(
         <BottomNavLink
           exact
           icon={<MarketplaceIcon width={24} height={24} />}
-          to="/marketplace/bots"
+          to="/marketplace"
         >
           Marketplace
         </BottomNavLink>

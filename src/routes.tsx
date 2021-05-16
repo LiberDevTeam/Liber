@@ -7,8 +7,7 @@ import { BotDetailPage } from './pages/bots/detail';
 import { BotNewPage } from './pages/bots/new';
 import { Explore } from './pages/explore';
 import { HomePage } from './pages/home';
-import { MarketplaceBotsPage } from './pages/marketplace/bots';
-import { MarketplaceStickersPage } from './pages/marketplace/stickers';
+import { MarketplacePage } from './pages/marketplace';
 import { NotificationsPage } from './pages/notifications';
 import { ChatDetail } from './pages/places/detail';
 import { Places } from './pages/places/index';
@@ -49,16 +48,7 @@ export const Routes: React.FC = () => (
         <Route exact path="/profile" render={() => <ProfilePage />} />
         <Route exact path="/profile/edit" render={() => <ProfileEditPage />} />
 
-        <Route
-          exact
-          path="/marketplace/bots"
-          render={() => <MarketplaceBotsPage />}
-        />
-        <Route
-          exact
-          path="/marketplace/stickers"
-          render={() => <MarketplaceStickersPage />}
-        />
+        <Route path="/marketplace/:kind?" render={() => <MarketplacePage />} />
 
         <Route exact path="/bots/new" render={() => <BotNewPage />} />
         <Route path="/bots/:id" render={() => <BotDetailPage />} />
