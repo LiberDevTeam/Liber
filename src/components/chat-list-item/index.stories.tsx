@@ -1,8 +1,8 @@
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
+import { Place } from '~/state/ducks/places/type';
 import { ChatListItem, ChatListItemProps } from '.';
 import { dummyPlace } from '../../mocks/place';
-import { Place } from '../../state/ducks/places/placesSlice';
 
 // TODO: 実際のchatデータモックに置き換える
 const id = '1';

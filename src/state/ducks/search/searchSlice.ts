@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import { Appearance, FeedItem, ItemKind } from '../feed/feedSlice';
-import { PlaceInfo } from '../places/placesSlice';
+import { PlaceInfo } from '../places/type';
 
 interface SearchState {
   searchPostResult: FeedItem[];
