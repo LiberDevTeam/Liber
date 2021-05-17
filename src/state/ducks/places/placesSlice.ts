@@ -5,15 +5,17 @@ import {
   EntityId,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import unique from 'array-unique';
-import { connectPlaceKeyValue } from '~/lib/db/place';
+import { default as arrayUnique } from 'array-unique';
+import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
+  updatePlace,
 } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
-import { Message, selectMessageById } from './messagesSlice';
+import { connectToMessages, Message, selectMessageById } from './messagesSlice';
+import { Place } from './type';
 
 const MODULE_NAME = 'places';
 
@@ -34,48 +36,34 @@ export const categories = [
   'TECHNOLOGY',
 ];
 
-export enum PlacePermission {
-  NONE,
-  AUTHOR,
-  ADMIN,
-  WRITER,
-  MODERATOR,
-}
-
-// UserId: PlacePermission
-export type PlacePermissions = Record<string, PlacePermission>;
-
-export interface PlaceInfo {
-  id: string;
-  name: string;
-  description: string;
-  avatarCid: string;
-  passwordRequired: boolean;
-  readOnly: boolean;
-  createdAt: number;
-  category: number;
-}
-
-export interface Place extends PlaceInfo {
-  swarmKey?: string;
-  invitationUrl: string;
-  timestamp: number; // the timestamp any user in the place acted at
-  messageIds: string[];
-  unreadMessages: string[];
-  hash?: string;
-  permissions: PlacePermissions;
-  // orbit db id
-  feedAddress: string;
-  keyValAddress: string;
-  // user ids
-  bannedUsers: string[];
-}
-
 const messageSort = (a: Message, b: Message): number =>
   a.timestamp - b.timestamp;
 
 const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
+});
+
+export const joinPlace = createAsyncThunk<
+  Place | undefined,
+  { placeId: string; address: string }
+>(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
+  const { dispatch } = thunkAPI;
+  const kv = await connectPlaceKeyValue({
+    placeId,
+    address,
+    onReplicated: (_kv) => {
+      const place = readPlaceFromDB(_kv);
+      // NOTE: Don't call the action until the place.id is loaded.
+      if (place.id) {
+        dispatch(updatePlace(place));
+      }
+    },
+  });
+
+  const place = readPlaceFromDB(kv);
+  if (place.id) {
+    return place;
+  }
 });
 
 export const banUser = createAsyncThunk<
@@ -93,7 +81,7 @@ export const banUser = createAsyncThunk<
     });
 
     const bannedUsers = placeDB.get('bannedUsers') as string[];
-    await placeDB.set('bannedUsers', unique(bannedUsers.concat(userId)));
+    await placeDB.set('bannedUsers', arrayUnique(bannedUsers.concat(userId)));
   }
 });
 
@@ -121,6 +109,14 @@ export const placesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(joinPlace.fulfilled, (state, action) => {
+        if (action.payload) {
+          placesAdapter.upsertOne(state, action.payload);
+        }
+      })
+      .addCase(updatePlace, (state, action) => {
+        placesAdapter.upsertOne(state, action.payload);
+      })
       .addCase(placeMessageAdded, (state, action) => {
         const { pid, message, mine } = action.payload;
         const currentPlace = state.entities[pid];
@@ -160,6 +156,15 @@ export const placesSlice = createSlice({
         state.entities[action.meta.arg.placeId]?.bannedUsers.push(
           action.meta.arg.userId
         );
+      })
+      .addCase(connectToMessages.fulfilled, (state, action) => {
+        const place = state.entities[action.meta.arg.placeId];
+
+        if (place) {
+          place.messageIds = arrayUnique(
+            action.payload.map((m) => m.id).concat(place.messageIds)
+          );
+        }
       });
   },
 });

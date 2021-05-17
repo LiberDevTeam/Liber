@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { Message } from './ducks/places/messagesSlice';
-import { Place } from './ducks/places/placesSlice';
+import { Place } from './ducks/places/type';
 
 export const placeAdded = createAction<{
   place: Place;
@@ -15,3 +15,4 @@ export const placeMessagesAdded = createAction<{
   placeId: string;
   messages: Message[];
 }>('placeMessages/placeMessagesAdded');
+export const updatePlace = createAction<Place>('places/update');

@@ -1,9 +1,16 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from '@reduxjs/toolkit';
+import { connectMessageFeed, readMessagesFromFeed } from '~/lib/db/message';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
 } from '~/state/actionCreater';
+
+const MODULE_NAME = 'placeMessages';
 
 export interface Message {
   id: string; // UUID
@@ -14,12 +21,28 @@ export interface Message {
   attachmentCidList?: string[];
 }
 
+export const connectToMessages = createAsyncThunk<
+  Message[],
+  { placeId: string; address: string }
+>(`${MODULE_NAME}/connect`, async ({ placeId, address }, thunkAPI) => {
+  const { dispatch } = thunkAPI;
+  const feed = await connectMessageFeed({
+    placeId,
+    address,
+    onMessageAdd: (messages) => {
+      dispatch(placeMessagesAdded({ messages, placeId }));
+    },
+  });
+
+  return readMessagesFromFeed(feed);
+});
+
 const messagesAdapter = createEntityAdapter<Message>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
 
 export const messagesSlice = createSlice({
-  name: 'placeMessages',
+  name: MODULE_NAME,
   initialState: messagesAdapter.getInitialState(),
   reducers: {},
   extraReducers: (builder) => {
@@ -32,6 +55,9 @@ export const messagesSlice = createSlice({
       })
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
+      })
+      .addCase(connectToMessages.fulfilled, (state, action) => {
+        messagesAdapter.upsertMany(state, action.payload);
       });
   },
 });
