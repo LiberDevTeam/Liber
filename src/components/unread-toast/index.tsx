@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
 import { SvgClose } from '~/icons/Close';

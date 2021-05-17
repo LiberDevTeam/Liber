@@ -1,7 +1,9 @@
+import { push } from 'connected-react-router';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { joinPlace } from '~/state/ducks/p2p/p2pSlice';
+import { connectToMessages } from '~/state/ducks/places/messagesSlice';
+import { joinPlace, selectPlaceById } from '~/state/ducks/places/placesSlice';
 
 export const JoinPlace: React.FC = () => {
   const dispatch = useDispatch();
@@ -9,8 +11,20 @@ export const JoinPlace: React.FC = () => {
     placeId: string;
     address: string;
   }>();
+  const place = useSelector(selectPlaceById(placeId));
+
+  // TODO: password required place
+
   useEffect(() => {
     dispatch(joinPlace({ placeId, address }));
   }, [dispatch, placeId, address]);
-  return null;
+
+  useEffect(() => {
+    if (place?.feedAddress) {
+      dispatch(connectToMessages({ placeId, address: place.feedAddress }));
+      dispatch(push(`/places/${placeId}`));
+    }
+  }, [place?.feedAddress, dispatch, placeId]);
+
+  return <div>connecting...</div>;
 };

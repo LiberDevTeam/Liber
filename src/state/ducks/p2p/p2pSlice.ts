@@ -2,16 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { Place, PlacePermission } from '~/state/ducks/places/type';
 import {
   connectMessageFeed,
   createMessageFeed,
   getMessageFeedById,
   readMessagesFromFeed,
 } from '../../../lib/db/message';
-import {
-  connectPlaceKeyValue,
-  createPlaceKeyValue,
-} from '../../../lib/db/place';
+import { createPlaceKeyValue } from '../../../lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
@@ -19,11 +17,12 @@ import {
 } from '../../../state/actionCreater';
 import { selectMe } from '../../../state/ducks/me/meSlice';
 import { addIpfsContent } from '../../../state/ducks/p2p/ipfsContentsSlice';
-import { Message } from '../../../state/ducks/places/messagesSlice';
 import {
-  Place,
-  PlacePermission,
-  PlacePermissions,
+  connectToMessages,
+  Message,
+} from '../../../state/ducks/places/messagesSlice';
+import {
+  joinPlace,
   selectAllPlaces,
   selectPlaceById,
   setHash,
@@ -63,26 +62,21 @@ const createMessageReceiveHandler = ({
 export const initApp = createAsyncThunk<
   void,
   void,
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppThunkDispatch; state: RootState }
 >('p2p/initApp', async (_, thunkAPI) => {
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
 
   selectAllPlaces(state).forEach(async (place) => {
-    connectPlaceKeyValue({ placeId: place.id, address: place.keyValAddress });
+    await dispatch(
+      joinPlace({ placeId: place.id, address: place.keyValAddress })
+    );
     if (place.passwordRequired && place.hash === undefined) {
       return;
     }
-    connectMessageFeed({
-      placeId: place.id,
-      address: place.feedAddress,
-      hash: place.hash,
-      onMessageAdd: createMessageReceiveHandler({
-        dispatch,
-        placeId: place.id,
-        myId: state.me.id,
-      }),
-    });
+    dispatch(
+      connectToMessages({ placeId: place.id, address: place.feedAddress })
+    );
   });
 });
 
@@ -127,77 +121,6 @@ export const publishPlaceMessage = createAsyncThunk<
     dispatch(placeMessageAdded({ pid, message, mine: true }));
   }
 );
-
-export const joinPlace = createAsyncThunk<
-  void,
-  {
-    placeId: string;
-    address: string;
-  },
-  { dispatch: AppThunkDispatch; state: RootState }
->('pace/join', async ({ placeId, address }, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-  const { me } = thunkAPI.getState();
-
-  const placeKeyValue = await connectPlaceKeyValue({
-    placeId,
-    address,
-    waitReplicate: true,
-  });
-
-  const feedAddress = placeKeyValue.get('feedAddress') as string;
-
-  if (!feedAddress) {
-    throw new Error(`Cannot read data from place DB`);
-  }
-
-  const place: Place = {
-    id: placeId,
-    name: placeKeyValue.get('name') as string,
-    avatarCid: placeKeyValue.get('avatarCid') as string,
-    description: placeKeyValue.get('description') as string,
-    invitationUrl: placeKeyValue.get('invitationUrl') as string,
-    feedAddress: placeKeyValue.get('feedAddress') as string,
-    keyValAddress: placeKeyValue.get('keyValAddress') as string,
-    createdAt: placeKeyValue.get('createdAt') as number,
-    timestamp: placeKeyValue.get('timestamp') as number,
-    passwordRequired: placeKeyValue.get('passwordRequired') as boolean,
-    category: placeKeyValue.get('category') as number,
-    messageIds: [],
-    unreadMessages: [],
-    permissions: placeKeyValue.get('permissions') as PlacePermissions,
-    readOnly: placeKeyValue.get('readOnly') as boolean,
-    bannedUsers: placeKeyValue.get('bannedUsers') as string[],
-  };
-
-  if (place.passwordRequired) {
-    dispatch(placeAdded({ place, messages: [] }));
-    dispatch(push(`/places/${placeId}`));
-    return;
-  }
-
-  const feed = await connectMessageFeed({
-    placeId,
-    address: feedAddress,
-    onMessageAdd: createMessageReceiveHandler({
-      dispatch,
-      placeId,
-      myId: me.id,
-    }),
-  });
-
-  const messages = readMessagesFromFeed(feed);
-
-  dispatch(placeAdded({ place, messages }));
-  dispatch(
-    publishPlaceMessage({
-      pid: placeId,
-      text: `${me.username || me.id} joined!`,
-      attachments: [],
-    })
-  );
-  dispatch(push(`/places/${placeId}`));
-});
 
 export const openProtectedPlace = createAsyncThunk<
   void,

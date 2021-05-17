@@ -6,7 +6,7 @@ import {
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Place } from '~/state/ducks/places/placesSlice';
+import { Place } from '~/state/ducks/places/type';
 import { useFnsLocale } from '~/state/hooks/fnsLocale';
 import { IpfsContent } from '../ipfs-content';
 
