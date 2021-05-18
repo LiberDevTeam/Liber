@@ -35,6 +35,14 @@ const Title = styled.div`
   margin: ${(props) => `${props.theme.space[2]}px 0 ${props.theme.space[3]}px`};
 `;
 
+const Right = styled.div`
+  display: flex;
+`;
+
+const Left = styled.div`
+  display: flex;
+`;
+
 interface ExampleProps {
   botId: string;
   index: number;
@@ -50,7 +58,7 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
 
   if (!bot) return null;
 
-  const example = bot.testCases[index];
+  const example = bot.examples[index];
 
   return (
     <Root>
@@ -58,20 +66,20 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
       <Messages>
         <MessageView mine={true}>
           <div>
-            <div>
+            <Right>
               You
               {me.avatarCid && <Avatar cid={me.avatarCid} />}
-            </div>
+            </Right>
             <Message mine={true} text={example.input} timestamp={timestamp} />
           </div>
         </MessageView>
 
         <MessageView mine={false}>
           <div>
-            <div>
+            <Left>
               <Avatar cid={bot.avatar} />
               <BotName>{bot.name}</BotName>
-            </div>
+            </Left>
             <Message mine={false} text={example.output} timestamp={timestamp} />
           </div>
         </MessageView>

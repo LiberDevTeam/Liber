@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { Input } from '~/components/input';
-import { TestCase } from '~/state/ducks/bots/botsSlice';
+import { Example } from '~/state/ducks/bots/botsSlice';
 import { Button } from '../../../../../components/button';
 import { IconButton } from '../../../../../components/icon-button';
 
@@ -59,19 +59,19 @@ const CreateButton = styled(Button)`
 `;
 
 interface Props {
-  testCases?: TestCase[];
+  examples?: Example[];
   disabled?: boolean;
-  onChange: (cases: TestCase[]) => void;
+  onChange: (cases: Example[]) => void;
 }
 
 export const Testing: React.FC<Props> = memo(function Editor({
-  testCases = [{ title: '', input: '', output: '' }],
+  examples = [{ title: '', input: '', output: '' }],
   disabled,
   onChange,
 }) {
   const handleRemove = (index: number) => () =>
-    onChange(testCases.slice(0, index).concat(testCases.slice(index + 1)));
+    onChange(examples.slice(0, index).concat(examples.slice(index + 1)));
   const handleAdd = () =>
-    onChange([...testCases, { title: '', input: '', output: '' }]);
+    onChange([...examples, { title: '', input: '', output: '' }]);
   return <Root></Root>;
 });

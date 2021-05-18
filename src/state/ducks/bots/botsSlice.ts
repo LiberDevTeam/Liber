@@ -54,7 +54,7 @@ if (<input> === ping) {
 `,
   created: 1619251130,
   category: Category.Communication,
-  testCases: [
+  examples: [
     {
       title: 'pingpong',
       input: 'ping',
@@ -93,7 +93,7 @@ if (<input> === ping) {
 `,
   created: 1619251130,
   category: Category.Communication,
-  testCases: [
+  examples: [
     {
       title: 'pingpong',
       input: 'ping',
@@ -107,7 +107,7 @@ if (<input> === ping) {
   ],
 }));
 
-export interface TestCase {
+export interface Example {
   title: string;
   input: string;
   output: string;
@@ -123,7 +123,7 @@ export interface Bot {
   price: number;
   docs: string;
   code: string;
-  testCases: TestCase[];
+  examples: Example[];
   created: number;
   purchased?: number;
 }
