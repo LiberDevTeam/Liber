@@ -14,12 +14,6 @@ import { initApp } from './state/ducks/p2p/p2pSlice';
 import { store } from './state/store';
 import { GlobalStyles, theme } from './theme';
 
-// @ts-ignore
-if (NODE_ENV === 'development') {
-  const { worker } = require('./mocks/browser');
-  worker.start();
-}
-
 ReactModal.setAppElement('#root');
 
 async function run() {
