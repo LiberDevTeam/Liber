@@ -65,13 +65,13 @@ interface Props {
 }
 
 export const Testing: React.FC<Props> = memo(function Editor({
-  testCases = [{ name: '', input: '', output: '' }],
+  testCases = [{ title: '', input: '', output: '' }],
   disabled,
   onChange,
 }) {
   const handleRemove = (index: number) => () =>
     onChange(testCases.slice(0, index).concat(testCases.slice(index + 1)));
   const handleAdd = () =>
-    onChange([...testCases, { name: '', input: '', output: '' }]);
+    onChange([...testCases, { title: '', input: '', output: '' }]);
   return <Root></Root>;
 });
