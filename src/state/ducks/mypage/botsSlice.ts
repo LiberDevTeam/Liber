@@ -13,7 +13,7 @@ const initialState: State = {
 };
 
 export const botsSlice = createSlice({
-  name: 'me/bots',
+  name: 'mypage/bots',
   initialState,
   reducers: {
     listBotOnMarketplace: (state, action: PayloadAction<Bot>) => {
