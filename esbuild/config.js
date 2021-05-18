@@ -35,7 +35,9 @@ exports.commonConfig = {
   define: {
     global: 'window',
     APP_PUBLIC_URL: JSON.stringify(process.env.PUBLIC_URL),
-    NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    'process.env.NODE_ENV': JSON.stringify(
+      process.env.NODE_ENV || 'development'
+    ),
   },
   inject: [paths.inject],
   outdir: paths.outdir,

@@ -7,6 +7,9 @@ import { registerRoute } from 'workbox-routing';
 let ipfsNode: IPFSType | null;
 const ipfsMutex = new Mutex();
 
+// eslint-disable-next-line no-restricted-globals
+self.__WB_DISABLE_DEV_LOGS = true;
+
 const getIpfsNode = async (): Promise<IPFSType> => {
   return await ipfsMutex.runExclusive<IPFSType>(async () => {
     if (!ipfsNode) {
