@@ -124,7 +124,7 @@ export const BotDetailPage: React.FC<Props> = memo(function BotDetailPage({}) {
       <ExampleSection>
         <Subtitle>Examples</Subtitle>
         {bot.testCases.map((e, i) => (
-          <Example key={i} botId={bot.id} exampleIndex={i} />
+          <Example key={i} botId={bot.id} index={i} />
         ))}
       </ExampleSection>
 

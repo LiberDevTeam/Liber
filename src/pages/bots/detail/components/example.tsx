@@ -37,12 +37,12 @@ const Title = styled.div`
 
 interface ExampleProps {
   botId: string;
-  exampleIndex: number;
+  index: number;
 }
 
 export const Example: React.FC<ExampleProps> = React.memo(function Example({
   botId,
-  exampleIndex,
+  index,
 }) {
   const bot = useSelector(selectBotById(botId));
   const me = useSelector(selectMe);
@@ -50,7 +50,7 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
 
   if (!bot) return null;
 
-  const example = bot.testCases[exampleIndex];
+  const example = bot.testCases[index];
 
   return (
     <Root>
