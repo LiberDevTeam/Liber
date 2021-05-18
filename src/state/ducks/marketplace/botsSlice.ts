@@ -1,18 +1,11 @@
-import {
-  createAsyncThunk,
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   marketplaceNewBots,
   marketplaceRankingBots,
   marketplaceSearchBots,
 } from '~/api';
 import { AppDispatch, RootState } from '~/state/store';
-import { Bot, tmpListingOn } from '../bots/botsSlice';
-
-const botsAdapter = createEntityAdapter<Bot>();
+import { addBots, tmpListingOn } from '../bots/botsSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
@@ -59,20 +52,22 @@ export const fetchNew = createAsyncThunk<
   dispatch(paginateNew({ page, botIds }));
 });
 
+interface State {
+  searchResultIdsByPage: Record<number, string[]>;
+  rankingIdsByPage: Record<number, string[]>;
+  newIdsByPage: Record<number, string[]>;
+}
+
+const initialState: State = {
+  searchResultIdsByPage: {},
+  rankingIdsByPage: {},
+  newIdsByPage: {},
+};
+
 export const botsSlice = createSlice({
   name: 'marketplace/bots',
-  initialState: botsAdapter.getInitialState<{
-    searchResultIdsByPage: Record<number, string[]>;
-    rankingIdsByPage: Record<number, string[]>;
-    newIdsByPage: Record<number, string[]>;
-  }>({
-    searchResultIdsByPage: {},
-    rankingIdsByPage: {},
-    newIdsByPage: {},
-  }),
+  initialState,
   reducers: {
-    addBots: (state, action: PayloadAction<Bot[]>) =>
-      botsAdapter.addMany(state, action.payload),
     paginateRanking: (
       state,
       action: PayloadAction<{ page: number; botIds: string[] }>
@@ -101,26 +96,10 @@ export const botsSlice = createSlice({
 });
 
 export const {
-  addBots,
   paginateNew,
   paginateRanking,
   paginateSearchResult,
   clearSearchResult,
 } = botsSlice.actions;
-
-const selectors = botsAdapter.getSelectors();
-export const selectSearchResultIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.searchResultIdsByPage[page] || [];
-export const selectNewIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.newIdsByPage[page] || [];
-export const selectRankingIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.rankingIdsByPage[page] || [];
-export const selectBotsByIds = (ids: string[]) => (
-  state: RootState
-): (Bot | undefined)[] =>
-  ids.map((id) => selectors.selectById(state.marketplaceBots, id));
 
 export default botsSlice.reducer;

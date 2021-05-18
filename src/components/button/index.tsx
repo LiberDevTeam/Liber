@@ -18,7 +18,7 @@ const Root = styled.button<RootProps>`
 
   color: ${(props) => props.theme.colors.primary};
   font-family: ${(props) => props.theme.fontFamily.body};
-  font-weight: ${(props) => props.theme.fontWeights.light};
+  font-weight: ${(props) => props.theme.fontWeights.medium};
   font-size: ${(props) => props.theme.fontSizes.md};
 
   cursor: pointer;
@@ -79,7 +79,7 @@ const IconWrapper = styled.span`
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-  shape: 'square' | 'rounded';
+  shape?: 'square' | 'rounded';
   text: string;
   icon?: React.ReactNode;
   disabled?: boolean;
@@ -90,7 +90,7 @@ export const Button: React.FC<ButtonProps> = React.memo(function Button({
   variant = 'solid',
   icon,
   text,
-  shape,
+  shape = 'rounded',
   disabled = false,
   height = 48,
   ...args

@@ -1,0 +1,81 @@
+import { getUnixTime } from 'date-fns';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfs-content';
+import { Message } from '~/components/message';
+import { selectBotById } from '~/state/ducks/bots/botsSlice';
+import { selectMe } from '~/state/ducks/me/meSlice';
+
+const Root = styled.div``;
+const Avatar = styled(IpfsContent)``;
+const BotName = styled.span`
+  color: ${(props) => props.theme.colors.green};
+`;
+
+const Messages = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: ${(props) => props.theme.space[5]}px;
+  & > * {
+    margin-top: ${(props) => props.theme.space[5]}px;
+  }
+  border: ${(props) => props.theme.border.gray.thin};
+  border-radius: ${(props) => props.theme.radii.large}px;
+  margin-bottom: ${(props) => props.theme.space[6]}px;
+`;
+
+const MessageView = styled.div<{ mine: boolean }>`
+  display: flex;
+  justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+`;
+
+const Title = styled.div`
+  color: ${(props) => props.theme.colors.secondaryText};
+  margin: ${(props) => `${props.theme.space[2]}px 0 ${props.theme.space[3]}px`};
+`;
+
+interface ExampleProps {
+  botId: string;
+  exampleIndex: number;
+}
+
+export const Example: React.FC<ExampleProps> = React.memo(function Example({
+  botId,
+  exampleIndex,
+}) {
+  const bot = useSelector(selectBotById(botId));
+  const me = useSelector(selectMe);
+  const timestamp = getUnixTime(Date.now());
+
+  if (!bot) return null;
+
+  const example = bot.testCases[exampleIndex];
+
+  return (
+    <Root>
+      <Title>{example.title}</Title>
+      <Messages>
+        <MessageView mine={true}>
+          <div>
+            <div>
+              You
+              {me.avatarCid && <Avatar cid={me.avatarCid} />}
+            </div>
+            <Message mine={true} text={example.input} timestamp={timestamp} />
+          </div>
+        </MessageView>
+
+        <MessageView mine={false}>
+          <div>
+            <div>
+              <Avatar cid={bot.avatar} />
+              <BotName>{bot.name}</BotName>
+            </div>
+            <Message mine={false} text={example.output} timestamp={timestamp} />
+          </div>
+        </MessageView>
+      </Messages>
+    </Root>
+  );
+});

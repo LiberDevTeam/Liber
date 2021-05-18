@@ -71,16 +71,14 @@ const BaseLayout: React.FC<Props> = ({
   return (
     <>
       <Root>
-        {title || headerRightItem ? (
-          <Header>
-            <div>
-              {backTo && <BackLink backTo={backTo} />}
-              {title && <PageTitle>{title}</PageTitle>}
-              {description && <Description>{description}</Description>}
-            </div>
-            <div>{headerRightItem}</div>
-          </Header>
-        ) : null}
+        <Header>
+          <div>
+            {backTo && <BackLink backTo={backTo} />}
+            {title && <PageTitle>{title}</PageTitle>}
+            {description && <Description>{description}</Description>}
+          </div>
+          <div>{headerRightItem}</div>
+        </Header>
         <Main>{children}</Main>
       </Root>
       {!backTo && (
