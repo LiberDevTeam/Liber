@@ -7,7 +7,7 @@ const Text = styled.div<{ mine: boolean }>`
   padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
   border-radius: ${(props) =>
     props.mine
-      ? `${props.theme.space[2]}px ${props.theme.space[2]}px 0px ${props.theme.space[2]}px`
+      ? `${props.theme.space[2]}px 0px ${props.theme.space[2]}px ${props.theme.space[2]}px`
       : `0 ${props.theme.space[2]}px ${props.theme.space[2]}px ${props.theme.space[2]}px`};
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.md};
@@ -31,16 +31,18 @@ interface Props {
   mine: boolean;
   text: string;
   timestamp: number;
+  className?: string;
 }
 
 export const Message: React.FC<Props> = React.memo(function Message({
   mine,
   text,
   timestamp,
+  className,
 }) {
   const time = fromUnixTime(timestamp);
   return (
-    <Text mine={mine}>
+    <Text mine={mine} className={className}>
       {text}
       <Timestamp title={formatTimeStrict(time)}>{formatTime(time)}</Timestamp>
     </Text>

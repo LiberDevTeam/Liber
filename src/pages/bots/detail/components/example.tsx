@@ -8,7 +8,15 @@ import { selectBotById } from '~/state/ducks/bots/botsSlice';
 import { selectMe } from '~/state/ducks/me/meSlice';
 
 const Root = styled.div``;
-const Avatar = styled(IpfsContent)``;
+const Avatar = styled(IpfsContent)<{ mine: boolean }>`
+  height: 36px;
+  width: 36px;
+  border-radius: ${(props) => props.theme.radii.round};
+  ${(props) =>
+    `${props.mine ? 'margin-left' : 'margin-right'}: ${
+      props.theme.space[2]
+    }px;`}
+`;
 const BotName = styled.span`
   color: ${(props) => props.theme.colors.green};
 `;
@@ -16,13 +24,17 @@ const BotName = styled.span`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: ${(props) => props.theme.space[5]}px;
+  padding: ${(props) => `${props.theme.space[5]}px ${props.theme.space[3]}px`};
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
   border: ${(props) => props.theme.border.gray.thin};
   border-radius: ${(props) => props.theme.radii.large}px;
   margin-bottom: ${(props) => props.theme.space[6]}px;
+`;
+
+const StyledMessage = styled(Message)`
+  margin: 0 ${(props) => props.theme.space[10]}px;
 `;
 
 const MessageView = styled.div<{ mine: boolean }>`
@@ -35,12 +47,12 @@ const Title = styled.div`
   margin: ${(props) => `${props.theme.space[2]}px 0 ${props.theme.space[3]}px`};
 `;
 
-const Right = styled.div`
+const MessageHeader = styled.div<{ mine: boolean }>`
   display: flex;
-`;
-
-const Left = styled.div`
-  display: flex;
+  align-items: center;
+  justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+  font-weight: ${(props) => props.theme.fontWeights.medium};
+  margin-bottom: ${(props) => props.theme.space[1]}px;
 `;
 
 interface ExampleProps {
@@ -66,21 +78,29 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
       <Messages>
         <MessageView mine={true}>
           <div>
-            <Right>
+            <MessageHeader mine={true}>
               You
-              {me.avatarCid && <Avatar cid={me.avatarCid} />}
-            </Right>
-            <Message mine={true} text={example.input} timestamp={timestamp} />
+              {me.avatarCid && <Avatar mine={true} cid={me.avatarCid} />}
+            </MessageHeader>
+            <StyledMessage
+              mine={true}
+              text={example.input}
+              timestamp={timestamp}
+            />
           </div>
         </MessageView>
 
         <MessageView mine={false}>
           <div>
-            <Left>
-              <Avatar cid={bot.avatar} />
+            <MessageHeader mine={false}>
+              <Avatar mine={false} cid={bot.avatar} />
               <BotName>{bot.name}</BotName>
-            </Left>
-            <Message mine={false} text={example.output} timestamp={timestamp} />
+            </MessageHeader>
+            <StyledMessage
+              mine={false}
+              text={example.output}
+              timestamp={timestamp}
+            />
           </div>
         </MessageView>
       </Messages>
