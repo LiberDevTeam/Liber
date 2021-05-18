@@ -18,7 +18,7 @@ import { Textarea } from '../../../components/textarea';
 import { SvgPlus as PlusIcon } from '../../../icons/Plus';
 import { Editor } from './components/editor';
 
-const TestCaseDescription = styled.p`
+const ExampleDescription = styled.p`
   color: ${(props) => props.theme.colors.secondaryText};
   font-weight: ${(props) => props.theme.fontWeights.light};
   margin-bottom: ${(props) => props.theme.space[5]}px;
@@ -98,7 +98,7 @@ const TAB_TITLE = {
 
 interface Props {}
 
-interface TestCase {
+interface Example {
   name: string;
   input: string;
   output: string;
@@ -111,7 +111,7 @@ interface FormValues {
   description: string;
   document: string;
   code: string;
-  testCases: TestCase[];
+  examples: Example[];
 }
 
 const validationSchema = yup.object({
@@ -121,7 +121,7 @@ const validationSchema = yup.object({
   description: yup.string(),
   document: yup.string(),
   code: yup.string().required(),
-  testCases: yup.array(),
+  examples: yup.array(),
 });
 
 export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
@@ -136,7 +136,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
       description: '',
       document: '',
       code: '',
-      testCases: [{ name: '', input: '', output: '' }],
+      examples: [{ name: '', input: '', output: '' }],
     },
     validationSchema,
     async onSubmit({
@@ -146,7 +146,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
       description,
       document,
       code,
-      testCases,
+      examples,
     }) {
       if (avatar) {
         // dispatch(
@@ -184,15 +184,15 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
 
   const handleRemove = (index: number) => () =>
     formik.setFieldValue(
-      'testCases',
-      formik.values.testCases
+      'examples',
+      formik.values.examples
         .slice(0, index)
-        .concat(formik.values.testCases.slice(index + 1))
+        .concat(formik.values.examples.slice(index + 1))
     );
 
   const handleAdd = () =>
-    formik.setFieldValue('testCases', [
-      ...formik.values.testCases,
+    formik.setFieldValue('examples', [
+      ...formik.values.examples,
       { name: '', input: '', output: '' },
     ]);
 
@@ -265,11 +265,11 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
             </TabPanel>
             <TabPanel hide={tab !== TAB_TESTING}>
               <Group>
-                <TestCaseDescription>
+                <ExampleDescription>
                   Testing is useful to look for latent bugs in your bot. It will
                   be also shown as examples on its detail page.
-                </TestCaseDescription>
-                {formik.values.testCases.map((t, index) => (
+                </ExampleDescription>
+                {formik.values.examples.map((t, index) => (
                   <Item key={index}>
                     <Subtitle>Test {index + 1}</Subtitle>
                     <RemoveButton
@@ -278,7 +278,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                     />
                     <StyledInput
                       required
-                      name={`testCases.${index}.name`}
+                      name={`examples.${index}.name`}
                       placeholder="Name"
                       value={t.name}
                       onChange={formik.handleChange}
@@ -286,14 +286,14 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                     />
                     <StyledInput
                       required
-                      name={`testCases.${index}.input`}
+                      name={`examples.${index}.input`}
                       placeholder="<@self> ping"
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
                     />
                     <StyledInput
                       required
-                      name={`testCases.${index}.output`}
+                      name={`examples.${index}.output`}
                       placeholder="<@sender> pong"
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { SvgArrowIosBack as BackIcon } from '../../icons/ArrowIosBack';
 
-const Root = styled(Link)`
+const Root = styled.a`
   width: 26px;
   height: 26px;
   color: ${(props) => props.theme.colors.primaryText};
@@ -11,7 +11,7 @@ const Root = styled(Link)`
 `;
 
 interface BackLinkProps {
-  backTo: string;
+  backTo: string | 'previous';
   className?: string;
 }
 
@@ -19,8 +19,11 @@ export const BackLink: React.FC<BackLinkProps> = React.memo(function BackLink({
   backTo,
   className,
 }) {
+  const history = useHistory();
+  const handleClick = () =>
+    backTo === 'previous' ? history.goBack() : history.replace(backTo);
   return (
-    <Root to={backTo} className={className}>
+    <Root onClick={handleClick} className={className}>
       <BackIcon width={26} height={26} />
     </Root>
   );

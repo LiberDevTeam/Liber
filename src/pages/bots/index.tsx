@@ -10,7 +10,7 @@ import { useQuery } from '~/lib/queryParams';
 import {
   selectBotsListingOn,
   selectPurchasedBots,
-} from '~/state/ducks/bots/botsSlice';
+} from '~/state/ducks/mypage/botsSlice';
 import BaseLayout from '~/templates';
 import { Pagination } from '../../components/pagination';
 import { SvgEdit as EditIcon } from '../../icons/Edit';

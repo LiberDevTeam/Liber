@@ -1,13 +1,12 @@
-import { fromUnixTime } from 'date-fns';
 import React, { useCallback } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
-import { formatTime, formatTimeStrict } from '~/helpers/time';
 import { setSelectedUser } from '~/state/ducks/selected-user';
 import { selectUserById, User } from '~/state/ducks/users/usersSlice';
 import { RootState } from '~/state/store';
+import { Message } from '../message';
 
 const Root = styled.div<{ mine: boolean }>`
   display: flex;
@@ -24,32 +23,8 @@ const UserName = styled.span`
   margin-bottom: ${(props) => props.theme.space[2]}px;
 `;
 
-const Timestamp = styled.span`
-  font-size: ${(props) => props.theme.fontSizes.xs};
-  line-height: ${(props) => props.theme.fontSizes['2xl']};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  color: ${(props) => props.theme.colors.secondaryText};
-  margin-top: ${(props) => props.theme.space[2]}px;
-`;
-
 const Body = styled.div`
   padding-left: ${(props) => props.theme.space[2]}px;
-`;
-
-const Text = styled.div<{ mine: boolean }>`
-  padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
-  border-radius: ${(props) =>
-    props.mine
-      ? `${props.theme.space[2]}px ${props.theme.space[2]}px 0px ${props.theme.space[2]}px`
-      : `0 ${props.theme.space[2]}px ${props.theme.space[2]}px ${props.theme.space[2]}px`};
-  font-weight: ${(props) => props.theme.fontWeights.normal};
-  font-size: ${(props) => props.theme.fontSizes.md};
-  line-height: ${(props) => props.theme.fontSizes['2xl']};
-  color: ${(props) => props.theme.colors.primaryText};
-  display: flex;
-  flex-direction: column;
-  background: ${(props) =>
-    props.mine ? props.theme.colors.bgGray : props.theme.colors.bgBlue};
 `;
 
 const Attachment = styled(IpfsContent)`
@@ -69,7 +44,6 @@ export interface MessageViewProps {
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
-    const time = fromUnixTime(timestamp);
     const dispatch = useDispatch();
 
     const user = useSelector<RootState, User | undefined>(
@@ -90,12 +64,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
         </div>
         <Body>
           {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
-          <Text mine={mine}>
-            {text}
-            <Timestamp title={formatTimeStrict(time)}>
-              {formatTime(time)}
-            </Timestamp>
-          </Text>
+          {text && <Message mine={mine} text={text} timestamp={timestamp} />}
           {attachmentCidList
             ? attachmentCidList.map((cid) => (
                 <Attachment key={`${id}-${cid}`} cid={cid} />

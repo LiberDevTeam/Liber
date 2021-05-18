@@ -17,6 +17,7 @@ import feedReducer from '~/state/ducks/feed/feedSlice';
 import marketplaceBotsReducer from '~/state/ducks/marketplace/botsSlice';
 import marketplaceStickersReducer from '~/state/ducks/marketplace/stickersSlice';
 import meReducer from '~/state/ducks/me/meSlice';
+import mypageBotsReducer from '~/state/ducks/mypage/botsSlice';
 import ipfsContentsReducer from '~/state/ducks/p2p/ipfsContentsSlice';
 import placeMessagesReducer from '~/state/ducks/places/messagesSlice';
 import placesReducer from '~/state/ducks/places/placesSlice';
@@ -44,6 +45,7 @@ const persistConfig = {
 
 const reducers = combineReducers({
   me: meReducer,
+  mypageBots: mypageBotsReducer,
   places: placesReducer,
   placeMessages: placeMessagesReducer,
   ipfsContents: ipfsContentsReducer,

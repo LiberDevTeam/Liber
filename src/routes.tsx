@@ -66,6 +66,7 @@ export const Routes: React.FC = () => (
           render={() => <NotificationsPage />}
         />
 
+        <Route exact path="/404" render={() => <NotFoundPage />} />
         <Route render={() => <NotFoundPage />} />
       </Switch>
     </TrackerProvider>
