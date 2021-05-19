@@ -6,8 +6,8 @@ import { selectBotsByIds } from '~/state/ducks/bots/botsSlice';
 import {
   clearSearchResult,
   fetchSearchResult,
+  selectSearchResultIdsByPage,
 } from '~/state/ducks/marketplace/botsSlice';
-import { selectSearchResultIdsByPage } from '~/state/ducks/marketplace/stickersSlice';
 import { BotItem } from '../bot-item';
 
 const Root = styled.div`

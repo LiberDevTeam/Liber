@@ -7,27 +7,27 @@ import {
 import { push } from 'connected-react-router';
 import { AppDispatch, RootState } from '~/state/store';
 
-export const Category = {
-  Analytics: 'Analytics',
-  Communication: 'Communication',
-  CustomerSupport: 'Customer Support',
-  Design: 'Design',
-  DeveloperTools: 'Developer Tools',
-  FileManagement: 'File Management',
-  HealthWellness: 'Health & Wellness',
-  HRTeamCulture: 'HR & Team Culture',
-  Marketing: 'Marketing',
-  OfficeManagement: 'Office Management',
-  Finance: 'Finance',
-  Productivity: 'Productivity',
-  ProjectManagement: 'Project Management',
-  Sales: 'Sales',
-  SecurityCompliance: 'Security & Compliance',
-  SocialFun: 'Social & Fun',
-  Travel: 'Travel',
-  VoiceVideo: 'Voice & Video',
-  MediaNews: 'Media & News',
-};
+export enum Category {
+  Analytics = 'Analytics',
+  Communication = 'Communication',
+  CustomerSupport = 'Customer Support',
+  Design = 'Design',
+  DeveloperTools = 'Developer Tools',
+  FileManagement = 'File Management',
+  HealthWellness = 'Health & Wellness',
+  HRTeamCulture = 'HR & Team Culture',
+  Marketing = 'Marketing',
+  OfficeManagement = 'Office Management',
+  Finance = 'Finance',
+  Productivity = 'Productivity',
+  ProjectManagement = 'Project Management',
+  Sales = 'Sales',
+  SecurityCompliance = 'Security & Compliance',
+  SocialFun = 'Social & Fun',
+  Travel = 'Travel',
+  VoiceVideo = 'Voice & Video',
+  MediaNews = 'Media & News',
+}
 
 export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
@@ -117,7 +117,7 @@ export interface Bot {
   id: string;
   uid: string;
   name: string;
-  category: string;
+  category: Category;
   description: string;
   avatar: string;
   price: number;

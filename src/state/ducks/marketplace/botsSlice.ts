@@ -102,4 +102,14 @@ export const {
   clearSearchResult,
 } = botsSlice.actions;
 
+export const selectSearchResultIdsByPage = (page: number) => (
+  state: RootState
+): string[] => state.marketplaceBots.searchResultIdsByPage[page] || [];
+export const selectNewIdsByPage = (page: number) => (
+  state: RootState
+): string[] => state.marketplaceBots.newIdsByPage[page] || [];
+export const selectRankingIdsByPage = (page: number) => (
+  state: RootState
+): string[] => state.marketplaceBots.rankingIdsByPage[page] || [];
+
 export default botsSlice.reducer;

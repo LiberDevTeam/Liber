@@ -1,16 +1,31 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '~/state/store';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import { push } from 'connected-react-router';
+import { AppDispatch, RootState } from '~/state/store';
+
+export enum Category {
+  AnimalLovers = 'Animal Lovers',
+}
 
 export interface Sticker {
   id: string;
   uid: string;
+  category: Category;
   name: string;
   description: string;
   avatar: string;
   price: number;
-  images: string[];
+  contents: Content[];
   created: number;
   purchased?: number;
+}
+
+interface Content {
+  cid: string;
 }
 
 export interface StickersState {
@@ -18,508 +33,88 @@ export interface StickersState {
   listingOn: Sticker[];
 }
 
-export const tmpPurchased = [
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-  },
-];
+export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
+  id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
+  uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
+  category: Category.AnimalLovers,
+  name: 'バク',
+  description: 'モデルやってます。性別はありません',
+  avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
+  price: 20,
+  contents: [
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+  ],
+  created: 1619251130,
+}));
 
-export const tmpListingOn = [
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description:
-      'モデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませんんんんんモデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '10C095752-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C95754-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C95755-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C95756-A668-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C95753-A669-4BCB-A61C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A62C-7083585BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083584BDCD2',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD3',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD4',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD5',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'aaaaa',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD7',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD6',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description:
-      'モデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませモデルやってます。性別はありませんんんんんんんんんモデルやってます。性別はありませんモデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD21',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD23',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD24',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-  {
-    id: '9C095752-A668-4BCB-A61C-7083585BDCD27',
-    uid: '94801C77-68E9-4193-B253-C91983477A0D',
-    name: 'バク',
-    description: 'モデルやってます。性別はありません',
-    avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-    price: 20,
-    images: [
-      'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
-      'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT',
-      'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-    ],
-    created: 1619251130,
-    purchased: 1619271130,
-  },
-];
+export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
+  id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
+  uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
+  category: Category.AnimalLovers,
+  name: 'バク',
+  description: 'モデルやってます。性別はありません',
+  avatar: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh',
+  price: 20,
+  contents: [
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
+    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
+  ],
+  created: 1619251130,
+}));
 
-const initialState: StickersState = {
-  purchased: tmpPurchased,
-  listingOn: tmpListingOn,
-};
+export const fetchSticker = createAsyncThunk<
+  void,
+  { id: string },
+  { dispatch: AppDispatch; state: RootState }
+>('bots/fetchBot', async ({ id }, { dispatch }) => {
+  // TODO fetch bot from DB
+  const sticker = tmpPurchased[0];
+  if (!sticker) {
+    dispatch(push('/404'));
+    return;
+  }
+
+  dispatch(addSticker(sticker));
+});
+
+const stickersAdapter = createEntityAdapter<Sticker>();
+
+stickersAdapter.getInitialState();
 
 export const stickersSlice = createSlice({
   name: 'stickers',
-  initialState,
+  initialState: stickersAdapter.getInitialState(),
   reducers: {
-    listStickerOnMarketplace: (state, action: PayloadAction<Sticker>) => {
-      state.listingOn = [...state.listingOn, action.payload];
-    },
-    purchasedSticker: (state, action: PayloadAction<Sticker>) => {
-      state.purchased = [...state.purchased, action.payload];
-    },
+    addStickers: (state, action: PayloadAction<Sticker[]>) =>
+      stickersAdapter.addMany(state, action.payload),
+    addSticker: (state, action: PayloadAction<Sticker>) =>
+      stickersAdapter.addOne(state, action.payload),
   },
 });
 
-export const {
-  listStickerOnMarketplace,
-  purchasedSticker,
-} = stickersSlice.actions;
+export const { addStickers, addSticker } = stickersSlice.actions;
 
-export const selectPurchasedStickers = (
-  state: RootState
-): typeof state.stickers.purchased => state.stickers.purchased;
-
-export const selectStickersListingOn = (
-  state: RootState
-): typeof state.stickers.listingOn => state.stickers.listingOn;
+const selectors = stickersAdapter.getSelectors();
+export const selectStickerById = (id: string) => (state: RootState) =>
+  selectors.selectById(state.stickers, id);
+export const selectStickersByIds = (ids: string[]) => (state: RootState) =>
+  ids.map((id) => selectors.selectById(state.stickers, id));
 
 export default stickersSlice.reducer;
