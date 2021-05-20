@@ -1,49 +1,20 @@
 import React from 'react';
-import styled from 'styled-components';
-import { IconButton } from '~/components/icon-button';
-import { SvgClose as CancelIcon } from '../../icons/Close';
-
-const Root = styled.div`
-  position: relative;
-  width: 64px;
-  height: 64px;
-  flex: 0 0 64px;
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: ${(props) => props.theme.radii.medium}px;
-  object-fit: contain;
-`;
-
-const Button = styled(IconButton)`
-  position: absolute;
-  top: -9px;
-  right: -9px;
-  padding: 0;
-  border: 0;
-  color: ${(props) => props.theme.colors.white};
-  background-color: ${(props) => props.theme.colors.red};
-`;
+import { LgSize } from './components/lg-size';
+import { NormalSize } from './components/normal-size';
 
 export interface PreviewImageProps {
+  size: 'lg' | 'normal';
   src: string;
   onRemove: () => void;
   className?: string;
 }
 
 export const PreviewImage: React.FC<PreviewImageProps> = React.memo(
-  function PreviewImage({ src, onRemove, className }) {
-    return (
-      <Root className={className}>
-        <Image src={src} />
-        <Button
-          type="button"
-          icon={<CancelIcon width={18} height={18} />}
-          onClick={onRemove}
-        />
-      </Root>
-    );
+  function PreviewImage({ size = 'normal', ...props }) {
+    if (size === 'lg') {
+      return <LgSize {...props} />;
+    } else {
+      return <NormalSize {...props} />;
+    }
   }
 );
