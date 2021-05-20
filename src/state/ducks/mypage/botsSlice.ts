@@ -17,10 +17,10 @@ export const botsSlice = createSlice({
   initialState,
   reducers: {
     listBotOnMarketplace: (state, action: PayloadAction<Bot>) => {
-      state.listingOn = [...state.listingOn, action.payload];
+      state.listingOn.push(action.payload);
     },
     purchasedBot: (state, action: PayloadAction<Bot>) => {
-      state.purchased = [...state.purchased, action.payload];
+      state.purchased.push(action.payload);
     },
   },
 });

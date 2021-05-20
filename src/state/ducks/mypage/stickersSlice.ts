@@ -17,10 +17,10 @@ export const stickersSlice = createSlice({
   initialState,
   reducers: {
     listStickerOnMarketplace: (state, action: PayloadAction<Sticker>) => {
-      state.listingOn = [...state.listingOn, action.payload];
+      state.listingOn.push(action.payload);
     },
     purchasedSticker: (state, action: PayloadAction<Sticker>) => {
-      state.purchased = [...state.purchased, action.payload];
+      state.purchased.push(action.payload);
     },
   },
 });
