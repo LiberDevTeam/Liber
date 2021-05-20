@@ -28,6 +28,7 @@ import {
   setHash,
 } from '../../../state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '../../../state/store';
+import { finishInitialization } from '../isInitialized';
 async function digestMessage(message: string): Promise<string> {
   const msgUint8 = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -78,6 +79,8 @@ export const initApp = createAsyncThunk<
       connectToMessages({ placeId: place.id, address: place.feedAddress })
     );
   });
+
+  dispatch(finishInitialization());
 });
 
 export const publishPlaceMessage = createAsyncThunk<
