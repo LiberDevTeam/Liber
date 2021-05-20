@@ -3,7 +3,7 @@ import { LgSize } from './components/lg-size';
 import { NormalSize } from './components/normal-size';
 
 export interface PreviewImageProps {
-  size: 'lg' | 'normal';
+  size?: 'lg' | 'normal';
   src: string;
   onRemove: () => void;
   className?: string;
