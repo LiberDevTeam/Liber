@@ -5,8 +5,8 @@ import { Pagination } from '~/components/pagination';
 import {
   fetchNew,
   selectNewIdsByPage,
-  selectStickersByIds,
 } from '~/state/ducks/marketplace/stickersSlice';
+import { selectStickersByIds } from '~/state/ducks/stickers/stickersSlice';
 import { StickerItem } from '../sticker-item';
 
 const Root = styled.div`

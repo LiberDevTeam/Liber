@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
 import { selectBotsByIds } from '~/state/ducks/bots/botsSlice';
-import { fetchNew } from '~/state/ducks/marketplace/botsSlice';
-import { selectNewIdsByPage } from '~/state/ducks/marketplace/stickersSlice';
+import {
+  fetchNew,
+  selectNewIdsByPage,
+} from '~/state/ducks/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
 
 const Root = styled.div`

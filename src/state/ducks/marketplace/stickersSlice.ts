@@ -1,18 +1,11 @@
-import {
-  createAsyncThunk,
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   marketplaceNewStickers,
   marketplaceRankingStickers,
   marketplaceSearchStickers,
 } from '~/api';
 import { AppDispatch, RootState } from '~/state/store';
-import { Sticker, tmpListingOn } from '../stickers/stickersSlice';
-
-const stickersAdapter = createEntityAdapter<Sticker>();
+import { addStickers, tmpListingOn } from '../stickers/stickersSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
@@ -59,20 +52,22 @@ export const fetchNew = createAsyncThunk<
   dispatch(paginateNew({ page, stickerIds }));
 });
 
+interface State {
+  searchResultIdsByPage: Record<number, string[]>;
+  rankingIdsByPage: Record<number, string[]>;
+  newIdsByPage: Record<number, string[]>;
+}
+
+const initialState: State = {
+  searchResultIdsByPage: {},
+  rankingIdsByPage: {},
+  newIdsByPage: {},
+};
+
 export const stickersSlice = createSlice({
   name: 'marketplace/stickers',
-  initialState: stickersAdapter.getInitialState<{
-    searchResultIdsByPage: Record<number, string[]>;
-    rankingIdsByPage: Record<number, string[]>;
-    newIdsByPage: Record<number, string[]>;
-  }>({
-    searchResultIdsByPage: {},
-    rankingIdsByPage: {},
-    newIdsByPage: {},
-  }),
+  initialState,
   reducers: {
-    addStickers: (state, action: PayloadAction<Sticker[]>) =>
-      stickersAdapter.addMany(state, action.payload),
     paginateRanking: (
       state,
       action: PayloadAction<{ page: number; stickerIds: string[] }>
@@ -101,14 +96,12 @@ export const stickersSlice = createSlice({
 });
 
 export const {
-  addStickers,
   paginateNew,
   paginateRanking,
   paginateSearchResult,
   clearSearchResult,
 } = stickersSlice.actions;
 
-const selectors = stickersAdapter.getSelectors();
 export const selectSearchResultIdsByPage = (page: number) => (
   state: RootState
 ): string[] => state.marketplaceStickers.searchResultIdsByPage[page] || [];
@@ -118,9 +111,5 @@ export const selectNewIdsByPage = (page: number) => (
 export const selectRankingIdsByPage = (page: number) => (
   state: RootState
 ): string[] => state.marketplaceStickers.rankingIdsByPage[page] || [];
-export const selectStickersByIds = (ids: string[]) => (
-  state: RootState
-): (Sticker | undefined)[] =>
-  ids.map((id) => selectors.selectById(state.marketplaceStickers, id));
 
 export default stickersSlice.reducer;

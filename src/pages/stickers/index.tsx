@@ -10,7 +10,7 @@ import { useQuery } from '~/lib/queryParams';
 import {
   selectPurchasedStickers,
   selectStickersListingOn,
-} from '~/state/ducks/stickers/stickersSlice';
+} from '~/state/ducks/mypage/stickersSlice';
 import BaseLayout from '~/templates';
 import { Pagination } from '../../components/pagination';
 
@@ -170,7 +170,6 @@ const ListingOn: React.FC<PurchacedProps> = React.memo(function ListingOn() {
   };
 
   const offset = (page - 1) * limit;
-  console.log(stickers.slice(offset, offset + limit));
 
   return (
     <Root>
