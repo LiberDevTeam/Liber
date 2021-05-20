@@ -211,7 +211,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
             disabled={formik.isSubmitting}
           />
 
-          <Select id="chat_category" name="category" options={categories} />
+          <Select id="bot_category" name="category" options={categories} />
 
           <InputText
             name="name"

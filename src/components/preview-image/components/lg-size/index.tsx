@@ -5,13 +5,13 @@ import { SvgClose as CancelIcon } from '../../../../icons/Close';
 
 const Root = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 124px;
+  height: 124px;
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 124px;
+  height: 124px;
   border-radius: ${(props) => props.theme.radii.large}px;
   object-fit: cover;
 `;
@@ -27,22 +27,25 @@ const Button = styled(IconButton)`
   border-radius: ${(props) => props.theme.radii.round};
 `;
 
-export interface PreviewImageProps {
+export interface Props {
   src: string;
   onRemove: () => void;
+  className?: string;
 }
 
-export const PreviewImage: React.FC<PreviewImageProps> = React.memo(
-  function PreviewImage({ src, onRemove }) {
-    return (
-      <Root>
-        <Image src={src} />
-        <Button
-          type="button"
-          icon={<CancelIcon width={20} height={20} />}
-          onClick={onRemove}
-        />
-      </Root>
-    );
-  }
-);
+export const LgSize: React.FC<Props> = React.memo(function LgSize({
+  src,
+  onRemove,
+  className,
+}) {
+  return (
+    <Root className={className}>
+      <Image src={src} />
+      <Button
+        type="button"
+        icon={<CancelIcon width={20} height={20} />}
+        onClick={onRemove}
+      />
+    </Root>
+  );
+});

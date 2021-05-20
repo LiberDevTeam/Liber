@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { SvgImage } from '../../icons/Image';
-import { PreviewImage } from './components/preview-image';
+import { PreviewImage } from '../preview-image';
 
 const width = 124;
 const height = 124;
@@ -13,8 +13,8 @@ const Root = styled.div`
 `;
 
 const Container = styled.div`
-  height: 100%;
-  width: 100%;
+  height: ${width}px;
+  width: ${height}px;
   background: ${(props) => props.theme.colors.grayLighter};
   display: flex;
   flex-direction: column;
@@ -75,7 +75,7 @@ export const UploadPhoto: React.FC<UploadPhotoProps> = React.memo(
     return (
       <Root>
         {previewSrc ? (
-          <PreviewImage src={previewSrc} onRemove={handleRemove} />
+          <PreviewImage size="lg" src={previewSrc} onRemove={handleRemove} />
         ) : (
           <Container>
             <ImageIcon />
