@@ -18,7 +18,7 @@ const CreateButton = styled(Button)`
   margin-top: ${(props) => props.theme.space[3]}px;
 `;
 
-const Group = styled.div`
+const Form = styled.form`
   padding: ${(props) => props.theme.space[5]}px;
 `;
 
@@ -144,56 +144,54 @@ export const StickerNewPage: React.FC<Props> = React.memo(
         description="Please fill out a form and submit it."
         backTo="/stickers?tab=listing"
       >
-        <form>
-          <Group>
-            <Select
-              id="sticker_category"
-              name="category"
-              options={Object.values(Category)}
-            />
+        <Form onSubmit={formik.handleSubmit}>
+          <Select
+            id="sticker_category"
+            name="category"
+            options={Object.values(Category)}
+          />
 
-            <InputText
-              name="name"
-              placeholder="Name"
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              disabled={formik.isSubmitting}
-            />
-            <StyledTextarea
-              name="description"
-              placeholder="Description"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              disabled={formik.isSubmitting}
-              rows={8}
-              maxLength={200}
-            />
+          <InputText
+            name="name"
+            placeholder="Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+          />
+          <StyledTextarea
+            name="description"
+            placeholder="Description"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            rows={8}
+            maxLength={200}
+          />
 
-            <Subtitle>Sticker Contents</Subtitle>
-            <Contents>
-              {contentPreview.map((preview, index) => (
-                <StyledPreviewImage
-                  size="lg"
-                  key={index}
-                  onRemove={() => handleRemove(index)}
-                  src={preview}
-                />
-              ))}
-              <UploadImage>
-                <PlusIcon />
-                <InputFile
-                  ref={contentInputRef}
-                  name="contents"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleNewContent}
-                  disabled={formik.isSubmitting}
-                />
-              </UploadImage>
-            </Contents>
-            <CreateButton type="button" shape="rounded" text="CREATE" />
-          </Group>
-        </form>
+          <Subtitle>Sticker Contents</Subtitle>
+          <Contents>
+            {contentPreview.map((preview, index) => (
+              <StyledPreviewImage
+                size="lg"
+                key={index}
+                onRemove={() => handleRemove(index)}
+                src={preview}
+              />
+            ))}
+            <UploadImage>
+              <PlusIcon />
+              <InputFile
+                ref={contentInputRef}
+                name="contents"
+                type="file"
+                accept="image/*"
+                onChange={handleNewContent}
+                disabled={formik.isSubmitting}
+              />
+            </UploadImage>
+          </Contents>
+          <CreateButton type="button" shape="rounded" text="CREATE" />
+        </Form>
       </BaseLayout>
     );
   }
