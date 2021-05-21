@@ -6,6 +6,7 @@ import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotsPage } from './pages/bots';
 import { BotDetailPage } from './pages/bots/detail';
+import { BotEditPage } from './pages/bots/edit';
 import { BotNewPage } from './pages/bots/new';
 import { Explore } from './pages/explore';
 import { HomePage } from './pages/home';
@@ -21,6 +22,7 @@ import { ProfileEditPage } from './pages/profile/edit';
 import { SettingsPage } from './pages/settings';
 import { StickersPage } from './pages/stickers';
 import { StickerDetailPage } from './pages/stickers/detail';
+import { StickerEditPage } from './pages/stickers/edit';
 import { StickerNewPage } from './pages/stickers/new';
 import { TrackerProvider } from './state/contexts/tracker';
 import { initUser } from './state/ducks/me/meSlice';
@@ -49,23 +51,30 @@ export const Routes: React.FC = memo(function Routes() {
           <Route exact path="/" render={() => <HomePage />} />
 
           <Route exact path="/places/new" render={() => <NewPlace />} />
-          <Route path="/places" exact render={() => <Places />} />
+          <Route exact path="/places" render={() => <Places />} />
           <Route
+            exact
             path="/places/:placeId/join/:address"
             render={() => <JoinPlace />}
           />
-          <Route path="/places/:pid/:swarmKey?" render={() => <ChatDetail />} />
-          <Route path="/places/:pid/bots" render={() => <ChatDetail />} />
           <Route
+            exact
+            path="/places/:pid/:swarmKey?"
+            render={() => <ChatDetail />}
+          />
+          <Route exact path="/places/:pid/bots" render={() => <ChatDetail />} />
+          <Route
+            exact
             path="/places/:pid/users/maintainers"
             render={() => <ChatDetail />}
           />
           <Route
+            exact
             path="/places/:pid/users/banned"
             render={() => <ChatDetail />}
           />
 
-          <Route path="/explore/:tab?" render={() => <Explore />} />
+          <Route exact path="/explore/:tab?" render={() => <Explore />} />
 
           <Route exact path="/profile" render={() => <ProfilePage />} />
           <Route
@@ -75,16 +84,27 @@ export const Routes: React.FC = memo(function Routes() {
           />
 
           <Route
+            exact
             path="/marketplace/:kind?"
             render={() => <MarketplacePage />}
           />
 
           <Route exact path="/bots/new" render={() => <BotNewPage />} />
-          <Route path="/bots/:id" render={() => <BotDetailPage />} />
+          <Route exact path="/bots/:id" render={() => <BotDetailPage />} />
+          <Route exact path="/bots/:id/edit" render={() => <BotEditPage />} />
           <Route exact path="/bots" render={() => <BotsPage />} />
 
           <Route exact path="/stickers/new" render={() => <StickerNewPage />} />
-          <Route path="/stickers/:id" render={() => <StickerDetailPage />} />
+          <Route
+            exact
+            path="/stickers/:id"
+            render={() => <StickerDetailPage />}
+          />
+          <Route
+            exact
+            path="/stickers/:stickerId/edit"
+            render={() => <StickerEditPage />}
+          />
           <Route exact path="/stickers" render={() => <StickersPage />} />
 
           <Route exact path="/settings" render={() => <SettingsPage />} />
