@@ -105,7 +105,7 @@ const validationSchema = yup.object({
   name: yup.string().max(50).required(),
   description: yup.string().max(200).min(20).required(),
   price: yup.number().moreThan(0).required(),
-  contents: yup.array().min(4).required(),
+  contents: yup.array().min(1).required(),
 });
 
 export const StickerNewPage: React.FC<Props> = React.memo(

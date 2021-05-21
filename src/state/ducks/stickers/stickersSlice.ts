@@ -39,14 +39,14 @@ export interface StickersState {
 
 export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
   // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: '388e48af-a5b9-4f57-b362-37a6427cb229',
+  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
   // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAuPPSK7cMqnMc8qPJimWGsoHh6MYuoPBQ3Wzp7DscMA6t`,
+  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
   category: Category.AnimalLovers,
   name: 'バク',
   description: 'モデルやってます。性別はありません',
   price: 20,
-  keyValAddress: 'zdpuAzsjmCAVWgDLVhiWmU4hyagBiLYp92M4Du83YV8v6nKMV',
+  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
   contents: [
     { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
     { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
@@ -64,14 +64,14 @@ export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
 
 export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
   // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: '388e48af-a5b9-4f57-b362-37a6427cb229',
+  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
   // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAuPPSK7cMqnMc8qPJimWGsoHh6MYuoPBQ3Wzp7DscMA6t`,
+  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
   category: Category.AnimalLovers,
   name: 'バク',
   description: 'モデルやってます。性別はありません',
   price: 20,
-  keyValAddress: '',
+  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
   contents: [
     { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
     { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },

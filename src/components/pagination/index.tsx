@@ -11,7 +11,6 @@ const Form = styled.form`
 `;
 
 const StyledInput = styled(Input)`
-  padding: ${(props) => `${props.theme.space[1]}px ${props.theme.space[2]}px`};
   width: 52px;
   height: 52px;
 `;

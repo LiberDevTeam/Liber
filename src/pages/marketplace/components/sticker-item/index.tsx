@@ -49,7 +49,7 @@ export const StickerItem: React.FC<Props> = memo(function StickerItem({
   return (
     <>
       <StyledLink to={`/stickers/${sticker.id}`}>
-        <Avatar cid={sticker.avatar} />
+        <Avatar cid={sticker.contents[0].cid} />
         <RightGroup>
           <Name>{sticker.name}</Name>
           <Description>{sticker.description}</Description>

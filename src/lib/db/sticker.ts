@@ -15,9 +15,7 @@ export const createStickerKeyValue = async (
 ): Promise<KeyValueStore<StickerDBValue>> => {
   const orbitDB = await getOrbitDB();
   const db = await orbitDB.keyvalue<StickerDBValue>(`${stickerId}/sticker`, {
-    accessController: {
-      write: [orbitDB.id],
-    },
+    accessController: { write: ['*'] },
   });
   stickerDB[db.address.root] = db;
   await db.load();
@@ -49,6 +47,7 @@ export const connectStickerKeyValue = async ({
 }): Promise<KeyValueStore<StickerDBValue>> => {
   const orbitDB = await getOrbitDB();
 
+  console.log(`/orbitdb/${address}/${stickerId}/sticker`);
   const db = await orbitDB.keyvalue<StickerDBValue>(
     `/orbitdb/${address}/${stickerId}/sticker`
   );
