@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
-import { Select } from '~/components/select';
+import { SelectBox } from '~/components/select-box';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { UploadPhoto } from '~/components/upload-photo';
 import { useQuery } from '~/lib/queryParams';
@@ -211,7 +211,14 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
             disabled={formik.isSubmitting}
           />
 
-          <Select id="bot_category" name="category" options={categories} />
+          <SelectBox
+            id="bot_category"
+            name="category"
+            options={categories}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            errorMessage={formik.errors.category}
+          />
 
           <InputText
             name="name"

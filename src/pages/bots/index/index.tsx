@@ -12,8 +12,8 @@ import {
   selectPurchasedBots,
 } from '~/state/ducks/mypage/botsSlice';
 import BaseLayout from '~/templates';
-import { Pagination } from '../../components/pagination';
-import { SvgEdit as EditIcon } from '../../icons/Edit';
+import { Pagination } from '../../../components/pagination';
+import { SvgEdit as EditIcon } from '../../../icons/Edit';
 
 const Root = styled.div`
   padding-bottom: ${(props) => props.theme.space[6]}px;

@@ -12,7 +12,7 @@ import {
   selectStickersListingOn,
 } from '~/state/ducks/mypage/stickersSlice';
 import BaseLayout from '~/templates';
-import { Pagination } from '../../components/pagination';
+import { Pagination } from '../../../components/pagination';
 
 const Root = styled.div`
   padding-bottom: ${(props) => props.theme.space[6]}px;
@@ -102,7 +102,7 @@ export const StickersPage: React.FC<Props> = React.memo(
         backTo="/profile"
       >
         <StyledButtonLink to="/stickers/new">
-          <StyledButton shape="rounded" text="SELL YOUR ORIGINAL BOT!" />
+          <StyledButton shape="rounded" text="SELL YOUR ORIGINAL STICKER!" />
         </StyledButtonLink>
         <Tabs
           tabList={TAB_LIST}

@@ -1,10 +1,11 @@
 import { useFormik } from 'formik';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { ErrorMessage } from '~/components/error-message';
 import { PreviewImage } from '~/components/preview-image';
-import { Select } from '~/components/select';
+import { SelectBox } from '~/components/select-box';
 import { readAsDataURL } from '~/lib/readFile';
 import { Category } from '~/state/ducks/stickers/stickersSlice';
 import BaseLayout from '~/templates';
@@ -40,7 +41,6 @@ const Subtitle = styled.h2`
 const Contents = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: ${(props) => props.theme.space[5]}px;
 `;
 
 const InputFile = styled.input`
@@ -67,20 +67,25 @@ const StyledPreviewImage = styled(PreviewImage)`
     `0 ${props.theme.space[4]}px ${props.theme.space[4]}px 0`};
 `;
 
+const StyledErrorMessage = styled(ErrorMessage)`
+  margin-top: ${(props) => props.theme.space[2]}px;
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
+
 interface Props {}
 
 interface FormValues {
-  category: Category;
+  category?: Category;
   name: string;
   description: string;
   contents: File[];
 }
 
 const validationSchema = yup.object({
-  category: yup.number().required(),
-  name: yup.string().required(),
-  description: yup.string(),
-  contents: yup.array(),
+  category: yup.string().required(),
+  name: yup.string().max(50).required(),
+  description: yup.string().max(200).min(20).required(),
+  contents: yup.array().min(4).required(),
 });
 
 export const StickerNewPage: React.FC<Props> = React.memo(
@@ -89,13 +94,16 @@ export const StickerNewPage: React.FC<Props> = React.memo(
     const [contentPreview, setContentPreview] = useState<string[]>([]);
     const formik = useFormik<FormValues>({
       initialValues: {
-        category: Category.AnimalLovers,
         name: '',
         description: '',
         contents: [],
       },
       validationSchema,
       async onSubmit({ category, name, description, contents }) {
+        console.log(category);
+        console.log(name);
+        console.log(description);
+        console.log(contents);
         // dispatch(
         //   createNewSticker({
         //     avatar,
@@ -109,19 +117,30 @@ export const StickerNewPage: React.FC<Props> = React.memo(
         // );
       },
     });
+    const [errors, setErrors] = useState<typeof formik.errors>({});
+
+    useEffect(() => {
+      if (formik.submitCount > 0) {
+        setErrors(formik.errors);
+      }
+    }, [formik.errors, formik.submitCount]);
+
     const contentInputRef = useRef<HTMLInputElement>(null);
 
-    const handleNewContent = useCallback(() => {
+    const handleNewContent = useCallback(async () => {
       if (contentInputRef.current?.files && contentInputRef.current.files[0]) {
         const file = contentInputRef.current.files[0];
 
-        formik.setFieldValue('contents', [...formik.values.contents, file]);
+        await formik.setFieldValue(`contents`, [
+          ...formik.values.contents,
+          file,
+        ]);
         readAsDataURL(file).then((file) => {
           setContentPreview((prev) => [...prev, file]);
         });
         contentInputRef.current.value = '';
       }
-    }, []);
+    }, [formik.values.contents]);
 
     const handleRemove = (index: number) => {
       formik.setFieldValue(
@@ -140,10 +159,13 @@ export const StickerNewPage: React.FC<Props> = React.memo(
         backTo="/stickers?tab=listing"
       >
         <Form onSubmit={formik.handleSubmit}>
-          <Select
+          <SelectBox
             id="sticker_category"
             name="category"
-            options={Object.values(Category)}
+            options={Object.keys(Category)}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            errorMessage={errors.category}
           />
 
           <InputText
@@ -152,7 +174,9 @@ export const StickerNewPage: React.FC<Props> = React.memo(
             value={formik.values.name}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
+            errorMessage={errors.name}
           />
+
           <StyledTextarea
             name="description"
             placeholder="Description"
@@ -161,6 +185,8 @@ export const StickerNewPage: React.FC<Props> = React.memo(
             disabled={formik.isSubmitting}
             rows={8}
             maxLength={200}
+            minLength={20}
+            errorMessage={errors.description}
           />
 
           <Subtitle>Sticker Contents</Subtitle>
@@ -185,7 +211,10 @@ export const StickerNewPage: React.FC<Props> = React.memo(
               />
             </UploadImage>
           </Contents>
-          <CreateButton type="button" shape="rounded" text="CREATE" />
+          {errors.contents && (
+            <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
+          )}
+          <CreateButton type="submit" shape="rounded" text="CREATE" />
         </Form>
       </BaseLayout>
     );
