@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { connectToMessages } from '~/state/ducks/places/messagesSlice';
 import { joinPlace, selectPlaceById } from '~/state/ducks/places/placesSlice';
+import { LoadingPage } from '../../loading';
 
 export const JoinPlace: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,5 +27,5 @@ export const JoinPlace: React.FC = () => {
     }
   }, [place?.feedAddress, dispatch, placeId]);
 
-  return <div>connecting...</div>;
+  return <LoadingPage text="Connecting to place..." />;
 };

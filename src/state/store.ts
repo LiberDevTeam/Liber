@@ -26,6 +26,7 @@ import searchReducer from '~/state/ducks/search/searchSlice';
 import { selectedUserSlice } from '~/state/ducks/selected-user';
 import stickersReducer from '~/state/ducks/stickers/stickersSlice';
 import { usersSlice } from '~/state/ducks/users/usersSlice';
+import { isInitializedSlice } from './ducks/isInitialized';
 
 export const history = createHashHistory();
 
@@ -60,6 +61,7 @@ const reducers = combineReducers({
   marketplaceBots: marketplaceBotsReducer,
   marketplaceStickers: marketplaceStickersReducer,
   selectedUser: selectedUserSlice.reducer,
+  isInitialized: isInitializedSlice.reducer,
 });
 
 export const store = configureStore({

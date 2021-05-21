@@ -6,20 +6,15 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ThemeProvider } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import '~/lib/i18n';
-import { AppThunkDispatch, persistor } from '~/state/store';
+import { persistor } from '~/state/store';
 import { Routes } from './routes';
 import * as serviceWorker from './serviceWorker';
-import { initUser } from './state/ducks/me/meSlice';
-import { initApp } from './state/ducks/p2p/p2pSlice';
 import { store } from './state/store';
 import { GlobalStyles, theme } from './theme';
 
 ReactModal.setAppElement('#root');
 
 async function run() {
-  await (store.dispatch as AppThunkDispatch)(initUser());
-  await (store.dispatch as AppThunkDispatch)(initApp());
-
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>
