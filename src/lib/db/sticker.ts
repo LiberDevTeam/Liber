@@ -47,7 +47,6 @@ export const connectStickerKeyValue = async ({
 }): Promise<KeyValueStore<StickerDBValue>> => {
   const orbitDB = await getOrbitDB();
 
-  console.log(`/orbitdb/${address}/${stickerId}/sticker`);
   const db = await orbitDB.keyvalue<StickerDBValue>(
     `/orbitdb/${address}/${stickerId}/sticker`
   );

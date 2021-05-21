@@ -1,4 +1,3 @@
-import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { Button } from '~/components/button';
+import { ErrorMessage } from '~/components/error-message';
 import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
 import { SelectBox } from '~/components/select-box';
@@ -13,7 +13,9 @@ import { Textarea } from '~/components/textarea';
 import { readAsDataURL } from '~/lib/readFile';
 import {
   Category,
+  fetchSticker,
   selectStickerById,
+  updateSticker,
 } from '~/state/ducks/stickers/stickersSlice';
 import BaseLayout from '~/templates';
 import { SvgPlus2 as PlusIcon } from '../../../icons/Plus2';
@@ -25,6 +27,10 @@ const CreateButton = styled(Button)`
 
 const Form = styled.form`
   padding: ${(props) => props.theme.space[5]}px;
+`;
+
+const Section = styled.section`
+  margin-bottom: ${(props) => props.theme.space[12]}px;
 `;
 
 const InputText = styled(Input)`
@@ -72,65 +78,108 @@ const StyledPreviewImage = styled(PreviewImage)`
     `0 ${props.theme.space[4]}px ${props.theme.space[4]}px 0`};
 `;
 
+const StyledErrorMessage = styled(ErrorMessage)`
+  margin-top: ${(props) => props.theme.space[2]}px;
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
+
+const PriceInner = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const Term = styled.span`
+  font-weight: ${(props) => props.theme.fontWeights.semibold};
+  font-size: ${(props) => props.theme.fontSizes.md};
+  margin-left: ${(props) => props.theme.space[5]}px;
+`;
+
 interface Props {}
 
 interface FormValues {
-  category: Category;
+  category?: Category;
   name: string;
   description: string;
-  contents: Blob[];
+  price: number;
+  contents: File[];
 }
 
 const validationSchema = yup.object({
-  category: yup.number().required(),
-  name: yup.string().required(),
-  description: yup.string(),
-  contents: yup.array(),
+  category: yup.string().required(),
+  name: yup.string().max(50).required(),
+  description: yup.string().max(200).min(20).required(),
+  price: yup.number().moreThan(0).required(),
+  contents: yup.array().min(4).required(),
 });
 
 export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
-  const { stickerId } = useParams<{ stickerId: string }>();
+  const { stickerId, address } = useParams<{
+    stickerId: string;
+    address: string;
+  }>();
   const dispatch = useDispatch();
   const sticker = useSelector(selectStickerById(stickerId));
   const [contentPreview, setContentPreview] = useState<string[]>([]);
 
-  if (!sticker) {
-    dispatch(push(`/stickers/${stickerId}`));
-    return null;
-  }
-
   const formik = useFormik<FormValues>({
     initialValues: {
-      category: sticker.category,
-      name: sticker.name,
-      description: sticker.description,
+      name: '',
+      description: '',
+      price: 0,
       contents: [],
     },
     validationSchema,
-    async onSubmit({ category, name, description, contents }) {
-      // dispatch(
-      //   createNewSticker({
-      //     avatar,
-      //     category,
-      //     name,
-      //     description,
-      //     document,
-      //     code,
-      //     tests,
-      //   })
-      // );
+    async onSubmit({ category, name, description, price, contents }) {
+      sticker &&
+        category &&
+        dispatch(
+          updateSticker({
+            stickerId: sticker.id,
+            address: sticker.keyValAddress,
+            category,
+            name,
+            description,
+            price,
+            contents,
+          })
+        );
     },
   });
+  const [errors, setErrors] = useState<typeof formik.errors>({});
 
   useEffect(() => {
-    const files = sticker.contents.map(async ({ cid }) => {
-      const res = await fetch(`/view/${cid}`);
-      const file = new File([await res.blob()], cid);
-      formik.setFieldValue('contents', files);
-      readAsDataURL(file).then((file) => {
-        setContentPreview((prev) => [...prev, file]);
-      });
-    });
+    if (formik.submitCount > 0) {
+      setErrors(formik.errors);
+    }
+  }, [formik.errors, formik.submitCount]);
+
+  useEffect(() => {
+    if (!sticker) {
+      dispatch(fetchSticker({ stickerId, address }));
+    }
+  }, [stickerId, address]);
+
+  useEffect(() => {
+    if (sticker) {
+      formik.setFieldValue('category', sticker.category);
+      formik.setFieldValue('name', sticker.name);
+      formik.setFieldValue('description', sticker.description);
+      formik.setFieldValue('price', sticker.price);
+      (async () => {
+        const files = await Promise.all(
+          sticker.contents.map(async ({ cid }) => {
+            const res = await fetch(`/view/${cid}`);
+            const file = new File([await res.blob()], cid);
+            readAsDataURL(file).then((file) => {
+              setContentPreview((prev) => [...prev, file]);
+            });
+            return file;
+          })
+        );
+        formik.setFieldValue(`contents`, files);
+      })();
+    }
   }, [sticker]);
 
   const contentInputRef = useRef<HTMLInputElement>(null);
@@ -145,7 +194,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
       });
       contentInputRef.current.value = '';
     }
-  }, []);
+  }, [formik.values.contents]);
 
   const handleRemove = (index: number) => {
     formik.setFieldValue(
@@ -161,57 +210,84 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
     <BaseLayout
       title="Edit Sticker"
       description="Please fill out a form and submit it."
-      backTo={`/stickers/${stickerId}`}
+      backTo={`/stickers/${address}/${stickerId}`}
     >
       <Form onSubmit={formik.handleSubmit}>
-        <SelectBox
-          id="sticker_category"
-          name="category"
-          options={Object.keys(Category)}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-        />
+        <Section>
+          <SelectBox
+            id="sticker_category"
+            name="category"
+            options={Object.keys(Category)}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            value={formik.values.category}
+            errorMessage={errors.category}
+          />
 
-        <InputText
-          name="name"
-          placeholder="Name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-        />
-        <StyledTextarea
-          name="description"
-          placeholder="Description"
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          rows={8}
-          maxLength={200}
-        />
+          <InputText
+            name="name"
+            placeholder="Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            errorMessage={errors.name}
+          />
+          <StyledTextarea
+            name="description"
+            placeholder="Description"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            rows={8}
+            maxLength={200}
+            errorMessage={errors.description}
+          />
+        </Section>
 
-        <Subtitle>Contents</Subtitle>
-        <Contents>
-          {contentPreview.map((preview, index) => (
-            <StyledPreviewImage
-              size="lg"
-              key={index}
-              onRemove={() => handleRemove(index)}
-              src={preview}
-            />
-          ))}
-          <UploadImage>
-            <PlusIcon />
-            <InputFile
-              ref={contentInputRef}
-              name="contents"
-              type="file"
-              accept="image/*"
-              onChange={handleNewContent}
+        <Section>
+          <Subtitle>Price</Subtitle>
+          <PriceInner>
+            <Input
+              type="number"
+              name="price"
+              placeholder="Price ETH"
+              value={formik.values.price}
+              onChange={formik.handleChange}
               disabled={formik.isSubmitting}
+              errorMessage={errors.price}
             />
-          </UploadImage>
-        </Contents>
-        <CreateButton type="button" shape="rounded" text="UPDATE" />
+            <Term>ETH</Term>
+          </PriceInner>
+        </Section>
+
+        <Section>
+          <Subtitle>Contents</Subtitle>
+          <Contents>
+            {contentPreview.map((preview, index) => (
+              <StyledPreviewImage
+                size="lg"
+                key={index}
+                onRemove={() => handleRemove(index)}
+                src={preview}
+              />
+            ))}
+            <UploadImage>
+              <PlusIcon />
+              <InputFile
+                ref={contentInputRef}
+                name="contents"
+                type="file"
+                accept="image/*"
+                onChange={handleNewContent}
+                disabled={formik.isSubmitting}
+              />
+            </UploadImage>
+          </Contents>
+          {errors.contents && (
+            <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
+          )}
+        </Section>
+        <CreateButton type="submit" shape="rounded" text="UPDATE" />
       </Form>
     </BaseLayout>
   );

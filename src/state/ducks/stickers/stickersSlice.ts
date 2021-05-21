@@ -7,7 +7,11 @@ import {
 import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
-import { createStickerKeyValue } from '~/lib/db/sticker';
+import {
+  connectStickerKeyValue,
+  createStickerKeyValue,
+  readStickerFromDB,
+} from '~/lib/db/sticker';
 import { AppDispatch, RootState } from '~/state/store';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
@@ -15,14 +19,17 @@ export enum Category {
   AnimalLovers = 'Animal Lovers',
 }
 
-export interface Sticker {
-  id: string;
-  uid: string;
+interface PartialForUpdate {
   category: Category;
   name: string;
   description: string;
   price: number;
   contents: Content[];
+}
+
+export interface Sticker extends PartialForUpdate {
+  id: string;
+  uid: string;
   keyValAddress: string;
   created: number;
   purchased?: boolean; // means the current user purchased the sticker.
@@ -99,7 +106,7 @@ export const createNewSticker = createAsyncThunk<
   },
   { dispatch: AppDispatch; state: RootState }
 >(
-  'sticker/createNewSticker',
+  'stickers/createNewSticker',
   async (
     { category, name, description, contents, price },
     { dispatch, getState }
@@ -134,16 +141,70 @@ export const createNewSticker = createAsyncThunk<
 
     dispatch(addSticker(sticker));
     dispatch(push(`/stickers/${sticker.id}`));
+
+    // TODO: show notification
+  }
+);
+
+export const updateSticker = createAsyncThunk<
+  void,
+  {
+    stickerId: string;
+    address: string;
+    category: Category;
+    name: string;
+    description: string;
+    price: number;
+    contents: File[];
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'stickers/updateSticker',
+  async (
+    { stickerId, address, category, name, description, price, contents },
+    { dispatch }
+  ) => {
+    const stickerKeyValue = await connectStickerKeyValue({
+      stickerId,
+      address,
+    });
+
+    const newContents = await Promise.all(
+      contents.map(async (content) => {
+        const cid = await addIpfsContent(dispatch, content);
+        return { cid };
+      })
+    );
+
+    const partial: PartialForUpdate = {
+      category,
+      name,
+      description,
+      price,
+      contents: newContents,
+    };
+
+    Object.keys(partial).forEach((key) => {
+      const v = partial[key as keyof PartialForUpdate];
+      v && stickerKeyValue.put(key, v);
+    });
+
+    // TODO: update index to Liber search.
+
+    dispatch(updateOne({ id: stickerId, changes: partial }));
+    dispatch(push(`/stickers/${address}/${stickerId}`));
+
+    // TODO: show notification
   }
 );
 
 export const fetchSticker = createAsyncThunk<
   void,
-  { id: string },
+  { stickerId: string; address: string },
   { dispatch: AppDispatch; state: RootState }
->('sticker/fetchSticker', async ({ id }, { dispatch }) => {
-  // TODO fetch bot from DB
-  const sticker = tmpPurchased[0];
+>('stickers/fetchSticker', async ({ stickerId, address }, { dispatch }) => {
+  const db = await connectStickerKeyValue({ stickerId, address });
+  const sticker = readStickerFromDB(db);
   if (!sticker) {
     dispatch(push('/404'));
     return;
@@ -164,10 +225,18 @@ export const stickersSlice = createSlice({
       stickersAdapter.addMany(state, action.payload),
     addSticker: (state, action: PayloadAction<Sticker>) =>
       stickersAdapter.addOne(state, action.payload),
+    updateOne: (
+      state,
+      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+    ) =>
+      stickersAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: action.payload.changes,
+      }),
   },
 });
 
-export const { addStickers, addSticker } = stickersSlice.actions;
+export const { addStickers, addSticker, updateOne } = stickersSlice.actions;
 
 const selectors = stickersAdapter.getSelectors();
 export const selectStickerById = (id: string) => (state: RootState) =>

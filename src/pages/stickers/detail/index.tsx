@@ -84,7 +84,7 @@ const GalleryImage = styled(IpfsContent)`
   width: 124px;
   height: 124px;
   margin: ${(props) =>
-    `0 ${props.theme.space[1]}px ${props.theme.space[1]}px 0`};
+    `0 ${props.theme.space[4]}px ${props.theme.space[4]}px 0`};
   object-fit: cover;
   border-radius: ${(props) => props.theme.radii.large}px;
 `;
@@ -94,16 +94,19 @@ interface Props {}
 export const StickerDetailPage: React.FC<Props> = memo(
   function StickerDetailPage({}) {
     const dispatch = useDispatch();
-    const { id } = useParams<{ id: string }>();
+    const { stickerId, address } = useParams<{
+      stickerId: string;
+      address: string;
+    }>();
     const me = useSelector(selectMe);
-    const sticker = useSelector(selectStickerById(id));
-    const purchased = useSelector(selectPurchasedStickerById(id));
+    const sticker = useSelector(selectStickerById(stickerId));
+    const purchased = useSelector(selectPurchasedStickerById(stickerId));
 
     useEffect(() => {
       if (!sticker) {
-        dispatch(fetchSticker({ id }));
+        dispatch(fetchSticker({ stickerId, address }));
       }
-    }, [id]);
+    }, [stickerId, address]);
 
     // TODO loading;
     if (!sticker) return null;
@@ -128,7 +131,7 @@ export const StickerDetailPage: React.FC<Props> = memo(
         </Section>
 
         <Section>
-          <Subtitle>Gallery</Subtitle>
+          <Subtitle>Contents</Subtitle>
           <Gallery>
             {sticker.contents.map((c, i) => (
               <GalleryImage key={i} cid={c.cid} />
@@ -137,16 +140,15 @@ export const StickerDetailPage: React.FC<Props> = memo(
         </Section>
 
         <ButtonSection>
-          <Link to={`/stickers/${sticker.id}/edit`}>
-            <EditButton text="EDIT" />
-          </Link>
           {mine && (
-            <Link to={`/stickers/${sticker.id}/edit`}>
+            <Link to={`/stickers/${sticker.keyValAddress}/${sticker.id}/edit`}>
               <EditButton text="EDIT" />
             </Link>
           )}
           {!mine && !purchased && (
-            <Link to={`/stickers/${sticker.id}/purchase`}>
+            <Link
+              to={`/stickers/${sticker.keyValAddress}/${sticker.id}/purchase`}
+            >
               <PurchaseButton text="PURCHASE" />
             </Link>
           )}

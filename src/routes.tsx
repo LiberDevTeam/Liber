@@ -97,12 +97,12 @@ export const Routes: React.FC = memo(function Routes() {
           <Route exact path="/stickers/new" render={() => <StickerNewPage />} />
           <Route
             exact
-            path="/stickers/:id"
+            path="/stickers/:address/:stickerId"
             render={() => <StickerDetailPage />}
           />
           <Route
             exact
-            path="/stickers/:stickerId/edit"
+            path="/stickers/:address/:stickerId/edit"
             render={() => <StickerEditPage />}
           />
           <Route exact path="/stickers" render={() => <StickersPage />} />
