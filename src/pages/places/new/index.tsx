@@ -160,7 +160,13 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           disabled={formik.isSubmitting}
         />
 
-        <SelectBox id="chat_category" name="category" options={categories} />
+        <SelectBox
+          id="chat_category"
+          name="category"
+          options={categories}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
+        />
 
         <InputText
           name="name"

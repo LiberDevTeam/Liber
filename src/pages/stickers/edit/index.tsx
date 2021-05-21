@@ -167,7 +167,9 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
         <SelectBox
           id="sticker_category"
           name="category"
-          options={Object.values(Category)}
+          options={Object.keys(Category)}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
         />
 
         <InputText
