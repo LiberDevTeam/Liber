@@ -1,5 +1,6 @@
 import React, { TextareaHTMLAttributes } from 'react';
 import styled from 'styled-components';
+import { ErrorMessage } from '../error-message';
 
 export const BaseTextarea = styled.textarea`
   font-weight: ${(props) => props.theme.fontWeights.normal};
@@ -34,22 +35,31 @@ const LengthIndicator = styled.span<{ exceed: boolean }>`
   ${(props) => props.exceed && `color: ${props.theme.colors.red};`}
 `;
 
-export const Textarea: React.FC<
-  TextareaHTMLAttributes<HTMLTextAreaElement>
-> = React.memo(function Textarea({ maxLength, value, ...rest }) {
+interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  errorMessage?: string;
+}
+
+export const Textarea: React.FC<Props> = React.memo(function Textarea({
+  maxLength,
+  value,
+  className,
+  errorMessage,
+  ...rest
+}) {
   let length = 0;
   if (typeof value === 'string') {
     length = value.length;
   }
 
   return (
-    <Root>
+    <Root className={className}>
       <BaseTextarea value={value} {...rest} />
       {maxLength && (
         <LengthIndicator exceed={maxLength < length}>
           {length} / {maxLength}
         </LengthIndicator>
       )}
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </Root>
   );
 });

@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { Button } from '~/components/button';
 import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
-import { Select } from '~/components/select';
+import { SelectBox } from '~/components/select-box';
 import { Textarea } from '~/components/textarea';
 import { readAsDataURL } from '~/lib/readFile';
 import {
@@ -164,10 +164,12 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
       backTo={`/stickers/${stickerId}`}
     >
       <Form onSubmit={formik.handleSubmit}>
-        <Select
+        <SelectBox
           id="sticker_category"
           name="category"
-          options={Object.values(Category)}
+          options={Object.keys(Category)}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
         />
 
         <InputText

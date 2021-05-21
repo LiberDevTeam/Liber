@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { SvgArrowDown } from '~/icons/ArrowDown';
+import { ErrorMessage } from '../error-message';
 
 const Root = styled.div`
   position: relative;
@@ -48,18 +49,30 @@ interface Props {
   id: string;
   name: string;
   options: string[];
+  errorMessage?: string;
+  onChange: ReactEventHandler<HTMLSelectElement>;
+  disabled: boolean;
 }
 
-export const Select: React.FC<Props> = React.memo(function Select({
+export const SelectBox: React.FC<Props> = React.memo(function Select({
   id,
   name,
   options,
+  errorMessage,
+  onChange,
+  disabled,
 }) {
   const { t } = useTranslation(['selectOptions']);
   return (
     <Root>
-      <StyledSelect id={id} name={name}>
-        <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
+      <StyledSelect
+        onChange={onChange}
+        id={id}
+        name={name}
+        defaultValue=""
+        disabled={disabled}
+      >
+        <DefaultOption value="">{t(`selectOptions:DEFAULT`)}</DefaultOption>
         {options.map((option) => (
           <option key={option} value={option}>
             {t(`selectOptions:${id.toUpperCase()}_${option}`)}
@@ -67,6 +80,7 @@ export const Select: React.FC<Props> = React.memo(function Select({
         ))}
       </StyledSelect>
       <ArrowDownIcon />
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </Root>
   );
 });

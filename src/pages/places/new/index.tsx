@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
-import { Select } from '~/components/select';
+import { SelectBox } from '~/components/select-box';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
 import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
@@ -160,7 +160,13 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           disabled={formik.isSubmitting}
         />
 
-        <Select id="chat_category" name="category" options={categories} />
+        <SelectBox
+          id="chat_category"
+          name="category"
+          options={categories}
+          onChange={formik.handleChange}
+          disabled={formik.isSubmitting}
+        />
 
         <InputText
           name="name"

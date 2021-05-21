@@ -1,7 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { ErrorMessage } from '../error-message';
 
-const Root = styled.div`
+const Root = styled.div``;
+
+const Container = styled.div`
   display: flex;
   width: 100%;
   position: relative;
@@ -56,6 +59,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     | undefined;
   actions?: React.ReactNode;
   textCenter?: boolean;
+  errorMessage?: string;
 }
 
 export const Input: React.FC<InputProps> = React.memo(function Input({
@@ -64,13 +68,17 @@ export const Input: React.FC<InputProps> = React.memo(function Input({
   innerRef,
   actions,
   style,
+  errorMessage,
   ...rest
 }) {
   return (
-    <Root className={className} style={style}>
-      <IconWrapper>{icon}</IconWrapper>
-      <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
-      {actions}
+    <Root className={className}>
+      <Container className={className} style={style}>
+        <IconWrapper>{icon}</IconWrapper>
+        <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
+        {actions}
+      </Container>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </Root>
   );
 });
