@@ -127,14 +127,11 @@ export const StickerNewPage: React.FC<Props> = React.memo(
 
     const contentInputRef = useRef<HTMLInputElement>(null);
 
-    const handleNewContent = useCallback(async () => {
+    const handleNewContent = useCallback(() => {
       if (contentInputRef.current?.files && contentInputRef.current.files[0]) {
         const file = contentInputRef.current.files[0];
 
-        await formik.setFieldValue(`contents`, [
-          ...formik.values.contents,
-          file,
-        ]);
+        formik.setFieldValue(`contents`, [...formik.values.contents, file]);
         readAsDataURL(file).then((file) => {
           setContentPreview((prev) => [...prev, file]);
         });
