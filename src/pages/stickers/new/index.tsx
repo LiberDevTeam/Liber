@@ -70,7 +70,6 @@ const StyledPreviewImage = styled(PreviewImage)`
 interface Props {}
 
 interface FormValues {
-  avatar: File | null;
   category: Category;
   name: string;
   description: string;
@@ -78,7 +77,6 @@ interface FormValues {
 }
 
 const validationSchema = yup.object({
-  avatar: yup.mixed().test('not null', '', (value) => value !== null),
   category: yup.number().required(),
   name: yup.string().required(),
   description: yup.string(),
@@ -91,27 +89,24 @@ export const StickerNewPage: React.FC<Props> = React.memo(
     const [contentPreview, setContentPreview] = useState<string[]>([]);
     const formik = useFormik<FormValues>({
       initialValues: {
-        avatar: null,
         category: Category.AnimalLovers,
         name: '',
         description: '',
         contents: [],
       },
       validationSchema,
-      async onSubmit({ avatar, category, name, description, contents }) {
-        if (avatar) {
-          // dispatch(
-          //   createNewSticker({
-          //     avatar,
-          //     category,
-          //     name,
-          //     description,
-          //     document,
-          //     code,
-          //     tests,
-          //   })
-          // );
-        }
+      async onSubmit({ category, name, description, contents }) {
+        // dispatch(
+        //   createNewSticker({
+        //     avatar,
+        //     category,
+        //     name,
+        //     description,
+        //     document,
+        //     code,
+        //     tests,
+        //   })
+        // );
       },
     });
     const contentInputRef = useRef<HTMLInputElement>(null);
