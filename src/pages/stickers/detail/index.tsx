@@ -113,7 +113,7 @@ export const StickerDetailPage: React.FC<Props> = memo(
     return (
       <BaseLayout backTo="previous">
         <HeaderContent>
-          <Avatar cid={sticker.avatar} />
+          <Avatar cid={sticker.contents[0].cid} />
           <Group>
             <Name>{sticker.name}</Name>
             <Category>{sticker.category}</Category>

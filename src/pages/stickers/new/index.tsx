@@ -7,7 +7,10 @@ import { ErrorMessage } from '~/components/error-message';
 import { PreviewImage } from '~/components/preview-image';
 import { SelectBox } from '~/components/select-box';
 import { readAsDataURL } from '~/lib/readFile';
-import { Category } from '~/state/ducks/stickers/stickersSlice';
+import {
+  Category,
+  createNewSticker,
+} from '~/state/ducks/stickers/stickersSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
 import { Input } from '../../../components/input';
@@ -23,13 +26,22 @@ const Form = styled.form`
   padding: ${(props) => props.theme.space[5]}px;
 `;
 
+const Section = styled.section`
+  margin-bottom: ${(props) => props.theme.space[12]}px;
+`;
+
+const PriceInner = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 const InputText = styled(Input)`
   margin-top: ${(props) => props.theme.space[5]}px;
 `;
 
 const StyledTextarea = styled(Textarea)`
   margin-top: ${(props) => props.theme.space[5]}px;
-  margin-bottom: ${(props) => props.theme.space[15]}px;
   font-weight: ${(props) => props.theme.fontWeights.thin};
 `;
 
@@ -72,12 +84,19 @@ const StyledErrorMessage = styled(ErrorMessage)`
   margin-bottom: ${(props) => props.theme.space[5]}px;
 `;
 
+const Term = styled.span`
+  font-weight: ${(props) => props.theme.fontWeights.semibold};
+  font-size: ${(props) => props.theme.fontSizes.md};
+  margin-left: ${(props) => props.theme.space[5]}px;
+`;
+
 interface Props {}
 
 interface FormValues {
   category?: Category;
   name: string;
   description: string;
+  price: number;
   contents: File[];
 }
 
@@ -85,6 +104,7 @@ const validationSchema = yup.object({
   category: yup.string().required(),
   name: yup.string().max(50).required(),
   description: yup.string().max(200).min(20).required(),
+  price: yup.number().moreThan(0).required(),
   contents: yup.array().min(4).required(),
 });
 
@@ -97,24 +117,20 @@ export const StickerNewPage: React.FC<Props> = React.memo(
         name: '',
         description: '',
         contents: [],
+        price: 0,
       },
       validationSchema,
-      async onSubmit({ category, name, description, contents }) {
-        console.log(category);
-        console.log(name);
-        console.log(description);
-        console.log(contents);
-        // dispatch(
-        //   createNewSticker({
-        //     avatar,
-        //     category,
-        //     name,
-        //     description,
-        //     document,
-        //     code,
-        //     tests,
-        //   })
-        // );
+      async onSubmit({ category, name, description, contents, price }) {
+        category &&
+          dispatch(
+            createNewSticker({
+              category,
+              name,
+              description,
+              contents,
+              price,
+            })
+          );
       },
     });
     const [errors, setErrors] = useState<typeof formik.errors>({});
@@ -156,61 +172,81 @@ export const StickerNewPage: React.FC<Props> = React.memo(
         backTo="/stickers?tab=listing"
       >
         <Form onSubmit={formik.handleSubmit}>
-          <SelectBox
-            id="sticker_category"
-            name="category"
-            options={Object.keys(Category)}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            errorMessage={errors.category}
-          />
+          <Section>
+            <SelectBox
+              id="sticker_category"
+              name="category"
+              options={Object.keys(Category)}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              errorMessage={errors.category}
+            />
 
-          <InputText
-            name="name"
-            placeholder="Name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            errorMessage={errors.name}
-          />
+            <InputText
+              name="name"
+              placeholder="Name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              errorMessage={errors.name}
+            />
 
-          <StyledTextarea
-            name="description"
-            placeholder="Description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            rows={8}
-            maxLength={200}
-            minLength={20}
-            errorMessage={errors.description}
-          />
+            <StyledTextarea
+              name="description"
+              placeholder="Description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              rows={8}
+              maxLength={200}
+              minLength={20}
+              errorMessage={errors.description}
+            />
+          </Section>
 
-          <Subtitle>Sticker Contents</Subtitle>
-          <Contents>
-            {contentPreview.map((preview, index) => (
-              <StyledPreviewImage
-                size="lg"
-                key={index}
-                onRemove={() => handleRemove(index)}
-                src={preview}
-              />
-            ))}
-            <UploadImage>
-              <PlusIcon />
-              <InputFile
-                ref={contentInputRef}
-                name="contents"
-                type="file"
-                accept="image/*"
-                onChange={handleNewContent}
+          <Section>
+            <Subtitle>Price</Subtitle>
+            <PriceInner>
+              <Input
+                type="number"
+                name="price"
+                placeholder="Price ETH"
+                value={formik.values.price}
+                onChange={formik.handleChange}
                 disabled={formik.isSubmitting}
+                errorMessage={errors.price}
               />
-            </UploadImage>
-          </Contents>
-          {errors.contents && (
-            <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
-          )}
+              <Term>ETH</Term>
+            </PriceInner>
+          </Section>
+
+          <Section>
+            <Subtitle>Contents</Subtitle>
+            <Contents>
+              {contentPreview.map((preview, index) => (
+                <StyledPreviewImage
+                  size="lg"
+                  key={index}
+                  onRemove={() => handleRemove(index)}
+                  src={preview}
+                />
+              ))}
+              <UploadImage>
+                <PlusIcon />
+                <InputFile
+                  ref={contentInputRef}
+                  name="contents"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleNewContent}
+                  disabled={formik.isSubmitting}
+                />
+              </UploadImage>
+            </Contents>
+            {errors.contents && (
+              <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
+            )}
+          </Section>
           <CreateButton type="submit" shape="rounded" text="CREATE" />
         </Form>
       </BaseLayout>
