@@ -52,6 +52,7 @@ interface Props {
   errorMessage?: string;
   onChange: ReactEventHandler<HTMLSelectElement>;
   disabled: boolean;
+  value?: string;
 }
 
 export const SelectBox: React.FC<Props> = React.memo(function Select({
@@ -61,6 +62,7 @@ export const SelectBox: React.FC<Props> = React.memo(function Select({
   errorMessage,
   onChange,
   disabled,
+  value = undefined,
 }) {
   const { t } = useTranslation(['selectOptions']);
   return (
@@ -69,10 +71,11 @@ export const SelectBox: React.FC<Props> = React.memo(function Select({
         onChange={onChange}
         id={id}
         name={name}
+        value={value}
         defaultValue=""
         disabled={disabled}
       >
-        <DefaultOption value="">{t(`selectOptions:DEFAULT`)}</DefaultOption>
+        <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
         {options.map((option) => (
           <option key={option} value={option}>
             {t(`selectOptions:${id.toUpperCase()}_${option}`)}

@@ -144,7 +144,7 @@ const Purchased: React.FC<PurchacedProps> = React.memo(function Purchased() {
         {stickers.slice(offset, offset + limit).map((sticker) => (
           <ListItem key={sticker.id}>
             <StyledLink to={`/stickers/${sticker.id}`}>
-              <Avatar cid={sticker.avatar} />
+              <Avatar cid={sticker.contents[0].cid} />
               <RightGroup>
                 <Name>{sticker.name}</Name>
                 <Description>{sticker.description}</Description>
@@ -177,7 +177,7 @@ const ListingOn: React.FC<PurchacedProps> = React.memo(function ListingOn() {
         {stickers.slice(offset, offset + limit).map((sticker) => (
           <ListItem key={sticker.id}>
             <StyledLink to={`/stickers/${sticker.id}`}>
-              <Avatar cid={sticker.avatar} />
+              <Avatar cid={sticker.contents[0].cid} />
               <RightGroup>
                 <Name>{sticker.name}</Name>
                 <Description>{sticker.description}</Description>

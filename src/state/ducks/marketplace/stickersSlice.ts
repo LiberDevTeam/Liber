@@ -1,9 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  marketplaceNewStickers,
-  marketplaceRankingStickers,
-  marketplaceSearchStickers,
-} from '~/api';
+import { marketplaceNewStickers, marketplaceRankingStickers } from '~/api';
+import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
 import { AppDispatch, RootState } from '~/state/store';
 import { addStickers, tmpListingOn } from '../stickers/stickersSlice';
 
@@ -14,12 +11,24 @@ export const fetchSearchResult = createAsyncThunk<
 >(
   'marketplace/stickers/fetchSearchResult',
   async ({ query, page }, { dispatch }) => {
-    const res = await marketplaceSearchStickers(query, page);
-    const { stickerIds } = await res.json();
+    // const res = await marketplaceSearchStickers(query, page);
+    // const { determiners } = await res.json();
+    const determiners = tmpListingOn;
 
     // TODO: fetch and store stickers information from orbitdb
-    dispatch(addStickers(tmpListingOn));
+    const stickers = await Promise.all(
+      determiners.map(async (sticker) => {
+        return readStickerFromDB(
+          await connectStickerKeyValue({
+            stickerId: sticker.id,
+            address: sticker.keyValAddress,
+          })
+        );
+      })
+    );
+    dispatch(addStickers(stickers));
 
+    const stickerIds = stickers.map((s) => s.id);
     dispatch(paginateSearchResult({ page, stickerIds }));
   }
 );

@@ -27,15 +27,17 @@ const Avatar = styled(IpfsContent)`
 const Group = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.md};
+  width: calc(100% - 144px);
 `;
 
 const Name = styled.h1`
   font-size: ${(props) => props.theme.fontSizes['2xl']};
   font-weight: ${(props) => props.theme.fontWeights.semibold};
   margin-bottom: ${(props) => props.theme.space[3]}px;
+  overflow-wrap: break-word;
 `;
 
-const Category = styled.p`
+const StickerCategory = styled.p`
   color: ${(props) => props.theme.colors.secondaryText};
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
@@ -57,6 +59,7 @@ const Subtitle = styled.h2`
 const Description = styled.p`
   font-weight: ${(props) => props.theme.fontWeights.thin};
   color: ${(props) => props.theme.colors.secondaryText};
+  overflow-wrap: break-word;
 `;
 
 const EditButton = styled(Button)`
@@ -84,7 +87,7 @@ const GalleryImage = styled(IpfsContent)`
   width: 124px;
   height: 124px;
   margin: ${(props) =>
-    `0 ${props.theme.space[1]}px ${props.theme.space[1]}px 0`};
+    `0 ${props.theme.space[4]}px ${props.theme.space[4]}px 0`};
   object-fit: cover;
   border-radius: ${(props) => props.theme.radii.large}px;
 `;
@@ -94,16 +97,19 @@ interface Props {}
 export const StickerDetailPage: React.FC<Props> = memo(
   function StickerDetailPage({}) {
     const dispatch = useDispatch();
-    const { id } = useParams<{ id: string }>();
+    const { stickerId, address } = useParams<{
+      stickerId: string;
+      address: string;
+    }>();
     const me = useSelector(selectMe);
-    const sticker = useSelector(selectStickerById(id));
-    const purchased = useSelector(selectPurchasedStickerById(id));
+    const sticker = useSelector(selectStickerById(stickerId));
+    const purchased = useSelector(selectPurchasedStickerById(stickerId));
 
     useEffect(() => {
       if (!sticker) {
-        dispatch(fetchSticker({ id }));
+        dispatch(fetchSticker({ stickerId, address }));
       }
-    }, [id]);
+    }, [stickerId, address]);
 
     // TODO loading;
     if (!sticker) return null;
@@ -113,10 +119,10 @@ export const StickerDetailPage: React.FC<Props> = memo(
     return (
       <BaseLayout backTo="previous">
         <HeaderContent>
-          <Avatar cid={sticker.avatar} />
+          <Avatar cid={sticker.contents[0].cid} />
           <Group>
             <Name>{sticker.name}</Name>
-            <Category>{sticker.category}</Category>
+            <StickerCategory>{sticker.category}</StickerCategory>
             <Stock>Stock: Unlimited</Stock>
             <Price>Price: {sticker.price} ETH</Price>
           </Group>
@@ -128,7 +134,7 @@ export const StickerDetailPage: React.FC<Props> = memo(
         </Section>
 
         <Section>
-          <Subtitle>Gallery</Subtitle>
+          <Subtitle>Contents</Subtitle>
           <Gallery>
             {sticker.contents.map((c, i) => (
               <GalleryImage key={i} cid={c.cid} />
@@ -137,16 +143,15 @@ export const StickerDetailPage: React.FC<Props> = memo(
         </Section>
 
         <ButtonSection>
-          <Link to={`/stickers/${sticker.id}/edit`}>
-            <EditButton text="EDIT" />
-          </Link>
           {mine && (
-            <Link to={`/stickers/${sticker.id}/edit`}>
+            <Link to={`/stickers/${sticker.keyValAddress}/${sticker.id}/edit`}>
               <EditButton text="EDIT" />
             </Link>
           )}
           {!mine && !purchased && (
-            <Link to={`/stickers/${sticker.id}/purchase`}>
+            <Link
+              to={`/stickers/${sticker.keyValAddress}/${sticker.id}/purchase`}
+            >
               <PurchaseButton text="PURCHASE" />
             </Link>
           )}

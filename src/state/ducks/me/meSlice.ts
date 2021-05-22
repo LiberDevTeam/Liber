@@ -28,7 +28,7 @@ export const initUser = createAsyncThunk<User, void, { state: RootState }>(
 
     const user: User = {
       id: userDB.address.root,
-      username: 'UserName',
+      username: 'Unnamed',
       avatarCid: '',
       settings: {
         isIsolation: false,
@@ -64,9 +64,6 @@ export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    updateId: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
-    },
     updateIsolationMode: (state, action: PayloadAction<boolean>) => {
       state.settings.isIsolation = action.payload;
     },
@@ -78,7 +75,7 @@ export const meSlice = createSlice({
   },
 });
 
-export const { updateIsolationMode, updateId } = meSlice.actions;
+export const { updateIsolationMode } = meSlice.actions;
 
 export const selectMe = (state: RootState): typeof state.me => state.me;
 
