@@ -85,7 +85,7 @@ export const Routes: React.FC = memo(function Routes() {
 
           <Route
             exact
-            path="/marketplace/:kind?"
+            path="/marketplace/:type?"
             render={() => <MarketplacePage />}
           />
 

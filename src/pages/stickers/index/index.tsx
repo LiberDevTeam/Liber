@@ -40,10 +40,7 @@ export const StickersPage: React.FC<Props> = React.memo(
         <Tabs
           titles={tabTitles}
           selectedIndex={selectedIndex}
-          onSelect={(index: number) => {
-            console.log(index);
-            setSelectedIndex(index);
-          }}
+          onSelect={(index: number) => setSelectedIndex(index)}
         >
           <TabPanels>
             <TabPanel>
