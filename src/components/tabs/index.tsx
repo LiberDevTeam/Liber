@@ -27,43 +27,34 @@ const Tab = styled(BaseTab)<{ active: string }>`
     `}
 `;
 
-export const TabPanels = styled.div`
-  overflow: scroll;
-`;
+export const TabPanels = styled.div``;
 
-export const TabPanel = styled(BaseTabPanel)<{ hide?: boolean }>`
-  flex: 1;
-  ${(props) =>
-    props.hide &&
-    css`
-      display: none;
-    `}
-`;
+export const TabPanel = styled(BaseTabPanel)``;
+
+export type TabTitle = string;
 
 interface TabsProps {
-  tabList: string[];
-  tabTitle: Record<string, string>;
-  children: React.ReactNode;
-  selectedTab: string;
+  titles: TabTitle[];
+  selectedIndex: number;
   onSelect: (index: number, last: number, event: Event) => boolean | void;
 }
 
 export const Tabs: React.FC<TabsProps> = React.memo(function Tabs({
-  tabList,
-  tabTitle,
+  titles,
+  selectedIndex,
   children,
-  selectedTab,
   onSelect,
 }) {
   return (
-    <BaseTabs
-      selectedIndex={tabList.findIndex((index) => index === selectedTab)}
-      onSelect={onSelect}
-    >
+    <BaseTabs selectedIndex={selectedIndex} onSelect={onSelect}>
       <TabList>
-        {tabList.map((tab) => (
-          <Tab key={tab} active={(tab === selectedTab).toString()}>
-            {tabTitle[tab]}
+        {titles.map((title, index) => (
+          <Tab
+            key={title}
+            active={(index === selectedIndex).toString()}
+            title={title}
+          >
+            {title}
           </Tab>
         ))}
       </TabList>

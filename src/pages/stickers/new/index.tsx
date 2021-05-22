@@ -169,7 +169,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
       <BaseLayout
         title="Create New Sticker"
         description="Please fill out a form and submit it."
-        backTo="/stickers?tab=listing"
+        backTo="/stickers"
       >
         <Form onSubmit={formik.handleSubmit}>
           <Section>

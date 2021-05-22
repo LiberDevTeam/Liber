@@ -1,7 +1,4 @@
-import { push } from 'connected-react-router';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Input } from '~/components/input';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
@@ -16,17 +13,10 @@ const Root = styled.div`
   padding: 0 ${(props) => props.theme.space[5]}px;
 `;
 
-const TAB_POST = 'post';
-const TAB_PLACE = 'place';
-const TAB_LIST = [TAB_POST, TAB_PLACE];
-const TAB_TITLE = {
-  [TAB_POST]: 'Post',
-  [TAB_PLACE]: 'Place',
-};
+const tabTitles = ['Message', 'Place'];
 
 export const Explore: React.FC = React.memo(function Explore() {
-  const dispatch = useDispatch();
-  const { tab = TAB_POST } = useParams<{ tab: string }>();
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchText, setSearchText] = useState('');
 
   const handleSearchTextChange = useCallback(
@@ -35,10 +25,6 @@ export const Explore: React.FC = React.memo(function Explore() {
     },
     []
   );
-
-  const handleSelect = useCallback((index: number) => {
-    dispatch(push(`/explore/${TAB_LIST[index]}`));
-  }, []);
 
   return (
     <BaseLayout title="Explore" description="Explore best post and place">
@@ -50,16 +36,15 @@ export const Explore: React.FC = React.memo(function Explore() {
           placeholder="Search"
         />
         <Tabs
-          tabList={TAB_LIST}
-          tabTitle={TAB_TITLE}
-          selectedTab={tab}
-          onSelect={handleSelect}
+          titles={tabTitles}
+          selectedIndex={selectedIndex}
+          onSelect={(index: number) => setSelectedIndex(index)}
         >
           <TabPanels>
-            <TabPanel hide={tab !== TAB_POST}>
+            <TabPanel>
               <SearchPostResult searchText={searchText} />
             </TabPanel>
-            <TabPanel hide={tab !== TAB_PLACE}>
+            <TabPanel>
               <SearchPlaceResult searchText={searchText} />
             </TabPanel>
           </TabPanels>

@@ -1,13 +1,10 @@
-import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { SelectBox } from '~/components/select-box';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { UploadPhoto } from '~/components/upload-photo';
-import { useQuery } from '~/lib/queryParams';
 import { readAsDataURL } from '~/lib/readFile';
 import { categories } from '~/state/ducks/places/placesSlice';
 import BaseLayout from '~/templates';
@@ -88,13 +85,7 @@ const Description = styled.p`
   font-weight: ${(props) => props.theme.fontWeights.light};
 `;
 
-const TAB_EDITOR = 'editor';
-const TAB_TESTING = 'testing';
-const TAB_LIST = [TAB_EDITOR, TAB_TESTING];
-const TAB_TITLE = {
-  [TAB_EDITOR]: 'Editor',
-  [TAB_TESTING]: 'Testing',
-};
+const tabTitles = ['Editor', 'Testing'];
 
 interface Props {}
 
@@ -125,8 +116,7 @@ const validationSchema = yup.object({
 });
 
 export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
-  const { tab = TAB_EDITOR } = useQuery<{ tab: string }>();
-  const dispatch = useDispatch();
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -178,10 +168,6 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
     formik.setFieldValue('avatar', file);
   }, []);
 
-  const handleSelect = useCallback((index: number) => {
-    dispatch(push(`/bots/new?tab=${TAB_LIST[index]}`));
-  }, []);
-
   const handleRemove = (index: number) => () =>
     formik.setFieldValue(
       'examples',
@@ -200,7 +186,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
     <BaseLayout
       title="Create New Bot"
       description="Please fill out a form and submit it."
-      backTo="/bots?tab=listing"
+      backTo="/bots"
     >
       <form>
         <Group>
@@ -254,13 +240,12 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
         </Group>
 
         <Tabs
-          tabList={TAB_LIST}
-          tabTitle={TAB_TITLE}
-          selectedTab={tab}
-          onSelect={handleSelect}
+          titles={tabTitles}
+          selectedIndex={selectedIndex}
+          onSelect={(index: number) => setSelectedIndex(index)}
         >
           <TabPanels>
-            <TabPanel hide={tab !== TAB_EDITOR}>
+            <TabPanel>
               <Group>
                 <Editor
                   value={formik.values.code}
@@ -270,7 +255,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                 <CreateButton type="button" shape="rounded" text="CREATE" />
               </Group>
             </TabPanel>
-            <TabPanel hide={tab !== TAB_TESTING}>
+            <TabPanel>
               <Group>
                 <ExampleDescription>
                   Testing is useful to look for latent bugs in your bot. It will
