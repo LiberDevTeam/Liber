@@ -186,7 +186,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
     <BaseLayout
       title="Create New Bot"
       description="Please fill out a form and submit it."
-      backTo="/bots?tab=listing"
+      backTo="/bots"
     >
       <form>
         <Group>
