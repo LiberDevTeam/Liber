@@ -116,8 +116,6 @@ export const StickerDetailPage: React.FC<Props> = memo(
 
     const mine = sticker.uid === me.id;
 
-    console.log(sticker.category);
-
     return (
       <BaseLayout backTo="previous">
         <HeaderContent>
