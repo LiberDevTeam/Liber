@@ -74,7 +74,7 @@ export const Routes: React.FC = memo(function Routes() {
             render={() => <ChatDetail />}
           />
 
-          <Route exact path="/explore/:tab?" render={() => <Explore />} />
+          <Route exact path="/explore" render={() => <Explore />} />
 
           <Route exact path="/profile" render={() => <ProfilePage />} />
           <Route
