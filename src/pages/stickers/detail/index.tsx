@@ -27,15 +27,17 @@ const Avatar = styled(IpfsContent)`
 const Group = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.md};
+  width: calc(100% - 144px);
 `;
 
 const Name = styled.h1`
   font-size: ${(props) => props.theme.fontSizes['2xl']};
   font-weight: ${(props) => props.theme.fontWeights.semibold};
   margin-bottom: ${(props) => props.theme.space[3]}px;
+  overflow-wrap: break-word;
 `;
 
-const Category = styled.p`
+const StickerCategory = styled.p`
   color: ${(props) => props.theme.colors.secondaryText};
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
@@ -57,6 +59,7 @@ const Subtitle = styled.h2`
 const Description = styled.p`
   font-weight: ${(props) => props.theme.fontWeights.thin};
   color: ${(props) => props.theme.colors.secondaryText};
+  overflow-wrap: break-word;
 `;
 
 const EditButton = styled(Button)`
@@ -113,13 +116,15 @@ export const StickerDetailPage: React.FC<Props> = memo(
 
     const mine = sticker.uid === me.id;
 
+    console.log(sticker.category);
+
     return (
       <BaseLayout backTo="previous">
         <HeaderContent>
           <Avatar cid={sticker.contents[0].cid} />
           <Group>
             <Name>{sticker.name}</Name>
-            <Category>{sticker.category}</Category>
+            <StickerCategory>{sticker.category}</StickerCategory>
             <Stock>Stock: Unlimited</Stock>
             <Price>Price: {sticker.price} ETH</Price>
           </Group>

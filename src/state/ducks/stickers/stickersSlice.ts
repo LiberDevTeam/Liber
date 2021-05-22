@@ -16,7 +16,7 @@ import { AppDispatch, RootState } from '~/state/store';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
 export enum Category {
-  AnimalLovers = 'Animal Lovers',
+  AnimalLovers = 'AnimalLovers',
 }
 
 interface PartialForUpdate {
