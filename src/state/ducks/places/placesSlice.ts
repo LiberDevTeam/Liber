@@ -13,7 +13,8 @@ import {
   placeMessagesAdded,
   updatePlace,
 } from '~/state/actionCreater';
-import { RootState } from '~/state/store';
+import { AppThunkDispatch, RootState } from '~/state/store';
+import { digestMessage } from '../../../utils/digest-message';
 import { connectToMessages, Message, selectMessageById } from './messagesSlice';
 import { Place } from './type';
 
@@ -35,6 +36,10 @@ export const categories = [
   'SPORTS',
   'TECHNOLOGY',
 ];
+export const categoryOptions = categories.map((label, index) => ({
+  value: `${index}`,
+  label,
+}));
 
 const messageSort = (a: Message, b: Message): number =>
   a.timestamp - b.timestamp;
@@ -53,6 +58,8 @@ export const joinPlace = createAsyncThunk<
     address,
     onReplicated: (_kv) => {
       const place = readPlaceFromDB(_kv);
+      console.log(place);
+
       // NOTE: Don't call the action until the place.id is loaded.
       if (place.id) {
         dispatch(updatePlace(place));
@@ -65,6 +72,28 @@ export const joinPlace = createAsyncThunk<
     return place;
   }
 });
+
+export const openProtectedPlace = createAsyncThunk<
+  void,
+  { placeId: string; password: string },
+  { dispatch: AppThunkDispatch; state: RootState }
+>(
+  `${MODULE_NAME}/openProtectedPlace`,
+  async ({ placeId, password }, { dispatch, getState }) => {
+    const state = getState();
+    const place = selectPlaceById(placeId)(state);
+
+    if (!place) {
+      throw new Error(`place: ${placeId} is not found.`);
+    }
+
+    const hash = await digestMessage(password);
+    dispatch(setHash({ placeId, hash }));
+    await dispatch(
+      connectToMessages({ placeId, address: place.feedAddress, hash })
+    );
+  }
+);
 
 export const banUser = createAsyncThunk<
   void,
@@ -164,6 +193,14 @@ export const placesSlice = createSlice({
           place.messageIds = arrayUnique(
             action.payload.map((m) => m.id).concat(place.messageIds)
           );
+        }
+      })
+      .addCase(connectToMessages.rejected, (state, action) => {
+        if (action.meta.arg.hash) {
+          placesAdapter.updateOne(state, {
+            id: action.meta.arg.placeId,
+            changes: { hash: undefined },
+          });
         }
       });
   },

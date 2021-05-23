@@ -41,6 +41,7 @@ export const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => (
         borderRadius: theme.radii.medium,
         inset: 'initial',
         padding: theme.space[3],
+        maxWidth: '90%',
       },
     }}
     onRequestClose={onClose}

@@ -20,6 +20,7 @@ export const JoinPlace: React.FC = () => {
     dispatch(joinPlace({ placeId, address }));
   }, [dispatch, placeId, address]);
 
+  console.log(place);
   useEffect(() => {
     if (place?.feedAddress) {
       dispatch(connectToMessages({ placeId, address: place.feedAddress }));

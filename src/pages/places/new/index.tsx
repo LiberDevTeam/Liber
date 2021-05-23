@@ -13,7 +13,7 @@ import { Button } from '../../../components/button';
 import { Checkbox as BaseCheckbox } from '../../../components/checkbox';
 import { Input } from '../../../components/input';
 import { Textarea } from '../../../components/textarea';
-import { categories } from '../../../state/ducks/places/placesSlice';
+import { categoryOptions } from '../../../state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'New Chat';
 
@@ -72,7 +72,7 @@ const Checkbox = styled(BaseCheckbox)`
 
 interface FormValues {
   avatar: File | null;
-  category: number;
+  category: number | null;
   name: string;
   description: string;
   isPrivate: boolean;
@@ -97,7 +97,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
   const formik = useFormik<FormValues>({
     initialValues: {
       avatar: null,
-      category: 0,
+      category: null,
       name: '',
       description: '',
       setPassword: false,
@@ -116,7 +116,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       password,
       readOnly,
     }) {
-      if (avatar) {
+      if (avatar && category) {
         dispatch(
           createNewPlace({
             name,
@@ -142,9 +142,14 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
     }
   }, [formik.values.avatar]);
 
-  const handleChangeImage = useCallback((file: File | null) => {
-    formik.setFieldValue('avatar', file);
-  }, []);
+  const handleChangeImage = useCallback(
+    (file: File | null) => {
+      formik.setFieldValue('avatar', file);
+    },
+    [formik.setFieldValue]
+  );
+
+  console.log(formik.isValid, formik.values);
 
   return (
     <BaseLayout
@@ -163,8 +168,13 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         <SelectBox
           id="chat_category"
           name="category"
-          options={categories}
-          onChange={formik.handleChange}
+          options={categoryOptions}
+          onChange={(e) =>
+            formik.setFieldValue(
+              'category',
+              parseInt(e.currentTarget.value, 10)
+            )
+          }
           disabled={formik.isSubmitting}
         />
 

@@ -3,12 +3,8 @@ import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { Place, PlacePermission } from '~/state/ducks/places/type';
-import {
-  connectMessageFeed,
-  createMessageFeed,
-  getMessageFeedById,
-  readMessagesFromFeed,
-} from '../../../lib/db/message';
+import { digestMessage } from '~/utils/digest-message';
+import { createMessageFeed, getMessageFeedById } from '../../../lib/db/message';
 import { createPlaceKeyValue } from '../../../lib/db/place';
 import {
   placeAdded,
@@ -25,19 +21,9 @@ import {
   joinPlace,
   selectAllPlaces,
   selectPlaceById,
-  setHash,
 } from '../../../state/ducks/places/placesSlice';
 import { AppDispatch, AppThunkDispatch, RootState } from '../../../state/store';
 import { finishInitialization } from '../isInitialized';
-async function digestMessage(message: string): Promise<string> {
-  const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-  return hashHex;
-}
 
 const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
   return messages.filter((m) => m.uid !== uid);
@@ -68,17 +54,24 @@ export const initApp = createAsyncThunk<
   const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
 
-  selectAllPlaces(state).forEach(async (place) => {
-    await dispatch(
-      joinPlace({ placeId: place.id, address: place.keyValAddress })
-    );
-    if (place.passwordRequired && place.hash === undefined) {
-      return;
-    }
-    dispatch(
-      connectToMessages({ placeId: place.id, address: place.feedAddress })
-    );
-  });
+  await Promise.all(
+    selectAllPlaces(state).map(async (place) => {
+      return [
+        await dispatch(
+          joinPlace({ placeId: place.id, address: place.keyValAddress })
+        ),
+        place.passwordRequired && place.hash === undefined
+          ? undefined
+          : await dispatch(
+              connectToMessages({
+                placeId: place.id,
+                hash: place.hash,
+                address: place.feedAddress,
+              })
+            ),
+      ];
+    })
+  );
 
   dispatch(finishInitialization());
 });
@@ -122,46 +115,6 @@ export const publishPlaceMessage = createAsyncThunk<
 
     await feed.add(message);
     dispatch(placeMessageAdded({ pid, message, mine: true }));
-  }
-);
-
-export const openProtectedPlace = createAsyncThunk<
-  void,
-  { placeId: string; password: string },
-  { dispatch: AppThunkDispatch; state: RootState }
->(
-  'place/openProtectedPlace',
-  async ({ placeId, password }, { dispatch, getState }) => {
-    const state = getState();
-    const me = state.me;
-    const place = selectPlaceById(placeId)(state);
-
-    if (!place) {
-      throw new Error(`place: ${placeId} is not found.`);
-    }
-
-    const hash = await digestMessage(password);
-    const feed = await connectMessageFeed({
-      placeId,
-      address: place.feedAddress,
-      hash,
-      onMessageAdd: createMessageReceiveHandler({
-        dispatch,
-        placeId,
-        myId: me.id,
-      }),
-    });
-
-    const messages = readMessagesFromFeed(feed);
-    dispatch(setHash({ placeId, hash }));
-    dispatch(placeMessagesAdded({ placeId, messages }));
-    dispatch(
-      publishPlaceMessage({
-        pid: placeId,
-        text: `${me.username || me.id} joined!`,
-        attachments: [],
-      })
-    );
   }
 );
 
