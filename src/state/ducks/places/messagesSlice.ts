@@ -23,19 +23,23 @@ export interface Message {
 
 export const connectToMessages = createAsyncThunk<
   Message[],
-  { placeId: string; address: string }
->(`${MODULE_NAME}/connect`, async ({ placeId, address }, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-  const feed = await connectMessageFeed({
-    placeId,
-    address,
-    onMessageAdd: (messages) => {
-      dispatch(placeMessagesAdded({ messages, placeId }));
-    },
-  });
+  { placeId: string; address: string; hash?: string }
+>(
+  `${MODULE_NAME}/connectToMessages`,
+  async ({ placeId, address, hash }, thunkAPI) => {
+    const { dispatch } = thunkAPI;
+    const feed = await connectMessageFeed({
+      placeId,
+      address,
+      hash,
+      onMessageAdd: (messages) => {
+        dispatch(placeMessagesAdded({ messages, placeId }));
+      },
+    });
 
-  return readMessagesFromFeed(feed);
-});
+    return readMessagesFromFeed(feed);
+  }
+);
 
 const messagesAdapter = createEntityAdapter<Message>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,

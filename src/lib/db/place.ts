@@ -45,11 +45,9 @@ export const connectPlaceKeyValue = async ({
   placeId,
   address,
   onReplicated,
-  waitReplicate = false,
 }: {
   placeId: string;
   address: string;
-  waitReplicate?: boolean;
   onReplicated?: (db: KeyValueStore<PlaceDBValue>) => void;
 }): Promise<KeyValueStore<PlaceDBValue>> => {
   const orbitDB = await getOrbitDB();
@@ -65,17 +63,9 @@ export const connectPlaceKeyValue = async ({
   }
 
   return new Promise<KeyValueStore<PlaceDBValue>>((resolve) => {
-    if (waitReplicate) {
-      db.events.on('replicate.progress', (_0, _1, _2, progress, have) => {
-        if (progress === have) {
-          resolve(db);
-        }
-      });
-    } else {
-      db.events.on('ready', () => {
-        resolve(db);
-      });
-    }
+    db.events.on('ready', () => {
+      resolve(db);
+    });
     db.load();
   });
 };

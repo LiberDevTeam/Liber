@@ -21,10 +21,7 @@ import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectMe } from '~/state/ducks/me/meSlice';
-import {
-  openProtectedPlace,
-  publishPlaceMessage,
-} from '~/state/ducks/p2p/p2pSlice';
+import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
 import {
   banUser,
   clearUnreadMessages,
@@ -35,6 +32,7 @@ import {
 import { loadUsers } from '~/state/ducks/users/usersSlice';
 import BaseLayout from '~/templates';
 import { theme } from '~/theme';
+import { PasswordDialog } from '../../../components/password-dialog';
 import { PlaceDetailHeader } from './components/place-detail-header';
 
 const Root = styled.div`
@@ -157,7 +155,7 @@ const Footer = styled.footer`
   border-top: ${(props) => props.theme.border.grayLight.light};
 `;
 
-const Controlls = styled.div`
+const Controls = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -191,7 +189,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
-  const [password, setPassword] = useState('');
 
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesBottomRef = useRef<HTMLDivElement>(null);
@@ -273,10 +270,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     }
   }, [dispatch, place?.unreadMessages, pid]);
 
-  const handlePasswordEnter = useCallback(() => {
-    dispatch(openProtectedPlace({ password, placeId: pid }));
-  }, [dispatch, pid, password]);
-
   if (!place) {
     return <div>404</div>;
   }
@@ -299,15 +292,13 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           />
 
           {place.passwordRequired && place.hash === undefined && (
-            <>
-              <div>password required</div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
-              />
-              <button onClick={handlePasswordEnter}>enter</button>
-            </>
+            <PasswordDialog
+              pid={place.id}
+              onClose={() => {
+                dispatch(removePlace({ pid: place.id }));
+                dispatch(push('/places'));
+              }}
+            />
           )}
 
           <Messages>
@@ -368,7 +359,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             ) : null}
 
             <Form onSubmit={formik.handleSubmit}>
-              <Controlls>
+              <Controls>
                 <MessageInput
                   innerRef={messageInputRef}
                   name="text"
@@ -415,7 +406,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
                 >
                   <SendIcon width={20} height={20} />
                 </StyledIconButton>
-              </Controlls>
+              </Controls>
             </Form>
           </Footer>
         </Root>
