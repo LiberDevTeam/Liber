@@ -1,4 +1,4 @@
-import React, { ReactEventHandler } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { SvgArrowDown } from '~/icons/ArrowDown';
@@ -48,9 +48,9 @@ const ArrowDownIcon = styled(SvgArrowDown)`
 interface Props {
   id: string;
   name: string;
-  options: string[];
+  options: { value: string; label: string }[];
   errorMessage?: string;
-  onChange: ReactEventHandler<HTMLSelectElement>;
+  onChange: (e: React.SyntheticEvent<HTMLSelectElement>) => void;
   disabled: boolean;
   value?: string;
 }
@@ -76,9 +76,9 @@ export const SelectBox: React.FC<Props> = React.memo(function Select({
         disabled={disabled}
       >
         <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {t(`selectOptions:${id.toUpperCase()}_${option}`)}
+        {options.map(({ value, label }) => (
+          <option key={label} value={value}>
+            {t(`selectOptions:${id.toUpperCase()}_${label}`)}
           </option>
         ))}
       </StyledSelect>

@@ -36,6 +36,10 @@ export const categories = [
   'SPORTS',
   'TECHNOLOGY',
 ];
+export const categoryOptions = categories.map((label, index) => ({
+  value: `${index}`,
+  label,
+}));
 
 const messageSort = (a: Message, b: Message): number =>
   a.timestamp - b.timestamp;
