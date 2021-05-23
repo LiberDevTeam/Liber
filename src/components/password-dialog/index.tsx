@@ -67,6 +67,7 @@ export const PasswordDialog: React.FC<PasswordDialogProps> = React.memo(
       <Modal open onClose={onClose}>
         <Body>
           <IpfsContent
+            style={{ width: 64, height: 64 }}
             cid={place.avatarCid}
             fallbackComponent={<LoadingAvatar />}
           />
