@@ -72,7 +72,7 @@ const Checkbox = styled(BaseCheckbox)`
 
 interface FormValues {
   avatar: File | null;
-  category: number;
+  category: number | null;
   name: string;
   description: string;
   isPrivate: boolean;
@@ -116,7 +116,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       password,
       readOnly,
     }) {
-      if (avatar) {
+      if (avatar && category) {
         dispatch(
           createNewPlace({
             name,
