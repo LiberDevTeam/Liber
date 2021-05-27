@@ -114,6 +114,28 @@ export const banUser = createAsyncThunk<
   }
 });
 
+export const unbanUser = createAsyncThunk<
+  string[],
+  { placeId: string; userId: string },
+  { state: RootState }
+>(`${MODULE_NAME}/unban`, async ({ placeId, userId }, { getState }) => {
+  const state = getState();
+  const place = selectPlaceById(placeId)(state);
+
+  if (!place) {
+    throw new Error('Place not found');
+  }
+  const placeDB = await connectPlaceKeyValue({
+    placeId,
+    address: place.keyValAddress,
+  });
+
+  const updatedList = place.bannedUsers.filter((id) => id !== userId);
+  await placeDB.set('bannedUsers', updatedList);
+
+  return updatedList;
+});
+
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
@@ -185,6 +207,12 @@ export const placesSlice = createSlice({
         state.entities[action.meta.arg.placeId]?.bannedUsers.push(
           action.meta.arg.userId
         );
+      })
+      .addCase(unbanUser.fulfilled, (state, action) => {
+        placesAdapter.updateOne(state, {
+          id: action.meta.arg.placeId,
+          changes: { bannedUsers: action.payload },
+        });
       })
       .addCase(connectToMessages.fulfilled, (state, action) => {
         const place = state.entities[action.meta.arg.placeId];

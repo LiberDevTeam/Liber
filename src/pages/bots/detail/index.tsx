@@ -79,9 +79,7 @@ const ButtonSection = styled(Section)`
   padding-top: 0;
 `;
 
-interface Props {}
-
-export const BotDetailPage: React.FC<Props> = memo(function BotDetailPage({}) {
+export const BotDetailPage: React.FC = memo(function BotDetailPage() {
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
   const me = useSelector(selectMe);
