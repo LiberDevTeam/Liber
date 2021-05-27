@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { SvgImage } from '../../icons/Image';
+import { ErrorMessage } from '../error-message';
 import { PreviewImage } from '../preview-image';
 
 const width = 124;
@@ -53,10 +54,11 @@ interface UploadPhotoProps {
   name: string;
   previewSrc: string | null;
   disabled?: boolean;
+  errorMessage?: string;
 }
 
 export const UploadPhoto: React.FC<UploadPhotoProps> = React.memo(
-  function UploadPhoto({ onChange, name, previewSrc, disabled }) {
+  function UploadPhoto({ onChange, name, previewSrc, disabled, errorMessage }) {
     const avatarInputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = useCallback(() => {
@@ -90,6 +92,7 @@ export const UploadPhoto: React.FC<UploadPhotoProps> = React.memo(
             />
           </Container>
         )}
+        <ErrorMessage>{errorMessage}</ErrorMessage>
       </Root>
     );
   }

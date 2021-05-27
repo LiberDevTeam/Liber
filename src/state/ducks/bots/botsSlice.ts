@@ -122,7 +122,7 @@ export interface Bot {
   avatar: string;
   price: number;
   docs: string;
-  code: string;
+  sourceCode: string;
   examples: Example[];
   created: number;
   purchased?: number;

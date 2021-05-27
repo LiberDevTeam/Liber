@@ -30,9 +30,37 @@ export const initUser = createAsyncThunk<User, void, { state: RootState }>(
       id: userDB.address.root,
       username: 'Unnamed',
       avatarCid: '',
+
+      // TODO move to private DB
       settings: {
         isIsolation: false,
       },
+      // places: [
+      //   '/orbitdb/xxxxx/xxxxx/place',
+      //   '/orbitdb/yyyyy/yyyyy/place',
+      //   '/orbitdb/zzzzz/zzzzz/place',
+      // ],
+      // botsListingOn: [
+      //   '/orbitdb/xxxxx/xxxxx/place',
+      //   '/orbitdb/yyyyy/yyyyy/place',
+      //   '/orbitdb/zzzzz/zzzzz/place',
+      // ],
+      // stickersListingOn: [
+      //   '/orbitdb/xxxxx/xxxxx/place',
+      //   '/orbitdb/yyyyy/yyyyy/place',
+      //   '/orbitdb/zzzzz/zzzzz/place',
+      // ],
+      // botsPurchased: [
+      //   '/orbitdb/xxxxx/xxxxx/place',
+      //   '/orbitdb/yyyyy/yyyyy/place',
+      //   '/orbitdb/zzzzz/zzzzz/place',
+      // ],
+      // stickersPurchased: [
+      //   '/orbitdb/xxxxx/xxxxx/place',
+      //   '/orbitdb/yyyyy/yyyyy/place',
+      //   '/orbitdb/zzzzz/zzzzz/place',
+      // ],
+      //
     };
 
     userDB.set(DB_KEY, user);
