@@ -69,6 +69,6 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
       );
     }
 
-    return <>unsupported format</>;
+    return fallbackComponent ?? <>unsupported format</>;
   }
 );

@@ -9,7 +9,7 @@ import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
 import { fetchBot, selectBotById } from '~/state/ducks/bots/botsSlice';
-import { Category } from '~/state/ducks/places/placesSlice';
+import { categoryOptions } from '~/state/ducks/places/placesSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
 import { IconButton } from '../../../components/icon-button';
@@ -242,8 +242,13 @@ export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage() {
           <SelectBox
             id="bot_category"
             name="category"
-            options={Object.keys(Category)}
-            onChange={formik.handleChange}
+            options={categoryOptions}
+            onChange={(e) =>
+              formik.setFieldValue(
+                'category',
+                parseInt(e.currentTarget.value, 10)
+              )
+            }
             disabled={formik.isSubmitting}
             errorMessage={errors.category}
           />

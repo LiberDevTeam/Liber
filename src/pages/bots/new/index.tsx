@@ -6,7 +6,7 @@ import { SelectBox } from '~/components/select-box';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
-import { Category } from '~/state/ducks/places/placesSlice';
+import { categoryOptions } from '~/state/ducks/places/placesSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
 import { IconButton } from '../../../components/icon-button';
@@ -200,7 +200,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
           <SelectBox
             id="bot_category"
             name="category"
-            options={Object.keys(Category)}
+            options={categoryOptions}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             errorMessage={formik.errors.category}
