@@ -68,6 +68,7 @@ contract LiberSticker is ERC1155PresetMinterPauser {
             getRoleMemberCount(role) <= 0,
             "Only grant token publish role for non published token"
         );
+        grantRole(MINTER_ROLE, operator);
         grantRole(role, operator);
         publishSticker(id);
         _newTokenId++; // increment tokenId
