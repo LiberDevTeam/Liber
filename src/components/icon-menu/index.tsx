@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Icon } from '~/icons';
-import { SvgChevronRight as ChevronRightIcon } from '../../icons/ChevronRight';
+import { SvgChevronRight as ChevronRightIcon } from '~/icons/ChevronRight';
 
 export const Menu = styled.div`
   padding-top: ${(props) => props.theme.space[7]}px;

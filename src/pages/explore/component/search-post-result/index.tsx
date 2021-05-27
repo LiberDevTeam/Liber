@@ -5,11 +5,11 @@ import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
 import FeedItemDefault from '~/pages/home/components/feed-item';
 import FeedItemBigImage from '~/pages/home/components/feed-item-big-image';
-import { Appearance, FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
+import { Appearance, FeedItem, ItemKind } from '~/state/feed/feedSlice';
 import {
   fetchSearchPostResult,
   selectSearchPostResult,
-} from '~/state/ducks/search/searchSlice';
+} from '~/state/search/searchSlice';
 import { theme } from '~/theme';
 
 const ItemContainer = styled.div`

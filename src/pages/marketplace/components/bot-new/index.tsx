@@ -2,11 +2,8 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { selectBotsByIds } from '~/state/ducks/bots/botsSlice';
-import {
-  fetchNew,
-  selectNewIdsByPage,
-} from '~/state/ducks/marketplace/botsSlice';
+import { selectBotsByIds } from '~/state/bots/botsSlice';
+import { fetchNew, selectNewIdsByPage } from '~/state/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
 
 const Root = styled.div`

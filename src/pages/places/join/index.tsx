@@ -2,8 +2,8 @@ import { push } from 'connected-react-router';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { connectToMessages } from '~/state/ducks/places/messagesSlice';
-import { joinPlace, selectPlaceById } from '~/state/ducks/places/placesSlice';
+import { connectToMessages } from '~/state/places/messagesSlice';
+import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { LoadingPage } from '../../loading';
 
 export const JoinPlace: React.FC = () => {

@@ -2,27 +2,24 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
-import { Place, PlacePermission } from '~/state/ducks/places/type';
-import { digestMessage } from '~/utils/digest-message';
-import { createMessageFeed, getMessageFeedById } from '../../../lib/db/message';
-import { createPlaceKeyValue } from '../../../lib/db/place';
+import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
+import { createPlaceKeyValue } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
-} from '../../../state/actionCreater';
-import { selectMe } from '../../../state/ducks/me/meSlice';
-import { addIpfsContent } from '../../../state/ducks/p2p/ipfsContentsSlice';
-import {
-  connectToMessages,
-  Message,
-} from '../../../state/ducks/places/messagesSlice';
+} from '~/state/actionCreater';
+import { selectMe } from '~/state/me/meSlice';
+import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
+import { connectToMessages, Message } from '~/state/places/messagesSlice';
 import {
   joinPlace,
   selectAllPlaces,
   selectPlaceById,
-} from '../../../state/ducks/places/placesSlice';
-import { AppDispatch, AppThunkDispatch, RootState } from '../../../state/store';
+} from '~/state/places/placesSlice';
+import { Place, PlacePermission } from '~/state/places/type';
+import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
 const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {

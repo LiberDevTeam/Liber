@@ -3,7 +3,7 @@ import {
   createEntityAdapter,
   createSlice,
 } from '@reduxjs/toolkit';
-import { connectUserDB } from '../../../lib/db/user';
+import { connectUserDB } from '~/lib/db/user';
 
 export interface Settings {
   isIsolation: boolean;

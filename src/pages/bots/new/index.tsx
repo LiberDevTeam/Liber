@@ -2,17 +2,17 @@ import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { Button } from '~/components/button';
+import { IconButton } from '~/components/icon-button';
+import { Input } from '~/components/input';
 import { SelectBox } from '~/components/select-box';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
+import { Textarea } from '~/components/textarea';
 import { UploadPhoto } from '~/components/upload-photo';
+import { SvgPlus as PlusIcon } from '~/icons/Plus';
 import { readAsDataURL } from '~/lib/readFile';
-import { categoryOptions } from '~/state/ducks/places/placesSlice';
+import { categoryOptions } from '~/state/places/placesSlice';
 import BaseLayout from '~/templates';
-import { Button } from '../../../components/button';
-import { IconButton } from '../../../components/icon-button';
-import { Input } from '../../../components/input';
-import { Textarea } from '../../../components/textarea';
-import { SvgPlus as PlusIcon } from '../../../icons/Plus';
 import { Editor } from './components/editor';
 
 const ExampleDescription = styled.p`

@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
 import { Input } from '~/components/input';
 import { MessageView } from '~/components/message-view';
+import { PasswordDialog } from '~/components/password-dialog';
 import { PreviewImage } from '~/components/preview-image';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
@@ -20,19 +21,18 @@ import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
-import { selectMe } from '~/state/ducks/me/meSlice';
-import { publishPlaceMessage } from '~/state/ducks/p2p/p2pSlice';
+import { selectMe } from '~/state/me/meSlice';
+import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
 import {
   banUser,
   clearUnreadMessages,
   removePlace,
   selectPlaceById,
   selectPlaceMessagesByPID,
-} from '~/state/ducks/places/placesSlice';
-import { loadUsers } from '~/state/ducks/users/usersSlice';
+} from '~/state/places/placesSlice';
+import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
 import { theme } from '~/theme';
-import { PasswordDialog } from '../../../components/password-dialog';
 import { PlaceDetailHeader } from './components/place-detail-header';
 
 const Root = styled.div`

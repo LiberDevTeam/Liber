@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactModal from 'react-modal';
 import styled from 'styled-components';
+import { SvgClose as CloseIcon } from '~/icons/Close';
 import { theme } from '~/theme';
-import { SvgClose as CloseIcon } from '../../icons/Close';
 
 const CloseButton = styled.button`
   width: 26px;

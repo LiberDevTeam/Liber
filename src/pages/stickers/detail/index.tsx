@@ -4,12 +4,12 @@ import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { IpfsContent } from '~/components/ipfs-content';
-import { selectMe } from '~/state/ducks/me/meSlice';
-import { selectPurchasedStickerById } from '~/state/ducks/mypage/stickersSlice';
+import { selectMe } from '~/state/me/meSlice';
+import { selectPurchasedStickerById } from '~/state/mypage/stickersSlice';
 import {
   fetchSticker,
   selectStickerById,
-} from '~/state/ducks/stickers/stickersSlice';
+} from '~/state/stickers/stickersSlice';
 import BaseLayout from '~/templates';
 
 const HeaderContent = styled.div`

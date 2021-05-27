@@ -1,5 +1,5 @@
 import FeedStore from 'orbit-db-feedstore';
-import { Message } from '../../state/ducks/places/messagesSlice';
+import { Message } from '~/state/places/messagesSlice';
 import { getOrbitDB } from './orbit';
 
 type MessageFeed = FeedStore<Message>;

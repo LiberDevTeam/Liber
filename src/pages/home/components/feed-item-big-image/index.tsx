@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
-import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
-import { getIpfsNode } from '../../../../lib/ipfs';
+import { getIpfsNode } from '~/lib/ipfs';
+import { FeedItem, ItemKind } from '~/state/feed/feedSlice';
 import {
   downloadIpfsContent,
   selectIpfsContentByCid,
-} from '../../../../state/ducks/p2p/ipfsContentsSlice';
+} from '~/state/p2p/ipfsContentsSlice';
 import {
   Avatar,
   Body,

@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IconButtonCircle } from '~/components/icon-button-circle';
 import { Menu, MenuItem, MenuTitle } from '~/components/icon-menu';
+import { IpfsContent } from '~/components/ipfs-content';
 import { shortenUid, username } from '~/helpers';
+import { SvgBot as BotIcon } from '~/icons/Bot';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import { SvgEdit2 as EditIcon } from '~/icons/Edit2';
 import { SvgSettings as SettingsIcon } from '~/icons/Settings';
 import { SvgSmilingFace as SmilingFaceIcon } from '~/icons/SmilingFace';
-import { selectMe } from '~/state/ducks/me/meSlice';
-import { IpfsContent } from '../../components/ipfs-content';
-import { SvgBot as BotIcon } from '../../icons/Bot';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
-import BaseLayout from '../../templates';
+import { selectMe } from '~/state/me/meSlice';
+import BaseLayout from '~/templates';
 
 const Header = styled.div`
   display: flex;
