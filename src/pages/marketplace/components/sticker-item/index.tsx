@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { Sticker } from '~/state/ducks/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/stickersSlice';
 
 const StyledLink = styled(Link)`
   display: flex;

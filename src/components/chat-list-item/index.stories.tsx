@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
-import { Place } from '~/state/ducks/places/type';
+import { Place } from '~/state/places/type';
 import { ChatListItem, ChatListItemProps } from '.';
 import { dummyPlace } from '../../mocks/place';
 

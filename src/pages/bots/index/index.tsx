@@ -7,7 +7,7 @@ import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import {
   selectBotsListingOn,
   selectPurchasedBots,
-} from '~/state/ducks/mypage/botsSlice';
+} from '~/state/mypage/botsSlice';
 import BaseLayout from '~/templates';
 import { BotListTabPanel } from './bot-list-tab-panel';
 

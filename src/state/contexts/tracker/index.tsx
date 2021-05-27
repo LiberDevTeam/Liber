@@ -10,7 +10,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import GtagWrapper from '~/lib/tracking/gtag';
-import { selectMe } from '~/state/ducks/me/meSlice';
+import { selectMe } from '~/state/me/meSlice';
 
 interface GenerateFromStrProps {
   __html: string; // 埋め込むHTML文字列

@@ -5,12 +5,12 @@ import ReactModal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useAppSelector } from '~/hooks';
-import { clearSelectedUser } from '~/state/ducks/selected-user';
-import { selectUserById } from '~/state/ducks/users/usersSlice';
+import { SvgCopy as CopyIcon } from '~/icons/Copy';
+import { PersonBlock } from '~/icons/PersonBlock';
+import { SvgSlash as BanIcon } from '~/icons/Slash';
+import { clearSelectedUser } from '~/state/selected-user';
+import { selectUserById } from '~/state/users/usersSlice';
 import { theme } from '~/theme';
-import { SvgCopy as CopyIcon } from '../../icons/Copy';
-import { PersonBlock } from '../../icons/PersonBlock';
-import { SvgSlash as BanIcon } from '../../icons/Slash';
 import { UserAvatar } from '../user-avatar';
 
 export interface UserMenuProps {

@@ -1,5 +1,5 @@
 import { getUnixTime } from 'date-fns';
-import { Place } from '~/state/ducks/places/type';
+import { Place } from '~/state/places/type';
 
 export const dummyPlace = (id: string): Place => ({
   id,

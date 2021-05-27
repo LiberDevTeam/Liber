@@ -6,8 +6,8 @@ import {
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Place } from '~/state/ducks/places/type';
 import { useFnsLocale } from '~/state/hooks/fnsLocale';
+import { Place } from '~/state/places/type';
 import { IpfsContent } from '../ipfs-content';
 
 const activeClassName = 'selected-place';

@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { Button } from '~/components/button';
+import { Checkbox as BaseCheckbox } from '~/components/checkbox';
+import { Input } from '~/components/input';
 import { SelectBox } from '~/components/select-box';
+import { Textarea } from '~/components/textarea';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
-import { createNewPlace } from '~/state/ducks/p2p/p2pSlice';
+import { createNewPlace } from '~/state/p2p/p2pSlice';
+import { categoryOptions } from '~/state/places/placesSlice';
 import BaseLayout from '~/templates';
-import { Button } from '../../../components/button';
-import { Checkbox as BaseCheckbox } from '../../../components/checkbox';
-import { Input } from '../../../components/input';
-import { Textarea } from '../../../components/textarea';
-import { categoryOptions } from '../../../state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'New Chat';
 

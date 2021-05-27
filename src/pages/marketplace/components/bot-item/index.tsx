@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { Bot } from '~/state/ducks/bots/botsSlice';
+import { Bot } from '~/state/bots/botsSlice';
 
 const StyledLink = styled(Link)`
   display: flex;

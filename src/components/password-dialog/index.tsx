@@ -8,7 +8,7 @@ import { Modal } from '~/components/modal';
 import {
   openProtectedPlace,
   selectPlaceById,
-} from '~/state/ducks/places/placesSlice';
+} from '~/state/places/placesSlice';
 
 const Body = styled.div`
   display: flex;

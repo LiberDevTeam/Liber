@@ -7,7 +7,7 @@ import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import {
   selectPurchasedStickers,
   selectStickersListingOn,
-} from '~/state/ducks/mypage/stickersSlice';
+} from '~/state/mypage/stickersSlice';
 import BaseLayout from '~/templates';
 import { StickerListTabPanel } from './components/sticker-list-tab-panel';
 

@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Place, PlacePermissions } from '../../state/ducks/places/type';
+import { Place, PlacePermissions } from '~/state/places/type';
 import { getOrbitDB } from './orbit';
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;

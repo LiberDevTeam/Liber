@@ -4,9 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { IpfsContent } from '~/components/ipfs-content';
-import { fetchBot, selectBotById } from '~/state/ducks/bots/botsSlice';
-import { selectMe } from '~/state/ducks/me/meSlice';
-import { selectPurchasedBotById } from '~/state/ducks/mypage/botsSlice';
+import { fetchBot, selectBotById } from '~/state/bots/botsSlice';
+import { selectMe } from '~/state/me/meSlice';
+import { selectPurchasedBotById } from '~/state/mypage/botsSlice';
 import BaseLayout from '~/templates';
 import { Example } from './components/example';
 

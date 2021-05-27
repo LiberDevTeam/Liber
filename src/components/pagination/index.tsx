@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SvgArrowIosBack as LeftIcon } from '../../icons/ArrowIosBack';
-import { SvgChevronRight as RightIcon } from '../../icons/ChevronRight';
+import { SvgArrowIosBack as LeftIcon } from '~/icons/ArrowIosBack';
+import { SvgChevronRight as RightIcon } from '~/icons/ChevronRight';
 import { IconButton } from '../icon-button';
 import { Input } from '../input';
 

@@ -4,13 +4,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { Button } from '~/components/button';
 import { Input as BaseInput } from '~/components/input';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
-import { selectMe, updateProfile } from '~/state/ducks/me/meSlice';
-import { selectIpfsContentByCid } from '~/state/ducks/p2p/ipfsContentsSlice';
+import { selectMe, updateProfile } from '~/state/me/meSlice';
+import { selectIpfsContentByCid } from '~/state/p2p/ipfsContentsSlice';
 import BaseLayout from '~/templates';
-import { Button } from '../../../components/button';
 
 const Label = styled.h2`
   font-weight: ${(props) => props.theme.fontWeights.normal};

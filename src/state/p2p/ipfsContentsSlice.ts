@@ -5,9 +5,9 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import FileType, { FileTypeResult } from 'file-type/browser';
+import { getIpfsNode } from '~/lib/ipfs';
 import { readAsDataURL } from '~/lib/readFile';
 import { AppDispatch, RootState } from '~/state/store';
-import { getIpfsNode } from '../../../lib/ipfs';
 
 export interface IpfsContent {
   cid: string;

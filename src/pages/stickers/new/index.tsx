@@ -3,19 +3,16 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import { Button } from '~/components/button';
 import { ErrorMessage } from '~/components/error-message';
+import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
 import { SelectBox } from '~/components/select-box';
+import { Textarea } from '~/components/textarea';
+import { SvgPlus2 as PlusIcon } from '~/icons/Plus2';
 import { readAsDataURL } from '~/lib/readFile';
-import {
-  Category,
-  createNewSticker,
-} from '~/state/ducks/stickers/stickersSlice';
+import { Category, createNewSticker } from '~/state/stickers/stickersSlice';
 import BaseLayout from '~/templates';
-import { Button } from '../../../components/button';
-import { Input } from '../../../components/input';
-import { Textarea } from '../../../components/textarea';
-import { SvgPlus2 as PlusIcon } from '../../../icons/Plus2';
 
 const CreateButton = styled(Button)`
   width: 100%;

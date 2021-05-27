@@ -14,7 +14,7 @@ import {
   updatePlace,
 } from '~/state/actionCreater';
 import { AppThunkDispatch, RootState } from '~/state/store';
-import { digestMessage } from '../../../utils/digest-message';
+import { digestMessage } from '~/utils/digest-message';
 import { connectToMessages, Message, selectMessageById } from './messagesSlice';
 import { Place } from './type';
 

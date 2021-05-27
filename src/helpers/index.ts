@@ -1,4 +1,4 @@
-import { User } from '~/state/ducks/users/usersSlice';
+import { User } from '~/state/users/usersSlice';
 
 export const username = (user: User) =>
   user.username ? user.username : 'Anonymous';

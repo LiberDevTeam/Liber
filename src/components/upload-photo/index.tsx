@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
-import { SvgImage } from '../../icons/Image';
+import { SvgImage } from '~/icons/Image';
 import { PreviewImage } from '../preview-image';
 
 const width = 124;
