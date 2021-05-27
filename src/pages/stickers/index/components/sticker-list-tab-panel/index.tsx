@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { Sticker } from '~/state/ducks/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/stickersSlice';
 import { StickerListItem } from '../sticker-list-item';
 
 const Root = styled.div`

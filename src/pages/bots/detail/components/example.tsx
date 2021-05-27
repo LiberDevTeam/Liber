@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { Message } from '~/components/message';
-import { selectBotById } from '~/state/ducks/bots/botsSlice';
-import { selectMe } from '~/state/ducks/me/meSlice';
+import { selectBotById } from '~/state/bots/botsSlice';
+import { selectMe } from '~/state/me/meSlice';
 
 const Root = styled.div``;
 const Avatar = styled(IpfsContent)<{ mine: boolean }>`

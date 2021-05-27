@@ -4,11 +4,11 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { PlaceInfo } from '~/state/ducks/places/type';
+import { PlaceInfo } from '~/state/places/type';
 import {
   fetchSearchPlaceResult,
   selectSearchPlaceResult,
-} from '~/state/ducks/search/searchSlice';
+} from '~/state/search/searchSlice';
 import { theme } from '~/theme';
 
 const ItemContainer = styled.div`

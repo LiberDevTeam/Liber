@@ -3,18 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
-import { IpfsContent } from '../../components/ipfs-content';
-import { username } from '../../helpers';
-import { SvgBellOutline as BellOutlineIcon } from '../../icons/BellOutline';
-import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '../../icons/DefaultUserAvatar';
+import { IpfsContent } from '~/components/ipfs-content';
+import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
+import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import {
   Appearance,
   FeedItem,
   fetchFeedItems,
   ItemKind,
   selectFeed,
-} from '../../state/ducks/feed/feedSlice';
-import { selectMe } from '../../state/ducks/me/meSlice';
+} from '~/state/feed/feedSlice';
+import { selectMe } from '~/state/me/meSlice';
+import { username } from '../../helpers';
 import BaseLayout from '../../templates';
 import { theme } from '../../theme';
 import FeedItemDefault from './components/feed-item';

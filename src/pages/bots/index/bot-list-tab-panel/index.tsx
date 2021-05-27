@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { Pagination } from '~/components/pagination';
-import { Bot } from '~/state/ducks/bots/botsSlice';
-import { SvgEdit as EditIcon } from '../../../../icons/Edit';
+import { SvgEdit as EditIcon } from '~/icons/Edit';
+import { Bot } from '~/state/bots/botsSlice';
 
 const Root = styled.div`
   padding-bottom: ${(props) => props.theme.space[6]}px;

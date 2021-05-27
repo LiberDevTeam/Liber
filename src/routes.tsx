@@ -2,6 +2,8 @@ import { ConnectedRouter } from 'connected-react-router';
 import React, { memo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
+import { initUser } from '~/state/me/meSlice';
+import { initApp } from '~/state/p2p/p2pSlice';
 import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
@@ -25,8 +27,6 @@ import { StickerEditPage } from './pages/stickers/edit';
 import { StickersPage } from './pages/stickers/index';
 import { StickerNewPage } from './pages/stickers/new';
 import { TrackerProvider } from './state/contexts/tracker';
-import { initUser } from './state/ducks/me/meSlice';
-import { initApp } from './state/ducks/p2p/p2pSlice';
 import { AppThunkDispatch, history } from './state/store';
 
 export const Routes: React.FC = memo(function Routes() {

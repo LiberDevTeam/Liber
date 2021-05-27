@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as BaseLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button as BaseButton } from '~/components/button';
 import { Menu, MenuItem, MenuTitle } from '~/components/icon-menu';
 import { ToggleSwitch } from '~/components/toggle-switch';
+import { SvgBriefcase as BriefcaseIcon } from '~/icons/Briefcase';
+import { SvgCode as CodeIcon } from '~/icons/Code';
+import { SvgFile as FileIcon } from '~/icons/File';
+import { SvgFileText as FileTextIcon } from '~/icons/FileText';
+import { SvgHeadphone as HeadphoneIcon } from '~/icons/Headphone';
 import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
+import { selectMe, updateIsolationMode } from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
-import { Button as BaseButton } from '../../components/button';
-import { SvgBriefcase as BriefcaseIcon } from '../../icons/Briefcase';
-import { SvgCode as CodeIcon } from '../../icons/Code';
-import { SvgFile as FileIcon } from '../../icons/File';
-import { SvgFileText as FileTextIcon } from '../../icons/FileText';
-import { SvgHeadphone as HeadphoneIcon } from '../../icons/Headphone';
-import { selectMe, updateIsolationMode } from '../../state/ducks/me/meSlice';
 
 const Contents = styled.div``;
 

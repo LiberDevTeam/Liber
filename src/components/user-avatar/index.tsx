@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '~/hooks';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
-import { selectUserById } from '~/state/ducks/users/usersSlice';
+import { selectUserById } from '~/state/users/usersSlice';
 
 const UserImage = styled.img<{ size: number }>`
   display: inline-block;

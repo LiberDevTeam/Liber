@@ -3,9 +3,9 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
-import { setSelectedUser } from '~/state/ducks/selected-user';
-import { selectUserById, User } from '~/state/ducks/users/usersSlice';
+import { setSelectedUser } from '~/state/selected-user';
 import { RootState } from '~/state/store';
+import { selectUserById, User } from '~/state/users/usersSlice';
 import { Message } from '../message';
 
 const Root = styled.div<{ mine: boolean }>`

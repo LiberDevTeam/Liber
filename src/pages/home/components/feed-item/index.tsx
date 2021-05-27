@@ -2,7 +2,7 @@ import { fromUnixTime } from 'date-fns';
 import React from 'react';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
-import { FeedItem, ItemKind } from '~/state/ducks/feed/feedSlice';
+import { FeedItem, ItemKind } from '~/state/feed/feedSlice';
 import {
   Attachment,
   Avatar,

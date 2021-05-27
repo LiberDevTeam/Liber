@@ -10,15 +10,15 @@ import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
 import { SelectBox } from '~/components/select-box';
 import { Textarea } from '~/components/textarea';
+import { SvgPlus2 as PlusIcon } from '~/icons/Plus2';
 import { readAsDataURL } from '~/lib/readFile';
 import {
   Category,
   fetchSticker,
   selectStickerById,
   updateSticker,
-} from '~/state/ducks/stickers/stickersSlice';
+} from '~/state/stickers/stickersSlice';
 import BaseLayout from '~/templates';
-import { SvgPlus2 as PlusIcon } from '../../../icons/Plus2';
 
 const CreateButton = styled(Button)`
   width: 100%;

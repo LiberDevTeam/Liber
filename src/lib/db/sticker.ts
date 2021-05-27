@@ -1,9 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import {
-  Category,
-  Content,
-  Sticker,
-} from '../../state/ducks/stickers/stickersSlice';
+import { Category, Content, Sticker } from '~/state/stickers/stickersSlice';
 import { getOrbitDB } from './orbit';
 
 type StickerDBValue = string | Category | number | Content[] | boolean;

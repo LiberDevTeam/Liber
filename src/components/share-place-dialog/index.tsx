@@ -1,8 +1,8 @@
 import copy from 'copy-to-clipboard';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { ThemeConsumer } from 'styled-components';
-import { SvgCheckmark as CheckIcon } from '../../icons/Checkmark';
-import { SvgCopy as CopyIcon } from '../../icons/Copy';
+import { SvgCheckmark as CheckIcon } from '~/icons/Checkmark';
+import { SvgCopy as CopyIcon } from '~/icons/Copy';
 import { IconButton } from '../icon-button';
 import { Input } from '../input';
 import { Modal } from '../modal';

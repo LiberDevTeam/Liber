@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { User } from '../../state/ducks/users/usersSlice';
+import { User } from '~/state/users/usersSlice';
 import { getOrbitDB } from './orbit';
 
 const userDB: Record<string, KeyValueStore<User>> = {};

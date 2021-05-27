@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { connectUserDB, createUserDB } from '~/lib/db/user';
+import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
-import { connectUserDB, createUserDB } from '../../../lib/db/user';
-import { addIpfsContent } from '../p2p/ipfsContentsSlice';
-import { User } from '../users/usersSlice';
+import { User } from '~/state/users/usersSlice';
 
 const initialState: User = {
   id: '',
