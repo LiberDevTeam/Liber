@@ -1,6 +1,7 @@
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { SelectBox } from '~/components/select-box';
@@ -8,7 +9,7 @@ import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { UploadPhoto } from '~/components/upload-photo';
 import { readAsDataURL } from '~/lib/readFile';
 import { fetchBot, selectBotById } from '~/state/ducks/bots/botsSlice';
-import { categories } from '~/state/ducks/places/placesSlice';
+import { Category } from '~/state/ducks/places/placesSlice';
 import BaseLayout from '~/templates';
 import { Button } from '../../../components/button';
 import { IconButton } from '../../../components/icon-button';
@@ -119,9 +120,8 @@ const validationSchema = yup.object({
   examples: yup.array(),
 });
 
-export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage({
-  botId,
-}) {
+export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage() {
+  const { botId } = useParams<{ botId: string }>();
   const dispatch = useDispatch();
   const bot = useSelector(selectBotById(botId));
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -180,9 +180,7 @@ export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage({
   useEffect(() => {
     if (bot) {
       fetch(`/view/${bot.avatar}`)
-        .then((res) => {
-          return res.blob();
-        })
+        .then((res) => res.blob())
         .then((blob) => {
           const file = new File([blob], bot.name);
           formik.setFieldValue('avatar', file);
@@ -244,7 +242,7 @@ export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage({
           <SelectBox
             id="bot_category"
             name="category"
-            options={categories}
+            options={Object.keys(Category)}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             errorMessage={errors.category}

@@ -13,7 +13,7 @@ import { Button } from '../../../components/button';
 import { Checkbox as BaseCheckbox } from '../../../components/checkbox';
 import { Input } from '../../../components/input';
 import { Textarea } from '../../../components/textarea';
-import { categories } from '../../../state/ducks/places/placesSlice';
+import { Category } from '../../../state/ducks/places/placesSlice';
 
 const PAGE_TITLE = 'New Chat';
 
@@ -163,7 +163,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         <SelectBox
           id="chat_category"
           name="category"
-          options={categories}
+          options={Object.keys(Category)}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />
