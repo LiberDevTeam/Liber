@@ -90,9 +90,7 @@ const Description = styled.p`
 
 const tabTitles = ['Editor', 'Testing'];
 
-interface Props {
-  botId: string;
-}
+interface Props {}
 
 interface Example {
   name: string;
