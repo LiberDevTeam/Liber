@@ -15,5 +15,20 @@
   "CHAT_CATEGORY_TRAVEL": "Travel",
   "DEFAULT": "Select one",
 
+  "BOT_CATEGORY_DISCUSSION_AND_STORIES": "Discussion and Stories",
+  "BOT_CATEGORY_EMOTIONAL_REACTION_FUEL": "Emotional Reaction Fuel",
+  "BOT_CATEGORY_ENTERTAINMENT_GAMING": "Entertainment Gaming",
+  "BOT_CATEGORY_ENTERTAINMENT_TELEVISION": "Entertainment Television",
+  "BOT_CATEGORY_ENTERTAINMENT_OTHER": "Entertainment Other",
+  "BOT_CATEGORY_HUMOR": "Humor",
+  "BOT_CATEGORY_IMAGES_GIFS_AND_VIDEOS": "Images Gifs and Videos",
+  "BOT_CATEGORY_LEARNING_AND_THINKING": "Learning and Thinking",
+  "BOT_CATEGORY_LIFESTYLE_AND_HELP": "Lifestyle and Help",
+  "BOT_CATEGORY_NEWS_AND_ISSUES": "News and Issues",
+  "BOT_CATEGORY_TRAVEL": "Travel",
+  "BOT_CATEGORY_RACE_GENDER_AND_IDENTITY": "Race Gender and Identity",
+  "BOT_CATEGORY_SPORTS": "Sports",
+  "BOT_CATEGORY_TECHNOLOGY": "Technology",
+
   "STICKER_CATEGORY_AnimalLovers": "Animal Lovers"
 }

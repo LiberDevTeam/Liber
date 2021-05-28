@@ -45,7 +45,7 @@ export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
 `,
   avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
   price: 20,
-  code: `
+  sourceCode: `
 if (<input> === ping) {
   return 'pong';
 } else if (<input> === hello) {
@@ -84,7 +84,7 @@ export const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
 `,
   avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
   price: 20,
-  code: `
+  sourceCode: `
 if (<input> === ping) {
   return 'pong';
 } else if (<input> === hello) {
@@ -122,7 +122,7 @@ export interface Bot {
   avatar: string;
   price: number;
   docs: string;
-  code: string;
+  sourceCode: string;
   examples: Example[];
   created: number;
   purchased?: number;
