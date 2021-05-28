@@ -16,6 +16,7 @@ const StyledTextarea = styled(Textarea)`
 interface Props {
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
+  errorMessage?: string;
   disabled?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const Editor: React.FC<Props> = memo(function Editor({
   value,
   onChange,
   disabled,
+  errorMessage,
 }) {
   return (
     <>
@@ -39,6 +41,7 @@ export const Editor: React.FC<Props> = memo(function Editor({
         disabled={disabled}
         rows={8}
         maxLength={200}
+        errorMessage={errorMessage}
       />
     </>
   );

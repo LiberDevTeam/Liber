@@ -186,7 +186,7 @@ export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage() {
       formik.setFieldValue('category', bot.category);
       formik.setFieldValue('name', bot.name);
       formik.setFieldValue('description', bot.description);
-      formik.setFieldValue('docs', bot.docs);
+      formik.setFieldValue('readme', bot.readme);
       formik.setFieldValue('sourceCode', bot.sourceCode);
       formik.setFieldValue('examples', bot.examples);
     }
@@ -270,14 +270,14 @@ export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage() {
             errorMessage={errors.description}
           />
 
-          <Subtitle>Document</Subtitle>
+          <Subtitle>README</Subtitle>
 
           <Description>
             It could be written in Markdown format. See more about Markdown.
           </Description>
           <StyledTextarea
-            name="docs"
-            placeholder="Add Documentation"
+            name="readme"
+            placeholder="Add README"
             value={formik.values.document}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}

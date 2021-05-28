@@ -57,7 +57,7 @@ const Description = styled.p`
   color: ${(props) => props.theme.colors.secondaryText};
 `;
 
-const Docs = styled.p``;
+const Readme = styled.p``;
 
 const EditButton = styled(Button)`
   width: 100%;
@@ -115,8 +115,8 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
       </Section>
 
       <Section>
-        <Subtitle>Docs</Subtitle>
-        <Docs>{bot.docs}</Docs>
+        <Subtitle>Readme</Subtitle>
+        <Readme>{bot.readme}</Readme>
       </Section>
 
       <ExampleSection>
