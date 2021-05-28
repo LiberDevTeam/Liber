@@ -34,13 +34,13 @@ export const Editor: React.FC<Props> = memo(function Editor({
         with outside API, only supported to reply to users' messages currently.
       </Description>
       <StyledTextarea
-        name="code"
+        name="sourceCode"
         placeholder="Input the behavior of your bot"
         value={value}
         onChange={onChange}
         disabled={disabled}
         rows={8}
-        maxLength={200}
+        maxLength={1000}
         errorMessage={errorMessage}
       />
     </>

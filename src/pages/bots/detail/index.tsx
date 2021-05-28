@@ -1,10 +1,15 @@
 import React, { memo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { IpfsContent } from '~/components/ipfs-content';
-import { fetchBot, selectBotById } from '~/state/bots/botsSlice';
+import {
+  categoryOptions,
+  fetchBot,
+  selectBotById,
+} from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
 import { selectPurchasedBotById } from '~/state/mypage/botsSlice';
 import BaseLayout from '~/templates';
@@ -81,16 +86,17 @@ const ButtonSection = styled(Section)`
 
 export const BotDetailPage: React.FC = memo(function BotDetailPage() {
   const dispatch = useDispatch();
-  const { id } = useParams<{ id: string }>();
+  const { botId, address } = useParams<{ botId: string; address: string }>();
   const me = useSelector(selectMe);
-  const bot = useSelector(selectBotById(id));
-  const purchased = useSelector(selectPurchasedBotById(id));
+  const bot = useSelector(selectBotById(botId));
+  const purchased = useSelector(selectPurchasedBotById(botId));
+  const { t } = useTranslation(['selectOptions']);
 
   useEffect(() => {
     if (!bot) {
-      dispatch(fetchBot({ id }));
+      dispatch(fetchBot({ botId, address }));
     }
-  }, [id]);
+  }, [botId]);
 
   // TODO loading;
   if (!bot) return null;
@@ -103,7 +109,13 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
         <Avatar cid={bot.avatar} />
         <Group>
           <Name>{bot.name}</Name>
-          <Category>{bot.category}</Category>
+          <Category>
+            {t(
+              `selectOptions:BOT_CATEGORY_${
+                categoryOptions[bot.category].label
+              }`
+            )}
+          </Category>
           <Stock>Stock: Unlimited</Stock>
           <Price>Price: {bot.price} ETH</Price>
         </Group>
@@ -127,16 +139,13 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
       </ExampleSection>
 
       <ButtonSection>
-        <Link to={`/bots/${bot.id}/edit`}>
-          <EditButton text="EDIT" />
-        </Link>
         {mine && (
-          <Link to={`/bots/${bot.id}/edit`}>
+          <Link to={`/bots/${bot.keyValAddress}/${bot.id}/edit`}>
             <EditButton text="EDIT" />
           </Link>
         )}
         {!mine && !purchased && (
-          <Link to={`/bots/${bot.id}/purchase`}>
+          <Link to={`/bots/${bot.keyValAddress}/${bot.id}/purchase`}>
             <PurchaseButton text="PURCHASE" />
           </Link>
         )}

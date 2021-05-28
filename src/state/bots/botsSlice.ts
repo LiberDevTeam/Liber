@@ -7,14 +7,17 @@ import {
 import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
-import { createBotKeyValue } from '~/lib/db/bot';
+import {
+  connectBotKeyValue,
+  createBotKeyValue,
+  readBotFromDB,
+} from '~/lib/db/bot';
 import { AppDispatch, RootState } from '~/state/store';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
 export const categories = [
   'ANALYTICS',
   'COMMUNICATION',
-  'CUSTOMER_SUPPORT',
   'DESIGN',
   'DEVELOPER_TOOLS',
   'FILE_MANAGEMENT',
@@ -38,81 +41,81 @@ export const categoryOptions = categories.map((label, index) => ({
 }));
 
 export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
-  uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
-  name: 'Greeting Bot',
-  description:
-    'Records the attendance times and calculates the monthly wages of employees',
-  readme: `
-# Greeting Bot
+  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
+  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
+  category: 2,
+  name: 'baku purchased',
+  description: "Hey everyone. I'm baku.",
+  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
+  price: 199999,
+  readme: `# Usage
 
-## Usage
+hogehogehogehoge
 
 ## Links
-- github.com/LiberDevTeam/Liber
-`,
-  avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-  price: 20,
+
+- [http: //liber.live/](http: //liber.live/)
+- [http: //docs.liber.live/](http: //docs.liber.live/)`,
   sourceCode: `
-if (<input> === ping) {
-  return 'pong';
-} else if (<input> === hello) {
-  return 'hi <username>';
-}
-`,
-  created: 1619251130,
-  category: 0,
+  if (<input> === ping) {
+    return 'pong';
+  } else if (<input> === hello) {
+    return 'hi <username>';
+  }
+  `,
   examples: [
     {
-      title: 'pingpong',
+      title: 'ping',
       input: 'ping',
       output: 'pong',
     },
     {
-      title: 'hello',
-      input: 'hello',
-      output: 'hi <username>',
+      title: 'greeting',
+      input: 'hello <@>',
+      output: 'pong',
     },
   ],
+  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
+  created: 1622195011,
+  purchased: 1622197011,
 }));
 
 export const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
-  uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
-  name: 'Greeting Bot',
-  description:
-    'Records the attendance times and calculates the monthly wages of employees',
-  readme: `
-# Greeting Bot
+  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
+  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
+  category: 2,
+  name: 'baku',
+  description: "Hey everyone. I'm baku.",
+  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
+  price: 199999,
+  readme: `# Usage
 
-## Usage
+hogehogehogehoge
 
 ## Links
-- github.com/LiberDevTeam/Liber
-`,
-  avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-  price: 20,
+
+- [http://liber.live/](http://liber.live/)
+- [http://docs.liber.live/](http://docs.liber.live/)`,
   sourceCode: `
 if (<input> === ping) {
   return 'pong';
 } else if (<input> === hello) {
   return 'hi <username>';
-}
-`,
-  created: 1619251130,
-  category: 2,
+}`,
   examples: [
     {
-      title: 'pingpong',
+      title: 'ping',
       input: 'ping',
       output: 'pong',
     },
     {
-      title: 'hello',
+      title: 'greeting',
       input: 'hello',
-      output: 'hi <username>',
+      output: 'hi',
     },
   ],
+  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
+  created: 1622195011,
 }));
 
 export interface Example {
@@ -132,18 +135,21 @@ export interface Bot {
   readme: string;
   sourceCode: string;
   examples: Example[];
-  keyValAddress?: string;
+  keyValAddress: string;
   created: number;
   purchased?: number;
 }
 
 export const fetchBot = createAsyncThunk<
   void,
-  { id: string },
+  {
+    botId: string;
+    address: string;
+  },
   { dispatch: AppDispatch; state: RootState }
->('bots/fetchBot', async ({ id }, { dispatch }) => {
-  // TODO fetch bot from DB
-  const bot = tmpPurchased[0];
+>('bots/fetchBot', async ({ botId, address }, { dispatch }) => {
+  const db = await connectBotKeyValue({ botId, address });
+  const bot = readBotFromDB(db);
   if (!bot) {
     dispatch(push('/404'));
     return;
@@ -208,7 +214,7 @@ export const createNewBot = createAsyncThunk<
     // TODO: create index to Liber search.
 
     dispatch(addBot(bot));
-    dispatch(push(`/bots/${bot.id}`));
+    dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
 
     // TODO: show notification
   }

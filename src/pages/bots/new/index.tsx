@@ -175,17 +175,6 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
       examples,
     }) {
       if (avatar && price) {
-        console.log({
-          avatar,
-          category,
-          name,
-          description,
-          price,
-          readme,
-          sourceCode,
-          examples,
-        });
-        return;
         dispatch(
           createNewBot({
             avatar,
@@ -312,7 +301,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
               rows={8}
-              maxLength={200}
+              maxLength={1000}
               errorMessage={errors.readme}
             />
           </Section>
