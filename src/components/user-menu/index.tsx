@@ -1,6 +1,7 @@
 import copy from 'copy-to-clipboard';
 import { lighten } from 'polished';
 import React, { MouseEvent, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactModal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -119,6 +120,7 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
   onBan,
 }) {
   const dispatch = useDispatch();
+  const { t } = useTranslation('chat');
   const user = useAppSelector((state) =>
     state.selectedUser
       ? selectUserById(state.users, state.selectedUser)
@@ -180,13 +182,13 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
         <li>
           <MenuItem data-menu-key={MenuKeys.BLOCK} onClick={handleMenuClick}>
             <PersonBlock width={28} height={28} />
-            Block
+            {t('Block')}
           </MenuItem>
         </li>
         <li>
           <MenuItem data-menu-key={MenuKeys.BAN} onClick={handleMenuClick}>
             <BanIcon width={28} height={28} />
-            Ban
+            {t('Ban')}
           </MenuItem>
         </li>
       </Menu>

@@ -279,6 +279,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
       <BaseLayout>
         <Root>
           <PlaceDetailHeader
+            placeId={place.id}
             name={place.name}
             avatarCid={place.avatarCid}
             onInviteClick={() => {

@@ -45,6 +45,10 @@ const CheckIconContainer = styled.div`
   border: 2px solid transparent;
 `;
 
+const PlaceUrlInput = styled(Input)`
+  width: 100%;
+`;
+
 export interface SharePlaceDialogProps {
   open: boolean;
   url: string;
@@ -77,7 +81,7 @@ export const SharePlaceDialog: React.FC<SharePlaceDialogProps> = React.memo(
               <Title>{title}</Title>
               <Description>{description}</Description>
               <Content>
-                <Input
+                <PlaceUrlInput
                   value={url}
                   readOnly
                   style={{

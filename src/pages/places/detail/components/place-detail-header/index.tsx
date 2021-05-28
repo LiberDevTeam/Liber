@@ -2,6 +2,7 @@ import Dropdown from 'rc-dropdown';
 import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { BackLink } from '~/components/back-link';
 import { Button } from '~/components/button';
@@ -94,12 +95,26 @@ const MenuButton = styled(Button)`
   ${menuStyle};
 `;
 
+const MenuLink = styled(Link)`
+  ${menuStyle};
+  height: 48px;
+  display: flex;
+  align-items: center;
+
+  & > svg {
+    width: 18px;
+    height: 18px;
+    margin-right: ${(props) => props.theme.space[2]}px;
+  }
+`;
+
 const LeaveButton = styled(Button)`
   ${menuStyle};
   color: ${(props) => props.theme.colors.red};
 `;
 
 export interface PlaceDetailHeaderProps {
+  placeId: string;
   name: string;
   avatarCid: string;
   memberCount: number;
@@ -109,6 +124,7 @@ export interface PlaceDetailHeaderProps {
 
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
   function PlaceDetailHeader({
+    placeId,
     name,
     avatarCid,
     memberCount,
@@ -174,14 +190,10 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
                   text={t('Manage Maintainers')}
                   icon={<PeopleIcon />}
                 />
-                <MenuButton
-                  title={t('Banned Users')}
-                  shape="square"
-                  variant="text"
-                  onClick={onInviteClick}
-                  text={t('Banned Users')}
-                  icon={<PeopleIcon />}
-                />
+                <MenuLink to={`/places/${placeId}/banned-users`}>
+                  <PeopleIcon />
+                  {t('Banned Users')}
+                </MenuLink>
                 <LeaveButton
                   title={t('Leave Chat')}
                   shape="square"

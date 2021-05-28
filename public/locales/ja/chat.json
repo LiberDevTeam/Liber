@@ -4,5 +4,8 @@
   "Manage Bots": "ボットを管理する",
   "Manage Maintainers": "権限を管理する",
   "Banned Users": "Banしたユーザ",
-  "Leave Chat": "チャットを退出する"
+  "Leave Chat": "チャットを退出する",
+  "Manage your banned user list": "Banしたユーザの管理をする",
+  "Ban": "Ban",
+  "Block": "ブロック"
 }

@@ -15,6 +15,7 @@ import { HomePage } from './pages/home';
 import { LoadingPage } from './pages/loading';
 import { MarketplacePage } from './pages/marketplace';
 import { NotificationsPage } from './pages/notifications';
+import { BannedUsers } from './pages/places/banned-users';
 import { ChatDetail } from './pages/places/detail';
 import { Places } from './pages/places/index';
 import { JoinPlace } from './pages/places/join';
@@ -59,9 +60,10 @@ export const Routes: React.FC = memo(function Routes() {
           />
           <Route
             exact
-            path="/places/:pid/:swarmKey?"
-            render={() => <ChatDetail />}
+            path="/places/:pid/banned-users"
+            render={() => <BannedUsers />}
           />
+
           <Route exact path="/places/:pid/bots" render={() => <ChatDetail />} />
           <Route
             exact
@@ -73,7 +75,11 @@ export const Routes: React.FC = memo(function Routes() {
             path="/places/:pid/users/banned"
             render={() => <ChatDetail />}
           />
-
+          <Route
+            exact
+            path="/places/:pid/:swarmKey?"
+            render={() => <ChatDetail />}
+          />
           <Route exact path="/explore" render={() => <Explore />} />
 
           <Route exact path="/profile" render={() => <ProfilePage />} />

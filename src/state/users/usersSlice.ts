@@ -4,6 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { connectUserDB } from '~/lib/db/user';
+import { RootState } from '../store';
 
 export interface Settings {
   isIsolation: boolean;
@@ -54,3 +55,11 @@ export const usersSlice = createSlice({
 
 const { selectById } = usersAdapter.getSelectors();
 export const selectUserById = selectById;
+
+export const selectUsersByIds = (ids: string[]) => (
+  state: RootState
+): User[] => {
+  return ids
+    .map((id) => selectUserById(state.users, id))
+    .filter(Boolean) as User[];
+};

@@ -20,6 +20,7 @@ const Template: Story<PlaceDetailHeaderProps> = (args) => (
 );
 export const Default = Template.bind({});
 Default.args = {
+  placeId: '1234',
   name: 'College Friends',
   avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
   memberCount: 23,
