@@ -24,7 +24,6 @@ import { readAsDataURL } from '~/lib/readFile';
 import { LoadingPage } from '~/pages/loading';
 import { selectMe } from '~/state/me/meSlice';
 import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
-import { connectToMessages } from '~/state/places/messagesSlice';
 import {
   banUser,
   clearUnreadMessages,
@@ -203,12 +202,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   useEffect(() => {
     dispatch(joinPlace({ placeId, address }));
   }, [placeId, address]);
-
-  useEffect(() => {
-    if (place?.feedAddress) {
-      dispatch(connectToMessages({ placeId, address: place.feedAddress }));
-    }
-  }, [place?.feedAddress, placeId]);
 
   if (!place) {
     return <LoadingPage text="Connecting to place..." />;

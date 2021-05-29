@@ -49,7 +49,7 @@ const placesAdapter = createEntityAdapter<Place>({
 });
 
 export const joinPlace = createAsyncThunk<
-  void,
+  Place | undefined,
   { placeId: string; address: string }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
@@ -66,6 +66,13 @@ export const joinPlace = createAsyncThunk<
       }
     },
   });
+  const place = readPlaceFromDB(kv);
+  if (place?.feedAddress) {
+    await dispatch(connectToMessages({ placeId, address: place.feedAddress }));
+  }
+  if (place.id) {
+    return place;
+  }
 });
 
 export const openProtectedPlace = createAsyncThunk<
