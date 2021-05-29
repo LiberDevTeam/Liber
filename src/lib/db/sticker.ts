@@ -1,8 +1,8 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Category, Content, Sticker } from '~/state/stickers/stickersSlice';
+import { Content, Sticker } from '~/state/stickers/stickersSlice';
 import { getOrbitDB } from './orbit';
 
-type StickerDBValue = string | Category | number | Content[] | boolean;
+type StickerDBValue = string | number | Content[] | boolean;
 
 const stickerDB: Record<string, KeyValueStore<StickerDBValue>> = {};
 
@@ -24,7 +24,7 @@ export const readStickerFromDB = (
   return {
     id: kv.get('id') as string,
     uid: kv.get('uid') as string,
-    category: kv.get('category') as Category,
+    category: kv.get('category') as number,
     name: kv.get('name') as string,
     price: kv.get('price') as number,
     description: kv.get('description') as string,
