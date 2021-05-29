@@ -115,6 +115,7 @@ const LeaveButton = styled(Button)`
 
 export interface PlaceDetailHeaderProps {
   placeId: string;
+  address: string;
   name: string;
   avatarCid: string;
   memberCount: number;
@@ -125,6 +126,7 @@ export interface PlaceDetailHeaderProps {
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
   function PlaceDetailHeader({
     placeId,
+    address,
     name,
     avatarCid,
     memberCount,
@@ -190,7 +192,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
                   text={t('Manage Maintainers')}
                   icon={<PeopleIcon />}
                 />
-                <MenuLink to={`/places/${placeId}/banned-users`}>
+                <MenuLink to={`/places/${address}/${placeId}/banned-users`}>
                   <PeopleIcon />
                   {t('Banned Users')}
                 </MenuLink>

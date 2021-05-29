@@ -49,7 +49,7 @@ const placesAdapter = createEntityAdapter<Place>({
 });
 
 export const joinPlace = createAsyncThunk<
-  Place | undefined,
+  void,
   { placeId: string; address: string }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
@@ -66,11 +66,6 @@ export const joinPlace = createAsyncThunk<
       }
     },
   });
-
-  const place = readPlaceFromDB(kv);
-  if (place.id) {
-    return place;
-  }
 });
 
 export const openProtectedPlace = createAsyncThunk<
@@ -245,7 +240,7 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPID = (placeId: string) => (
+export const selectPlaceMessagesByPlaceId = (placeId: string) => (
   state: RootState
 ): Message[] => {
   const place = selectors.selectById(state.places, placeId);

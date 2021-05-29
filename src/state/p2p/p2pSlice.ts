@@ -192,10 +192,10 @@ export const createNewPlace = createAsyncThunk<
     });
 
     dispatch(placeAdded({ place, messages: [] }));
-    dispatch(push(`/places/${placeId}`));
+    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
   }
 );
 
 const buildInvitationUrl = async (placeId: string, address: string) => {
-  return `${window.location.protocol}//${window.location.host}/#/places/${placeId}/join/${address}`;
+  return `${window.location.protocol}//${window.location.host}/#/places/${address}/${placeId}`;
 };
