@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
@@ -132,14 +132,8 @@ export const StickerNewPage: React.FC<Props> = React.memo(
             })
           );
       },
+      validateOnChange: false,
     });
-    const [errors, setErrors] = useState<typeof formik.errors>({});
-
-    useEffect(() => {
-      if (formik.submitCount > 0) {
-        setErrors(formik.errors);
-      }
-    }, [formik.errors, formik.submitCount]);
 
     const contentInputRef = useRef<HTMLInputElement>(null);
 
@@ -179,7 +173,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
               options={categoryOptions}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.category}
+              errorMessage={formik.errors.category}
             />
 
             <InputText
@@ -188,7 +182,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
               value={formik.values.name}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.name}
+              errorMessage={formik.errors.name}
             />
 
             <StyledTextarea
@@ -200,7 +194,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
               rows={8}
               maxLength={200}
               minLength={20}
-              errorMessage={errors.description}
+              errorMessage={formik.errors.description}
             />
           </Section>
 
@@ -214,7 +208,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
                 value={formik.values.price}
                 onChange={formik.handleChange}
                 disabled={formik.isSubmitting}
-                errorMessage={errors.price}
+                errorMessage={formik.errors.price}
               />
               <Term>ETH</Term>
             </PriceInner>
@@ -243,8 +237,8 @@ export const StickerNewPage: React.FC<Props> = React.memo(
                 />
               </UploadImage>
             </Contents>
-            {errors.contents && (
-              <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
+            {formik.errors.contents && (
+              <StyledErrorMessage>{formik.errors.contents}</StyledErrorMessage>
             )}
           </Section>
           <CreateButton type="submit" shape="rounded" text="CREATE" />

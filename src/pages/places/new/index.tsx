@@ -24,8 +24,12 @@ const Form = styled.form`
     ${(props) => props.theme.space[5]}px;
 `;
 
+const StyledUploadPhoto = styled(UploadPhoto)`
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
+
 const InputText = styled(Input)`
-  margin-top: ${(props) => props.theme.space[5]}px;
+  margin-top: ${(props) => props.theme.space[2]}px;
 `;
 
 const InputPassword = styled(Input)`
@@ -82,11 +86,15 @@ interface FormValues {
 }
 
 const validationSchema = yup.object({
-  name: yup.string().required(),
-  description: yup.string(),
+  name: yup.string().required().min(1).max(50),
+  description: yup.string().required().min(5).max(200),
   isPrivate: yup.bool(),
-  avatar: yup.mixed().test('not null', '', (value) => value !== null),
-  password: yup.string(),
+  avatar: yup.mixed().required(),
+  setPassword: yup.bool(),
+  password: yup.string().when('setPassword', {
+    is: true,
+    then: (s) => s.required().max(50),
+  }),
   category: yup.number().required(),
 });
 
@@ -130,6 +138,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         );
       }
     },
+    validateOnChange: false,
   });
 
   useEffect(() => {
@@ -149,8 +158,6 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
     [formik.setFieldValue]
   );
 
-  console.log(formik.isValid, formik.values);
-
   return (
     <BaseLayout
       title={PAGE_TITLE}
@@ -158,11 +165,12 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       description={t('newPlaces:Please fill out a form and submit it')}
     >
       <Form onSubmit={formik.handleSubmit}>
-        <UploadPhoto
+        <StyledUploadPhoto
           name="avatar"
           onChange={handleChangeImage}
           previewSrc={avatarPreview}
           disabled={formik.isSubmitting}
+          errorMessage={formik.errors.avatar}
         />
 
         <SelectBox
@@ -176,6 +184,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             )
           }
           disabled={formik.isSubmitting}
+          errorMessage={formik.errors.category}
         />
 
         <InputText
@@ -184,6 +193,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           value={formik.values.name}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
+          errorMessage={formik.errors.name}
         />
         <InputDescription
           name="description"
@@ -193,6 +203,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           disabled={formik.isSubmitting}
           rows={8}
           maxLength={200}
+          errorMessage={formik.errors.description}
         />
 
         <Subtitle>Other Options</Subtitle>
@@ -204,6 +215,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
+              errorMessage={formik.errors.isPrivate}
             />
             Make Private?
           </FlagLabel>
@@ -233,6 +245,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             value={formik.values.password}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
+            errorMessage={formik.errors.password}
           />
         </OptionGroup>
 
@@ -258,11 +271,6 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           variant="solid"
           type="submit"
           height={50}
-          disabled={
-            formik.isSubmitting ||
-            formik.isValid === false ||
-            formik.dirty === false
-          }
         />
       </Form>
     </BaseLayout>

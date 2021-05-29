@@ -145,14 +145,8 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
           })
         );
     },
+    validateOnChange: false,
   });
-  const [errors, setErrors] = useState<typeof formik.errors>({});
-
-  useEffect(() => {
-    if (formik.submitCount > 0) {
-      setErrors(formik.errors);
-    }
-  }, [formik.errors, formik.submitCount]);
 
   useEffect(() => {
     if (!sticker) {
@@ -221,7 +215,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             value={formik.values.category}
-            errorMessage={errors.category}
+            errorMessage={formik.errors.category}
           />
 
           <InputText
@@ -230,7 +224,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
             value={formik.values.name}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
-            errorMessage={errors.name}
+            errorMessage={formik.errors.name}
           />
           <StyledTextarea
             name="description"
@@ -240,7 +234,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
             disabled={formik.isSubmitting}
             rows={8}
             maxLength={200}
-            errorMessage={errors.description}
+            errorMessage={formik.errors.description}
           />
         </Section>
 
@@ -254,7 +248,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
               value={formik.values.price}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.price}
+              errorMessage={formik.errors.price}
             />
             <Term>ETH</Term>
           </PriceInner>
@@ -283,8 +277,8 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
               />
             </UploadImage>
           </Contents>
-          {errors.contents && (
-            <StyledErrorMessage>{errors.contents}</StyledErrorMessage>
+          {formik.errors.contents && (
+            <StyledErrorMessage>{formik.errors.contents}</StyledErrorMessage>
           )}
         </Section>
         <CreateButton type="submit" shape="rounded" text="UPDATE" />
