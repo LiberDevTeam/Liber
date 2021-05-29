@@ -49,7 +49,7 @@ const placesAdapter = createEntityAdapter<Place>({
 });
 
 export const joinPlace = createAsyncThunk<
-  Place | undefined,
+  void,
   { placeId: string; address: string }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
@@ -67,11 +67,9 @@ export const joinPlace = createAsyncThunk<
     },
   });
   const place = readPlaceFromDB(kv);
+  dispatch(placeAdded({ place, messages: [] }));
   if (place?.feedAddress) {
-    await dispatch(connectToMessages({ placeId, address: place.feedAddress }));
-  }
-  if (place.id) {
-    return place;
+    dispatch(connectToMessages({ placeId, address: place.feedAddress }));
   }
 });
 
@@ -162,11 +160,6 @@ export const placesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(joinPlace.fulfilled, (state, action) => {
-        if (action.payload) {
-          placesAdapter.upsertOne(state, action.payload);
-        }
-      })
       .addCase(updatePlace, (state, action) => {
         placesAdapter.upsertOne(state, action.payload);
       })
