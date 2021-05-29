@@ -45,19 +45,19 @@ const LoadingAvatar = styled.div`
 `;
 
 export interface PasswordDialogProps {
-  pid: string;
+  placeId: string;
   onClose: () => void;
 }
 
 export const PasswordDialog: React.FC<PasswordDialogProps> = React.memo(
-  function PasswordDialog({ onClose, pid }) {
-    const place = useSelector(selectPlaceById(pid));
+  function PasswordDialog({ onClose, placeId }) {
+    const place = useSelector(selectPlaceById(placeId));
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
 
     const handleJoin = useCallback(() => {
-      dispatch(openProtectedPlace({ password, placeId: pid }));
-    }, [dispatch, password, pid]);
+      dispatch(openProtectedPlace({ password, placeId: placeId }));
+    }, [dispatch, password, placeId]);
 
     if (!place) {
       return null;

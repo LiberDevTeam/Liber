@@ -153,8 +153,8 @@ export const placesSlice = createSlice({
         place.hash = hash;
       }
     },
-    removePlace(state, action: PayloadAction<{ pid: string }>) {
-      placesAdapter.removeOne(state, action.payload.pid);
+    removePlace(state, action: PayloadAction<{ placeId: string }>) {
+      placesAdapter.removeOne(state, action.payload.placeId);
       // TODO expire the messages in the place user left
     },
   },
@@ -169,8 +169,8 @@ export const placesSlice = createSlice({
         placesAdapter.upsertOne(state, action.payload);
       })
       .addCase(placeMessageAdded, (state, action) => {
-        const { pid, message, mine } = action.payload;
-        const currentPlace = state.entities[pid];
+        const { placeId, message, mine } = action.payload;
+        const currentPlace = state.entities[placeId];
         if (currentPlace === undefined) {
           throw new Error('Place is not exists');
         }
@@ -184,7 +184,7 @@ export const placesSlice = createSlice({
         if (newPlace.timestamp < message.timestamp) {
           newPlace.timestamp = message.timestamp;
         }
-        placesAdapter.updateOne(state, { id: pid, changes: newPlace });
+        placesAdapter.updateOne(state, { id: placeId, changes: newPlace });
       })
       .addCase(placeMessagesAdded, (state, action) => {
         const { placeId, messages } = action.payload;
@@ -245,10 +245,10 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPID = (pid: string) => (
+export const selectPlaceMessagesByPID = (placeId: string) => (
   state: RootState
 ): Message[] => {
-  const place = selectors.selectById(state.places, pid);
+  const place = selectors.selectById(state.places, placeId);
 
   if (!place) {
     return [];

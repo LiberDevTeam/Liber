@@ -75,17 +75,17 @@ export const initApp = createAsyncThunk<
 
 export const publishPlaceMessage = createAsyncThunk<
   void,
-  { text: string; pid: string; attachments?: File[] },
+  { text: string; placeId: string; attachments?: File[] },
   { dispatch: AppDispatch; state: RootState }
 >(
   'p2p/publishPlaceMessage',
-  async ({ pid, text, attachments }, { dispatch, getState }) => {
+  async ({ placeId, text, attachments }, { dispatch, getState }) => {
     const state = getState();
-    const place = selectPlaceById(pid)(state);
+    const place = selectPlaceById(placeId)(state);
     const me = selectMe(state);
 
     if (!place) {
-      throw new Error(`Place (id: ${pid}) is not exists.`);
+      throw new Error(`Place (id: ${placeId}) is not exists.`);
     }
 
     const message: Message = {
@@ -111,7 +111,7 @@ export const publishPlaceMessage = createAsyncThunk<
     }
 
     await feed.add(message);
-    dispatch(placeMessageAdded({ pid, message, mine: true }));
+    dispatch(placeMessageAdded({ placeId, message, mine: true }));
   }
 );
 
