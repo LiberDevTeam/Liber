@@ -2,8 +2,9 @@ import React, { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import { SvgCheckboxChecked } from '~/icons/CheckboxChecked';
 import { SvgCheckboxUnchecked } from '~/icons/CheckboxUnchecked';
+import { ErrorMessage } from '../error-message';
 
-const Root = styled.div`
+const Container = styled.div`
   width: 20px;
 `;
 
@@ -17,6 +18,7 @@ interface Props {
   onChange: ChangeEventHandler<HTMLInputElement>;
   className?: string;
   disabled?: boolean;
+  errorMessage?: string;
 }
 
 export const Checkbox: React.FC<Props> = React.memo(function Checkbox({
@@ -25,17 +27,21 @@ export const Checkbox: React.FC<Props> = React.memo(function Checkbox({
   onChange,
   className,
   disabled,
+  errorMessage,
 }) {
   return (
-    <Root className={className}>
-      <Input
-        name={name}
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        disabled={disabled}
-      />
-      {checked ? <SvgCheckboxChecked /> : <SvgCheckboxUnchecked />}
-    </Root>
+    <>
+      <Container className={className}>
+        <Input
+          name={name}
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+        />
+        {checked ? <SvgCheckboxChecked /> : <SvgCheckboxUnchecked />}
+      </Container>
+      <ErrorMessage>{errorMessage}</ErrorMessage>
+    </>
   );
 });

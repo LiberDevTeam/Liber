@@ -7,13 +7,14 @@ import { PreviewImage } from '../preview-image';
 const width = 124;
 const height = 124;
 
-const Root = styled.div`
-  margin-bottom: ${(props) => props.theme.space[8]}px;
+const Root = styled.div``;
+
+const Container1 = styled.div`
   width: ${width}px;
   height: ${height}px;
 `;
 
-const Container = styled.div`
+const Container2 = styled.div`
   height: ${width}px;
   width: ${height}px;
   background: ${(props) => props.theme.colors.grayLighter};
@@ -55,10 +56,18 @@ interface UploadPhotoProps {
   previewSrc: string | null;
   disabled?: boolean;
   errorMessage?: string;
+  className?: string;
 }
 
 export const UploadPhoto: React.FC<UploadPhotoProps> = React.memo(
-  function UploadPhoto({ onChange, name, previewSrc, disabled, errorMessage }) {
+  function UploadPhoto({
+    onChange,
+    name,
+    previewSrc,
+    disabled,
+    errorMessage,
+    className,
+  }) {
     const avatarInputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = useCallback(() => {
@@ -75,23 +84,25 @@ export const UploadPhoto: React.FC<UploadPhotoProps> = React.memo(
     }, []);
 
     return (
-      <Root>
-        {previewSrc ? (
-          <PreviewImage size="lg" src={previewSrc} onRemove={handleRemove} />
-        ) : (
-          <Container>
-            <ImageIcon />
-            Upload Photo
-            <InputFile
-              ref={avatarInputRef}
-              name={name}
-              type="file"
-              accept="image/*"
-              onChange={handleChange}
-              disabled={disabled}
-            />
-          </Container>
-        )}
+      <Root className={className}>
+        <Container1>
+          {previewSrc ? (
+            <PreviewImage size="lg" src={previewSrc} onRemove={handleRemove} />
+          ) : (
+            <Container2>
+              <ImageIcon />
+              Upload Photo
+              <InputFile
+                ref={avatarInputRef}
+                name={name}
+                type="file"
+                accept="image/*"
+                onChange={handleChange}
+                disabled={disabled}
+              />
+            </Container2>
+          )}
+        </Container1>
         <ErrorMessage>{errorMessage}</ErrorMessage>
       </Root>
     );
