@@ -175,7 +175,7 @@ export const createNewBot = createAsyncThunk<
   },
   { dispatch: AppDispatch; state: RootState }
 >(
-  'stickers/createNewBot',
+  'bots/createNewBot',
   async (
     {
       category,

@@ -13,7 +13,7 @@ import { Textarea } from '~/components/textarea';
 import { SvgPlus2 as PlusIcon } from '~/icons/Plus2';
 import { readAsDataURL } from '~/lib/readFile';
 import {
-  Category,
+  categoryOptions,
   fetchSticker,
   selectStickerById,
   updateSticker,
@@ -98,7 +98,7 @@ const Term = styled.span`
 interface Props {}
 
 interface FormValues {
-  category?: Category;
+  category?: number;
   name: string;
   description: string;
   price: number;
@@ -106,7 +106,7 @@ interface FormValues {
 }
 
 const validationSchema = yup.object({
-  category: yup.string().required(),
+  category: yup.number().required(),
   name: yup.string().max(50).required(),
   description: yup.string().max(200).min(20).required(),
   price: yup.number().moreThan(0).required(),
@@ -217,10 +217,7 @@ export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
           <SelectBox
             id="sticker_category"
             name="category"
-            options={Object.keys(Category).map((key) => ({
-              label: key,
-              value: key,
-            }))}
+            options={categoryOptions}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             value={formik.values.category}

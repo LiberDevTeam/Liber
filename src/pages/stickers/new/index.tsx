@@ -11,7 +11,10 @@ import { SelectBox } from '~/components/select-box';
 import { Textarea } from '~/components/textarea';
 import { SvgPlus2 as PlusIcon } from '~/icons/Plus2';
 import { readAsDataURL } from '~/lib/readFile';
-import { Category, createNewSticker } from '~/state/stickers/stickersSlice';
+import {
+  categoryOptions,
+  createNewSticker,
+} from '~/state/stickers/stickersSlice';
 import BaseLayout from '~/templates';
 
 const CreateButton = styled(Button)`
@@ -90,7 +93,7 @@ const Term = styled.span`
 interface Props {}
 
 interface FormValues {
-  category?: Category;
+  category?: number;
   name: string;
   description: string;
   price: number;
@@ -173,10 +176,7 @@ export const StickerNewPage: React.FC<Props> = React.memo(
             <SelectBox
               id="sticker_category"
               name="category"
-              options={Object.keys(Category).map((key) => ({
-                label: key,
-                value: key,
-              }))}
+              options={categoryOptions}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
               errorMessage={errors.category}
