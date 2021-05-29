@@ -178,9 +178,9 @@ export interface FormValues {
 }
 
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
-  const { pid } = useParams<{ pid: string }>();
-  const place = useSelector(selectPlaceById(pid));
-  const messages = useSelector(selectPlaceMessagesByPID(pid));
+  const { placeId } = useParams<{ placeId: string }>();
+  const place = useSelector(selectPlaceById(placeId));
+  const messages = useSelector(selectPlaceMessagesByPID(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
   const me = useSelector(selectMe);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -200,7 +200,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     },
     validateOnMount: true,
     async onSubmit({ text }) {
-      dispatch(publishPlaceMessage({ pid, text, attachments }));
+      dispatch(publishPlaceMessage({ placeId, text, attachments }));
 
       formik.resetForm();
       formik.validateForm();
@@ -223,15 +223,15 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   // Scroll to bottom when open chat
   useEffect(() => {
     messagesBottomRef.current?.scrollIntoView();
-  }, [pid]);
+  }, [placeId]);
 
   const handleIntersection = useCallback(
     (e) => {
       if (e.isIntersecting && place?.unreadMessages) {
-        dispatch(clearUnreadMessages(pid));
+        dispatch(clearUnreadMessages(placeId));
       }
     },
-    [dispatch, place?.unreadMessages, pid]
+    [dispatch, place?.unreadMessages, placeId]
   );
 
   const handleRemoveAvatar = useCallback((idx: number) => {
@@ -266,9 +266,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   const handleClearUnread = useCallback(() => {
     if (place?.unreadMessages) {
-      dispatch(clearUnreadMessages(pid));
+      dispatch(clearUnreadMessages(placeId));
     }
-  }, [dispatch, place?.unreadMessages, pid]);
+  }, [dispatch, place?.unreadMessages, placeId]);
 
   if (!place) {
     return <div>404</div>;
@@ -287,16 +287,16 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             }}
             memberCount={23}
             onLeave={() => {
-              dispatch(removePlace({ pid: place.id }));
+              dispatch(removePlace({ placeId: place.id }));
               dispatch(push('/places'));
             }}
           />
 
           {place.passwordRequired && place.hash === undefined && (
             <PasswordDialog
-              pid={place.id}
+              placeId={place.id}
               onClose={() => {
-                dispatch(removePlace({ pid: place.id }));
+                dispatch(removePlace({ placeId: place.id }));
                 dispatch(push('/places'));
               }}
             />

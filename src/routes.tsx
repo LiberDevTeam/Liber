@@ -60,24 +60,23 @@ export const Routes: React.FC = memo(function Routes() {
           />
           <Route
             exact
-            path="/places/:pid/banned-users"
+            path="/places/:placeId/banned-users"
             render={() => <BannedUsers />}
           />
 
-          <Route exact path="/places/:pid/bots" render={() => <ChatDetail />} />
           <Route
             exact
-            path="/places/:pid/users/maintainers"
+            path="/places/:placeId/bots"
             render={() => <ChatDetail />}
           />
           <Route
             exact
-            path="/places/:pid/users/banned"
+            path="/places/:placeId/users/banned"
             render={() => <ChatDetail />}
           />
           <Route
             exact
-            path="/places/:pid/:swarmKey?"
+            path="/places/:placeId/:swarmKey?"
             render={() => <ChatDetail />}
           />
           <Route exact path="/explore" render={() => <Explore />} />

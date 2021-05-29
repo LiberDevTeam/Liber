@@ -21,5 +21,5 @@ const Template: Story<PasswordDialogProps> = (args) => (
 );
 export const Default = Template.bind({});
 Default.args = {
-  pid: place.id,
+  placeId: place.id,
 };
