@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SvgArrowDown } from '~/icons/ArrowDown';
 import { ErrorMessage } from '../error-message';
 
-const Root = styled.div`
+const Container = styled.div`
   position: relative;
 `;
 
@@ -52,7 +52,7 @@ interface Props {
   errorMessage?: string;
   onChange: (e: React.SyntheticEvent<HTMLSelectElement>) => void;
   disabled: boolean;
-  value?: string;
+  value?: number;
 }
 
 export const SelectBox: React.FC<Props> = React.memo(function Select({
@@ -66,24 +66,26 @@ export const SelectBox: React.FC<Props> = React.memo(function Select({
 }) {
   const { t } = useTranslation(['selectOptions']);
   return (
-    <Root>
-      <StyledSelect
-        onChange={onChange}
-        id={id}
-        name={name}
-        value={value}
-        defaultValue=""
-        disabled={disabled}
-      >
-        <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
-        {options.map(({ value, label }) => (
-          <option key={label} value={value}>
-            {t(`selectOptions:${id.toUpperCase()}_${label}`)}
-          </option>
-        ))}
-      </StyledSelect>
-      <ArrowDownIcon />
+    <>
+      <Container>
+        <StyledSelect
+          onChange={onChange}
+          id={id}
+          name={name}
+          value={value}
+          defaultValue=""
+          disabled={disabled}
+        >
+          <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
+          {options.map(({ value, label }) => (
+            <option key={label} value={value}>
+              {t(`selectOptions:${id.toUpperCase()}_${label}`)}
+            </option>
+          ))}
+        </StyledSelect>
+        <ArrowDownIcon />
+      </Container>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-    </Root>
+    </>
   );
 });

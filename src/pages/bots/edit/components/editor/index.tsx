@@ -9,7 +9,7 @@ const Description = styled.p`
 
 const StyledTextarea = styled(Textarea)`
   margin-top: ${(props) => props.theme.space[5]}px;
-  margin-bottom: ${(props) => props.theme.space[15]}px;
+  margin-bottom: ${(props) => props.theme.space[5]}px;
   font-weight: ${(props) => props.theme.fontWeights.thin};
 `;
 
@@ -34,7 +34,7 @@ export const Editor: React.FC<Props> = memo(function Editor({
         with outside API, only supported to reply to users' messages currently.
       </Description>
       <StyledTextarea
-        name="code"
+        name="sourceCode"
         placeholder="Input the behavior of your bot"
         value={value}
         onChange={onChange}

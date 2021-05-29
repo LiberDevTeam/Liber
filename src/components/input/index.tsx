@@ -73,7 +73,7 @@ export const Input: React.FC<InputProps> = React.memo(function Input({
 }) {
   return (
     <Root className={className}>
-      <Container className={className} style={style}>
+      <Container style={style}>
         <IconWrapper>{icon}</IconWrapper>
         <InnerInput {...rest} ref={innerRef} hasIcon={Boolean(icon)} />
         {actions}

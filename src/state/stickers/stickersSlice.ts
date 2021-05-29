@@ -15,12 +15,14 @@ import {
 import { AppDispatch, RootState } from '~/state/store';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
-export enum Category {
-  AnimalLovers = 'AnimalLovers',
-}
+export const categories = ['ANIMAL_LOVERS'];
+export const categoryOptions = categories.map((label, index) => ({
+  value: `${index}`,
+  label,
+}));
 
 interface PartialForUpdate {
-  category: Category;
+  category: number;
   name: string;
   description: string;
   price: number;
@@ -49,7 +51,7 @@ export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
   id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
   // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
   uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: Category.AnimalLovers,
+  category: 0,
   name: 'バク',
   description: 'モデルやってます。性別はありません',
   price: 20,
@@ -74,7 +76,7 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
   id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
   // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
   uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: Category.AnimalLovers,
+  category: 0,
   name: 'バク',
   description: 'モデルやってます。性別はありません',
   price: 20,
@@ -98,7 +100,7 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
 export const createNewSticker = createAsyncThunk<
   void,
   {
-    category: Category;
+    category: number;
     name: string;
     price: number;
     description: string;
@@ -151,7 +153,7 @@ export const updateSticker = createAsyncThunk<
   {
     stickerId: string;
     address: string;
-    category: Category;
+    category: number;
     name: string;
     description: string;
     price: number;

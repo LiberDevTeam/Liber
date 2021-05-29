@@ -5,107 +5,129 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
+import { getUnixTime } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  connectBotKeyValue,
+  createBotKeyValue,
+  readBotFromDB,
+} from '~/lib/db/bot';
 import { AppDispatch, RootState } from '~/state/store';
+import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
-export enum Category {
-  Analytics = 'Analytics',
-  Communication = 'Communication',
-  CustomerSupport = 'Customer Support',
-  Design = 'Design',
-  DeveloperTools = 'Developer Tools',
-  FileManagement = 'File Management',
-  HealthWellness = 'Health & Wellness',
-  HRTeamCulture = 'HR & Team Culture',
-  Marketing = 'Marketing',
-  OfficeManagement = 'Office Management',
-  Finance = 'Finance',
-  Productivity = 'Productivity',
-  ProjectManagement = 'Project Management',
-  Sales = 'Sales',
-  SecurityCompliance = 'Security & Compliance',
-  SocialFun = 'Social & Fun',
-  Travel = 'Travel',
-  VoiceVideo = 'Voice & Video',
-  MediaNews = 'Media & News',
-}
+export const categories = [
+  'ANALYTICS',
+  'COMMUNICATION',
+  'DESIGN',
+  'DEVELOPER_TOOLS',
+  'FILE_MANAGEMENT',
+  'HEALTH_WELLNESS',
+  'HR_TEAM_CULTURE',
+  'MARKETING',
+  'OFFICE_MANAGEMENT',
+  'FINANCE',
+  'PRODUCTIVITY',
+  'PROJECT_MANAGEMENT',
+  'SALES',
+  'SECURITY_COMPLIANCE',
+  'SOCIAL_FUN',
+  'TRAVEL',
+  'VOICE_VIDEO',
+  'MEDIA_NEWS',
+];
+export const categoryOptions = categories.map((label, index) => ({
+  value: `${index}`,
+  label,
+}));
 
 export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
-  uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
-  name: 'Greeting Bot',
-  description:
-    'Records the attendance times and calculates the monthly wages of employees',
-  docs: `
-# Greeting Bot
+  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
+  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
+  category: 2,
+  name: 'baku purchased',
+  description: "Hey everyone. I'm baku.",
+  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
+  price: 199999,
+  readme: `# Usage
 
-## Usage
+hogehogehogehoge
 
 ## Links
-- github.com/LiberDevTeam/Liber
-`,
-  avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-  price: 20,
+
+- [http: //liber.live/](http: //liber.live/)
+- [http: //docs.liber.live/](http: //docs.liber.live/)`,
   sourceCode: `
-if (<input> === ping) {
-  return 'pong';
-} else if (<input> === hello) {
-  return 'hi <username>';
-}
-`,
-  created: 1619251130,
-  category: Category.Communication,
+  if (<input> === ping) {
+    return 'pong';
+  } else if (<input> === hello) {
+    return 'hi <username>';
+  }
+  `,
   examples: [
     {
-      title: 'pingpong',
+      title: 'ping',
       input: 'ping',
       output: 'pong',
     },
     {
-      title: 'hello',
-      input: 'hello',
-      output: 'hi <username>',
+      title: 'greeting',
+      input: 'hello <@>',
+      output: 'pong',
     },
   ],
+  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
+  created: 1622195011,
+  purchased: 1622197011,
 }));
 
 export const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `9C095752-A668-4BCB-A61C-7083585BDCD${i}`,
-  uid: `94801C77-68E9-4193-B253-C91983477A0${i}`,
-  name: 'Greeting Bot',
-  description:
-    'Records the attendance times and calculates the monthly wages of employees',
-  docs: `
-# Greeting Bot
+  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
+  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
+  category: 2,
+  name: 'baku',
+  description: "Hey everyone. I'm baku.",
+  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
+  price: 199999,
+  readme: `# Usage
 
-## Usage
+hogehogehogehoge
 
 ## Links
-- github.com/LiberDevTeam/Liber
-`,
-  avatar: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-  price: 20,
+
+- [http://liber.live/](http://liber.live/)
+- [http://docs.liber.live/](http://docs.liber.live/)`,
   sourceCode: `
 if (<input> === ping) {
   return 'pong';
 } else if (<input> === hello) {
   return 'hi <username>';
-}
-`,
-  created: 1619251130,
-  category: Category.Communication,
+}`,
   examples: [
     {
-      title: 'pingpong',
+      title: 'ping',
       input: 'ping',
       output: 'pong',
     },
     {
-      title: 'hello',
+      title: 'greeting',
       input: 'hello',
-      output: 'hi <username>',
+      output: 'hi',
     },
   ],
+  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
+  created: 1622195011,
 }));
+
+interface PartialForUpdate {
+  category: number;
+  name: string;
+  description: string;
+  avatar: string;
+  price: number;
+  readme: string;
+  sourceCode: string;
+  examples: Example[];
+}
 
 export interface Example {
   title: string;
@@ -113,28 +135,24 @@ export interface Example {
   output: string;
 }
 
-export interface Bot {
+export interface Bot extends PartialForUpdate {
   id: string;
   uid: string;
-  name: string;
-  category: Category;
-  description: string;
-  avatar: string;
-  price: number;
-  docs: string;
-  sourceCode: string;
-  examples: Example[];
+  keyValAddress: string;
   created: number;
   purchased?: number;
 }
 
 export const fetchBot = createAsyncThunk<
   void,
-  { id: string },
+  {
+    botId: string;
+    address: string;
+  },
   { dispatch: AppDispatch; state: RootState }
->('bots/fetchBot', async ({ id }, { dispatch }) => {
-  // TODO fetch bot from DB
-  const bot = tmpPurchased[0];
+>('bots/fetchBot', async ({ botId, address }, { dispatch }) => {
+  const db = await connectBotKeyValue({ botId, address });
+  const bot = readBotFromDB(db);
   if (!bot) {
     dispatch(push('/404'));
     return;
@@ -142,6 +160,130 @@ export const fetchBot = createAsyncThunk<
 
   dispatch(addBot(bot));
 });
+
+export const createNewBot = createAsyncThunk<
+  void,
+  {
+    category: number;
+    name: string;
+    description: string;
+    avatar: File;
+    price: number;
+    readme: string;
+    sourceCode: string;
+    examples: Example[];
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'bots/createNewBot',
+  async (
+    {
+      category,
+      name,
+      description,
+      avatar,
+      price,
+      readme,
+      sourceCode,
+      examples,
+    },
+    { dispatch, getState }
+  ) => {
+    const { me } = getState();
+
+    const id = uuidv4();
+    const botKeyValue = await createBotKeyValue(id);
+
+    const bot: Bot = {
+      id,
+      uid: me.id,
+      category,
+      name,
+      description,
+      avatar: await addIpfsContent(dispatch, avatar),
+      price,
+      readme,
+      sourceCode,
+      examples,
+      keyValAddress: botKeyValue.address.root,
+      created: getUnixTime(Date.now()),
+    };
+
+    Object.keys(bot).forEach((key) => {
+      const v = bot[key as keyof Bot];
+      v && botKeyValue.put(key, v);
+    });
+
+    // TODO: create index to Liber search.
+
+    dispatch(addBot(bot));
+    dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
+
+    // TODO: show notification
+  }
+);
+
+export const updateBot = createAsyncThunk<
+  void,
+  {
+    botId: string;
+    address: string;
+    category: number;
+    name: string;
+    description: string;
+    avatar: File;
+    price: number;
+    readme: string;
+    sourceCode: string;
+    examples: Example[];
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'bots/updateBot',
+  async (
+    {
+      botId,
+      address,
+      category,
+      name,
+      description,
+      avatar,
+      price,
+      readme,
+      sourceCode,
+      examples,
+    },
+    { dispatch }
+  ) => {
+    const botKeyValue = await connectBotKeyValue({
+      botId,
+      address,
+    });
+
+    const partial: PartialForUpdate = {
+      category,
+      name,
+      description,
+      avatar: await addIpfsContent(dispatch, avatar),
+      price,
+      readme,
+      sourceCode,
+      examples,
+    };
+
+    Object.keys(partial).forEach((key) => {
+      const v = partial[key as keyof PartialForUpdate];
+      v && botKeyValue.put(key, v);
+    });
+
+    // TODO: update index to Liber search.
+
+    dispatch(updateOne({ id: botId, changes: partial }));
+    dispatch(push(`/bots/${address}/${botId}`));
+
+    // TODO: show notification
+  }
+);
 
 const botsAdapter = createEntityAdapter<Bot>();
 
@@ -153,10 +295,18 @@ export const botsSlice = createSlice({
       botsAdapter.addMany(state, action.payload),
     addBot: (state, action: PayloadAction<Bot>) =>
       botsAdapter.addOne(state, action.payload),
+    updateOne: (
+      state,
+      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+    ) =>
+      botsAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: action.payload.changes,
+      }),
   },
 });
 
-export const { addBots, addBot } = botsSlice.actions;
+export const { updateOne, addBots, addBot } = botsSlice.actions;
 
 const selectors = botsAdapter.getSelectors();
 export const selectBotById = (id: string) => (state: RootState) =>

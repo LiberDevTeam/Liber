@@ -16,6 +16,7 @@ const StyledTextarea = styled(Textarea)`
 interface Props {
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
+  errorMessage?: string;
   disabled?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const Editor: React.FC<Props> = memo(function Editor({
   value,
   onChange,
   disabled,
+  errorMessage,
 }) {
   return (
     <>
@@ -32,13 +34,14 @@ export const Editor: React.FC<Props> = memo(function Editor({
         with outside API, only supported to reply to users' messages currently.
       </Description>
       <StyledTextarea
-        name="code"
+        name="sourceCode"
         placeholder="Input the behavior of your bot"
         value={value}
         onChange={onChange}
         disabled={disabled}
         rows={8}
-        maxLength={200}
+        maxLength={1000}
+        errorMessage={errorMessage}
       />
     </>
   );

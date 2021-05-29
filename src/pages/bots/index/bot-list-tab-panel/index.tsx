@@ -61,7 +61,7 @@ export const BotListTabPanel: React.FC<BotListTabPanelProps> = React.memo(
         <List>
           {bots.slice(offset, offset + limit).map((bot) => (
             <ListItem key={bot.id}>
-              <StyledLink to={`/bots/${bot.id}`}>
+              <StyledLink to={`/bots/${bot.keyValAddress}/${bot.id}`}>
                 <LeftGroup>
                   <Avatar cid={bot.avatar} />
                   {bot.name}

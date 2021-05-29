@@ -1,8 +1,10 @@
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { Button } from '~/components/button';
+import { ErrorMessage } from '~/components/error-message';
 import { IconButton } from '~/components/icon-button';
 import { Input } from '~/components/input';
 import { SelectBox } from '~/components/select-box';
@@ -11,9 +13,13 @@ import { Textarea } from '~/components/textarea';
 import { UploadPhoto } from '~/components/upload-photo';
 import { SvgPlus as PlusIcon } from '~/icons/Plus';
 import { readAsDataURL } from '~/lib/readFile';
-import { categoryOptions } from '~/state/places/placesSlice';
+import { categoryOptions, createNewBot } from '~/state/bots/botsSlice';
 import BaseLayout from '~/templates';
 import { Editor } from './components/editor';
+
+const Form = styled.form`
+  margin-bottom: ${(props) => props.theme.space[5]}px;
+`;
 
 const ExampleDescription = styled.p`
   color: ${(props) => props.theme.colors.secondaryText};
@@ -71,7 +77,7 @@ const InputText = styled(Input)`
 
 const StyledTextarea = styled(Textarea)`
   margin-top: ${(props) => props.theme.space[5]}px;
-  margin-bottom: ${(props) => props.theme.space[15]}px;
+  margin-bottom: ${(props) => props.theme.space[5]}px;
   font-weight: ${(props) => props.theme.fontWeights.thin};
 `;
 
@@ -85,12 +91,28 @@ const Description = styled.p`
   font-weight: ${(props) => props.theme.fontWeights.light};
 `;
 
+const Section = styled.section`
+  margin-bottom: ${(props) => props.theme.space[10]}px;
+`;
+
+const Term = styled.span`
+  font-weight: ${(props) => props.theme.fontWeights.semibold};
+  font-size: ${(props) => props.theme.fontSizes.md};
+  margin-left: ${(props) => props.theme.space[5]}px;
+`;
+
+const PriceInner = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 const tabTitles = ['Editor', 'Testing'];
 
 interface Props {}
 
 interface Example {
-  name: string;
+  title: string;
   input: string;
   output: string;
 }
@@ -100,22 +122,35 @@ interface FormValues {
   category: number;
   name: string;
   description: string;
-  document: string;
-  code: string;
+  readme: string;
+  price?: number;
+  sourceCode: string;
   examples: Example[];
 }
 
 const validationSchema = yup.object({
   avatar: yup.mixed().test('not null', '', (value) => value !== null),
-  category: yup.number().required(),
-  name: yup.string().required(),
-  description: yup.string(),
-  document: yup.string(),
-  code: yup.string().required(),
-  examples: yup.array(),
+  category: yup.number().moreThan(0).required(),
+  name: yup.string().max(50).required(),
+  description: yup.string().max(200).min(20).required(),
+  readme: yup.string().max(1000).min(20).required(),
+  price: yup.number().moreThan(0).required(),
+  sourceCode: yup.string().max(1000).required(),
+  examples: yup
+    .array()
+    .min(1)
+    .required()
+    .of(
+      yup.object().shape({
+        title: yup.string().required(),
+        input: yup.string().required(),
+        output: yup.string().required(),
+      })
+    ),
 });
 
 export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
+  const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const formik = useFormik<FormValues>({
@@ -124,34 +159,37 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
       category: 0,
       name: '',
       description: '',
-      document: '',
-      code: '',
-      examples: [{ name: '', input: '', output: '' }],
+      readme: '',
+      sourceCode: '',
+      examples: [{ title: '', input: '', output: '' }],
     },
     validationSchema,
     async onSubmit({
-      avatar,
       category,
       name,
       description,
-      document,
-      code,
+      avatar,
+      price,
+      readme,
+      sourceCode,
       examples,
     }) {
-      if (avatar) {
-        // dispatch(
-        //   createNewBot({
-        //     avatar,
-        //     category,
-        //     name,
-        //     description,
-        //     document,
-        //     code,
-        //     tests,
-        //   })
-        // );
+      if (avatar && price) {
+        dispatch(
+          createNewBot({
+            avatar,
+            category,
+            name,
+            description,
+            price,
+            readme,
+            sourceCode,
+            examples,
+          })
+        );
       }
     },
+    validateOnChange: false,
   });
 
   useEffect(() => {
@@ -188,55 +226,78 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
       description="Please fill out a form and submit it."
       backTo="/bots"
     >
-      <form>
+      <Form onSubmit={formik.handleSubmit}>
         <Group>
           <UploadPhoto
             name="avatar"
             onChange={handleChangeImage}
             previewSrc={avatarPreview}
             disabled={formik.isSubmitting}
+            errorMessage={formik.errors.avatar}
           />
 
-          <SelectBox
-            id="bot_category"
-            name="category"
-            options={categoryOptions}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            errorMessage={formik.errors.category}
-          />
+          <Section>
+            <SelectBox
+              id="bot_category"
+              name="category"
+              options={categoryOptions}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              errorMessage={formik.errors.category}
+            />
 
-          <InputText
-            name="name"
-            placeholder="Name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-          />
-          <StyledTextarea
-            name="description"
-            placeholder="Add Description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            rows={8}
-            maxLength={200}
-          />
+            <InputText
+              name="name"
+              placeholder="Name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              errorMessage={formik.errors.name}
+            />
+            <StyledTextarea
+              name="description"
+              placeholder="Add Description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              rows={8}
+              maxLength={200}
+              errorMessage={formik.errors.description}
+            />
+          </Section>
 
-          <Subtitle>Document</Subtitle>
+          <Section>
+            <Subtitle>Price</Subtitle>
+            <PriceInner>
+              <Input
+                type="number"
+                name="price"
+                placeholder="999999"
+                value={formik.values.price}
+                onChange={formik.handleChange}
+                disabled={formik.isSubmitting}
+                errorMessage={formik.errors.price}
+              />
+              <Term>ETH</Term>
+            </PriceInner>
+          </Section>
 
-          <Description>
-            It could be written in Markdown format. See more about Markdown.
-          </Description>
-          <StyledTextarea
-            name="document"
-            placeholder="Add Documentation"
-            value={formik.values.document}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            rows={8}
-            maxLength={200}
-          />
+          <Section>
+            <Subtitle>README</Subtitle>
+            <Description>
+              It could be written in Markdown format. See more about Markdown.
+            </Description>
+            <StyledTextarea
+              name="readme"
+              placeholder="# Usage"
+              value={formik.values.readme}
+              onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
+              rows={8}
+              maxLength={1000}
+              errorMessage={formik.errors.readme}
+            />
+          </Section>
         </Group>
 
         <Tabs
@@ -248,11 +309,12 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
             <TabPanel>
               <Group>
                 <Editor
-                  value={formik.values.code}
+                  value={formik.values.sourceCode}
                   onChange={formik.handleChange}
                   disabled={formik.isSubmitting}
+                  errorMessage={formik.errors.sourceCode}
                 />
-                <CreateButton type="button" shape="rounded" text="CREATE" />
+                <CreateButton type="submit" shape="rounded" text="CREATE" />
               </Group>
             </TabPanel>
             <TabPanel>
@@ -261,6 +323,10 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                   Testing is useful to look for latent bugs in your bot. It will
                   be also shown as examples on its detail page.
                 </ExampleDescription>
+                <ErrorMessage>
+                  {typeof formik.errors.examples === 'string' &&
+                    formik.errors.examples}
+                </ErrorMessage>
                 {formik.values.examples.map((t, index) => (
                   <Item key={index}>
                     <Subtitle>Test {index + 1}</Subtitle>
@@ -269,37 +335,44 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                       icon={<PlusIcon width="24" height="24" />}
                     />
                     <StyledInput
-                      required
-                      name={`examples.${index}.name`}
-                      placeholder="Name"
-                      value={t.name}
+                      name={`examples.${index}.title`}
+                      placeholder="Title"
+                      value={t.title}
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
+                      errorMessage={
+                        (formik.errors.examples?.[index] as Example)?.title
+                      }
                     />
                     <StyledInput
-                      required
                       name={`examples.${index}.input`}
                       placeholder="<@self> ping"
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
+                      errorMessage={
+                        (formik.errors.examples?.[index] as Example)?.input
+                      }
                     />
                     <StyledInput
-                      required
                       name={`examples.${index}.output`}
                       placeholder="<@sender> pong"
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
+                      errorMessage={
+                        (formik.errors.examples?.[index] as Example)?.output
+                      }
                     />
+                    {formik.errors.examples && <ErrorMessage>{}</ErrorMessage>}
                   </Item>
                 ))}
                 <AddLink onClick={handleAdd}>Add Test Case</AddLink>
                 <RunTestButton type="button" shape="rounded" text="RUN TEST" />
-                <CreateButton type="button" shape="rounded" text="CREATE" />
+                <CreateButton type="submit" shape="rounded" text="CREATE" />
               </Group>
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </form>
+      </Form>
     </BaseLayout>
   );
 });
