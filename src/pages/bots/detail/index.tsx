@@ -60,6 +60,7 @@ const Subtitle = styled.h2`
 const Description = styled.p`
   font-weight: ${(props) => props.theme.fontWeights.thin};
   color: ${(props) => props.theme.colors.secondaryText};
+  overflow-wrap: break-word;
 `;
 
 const Readme = styled.p``;

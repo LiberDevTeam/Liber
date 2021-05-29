@@ -118,23 +118,26 @@ if (<input> === ping) {
   created: 1622195011,
 }));
 
-export interface Example {
-  title: string;
-  input: string;
-  output: string;
-}
-
-export interface Bot {
-  id: string;
-  uid: string;
-  name: string;
+interface PartialForUpdate {
   category: number;
+  name: string;
   description: string;
   avatar: string;
   price: number;
   readme: string;
   sourceCode: string;
   examples: Example[];
+}
+
+export interface Example {
+  title: string;
+  input: string;
+  output: string;
+}
+
+export interface Bot extends PartialForUpdate {
+  id: string;
+  uid: string;
   keyValAddress: string;
   created: number;
   purchased?: number;
@@ -220,6 +223,68 @@ export const createNewBot = createAsyncThunk<
   }
 );
 
+export const updateBot = createAsyncThunk<
+  void,
+  {
+    botId: string;
+    address: string;
+    category: number;
+    name: string;
+    description: string;
+    avatar: File;
+    price: number;
+    readme: string;
+    sourceCode: string;
+    examples: Example[];
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'bots/updateBot',
+  async (
+    {
+      botId,
+      address,
+      category,
+      name,
+      description,
+      avatar,
+      price,
+      readme,
+      sourceCode,
+      examples,
+    },
+    { dispatch }
+  ) => {
+    const botKeyValue = await connectBotKeyValue({
+      botId,
+      address,
+    });
+
+    const partial: PartialForUpdate = {
+      category,
+      name,
+      description,
+      avatar: await addIpfsContent(dispatch, avatar),
+      price,
+      readme,
+      sourceCode,
+      examples,
+    };
+
+    Object.keys(partial).forEach((key) => {
+      const v = partial[key as keyof PartialForUpdate];
+      v && botKeyValue.put(key, v);
+    });
+
+    // TODO: update index to Liber search.
+
+    dispatch(updateOne({ id: botId, changes: partial }));
+    dispatch(push(`/bots/${address}/${botId}`));
+
+    // TODO: show notification
+  }
+);
+
 const botsAdapter = createEntityAdapter<Bot>();
 
 export const botsSlice = createSlice({
@@ -230,10 +295,18 @@ export const botsSlice = createSlice({
       botsAdapter.addMany(state, action.payload),
     addBot: (state, action: PayloadAction<Bot>) =>
       botsAdapter.addOne(state, action.payload),
+    updateOne: (
+      state,
+      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+    ) =>
+      botsAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: action.payload.changes,
+      }),
   },
 });
 
-export const { addBots, addBot } = botsSlice.actions;
+export const { updateOne, addBots, addBot } = botsSlice.actions;
 
 const selectors = botsAdapter.getSelectors();
 export const selectBotById = (id: string) => (state: RootState) =>

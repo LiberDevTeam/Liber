@@ -52,7 +52,7 @@ interface Props {
   errorMessage?: string;
   onChange: (e: React.SyntheticEvent<HTMLSelectElement>) => void;
   disabled: boolean;
-  value?: string;
+  value?: number;
 }
 
 export const SelectBox: React.FC<Props> = React.memo(function Select({
