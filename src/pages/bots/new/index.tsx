@@ -189,15 +189,8 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
         );
       }
     },
+    validateOnChange: false,
   });
-
-  const [errors, setErrors] = useState<typeof formik.errors>({});
-
-  useEffect(() => {
-    if (formik.submitCount > 0) {
-      setErrors(formik.errors);
-    }
-  }, [formik.errors, formik.submitCount]);
 
   useEffect(() => {
     if (formik.values.avatar) {
@@ -240,7 +233,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
             onChange={handleChangeImage}
             previewSrc={avatarPreview}
             disabled={formik.isSubmitting}
-            errorMessage={errors.avatar}
+            errorMessage={formik.errors.avatar}
           />
 
           <Section>
@@ -250,7 +243,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
               options={categoryOptions}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.category}
+              errorMessage={formik.errors.category}
             />
 
             <InputText
@@ -259,7 +252,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
               value={formik.values.name}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.name}
+              errorMessage={formik.errors.name}
             />
             <StyledTextarea
               name="description"
@@ -269,7 +262,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
               disabled={formik.isSubmitting}
               rows={8}
               maxLength={200}
-              errorMessage={errors.description}
+              errorMessage={formik.errors.description}
             />
           </Section>
 
@@ -283,7 +276,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                 value={formik.values.price}
                 onChange={formik.handleChange}
                 disabled={formik.isSubmitting}
-                errorMessage={errors.price}
+                errorMessage={formik.errors.price}
               />
               <Term>ETH</Term>
             </PriceInner>
@@ -302,7 +295,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
               disabled={formik.isSubmitting}
               rows={8}
               maxLength={1000}
-              errorMessage={errors.readme}
+              errorMessage={formik.errors.readme}
             />
           </Section>
         </Group>
@@ -319,7 +312,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                   value={formik.values.sourceCode}
                   onChange={formik.handleChange}
                   disabled={formik.isSubmitting}
-                  errorMessage={errors.sourceCode}
+                  errorMessage={formik.errors.sourceCode}
                 />
                 <CreateButton type="submit" shape="rounded" text="CREATE" />
               </Group>
@@ -331,7 +324,8 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                   be also shown as examples on its detail page.
                 </ExampleDescription>
                 <ErrorMessage>
-                  {typeof errors.examples === 'string' && errors.examples}
+                  {typeof formik.errors.examples === 'string' &&
+                    formik.errors.examples}
                 </ErrorMessage>
                 {formik.values.examples.map((t, index) => (
                   <Item key={index}>
@@ -347,7 +341,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
                       errorMessage={
-                        (errors.examples?.[index] as Example)?.title
+                        (formik.errors.examples?.[index] as Example)?.title
                       }
                     />
                     <StyledInput
@@ -356,7 +350,7 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
                       errorMessage={
-                        (errors.examples?.[index] as Example)?.input
+                        (formik.errors.examples?.[index] as Example)?.input
                       }
                     />
                     <StyledInput
@@ -365,10 +359,10 @@ export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
                       onChange={formik.handleChange}
                       disabled={formik.isSubmitting}
                       errorMessage={
-                        (errors.examples?.[index] as Example)?.output
+                        (formik.errors.examples?.[index] as Example)?.output
                       }
                     />
-                    {errors.examples && <ErrorMessage>{}</ErrorMessage>}
+                    {formik.errors.examples && <ErrorMessage>{}</ErrorMessage>}
                   </Item>
                 ))}
                 <AddLink onClick={handleAdd}>Add Test Case</AddLink>
