@@ -21,14 +21,16 @@ import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
+import { LoadingPage } from '~/pages/loading';
 import { selectMe } from '~/state/me/meSlice';
 import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
 import {
   banUser,
   clearUnreadMessages,
+  joinPlace,
   removePlace,
   selectPlaceById,
-  selectPlaceMessagesByPID,
+  selectPlaceMessagesByPlaceId,
 } from '~/state/places/placesSlice';
 import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
@@ -178,9 +180,12 @@ export interface FormValues {
 }
 
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
-  const { placeId } = useParams<{ placeId: string }>();
+  const { placeId, address } = useParams<{
+    placeId: string;
+    address: string;
+  }>();
   const place = useSelector(selectPlaceById(placeId));
-  const messages = useSelector(selectPlaceMessagesByPID(placeId));
+  const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
   const me = useSelector(selectMe);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -193,6 +198,14 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesBottomRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    dispatch(joinPlace({ placeId, address }));
+  }, [placeId, address]);
+
+  if (!place) {
+    return <LoadingPage text="Connecting to place..." />;
+  }
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -280,6 +293,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
         <Root>
           <PlaceDetailHeader
             placeId={place.id}
+            address={place.keyValAddress}
             name={place.name}
             avatarCid={place.avatarCid}
             onInviteClick={() => {

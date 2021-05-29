@@ -142,7 +142,10 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
     }, [place.timestamp, locale]);
 
     return (
-      <Root to={`/places/${place.id}`} activeClassName={activeClassName}>
+      <Root
+        to={`/places/${place.keyValAddress}/${place.id}`}
+        activeClassName={activeClassName}
+      >
         <LeftContainer>
           <Image cid={place.avatarCid} />
           <Status status={status} />
