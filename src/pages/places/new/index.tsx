@@ -138,15 +138,8 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
         );
       }
     },
+    validateOnChange: false,
   });
-
-  const [errors, setErrors] = useState<typeof formik.errors>({});
-
-  useEffect(() => {
-    if (formik.submitCount > 0) {
-      setErrors(formik.errors);
-    }
-  }, [formik.errors, formik.submitCount]);
 
   useEffect(() => {
     if (formik.values.avatar) {
@@ -177,7 +170,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           onChange={handleChangeImage}
           previewSrc={avatarPreview}
           disabled={formik.isSubmitting}
-          errorMessage={errors.avatar}
+          errorMessage={formik.errors.avatar}
         />
 
         <SelectBox
@@ -191,7 +184,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             )
           }
           disabled={formik.isSubmitting}
-          errorMessage={errors.category}
+          errorMessage={formik.errors.category}
         />
 
         <InputText
@@ -200,7 +193,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           value={formik.values.name}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
-          errorMessage={errors.name}
+          errorMessage={formik.errors.name}
         />
         <InputDescription
           name="description"
@@ -210,7 +203,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           disabled={formik.isSubmitting}
           rows={8}
           maxLength={200}
-          errorMessage={errors.description}
+          errorMessage={formik.errors.description}
         />
 
         <Subtitle>Other Options</Subtitle>
@@ -222,7 +215,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               checked={formik.values.isPrivate}
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
-              errorMessage={errors.isPrivate}
+              errorMessage={formik.errors.isPrivate}
             />
             Make Private?
           </FlagLabel>
@@ -252,7 +245,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
             value={formik.values.password}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
-            errorMessage={errors.password}
+            errorMessage={formik.errors.password}
           />
         </OptionGroup>
 

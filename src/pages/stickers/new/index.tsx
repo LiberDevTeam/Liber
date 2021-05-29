@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as yup from 'yup';
@@ -129,14 +129,8 @@ export const StickerNewPage: React.FC<Props> = React.memo(
             })
           );
       },
+      validateOnChange: false,
     });
-    const [errors, setErrors] = useState<typeof formik.errors>({});
-
-    useEffect(() => {
-      if (formik.submitCount > 0) {
-        setErrors(formik.errors);
-      }
-    }, [formik.errors, formik.submitCount]);
 
     const contentInputRef = useRef<HTMLInputElement>(null);
 
