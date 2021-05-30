@@ -46,6 +46,7 @@
     "formik": "^2.2.6",
     "fs-extra": "^9.1.0",
     "html-webpack-plugin": "5.3.1",
+    "https-browserify": "^1.0.0",
     "i18next": "^19.9.2",
     "i18next-http-backend": "^1.1.1",
     "identity-obj-proxy": "3.0.0",
@@ -67,6 +68,7 @@
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "orbit-db-feedstore": "^1.12.0",
     "orbit-db-kvstore": "^1.12.0",
+    "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "pnp-webpack-plugin": "1.6.4",
     "polished": "^4.1.1",
@@ -95,6 +97,7 @@
     "semver": "7.3.4",
     "simple-peer": "^9.9.3",
     "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "style-loader": "2.0.0",
     "styled-components": "^5.2.1",
     "styled-normalize": "^8.0.7",
@@ -189,7 +192,9 @@
     "crypto": "crypto-browserify",
     "stream": "stream-browserify",
     "path": "path-browserify",
-    "cbor": "path-browserify"
+    "os": "os-browserify/browser",
+    "http": "stream-http",
+    "https": "https-browserify"
   },
   "scripts": {
     "start": "run-p watch:app watch:sw",
