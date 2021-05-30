@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
+import { Web3Dialog } from '~/components/web3-dialog';
 import {
   selectPurchasedStickers,
   selectStickersListingOn,
@@ -27,6 +28,7 @@ const tabTitles = ['Listing on', 'Purchased'];
 export const StickersPage: React.FC<Props> = React.memo(
   function StickersPage({}) {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isOpenModalmodal, setModal] = useState(true);
 
     return (
       <BaseLayout
@@ -34,6 +36,13 @@ export const StickersPage: React.FC<Props> = React.memo(
         description="Manage your Stickers settings"
         backTo="/profile"
       >
+        {isOpenModalmodal && (
+          <Web3Dialog
+            onClose={() => {
+              setModal(false);
+            }}
+          />
+        )}
         <StyledButtonLink to="/stickers/new">
           <StyledButton shape="rounded" text="SELL YOUR ORIGINAL STICKER!" />
         </StyledButtonLink>
