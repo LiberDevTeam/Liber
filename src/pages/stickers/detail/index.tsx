@@ -92,71 +92,68 @@ const GalleryImage = styled(IpfsContent)`
   border-radius: ${(props) => props.theme.radii.large}px;
 `;
 
-interface Props {}
-
-export const StickerDetailPage: React.FC<Props> = memo(
-  function StickerDetailPage({}) {
-    const dispatch = useDispatch();
-    const { stickerId, address } = useParams<{
+export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
+  const dispatch = useDispatch();
+  const { stickerId, address } =
+    useParams<{
       stickerId: string;
       address: string;
     }>();
-    const me = useSelector(selectMe);
-    const sticker = useSelector(selectStickerById(stickerId));
-    const purchased = useSelector(selectPurchasedStickerById(stickerId));
+  const me = useSelector(selectMe);
+  const sticker = useSelector(selectStickerById(stickerId));
+  const purchased = useSelector(selectPurchasedStickerById(stickerId));
 
-    useEffect(() => {
-      if (!sticker) {
-        dispatch(fetchSticker({ stickerId, address }));
-      }
-    }, [stickerId, address]);
+  useEffect(() => {
+    if (!sticker) {
+      dispatch(fetchSticker({ stickerId, address }));
+    }
+  }, [stickerId, address]);
 
-    // TODO loading;
-    if (!sticker) return null;
+  // TODO loading;
+  if (!sticker) return null;
 
-    const mine = sticker.uid === me.id;
+  const mine = sticker.uid === me.id;
 
-    return (
-      <BaseLayout backTo="previous">
-        <HeaderContent>
-          <Avatar cid={sticker.contents[0].cid} />
-          <Group>
-            <Name>{sticker.name}</Name>
-            <StickerCategory>{sticker.category}</StickerCategory>
-            <Stock>Stock: Unlimited</Stock>
-            <Price>Price: {sticker.price} ETH</Price>
-          </Group>
-        </HeaderContent>
+  return (
+    <BaseLayout backTo="previous">
+      <HeaderContent>
+        <Avatar cid={sticker.contents[0].cid} />
+        <Group>
+          <Name>{sticker.name}</Name>
+          <StickerCategory>{sticker.category}</StickerCategory>
+          <Stock>Stock: Unlimited</Stock>
+          <Price>Price: {sticker.price} ETH</Price>
+        </Group>
+      </HeaderContent>
 
-        <Section>
-          <Subtitle>Description</Subtitle>
-          <Description>{sticker.description}</Description>
-        </Section>
+      <Section>
+        <Subtitle>Description</Subtitle>
+        <Description>{sticker.description}</Description>
+      </Section>
 
-        <Section>
-          <Subtitle>Contents</Subtitle>
-          <Gallery>
-            {sticker.contents.map((c, i) => (
-              <GalleryImage key={i} cid={c.cid} />
-            ))}
-          </Gallery>
-        </Section>
+      <Section>
+        <Subtitle>Contents</Subtitle>
+        <Gallery>
+          {sticker.contents.map((c, i) => (
+            <GalleryImage key={i} cid={c.cid} />
+          ))}
+        </Gallery>
+      </Section>
 
-        <ButtonSection>
-          {mine && (
-            <Link to={`/stickers/${sticker.keyValAddress}/${sticker.id}/edit`}>
-              <EditButton text="EDIT" />
-            </Link>
-          )}
-          {!mine && !purchased && (
-            <Link
-              to={`/stickers/${sticker.keyValAddress}/${sticker.id}/purchase`}
-            >
-              <PurchaseButton text="PURCHASE" />
-            </Link>
-          )}
-        </ButtonSection>
-      </BaseLayout>
-    );
-  }
-);
+      <ButtonSection>
+        {mine && (
+          <Link to={`/stickers/${sticker.keyValAddress}/${sticker.id}/edit`}>
+            <EditButton text="EDIT" />
+          </Link>
+        )}
+        {!mine && !purchased && (
+          <Link
+            to={`/stickers/${sticker.keyValAddress}/${sticker.id}/purchase`}
+          >
+            <PurchaseButton text="PURCHASE" />
+          </Link>
+        )}
+      </ButtonSection>
+    </BaseLayout>
+  );
+});

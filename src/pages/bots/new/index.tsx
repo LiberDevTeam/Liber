@@ -109,8 +109,6 @@ const PriceInner = styled.div`
 
 const tabTitles = ['Editor', 'Testing'];
 
-interface Props {}
-
 interface Example {
   title: string;
   input: string;
@@ -149,7 +147,7 @@ const validationSchema = yup.object({
     ),
 });
 
-export const BotNewPage: React.FC<Props> = React.memo(function BotNewPage({}) {
+export const BotNewPage: React.FC = React.memo(function BotNewPage() {
   const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);

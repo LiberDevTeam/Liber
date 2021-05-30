@@ -116,8 +116,6 @@ const PriceInner = styled.div`
 
 const tabTitles = ['Editor', 'Example'];
 
-interface Props {}
-
 interface Example {
   title: string;
   input: string;
@@ -156,7 +154,7 @@ const validationSchema = yup.object({
     ),
 });
 
-export const BotEditPage: React.FC<Props> = React.memo(function BotEditPage() {
+export const BotEditPage: React.FC = React.memo(function BotEditPage() {
   const { botId, address } = useParams<{ botId: string; address: string }>();
   const dispatch = useDispatch();
   const bot = useSelector(selectBotById(botId));

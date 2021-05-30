@@ -49,85 +49,79 @@ const SelectorTitle = styled.div`
   width: 65px;
 `;
 
-interface Props {}
-
 const types = ['bots', 'stickers'];
 
 const tabTitles = ['Ranking', 'New'];
 
-export const MarketplacePage: React.FC<Props> = React.memo(
-  function MarketplacePage({}) {
-    const { type = types[0] } = useParams<{
+export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
+  const { type = types[0] } =
+    useParams<{
       type?: string;
     }>();
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [searchText, setSearchText] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [searchText, setSearchText] = useState('');
 
-    const handleSearchTextChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(e.currentTarget.value);
-      },
-      []
-    );
+  const handleSearchTextChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.currentTarget.value);
+    },
+    []
+  );
 
-    return (
-      <BaseLayout
-        title="Marketplace"
-        description="Explore best sticker and bot"
-      >
-        <Contents>
-          <Input
-            icon={<SearchIcon width={24} height={24} />}
-            value={searchText}
-            onChange={handleSearchTextChange}
-            placeholder="Search"
-          />
-          <SelectorGroup>
-            <StyledLink
-              active={(type === types[0]).toString()}
-              to={`/marketplace/${types[0]}`}
-            >
-              <CircleImage src="/img/marketplace/bots_icon.png" />
-              <SelectorTitle>Bots</SelectorTitle>
-            </StyledLink>
-            <StyledLink
-              active={(type === types[1]).toString()}
-              to={`/marketplace/${types[1]}`}
-            >
-              <CircleImage src="/img/marketplace/stickers_icon.png" />
-              <SelectorTitle>Stickers</SelectorTitle>
-            </StyledLink>
-          </SelectorGroup>
+  return (
+    <BaseLayout title="Marketplace" description="Explore best sticker and bot">
+      <Contents>
+        <Input
+          icon={<SearchIcon width={24} height={24} />}
+          value={searchText}
+          onChange={handleSearchTextChange}
+          placeholder="Search"
+        />
+        <SelectorGroup>
+          <StyledLink
+            active={(type === types[0]).toString()}
+            to={`/marketplace/${types[0]}`}
+          >
+            <CircleImage src="/img/marketplace/bots_icon.png" />
+            <SelectorTitle>Bots</SelectorTitle>
+          </StyledLink>
+          <StyledLink
+            active={(type === types[1]).toString()}
+            to={`/marketplace/${types[1]}`}
+          >
+            <CircleImage src="/img/marketplace/stickers_icon.png" />
+            <SelectorTitle>Stickers</SelectorTitle>
+          </StyledLink>
+        </SelectorGroup>
 
-          {searchText.length === 0 && (
-            <Tabs
-              titles={tabTitles}
-              selectedIndex={selectedIndex}
-              onSelect={(index: number) => setSelectedIndex(index)}
-            >
-              <TabPanels>
-                <TabPanel>
-                  {type === types[0] && <BotRanking />}
-                  {type === types[1] && <StickerRanking />}
-                </TabPanel>
-                <TabPanel>
-                  {type === types[0] && <BotNew />}
-                  {type === types[1] && <StickerNew />}
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          )}
+        {searchText.length === 0 && (
+          <Tabs
+            titles={tabTitles}
+            selectedIndex={selectedIndex}
+            onSelect={(index: number) => setSelectedIndex(index)}
+          >
+            <TabPanels>
+              <TabPanel>
+                {type === types[0] && <BotRanking />}
+                {type === types[1] && <StickerRanking />}
+              </TabPanel>
+              <TabPanel>
+                {type === types[0] && <BotNew />}
+                {type === types[1] && <StickerNew />}
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        )}
 
-          {searchText.length !== 0 && (
-            <>
-              {type === types[0] && <SearchBotResult searchText={searchText} />}
-              {type === types[1] && (
-                <SearchStickerResult searchText={searchText} />
-              )}
-            </>
-          )}
-        </Contents>
-      </BaseLayout>
-    );
-  }
-);
+        {searchText.length !== 0 && (
+          <>
+            {type === types[0] && <SearchBotResult searchText={searchText} />}
+            {type === types[1] && (
+              <SearchStickerResult searchText={searchText} />
+            )}
+          </>
+        )}
+      </Contents>
+    </BaseLayout>
+  );
+});

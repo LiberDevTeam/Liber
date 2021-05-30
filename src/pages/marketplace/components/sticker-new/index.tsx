@@ -21,9 +21,7 @@ const ListItem = styled.li`
   border-stickertom: ${(props) => props.theme.border.grayLight.light};
 `;
 
-interface Props {}
-
-export const StickerNew: React.FC<Props> = memo(function StickerNew() {
+export const StickerNew: React.FC = memo(function StickerNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const ids = useSelector(selectNewIdsByPage(page));

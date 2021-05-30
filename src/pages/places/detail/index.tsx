@@ -180,10 +180,11 @@ export interface FormValues {
 }
 
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
-  const { placeId, address } = useParams<{
-    placeId: string;
-    address: string;
-  }>();
+  const { placeId, address } =
+    useParams<{
+      placeId: string;
+      address: string;
+    }>();
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
@@ -202,10 +203,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   useEffect(() => {
     dispatch(joinPlace({ placeId, address }));
   }, [placeId, address]);
-
-  if (!place) {
-    return <LoadingPage text="Connecting to place..." />;
-  }
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -284,7 +281,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   }, [dispatch, place?.unreadMessages, placeId]);
 
   if (!place) {
-    return <div>404</div>;
+    return <LoadingPage text="Connecting to place..." />;
   }
 
   return (
