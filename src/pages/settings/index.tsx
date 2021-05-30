@@ -109,7 +109,7 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
           <LeftGroup>
             <Subtitle>{t('settings:Dark Mode')}</Subtitle>
             <Description>
-              {t('settings:Change your app into dark theame')}
+              {t('settings:Change your app into dark theme')}
             </Description>
           </LeftGroup>
           <ToggleSwitch
@@ -122,9 +122,7 @@ export const SettingsPage: React.FC = React.memo(function SettingsPage() {
           <LeftGroup>
             <Subtitle>{t('settings:Isolation Mode')}</Subtitle>
             <Description>
-              {t(
-                'settings:If this mode is enabled, You can use communication functions only. This app will be isolated from everything outside the services, even like our Liber Search.'
-              )}
+              {t('settings:Isolation Mode Description')}
             </Description>
           </LeftGroup>
           <ToggleSwitch

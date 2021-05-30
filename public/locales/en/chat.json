@@ -1,11 +1,11 @@
 {
-  "Invite People": "Invite People",
+  "Ban": "Ban",
+  "Banned Users": "Banned Users",
+  "Block": "Block",
   "Edit Chat": "Edit Chat",
+  "Invite People": "Invite People",
+  "Leave Chat": "Leave Chat",
   "Manage Bots": "Manage Bots",
   "Manage Maintainers": "Manage Maintainers",
-  "Banned Users": "Banned Users",
-  "Leave Chat": "Leave Chat",
-  "Manage your banned user list": "Manage your banned user list",
-  "Ban": "Ban",
-  "Block": "Block"
+  "Manage your banned user list": "Manage your banned user list"
 }
