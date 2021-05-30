@@ -189,6 +189,7 @@
   },
   "scripts": {
     "start": "run-p watch:app watch:sw",
+    "lint": "eslint src/",
     "build:app": "node ./esbuild/build.js",
     "watch:app": "node ./esbuild/dev.js",
     "watch:sw": "node ./esbuild/sw.js",
