@@ -1,11 +1,11 @@
 {
-  "Invite People": "招待する",
+  "Ban": "BAN",
+  "Banned Users": "Banしたユーザ",
+  "Block": "ブロック",
   "Edit Chat": "編集する",
+  "Invite People": "招待する",
+  "Leave Chat": "チャットを退出する",
   "Manage Bots": "ボットを管理する",
   "Manage Maintainers": "権限を管理する",
-  "Banned Users": "Banしたユーザ",
-  "Leave Chat": "チャットを退出する",
-  "Manage your banned user list": "Banしたユーザの管理をする",
-  "Ban": "Ban",
-  "Block": "ブロック"
+  "Manage your banned user list": "Banしたユーザの管理をする"
 }

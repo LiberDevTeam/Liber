@@ -1,4 +1,22 @@
 {
+  "BOT_CATEGORY_ANALYTICS": "Analytics",
+  "BOT_CATEGORY_COMMUNICATION": "Communication",
+  "BOT_CATEGORY_DESIGN": "Design",
+  "BOT_CATEGORY_DEVELOPER_TOOLS": "Developer Tools",
+  "BOT_CATEGORY_FILE_MANAGEMENT": "File Management",
+  "BOT_CATEGORY_FINANCE": "Finance",
+  "BOT_CATEGORY_HEALTH_WELLNESS": "Health & Wellness",
+  "BOT_CATEGORY_HR_TEAM_CULTURE": "HR & Team Culture",
+  "BOT_CATEGORY_MARKETING": "Marketing",
+  "BOT_CATEGORY_MEDIA_NEWS": "Media & News",
+  "BOT_CATEGORY_OFFICE_MANAGEMENT": "Office Management",
+  "BOT_CATEGORY_PRODUCTIVITY": "Productivity",
+  "BOT_CATEGORY_PROJECT_MANAGEMENT": "Project Management",
+  "BOT_CATEGORY_SALES": "Sales",
+  "BOT_CATEGORY_SECURITY_COMPLIANCE": "Security Compliance",
+  "BOT_CATEGORY_SOCIAL_FUN": "Social & Fun",
+  "BOT_CATEGORY_TRAVEL": "Travel",
+  "BOT_CATEGORY_VOICE_VIDEO": "Voice & Video",
   "CHAT_CATEGORY_DISCUSSION_AND_STORIES": "Discussion and Stories",
   "CHAT_CATEGORY_EMOTIONAL_REACTION_FUEL": "Emotional Reaction Fuel",
   "CHAT_CATEGORY_ENTERTAINMENT_GAMING": "Entertainment - Gaming",
@@ -14,6 +32,5 @@
   "CHAT_CATEGORY_TECHNOLOGY": "Technology",
   "CHAT_CATEGORY_TRAVEL": "Travel",
   "DEFAULT": "Select one",
-
   "STICKER_CATEGORY_AnimalLovers": "Animal Lovers"
 }

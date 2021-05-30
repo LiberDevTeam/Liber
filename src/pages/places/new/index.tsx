@@ -257,7 +257,7 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
               onChange={formik.handleChange}
               disabled={formik.isSubmitting}
             />
-            {t('newPlaces: Read Only?')}
+            {t('newPlaces:Read Only?')}
           </FlagLabel>
           <Description>
             If checked, only the people who has a privileged role can post a

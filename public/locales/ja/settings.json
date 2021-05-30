@@ -1,8 +1,9 @@
 {
   "Backup": "バックアップ",
-  "Create and download backup": "バックアップダウンロード",
-  "If this mode is enabled, the application is isolated from everything of the Liber Search functionality": "このモードを有効化すると, 全てのLiber検索機能から分離されます.",
-  "Import backup": "バックアップインポート",
-  "Isolation mode": "分離モード",
-  "Update": "更新"
+  "Change your app into dark theme": "",
+  "DOWNLOAD BACKUP": "バックアップダウンロード",
+  "Dark Mode": "ダークモード",
+  "IMPORT BACKUP": "バックアップインポート",
+  "Isolation Mode": "分離モード",
+  "Isolation Mode Description": "このモードを有効にすると, 通信機能のみを使用できます. このアプリはLiber Searchを含むすべてのサービスから分離されます."
 }

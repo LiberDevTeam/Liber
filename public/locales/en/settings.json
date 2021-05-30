@@ -1,8 +1,9 @@
 {
   "Backup": "Backup",
-  "Create and download backup": "Create and download backup",
-  "If this mode is enabled, the application is isolated from everything of the Liber Search functionality": "If this mode is enabled, the application is isolated from everything of the Liber Search functionality.",
-  "Import backup": "Import backup",
-  "Isolation mode": "Isolation mode",
-  "Update": "Update"
+  "Change your app into dark theme": "Change your app into dark theme",
+  "DOWNLOAD BACKUP": "DOWNLOAD BACKUP",
+  "Dark Mode": "Dark Mode",
+  "IMPORT BACKUP": "IMPORT BACKUP",
+  "Isolation Mode": "Isolation mode",
+  "Isolation Mode Description": "If this mode is enabled, You can use communication functions only. This app will be isolated from everything outside the services, even like our Liber Search.",
 }
