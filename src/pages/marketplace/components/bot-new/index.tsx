@@ -18,9 +18,7 @@ const ListItem = styled.li`
   border-bottom: ${(props) => props.theme.border.grayLight.light};
 `;
 
-interface Props {}
-
-export const BotNew: React.FC<Props> = memo(function BotNew() {
+export const BotNew: React.FC = memo(function BotNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const ids = useSelector(selectNewIdsByPage(page));

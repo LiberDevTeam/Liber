@@ -29,9 +29,9 @@ export const Editor: React.FC<Props> = memo(function Editor({
   return (
     <>
       <Description>
-        You could define the behavior of your bot written in Javascript. The bot
+        {`You could define the behavior of your bot written in Javascript. The bot
         will be executed in the sandbox environment. The bot cannot communicate
-        with outside API, only supported to reply to users' messages currently.
+        with outside API, only supported to reply to users' messages currently.`}
       </Description>
       <StyledTextarea
         name="sourceCode"

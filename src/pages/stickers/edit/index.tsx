@@ -95,8 +95,6 @@ const Term = styled.span`
   margin-left: ${(props) => props.theme.space[5]}px;
 `;
 
-interface Props {}
-
 interface FormValues {
   category?: number;
   name: string;
@@ -113,11 +111,12 @@ const validationSchema = yup.object({
   contents: yup.array().min(4).required(),
 });
 
-export const StickerEditPage: React.FC<Props> = memo(function StickerNewPage() {
-  const { stickerId, address } = useParams<{
-    stickerId: string;
-    address: string;
-  }>();
+export const StickerEditPage: React.FC = memo(function StickerNewPage() {
+  const { stickerId, address } =
+    useParams<{
+      stickerId: string;
+      address: string;
+    }>();
   const dispatch = useDispatch();
   const sticker = useSelector(selectStickerById(stickerId));
   const [contentPreview, setContentPreview] = useState<string[]>([]);

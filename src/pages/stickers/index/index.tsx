@@ -20,47 +20,41 @@ const StyledButtonLink = styled(Link)`
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
-interface Props {}
-
 const tabTitles = ['Listing on', 'Purchased'];
 
-export const StickersPage: React.FC<Props> = React.memo(
-  function StickersPage({}) {
-    const [selectedIndex, setSelectedIndex] = useState(0);
+export const StickersPage: React.FC = React.memo(function StickersPage() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-    return (
-      <BaseLayout
-        title="Stickers"
-        description="Manage your Stickers settings"
-        backTo="/profile"
+  return (
+    <BaseLayout
+      title="Stickers"
+      description="Manage your Stickers settings"
+      backTo="/profile"
+    >
+      <StyledButtonLink to="/stickers/new">
+        <StyledButton shape="rounded" text="SELL YOUR ORIGINAL STICKER!" />
+      </StyledButtonLink>
+      <Tabs
+        titles={tabTitles}
+        selectedIndex={selectedIndex}
+        onSelect={(index: number) => setSelectedIndex(index)}
       >
-        <StyledButtonLink to="/stickers/new">
-          <StyledButton shape="rounded" text="SELL YOUR ORIGINAL STICKER!" />
-        </StyledButtonLink>
-        <Tabs
-          titles={tabTitles}
-          selectedIndex={selectedIndex}
-          onSelect={(index: number) => setSelectedIndex(index)}
-        >
-          <TabPanels>
-            <TabPanel>
-              <ListingOn />
-            </TabPanel>
-            <TabPanel>
-              <Purchased />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </BaseLayout>
-    );
-  }
-);
-
-interface ListingOnProps {}
+        <TabPanels>
+          <TabPanel>
+            <ListingOn />
+          </TabPanel>
+          <TabPanel>
+            <Purchased />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </BaseLayout>
+  );
+});
 
 const limit = 10;
 
-const Purchased: React.FC<ListingOnProps> = React.memo(function Purchased() {
+const Purchased: React.FC = React.memo(function Purchased() {
   const [page, setPage] = useState(1);
   const stickers = useSelector(selectPurchasedStickers);
 
@@ -81,9 +75,7 @@ const Purchased: React.FC<ListingOnProps> = React.memo(function Purchased() {
   );
 });
 
-interface PurchacedProps {}
-
-const ListingOn: React.FC<PurchacedProps> = React.memo(function ListingOn() {
+const ListingOn: React.FC = React.memo(function ListingOn() {
   const [page, setPage] = useState(1);
   const stickers = useSelector(selectStickersListingOn);
 

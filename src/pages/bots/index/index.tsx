@@ -20,11 +20,9 @@ const StyledButtonLink = styled(Link)`
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
-interface Props {}
-
 const tabTitles = ['Listing on', 'Purchased'];
 
-export const BotsPage: React.FC<Props> = React.memo(function BotsPage({}) {
+export const BotsPage: React.FC = React.memo(function BotsPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
@@ -54,11 +52,9 @@ export const BotsPage: React.FC<Props> = React.memo(function BotsPage({}) {
   );
 });
 
-interface PurchacedProps {}
-
 const limit = 10;
 
-const Purchased: React.FC<PurchacedProps> = React.memo(function Purchased() {
+const Purchased: React.FC = React.memo(function Purchased() {
   const [page, setPage] = useState(1);
   const bots = useSelector(selectPurchasedBots);
 
@@ -79,9 +75,7 @@ const Purchased: React.FC<PurchacedProps> = React.memo(function Purchased() {
   );
 });
 
-interface PurchacedProps {}
-
-const ListingOn: React.FC<PurchacedProps> = React.memo(function ListingOn() {
+const ListingOn: React.FC = React.memo(function ListingOn() {
   const [page, setPage] = useState(1);
   const bots = useSelector(selectBotsListingOn);
 

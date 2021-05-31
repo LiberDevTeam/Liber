@@ -21,9 +21,7 @@ const ListItem = styled.li`
   border-bottom: ${(props) => props.theme.border.grayLight.light};
 `;
 
-interface Props {}
-
-export const BotRanking: React.FC<Props> = memo(function BotRanking() {
+export const BotRanking: React.FC = memo(function BotRanking() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const ids = useSelector(selectRankingIdsByPage(page));
