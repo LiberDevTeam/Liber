@@ -180,11 +180,10 @@ export interface FormValues {
 }
 
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
-  const { placeId, address } =
-    useParams<{
-      placeId: string;
-      address: string;
-    }>();
+  const { placeId, address } = useParams<{
+    placeId: string;
+    address: string;
+  }>();
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
@@ -297,6 +296,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
               setOpen(true);
             }}
             memberCount={23}
+            description={place.description}
             onLeave={() => {
               dispatch(removePlace({ placeId: place.id }));
               dispatch(push('/places'));
