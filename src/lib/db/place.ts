@@ -26,7 +26,6 @@ export const readPlaceFromDB = (kv: KeyValueStore<PlaceDBValue>): Place => {
     name: kv.get('name') as string,
     avatarCid: kv.get('avatarCid') as string,
     description: kv.get('description') as string,
-    invitationUrl: kv.get('invitationUrl') as string,
     feedAddress: kv.get('feedAddress') as string,
     keyValAddress: kv.get('keyValAddress') as string,
     createdAt: kv.get('createdAt') as number,

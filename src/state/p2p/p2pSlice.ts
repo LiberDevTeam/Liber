@@ -159,10 +159,6 @@ export const createNewPlace = createAsyncThunk<
     });
 
     const timestamp = getUnixTime(new Date());
-    const invitationUrl = await buildInvitationUrl(
-      placeId,
-      placeKeyValue.address.root
-    );
 
     const place: Place = {
       id: placeId,
@@ -174,7 +170,6 @@ export const createNewPlace = createAsyncThunk<
       timestamp: timestamp,
       createdAt: timestamp,
       swarmKey: swarmKey || undefined,
-      invitationUrl: invitationUrl,
       passwordRequired,
       hash,
       category,
@@ -195,7 +190,3 @@ export const createNewPlace = createAsyncThunk<
     dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
   }
 );
-
-const buildInvitationUrl = async (placeId: string, address: string) => {
-  return `${window.location.protocol}//${window.location.host}/#/places/${address}/${placeId}`;
-};
