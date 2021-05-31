@@ -22,7 +22,6 @@ export interface PlaceInfo {
 
 export interface Place extends PlaceInfo {
   swarmKey?: string;
-  invitationUrl: string;
   timestamp: number; // the timestamp any user in the place acted at
   messageIds: string[];
   unreadMessages: string[];

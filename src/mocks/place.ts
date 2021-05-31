@@ -7,7 +7,6 @@ export const dummyPlace = (id: string): Place => ({
   avatarCid: `QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ`,
   description:
     'this is the last message someone saidasdjfl;askjd;flkajsd;flkjasd;lkfj;dlskaj',
-  invitationUrl: `https://liber.live`,
   timestamp: getUnixTime(new Date()),
   createdAt: 0,
   messageIds: [],
