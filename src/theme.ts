@@ -156,6 +156,7 @@ export const theme = {
   shadows: {
     0: 'none',
     1: 'rgba(0,0,0,0.2) 0 .2rem .5rem',
+    2: 'rgba(143,167,178,0.2) 0 .2rem .5rem',
   },
   radii: {
     medium: 12,

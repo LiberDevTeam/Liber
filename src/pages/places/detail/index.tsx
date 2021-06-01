@@ -297,6 +297,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
               setOpen(true);
             }}
             memberCount={23}
+            description={place.description}
             onLeave={() => {
               dispatch(removePlace({ placeId: place.id }));
               dispatch(push('/places'));
