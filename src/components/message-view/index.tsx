@@ -24,6 +24,8 @@ const UserName = styled.span`
 `;
 
 const Body = styled.div`
+  max-width: 80%;
+  overflow-wrap: break-word;
   padding-left: ${(props) => props.theme.space[2]}px;
 `;
 
