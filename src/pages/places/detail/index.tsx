@@ -136,11 +136,12 @@ const StyledIconButton = styled.button`
 const Attachments = styled.div`
   position: absolute;
   bottom: 100%;
-  margin-bottom: ${(props) => props.theme.space[3]}px;
+  padding-top: ${(props) => props.theme.space[2]}px;
   display: flex;
   overflow-x: auto;
   align-items: center;
   width: 100%;
+  background: white;
 `;
 
 const Attachment = styled(PreviewImage)`
@@ -195,7 +196,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const dispatch = useDispatch();
   const [attachments, setAttachments] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
-  const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
+  const [attachmentPreviews, setAttachmentPreviews] = useState<
+    (string | Icon)[]
+  >([]);
 
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesBottomRef = useRef<HTMLDivElement>(null);
@@ -261,10 +264,16 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   const handleChangeAttachment = async () => {
     if (attachmentRef.current?.files) {
-      const files = Array.from(attachmentRef.current?.files);
+      const files = Array.from(attachmentRef.current.files);
       const previews = await Promise.all(
         Array.from(files).map(async (file, i) => {
-          return await readAsDataURL(file);
+          if (file.type.match(/video\/.*/)) {
+            return '/img/play-button.svg';
+          } else if (file.type.match(/audio\/.*/)) {
+            return '/img/play-button.svg';
+          } else {
+            return await readAsDataURL(file);
+          }
         })
       );
 
