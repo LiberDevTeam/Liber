@@ -3,12 +3,13 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
+import { selectMe } from '~/state/me/meSlice';
 import { setSelectedUser } from '~/state/selected-user';
 import { RootState } from '~/state/store';
 import { selectUserById, User } from '~/state/users/usersSlice';
 import { Message } from '../message';
 
-const Root = styled.div<{ mine: boolean }>`
+const TextGroup = styled.div<{ mine: boolean }>`
   display: flex;
   justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
 `;
@@ -29,10 +30,15 @@ const Body = styled.div`
   padding-left: ${(props) => props.theme.space[2]}px;
 `;
 
-const Attachment = styled(IpfsContent)`
-  margin-top: ${(props) => props.theme.space[2]}px;
+const Attachment = styled(IpfsContent)<{ mine: boolean }>`
   max-height: 100px;
   width: auto;
+`;
+
+const Attachments = styled.div<{ mine: boolean }>`
+  display: flex;
+  justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+  margin-left: ${(props) => props.theme.space[6]}px;
 `;
 
 export interface MessageViewProps {
@@ -47,6 +53,7 @@ export interface MessageViewProps {
 export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
     const dispatch = useDispatch();
+    const me = useSelector(selectMe);
 
     const user = useSelector<RootState, User | undefined>(
       (state) => selectUserById(state.users, uid),
@@ -54,26 +61,32 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
     );
 
     const handleClickUser = useCallback(() => {
-      if (user?.id) {
+      if (user?.id && me.id !== user.id) {
         dispatch(setSelectedUser(user.id));
       }
     }, [user?.id, dispatch]);
 
     return (
-      <Root mine={mine}>
-        <div onClick={handleClickUser}>
-          <UserAvatar userId={uid} />
-        </div>
-        <Body>
-          {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
-          {text && <Message mine={mine} text={text} timestamp={timestamp} />}
-          {attachmentCidList
-            ? attachmentCidList.map((cid) => (
-                <Attachment key={`${id}-${cid}`} cid={cid} />
-              ))
-            : null}
-        </Body>
-      </Root>
+      <>
+        {text && (
+          <TextGroup mine={mine}>
+            <div onClick={handleClickUser}>
+              <UserAvatar userId={uid} />
+            </div>
+            <Body>
+              {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
+              <Message mine={mine} text={text} timestamp={timestamp} />
+            </Body>
+          </TextGroup>
+        )}
+        {attachmentCidList && attachmentCidList.length > 0 ? (
+          <Attachments mine={mine}>
+            {attachmentCidList.map((cid) => (
+              <Attachment key={`${id}-${cid}`} cid={cid} mine={mine} />
+            ))}
+          </Attachments>
+        ) : null}
+      </>
     );
   }
 );

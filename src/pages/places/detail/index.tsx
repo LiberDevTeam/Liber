@@ -67,7 +67,8 @@ const ToastWrapper = styled.div`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: ${(props) => props.theme.space[2]}px;
+  padding: ${(props) =>
+    `0 ${props.theme.space[3]}px 0 ${props.theme.space[2]}px`};
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
