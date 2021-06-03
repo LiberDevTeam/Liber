@@ -18,6 +18,7 @@ import { SvgPeople as PeopleIcon } from '~/icons/People';
 import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
 
 const Root = styled.header`
+  z-index: 10000;
   position: fixed;
   width: 100%;
   top: 0;
