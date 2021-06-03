@@ -96,7 +96,6 @@ export const publishPlaceMessage = createAsyncThunk<
       timestamp: getUnixTime(new Date()),
     };
 
-    console.log(attachments);
     if (attachments) {
       message.attachmentCidList =
         (await Promise.all(
@@ -105,7 +104,6 @@ export const publishPlaceMessage = createAsyncThunk<
           })
         )) || [];
     }
-    console.log('done');
 
     const feed = getMessageFeedById(place.id);
     if (feed === undefined) {
