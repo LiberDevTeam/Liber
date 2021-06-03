@@ -33,3 +33,5 @@ export interface Place extends PlaceInfo {
   // user ids
   bannedUsers: string[];
 }
+
+export type PlaceField = keyof Place;
