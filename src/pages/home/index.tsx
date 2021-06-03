@@ -75,7 +75,7 @@ const Feed = styled.div`
 
 const ItemContainer = styled.div`
   display: flex;
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
+  border-bottom: ${(props) => props.theme.border.gray2[1]};
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 

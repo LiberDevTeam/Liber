@@ -19,7 +19,7 @@ const Header = styled.div`
   align-items: center;
   flex-direction: column;
   padding-bottom: ${(props) => props.theme.space[6]}px;
-  border-bottom: ${(props) => props.theme.border.grayLighter.light};
+  border-bottom: ${(props) => props.theme.border.gray2[2]};
 `;
 
 const Avatar = styled(IpfsContent)`

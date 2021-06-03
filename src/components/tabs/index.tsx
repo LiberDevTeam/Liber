@@ -11,7 +11,7 @@ const TabList = styled(BaseTabList)`
   display: flex;
   justify-content: space-around;
   padding: 0;
-  border-bottom: ${(props) => props.theme.border.grayLighter.light};
+  border-bottom: ${(props) => props.theme.border.gray2[2]};
 `;
 
 const Tab = styled(BaseTab)<{ active: string }>`

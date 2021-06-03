@@ -36,7 +36,9 @@ import {
 import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
 import { theme } from '~/theme';
+import { AudioPreview } from './components/audio-preview';
 import { PlaceDetailHeader } from './components/place-detail-header';
+import { VideoPreview } from './components/video-preview';
 
 const Root = styled.div`
   padding: ${(props) =>
@@ -142,11 +144,11 @@ const Attachments = styled.div`
   align-items: center;
   width: 100%;
   background: white;
-`;
 
-const Attachment = styled(PreviewImage)`
-  margin: 9px ${(props) => props.theme.space[3]}px
-    ${(props) => props.theme.space[2]}px;
+  & > * {
+    margin: 9px ${(props) => props.theme.space[3]}px
+      ${(props) => props.theme.space[2]}px;
+  }
 `;
 
 const Footer = styled.footer`
@@ -157,7 +159,7 @@ const Footer = styled.footer`
   bottom: 0;
   padding: ${(props) =>
     `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
-  border-top: ${(props) => props.theme.border.grayLight.light};
+  border-top: ${(props) => props.theme.border.gray3[2]};
 `;
 
 const Controls = styled.div`
@@ -196,9 +198,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const dispatch = useDispatch();
   const [attachments, setAttachments] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
-  const [attachmentPreviews, setAttachmentPreviews] = useState<
-    (string | Icon)[]
-  >([]);
+  const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
 
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesBottomRef = useRef<HTMLDivElement>(null);
@@ -266,11 +266,11 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     if (attachmentRef.current?.files) {
       const files = Array.from(attachmentRef.current.files);
       const previews = await Promise.all(
-        Array.from(files).map(async (file, i) => {
+        Array.from(files).map(async (file) => {
           if (file.type.match(/video\/.*/)) {
-            return '/img/play-button.svg';
+            return 'video-preview';
           } else if (file.type.match(/audio\/.*/)) {
-            return '/img/play-button.svg';
+            return 'audio-preview';
           } else {
             return await readAsDataURL(file);
           }
@@ -344,13 +344,32 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           <Footer>
             {attachmentPreviews ? (
               <Attachments>
-                {attachmentPreviews.map((preview, i) => (
-                  <Attachment
-                    key={`${i}${attachments[i].name}`}
-                    src={preview}
-                    onRemove={() => handleRemoveAvatar(i)}
-                  />
-                ))}
+                {attachmentPreviews.map((preview, i) => {
+                  if (preview === 'video-preview') {
+                    return (
+                      <VideoPreview
+                        key={i}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  }
+                  if (preview === 'audio-preview') {
+                    return (
+                      <AudioPreview
+                        key={i}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  } else {
+                    return (
+                      <PreviewImage
+                        key={i}
+                        src={preview}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  }
+                })}
               </Attachments>
             ) : null}
 

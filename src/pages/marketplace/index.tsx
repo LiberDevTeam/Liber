@@ -31,7 +31,7 @@ const StyledLink = styled(Link)<{ active: string }>`
   color: ${(props) => props.theme.colors.primaryText};
   padding: ${(props) => props.theme.space[3]}px 0;
   border-radius: ${(props) => props.theme.radii.medium}px;
-  border: ${(props) => props.theme.border.grayLighter.light};
+  border: ${(props) => props.theme.border.gray2[2]};
   ${(props) =>
     props.active === 'true' &&
     css`
@@ -54,10 +54,9 @@ const types = ['bots', 'stickers'];
 const tabTitles = ['Ranking', 'New'];
 
 export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
-  const { type = types[0] } =
-    useParams<{
-      type?: string;
-    }>();
+  const { type = types[0] } = useParams<{
+    type?: string;
+  }>();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchText, setSearchText] = useState('');
 

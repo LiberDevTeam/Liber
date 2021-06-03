@@ -18,7 +18,7 @@ export const MenuTitle = styled.div`
 `;
 
 const Item = styled(Link)`
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
+  border-bottom: ${(props) => props.theme.border.gray2[1]};
   color: ${(props) => props.theme.colors.primaryText};
   padding: 0 ${(props) => props.theme.space[6]}px;
   padding-bottom: ${(props) => props.theme.space[4]}px;

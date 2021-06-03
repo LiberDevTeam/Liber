@@ -14,7 +14,7 @@ import { theme } from '~/theme';
 
 const ItemContainer = styled.div`
   display: flex;
-  border-bottom: ${(props) => props.theme.border.grayLighter.thin};
+  border-bottom: ${(props) => props.theme.border.gray2[1]};
   padding: ${(props) => props.theme.space[6]}px 0;
 `;
 
