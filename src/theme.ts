@@ -166,33 +166,8 @@ export const theme = {
     round: '50%',
   },
   border: {
-    white: {
-      1: `1px solid ${colors.white}`,
-      2: `2px solid ${colors.white}`,
-    },
-    gray: {
-      1: `1px solid ${colors.gray}`,
-    },
-    gray1: {
-      1: `1px solid ${colors.gray1}`,
-      2: `2px solid ${colors.gray1}`,
-    },
-    gray2: {
-      1: `1px solid ${colors.gray2}`,
-      2: `2px solid ${colors.gray2}`,
-    },
-    gray3: {
-      1: `1px solid ${colors.gray3}`,
-      2: `2px solid ${colors.gray3}`,
-    },
-    gray4: {
-      1: `1px solid ${colors.gray4}`,
-      2: `2px solid ${colors.gray4}`,
-    },
-    primary: {
-      1: `1px solid ${colors.primary}`,
-      2: `2px solid ${colors.primary}`,
-    },
+    thin: (color: string) => `1px solid ${color}`,
+    bold: (color: string) => `2px solid ${color}`,
   },
   linearGradient: {
     0: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%)',

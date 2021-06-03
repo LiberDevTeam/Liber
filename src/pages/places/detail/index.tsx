@@ -159,7 +159,7 @@ const Footer = styled.footer`
   bottom: 0;
   padding: ${(props) =>
     `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
-  border-top: ${(props) => props.theme.border.gray3[2]};
+  border-top: ${(props) => props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const Controls = styled.div`

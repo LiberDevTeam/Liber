@@ -21,7 +21,7 @@ const Button = styled(IconButton)`
   top: -9px;
   right: -9px;
   padding: 1px;
-  border: ${(props) => props.theme.border.white[2]};
+  border: ${(props) => props.theme.border.bold(props.theme.colors.white)};
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.red};
   border-radius: ${(props) => props.theme.radii.round};

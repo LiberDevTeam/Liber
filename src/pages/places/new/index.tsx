@@ -54,7 +54,8 @@ const Subtitle = styled.h2`
 const OptionGroup = styled.div`
   margin-bottom: ${(props) => props.theme.space[4]}px;
   padding-bottom: ${(props) => props.theme.space[4]}px;
-  border-bottom: ${(props) => props.theme.border.gray3[1]};
+  border-bottom: ${(props) =>
+    props.theme.border.thin(props.theme.colors.gray3)};
 `;
 
 const FlagLabel = styled.label`

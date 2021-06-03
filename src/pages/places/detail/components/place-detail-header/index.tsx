@@ -29,7 +29,8 @@ const Container = styled.div`
   background: ${(props) => props.theme.colors.white};
   padding: ${(props) =>
     `${props.theme.space[12]}px 0 ${props.theme.space[2]}px`};
-  border-bottom: ${(props) => props.theme.border.gray3[2]};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const Avatar = styled(IpfsContent)`

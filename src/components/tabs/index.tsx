@@ -11,7 +11,8 @@ const TabList = styled(BaseTabList)`
   display: flex;
   justify-content: space-around;
   padding: 0;
-  border-bottom: ${(props) => props.theme.border.gray2[2]};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray2)};
 `;
 
 const Tab = styled(BaseTab)<{ active: string }>`
@@ -23,7 +24,8 @@ const Tab = styled(BaseTab)<{ active: string }>`
     props.active === 'true' &&
     css`
       color: ${(props) => props.theme.colors.primary};
-      border-bottom: ${(props) => props.theme.border.primary[2]};
+      border-bottom: ${(props) =>
+        props.theme.border.bold(props.theme.colors.primary)};
     `}
 `;
 

@@ -19,7 +19,8 @@ const List = styled.ul``;
 const ListItem = styled.li`
   width: 100%;
   padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-bottom: ${(props) => props.theme.border.gray3[2]};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 interface Props {

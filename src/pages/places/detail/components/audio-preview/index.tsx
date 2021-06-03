@@ -11,7 +11,7 @@ const Root = styled.div`
   flex: 0 0 64px;
   color: ${(props) => props.theme.colors.primaryText};
   padding: ${(props) => props.theme.space[4]}px;
-  border: ${(props) => props.theme.border.gray4[1]};
+  border: ${(props) => props.theme.border.thin(props.theme.colors.gray4)};
   border-radius: ${(props) => props.theme.radii.medium}px;
 `;
 

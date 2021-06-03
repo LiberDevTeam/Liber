@@ -42,7 +42,7 @@ const Notification = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: ${(props) => props.theme.radii.round};
-  border: ${(props) => props.theme.border.gray[1]};
+  border: ${(props) => props.theme.border.thin(props.theme.colors.gray)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,7 +75,8 @@ const Feed = styled.div`
 
 const ItemContainer = styled.div`
   display: flex;
-  border-bottom: ${(props) => props.theme.border.gray2[1]};
+  border-bottom: ${(props) =>
+    props.theme.border.thin(props.theme.colors.gray2)};
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 

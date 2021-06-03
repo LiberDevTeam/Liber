@@ -31,11 +31,11 @@ const StyledLink = styled(Link)<{ active: string }>`
   color: ${(props) => props.theme.colors.primaryText};
   padding: ${(props) => props.theme.space[3]}px 0;
   border-radius: ${(props) => props.theme.radii.medium}px;
-  border: ${(props) => props.theme.border.gray2[2]};
+  border: ${(props) => props.theme.border.bold(props.theme.colors.gray2)};
   ${(props) =>
     props.active === 'true' &&
     css`
-      border: ${(props) => props.theme.border.primary[2]};
+      border: ${(props) => props.theme.border.bold(props.theme.colors.primary)};
     `}
 `;
 
