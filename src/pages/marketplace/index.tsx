@@ -35,7 +35,7 @@ const StyledLink = styled(Link)<{ active: string }>`
   ${(props) =>
     props.active === 'true' &&
     css`
-      border: ${(props) => props.theme.border.primary.light};
+      border: ${(props) => props.theme.border.primary[2]};
     `}
 `;
 

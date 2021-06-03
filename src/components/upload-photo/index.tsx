@@ -17,7 +17,7 @@ const Container1 = styled.div`
 const Container2 = styled.div`
   height: ${width}px;
   width: ${height}px;
-  background: ${(props) => props.theme.colors.grayLighter};
+  background: ${(props) => props.theme.colors.gray2};
   display: flex;
   flex-direction: column;
   justify-content: center;

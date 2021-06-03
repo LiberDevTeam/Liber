@@ -9,7 +9,7 @@ const Button = styled.button`
   align-items: center;
   border-radius: ${(props) => props.theme.radii.round};
   background: transparent;
-  border: ${(props) => props.theme.border.gray.thin};
+  border: ${(props) => props.theme.border.gray[1]};
 `;
 
 interface IconButtonCircle {

@@ -12,7 +12,7 @@ const Root = styled.li`
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
-  border-bottom: 1px solid ${(props) => props.theme.colors.grayLighter};
+  border-bottom: 1px solid ${(props) => props.theme.colors.gray2};
   padding-bottom: ${(props) => props.theme.space[4]}px;
 `;
 

@@ -42,7 +42,7 @@ const Notification = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: ${(props) => props.theme.radii.round};
-  border: ${(props) => props.theme.border.gray.thin};
+  border: ${(props) => props.theme.border.gray[1]};
   display: flex;
   justify-content: center;
   align-items: center;

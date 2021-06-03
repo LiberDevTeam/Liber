@@ -56,7 +56,7 @@ const AddLink = styled.a`
 
 const RunTestButton = styled(Button)`
   color: ${(props) => props.theme.colors.primary};
-  border: ${(props) => props.theme.border.primary.thin};
+  border: ${(props) => props.theme.border.primary[1]};
   background: ${(props) => props.theme.colors.white};
   width: 100%;
   margin-bottom: ${(props) => props.theme.space[4]}px;

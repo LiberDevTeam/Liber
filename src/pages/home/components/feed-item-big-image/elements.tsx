@@ -34,7 +34,7 @@ export const Avatar = styled(IpfsContent)`
   width: 2.5rem;
   border-radius: ${(props) => props.theme.radii.round};
   object-fit: cover;
-  border: ${(props) => props.theme.border.white.thin};
+  border: ${(props) => props.theme.border.white[1]};
   margin-right: ${(props) => props.theme.space[3]}px;
   box-shadow: ${(props) => props.theme.shadows[1]};
 `;

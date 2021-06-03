@@ -23,7 +23,7 @@ const Tab = styled(BaseTab)<{ active: string }>`
     props.active === 'true' &&
     css`
       color: ${(props) => props.theme.colors.primary};
-      border-bottom: ${(props) => props.theme.border.primary.light};
+      border-bottom: ${(props) => props.theme.border.primary[2]};
     `}
 `;
 
