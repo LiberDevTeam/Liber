@@ -1,4 +1,3 @@
-import createIdbStorage from '@piotr-cz/redux-persist-idb-storage';
 import {
   Action,
   configureStore,
@@ -7,10 +6,8 @@ import {
 } from '@reduxjs/toolkit';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createHashHistory } from 'history';
-import { enableMapSet } from 'immer';
 import { useDispatch } from 'react-redux';
 import { combineReducers } from 'redux';
-import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import botsReducer from '~/state/bots/botsSlice';
 import feedReducer from '~/state/feed/feedSlice';
@@ -29,21 +26,6 @@ import { usersSlice } from '~/state/users/usersSlice';
 import { isInitializedSlice } from './isInitialized';
 
 export const history = createHashHistory();
-
-enableMapSet();
-
-const debug = true;
-
-const persistConfig = {
-  key: 'root',
-  storage: createIdbStorage({
-    name: 'liber',
-    storeName: 'liber',
-    version: 1,
-  }),
-  whitelist: ['me', 'places'],
-  debug,
-};
 
 const reducers = combineReducers({
   me: meReducer,
@@ -65,11 +47,9 @@ const reducers = combineReducers({
 });
 
 export const store = configureStore({
-  reducer: persistReducer(persistConfig, reducers),
+  reducer: reducers,
   middleware: [thunk, routerMiddleware(history)],
 });
-
-export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof reducers>;
 export type AppThunk<ReturnType = void> = ThunkAction<

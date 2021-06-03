@@ -2,11 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import { ThemeProvider } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import '~/lib/i18n';
-import { persistor } from '~/state/store';
 import { Routes } from './routes';
 import * as serviceWorker from './serviceWorker';
 import { store } from './state/store';
@@ -29,13 +27,11 @@ async function run() {
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <Normalize />
-            <GlobalStyles />
-            <Routes />
-          </ThemeProvider>
-        </PersistGate>
+        <ThemeProvider theme={theme}>
+          <Normalize />
+          <GlobalStyles />
+          <Routes />
+        </ThemeProvider>
       </Provider>
     </React.StrictMode>,
     document.getElementById('root')
