@@ -18,7 +18,8 @@ const List = styled.ul``;
 const ListItem = styled.li`
   width: 100%;
   padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-stickertom: ${(props) => props.theme.border.grayLight.light};
+  border-stickertom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 export const StickerNew: React.FC = memo(function StickerNew() {

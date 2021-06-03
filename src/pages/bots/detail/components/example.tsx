@@ -28,7 +28,7 @@ const Messages = styled.div`
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
-  border: ${(props) => props.theme.border.gray.thin};
+  border: ${(props) => props.theme.border.thin(props.theme.colors.gray)};
   border-radius: ${(props) => props.theme.radii.large}px;
   margin-bottom: ${(props) => props.theme.space[6]}px;
 `;

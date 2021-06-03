@@ -64,8 +64,9 @@ const colors = {
   primary: '#2e79f6',
   gray: '#e1e4e6',
   gray1: '#8FA7B3',
-  grayLighter: '#edf1f2',
-  grayLight: '#F5F8FA',
+  gray2: '#edf1f2',
+  gray3: '#F5F8FA',
+  gray4: '#26404d',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
   red: '#df2121',
@@ -165,25 +166,8 @@ export const theme = {
     round: '50%',
   },
   border: {
-    white: {
-      thin: `1px solid ${colors.white}`,
-      light: `2px solid ${colors.white}`,
-    },
-    gray: {
-      thin: `1px solid ${colors.gray}`,
-    },
-    grayLighter: {
-      thin: `1px solid ${colors.grayLighter}`,
-      light: `2px solid ${colors.grayLighter}`,
-    },
-    grayLight: {
-      thin: `1px solid ${colors.grayLight}`,
-      light: `2px solid ${colors.grayLight}`,
-    },
-    primary: {
-      thin: `1px solid ${colors.primary}`,
-      light: `2px solid ${colors.primary}`,
-    },
+    thin: (color: string) => `1px solid ${color}`,
+    bold: (color: string) => `2px solid ${color}`,
   },
   linearGradient: {
     0: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%)',

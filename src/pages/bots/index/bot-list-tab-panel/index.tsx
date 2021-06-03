@@ -18,7 +18,8 @@ const ListItem = styled.li`
   width: 100%;
   height: 72px;
   padding: 0 ${(props) => props.theme.space[5]}px;
-  border-bottom: ${(props) => props.theme.border.grayLight.light};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
   margin-bottom: ${(props) => props.theme.space[4]}px;
 `;
 

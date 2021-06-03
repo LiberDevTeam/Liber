@@ -28,7 +28,8 @@ const Section = styled.div`
   justify-content: space-between;
   padding: ${(props) =>
     `${props.theme.space[3]}px ${props.theme.space[5]}px ${props.theme.space[6]}px`};
-  border-bottom: ${(props) => props.theme.border.grayLight.light};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
@@ -49,7 +50,8 @@ const BackupButtons = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 0 ${(props) => `${props.theme.space[2]}px ${props.theme.space[6]}px`};
-  border-bottom: ${(props) => props.theme.border.grayLight.light};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const Description = styled.p`

@@ -29,7 +29,8 @@ const Container = styled.div`
   background: ${(props) => props.theme.colors.white};
   padding: ${(props) =>
     `${props.theme.space[12]}px 0 ${props.theme.space[2]}px`};
-  border-bottom: ${(props) => props.theme.border.grayLight.light};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const Avatar = styled(IpfsContent)`
@@ -133,7 +134,7 @@ const PlaceInfoHeader = styled.div`
 `;
 
 const Description = styled.div`
-  margin-bottom: ${(props) => props.theme.space[2]}px;
+  margin: ${(props) => `0 ${props.theme.space[2]}px ${props.theme.space[2]}px`};
   color: ${(props) => props.theme.colors.secondaryText};
 `;
 

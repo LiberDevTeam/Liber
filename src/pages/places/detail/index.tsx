@@ -36,7 +36,9 @@ import {
 import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
 import { theme } from '~/theme';
+import { AudioPreview } from './components/audio-preview';
 import { PlaceDetailHeader } from './components/place-detail-header';
+import { VideoPreview } from './components/video-preview';
 
 const Root = styled.div`
   padding: ${(props) =>
@@ -67,7 +69,8 @@ const ToastWrapper = styled.div`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: ${(props) => props.theme.space[2]}px;
+  padding: ${(props) =>
+    `0 ${props.theme.space[3]}px 0 ${props.theme.space[2]}px`};
   & > * {
     margin-top: ${(props) => props.theme.space[5]}px;
   }
@@ -135,16 +138,17 @@ const StyledIconButton = styled.button`
 const Attachments = styled.div`
   position: absolute;
   bottom: 100%;
-  margin-bottom: ${(props) => props.theme.space[3]}px;
+  padding-top: ${(props) => props.theme.space[2]}px;
   display: flex;
   overflow-x: auto;
   align-items: center;
   width: 100%;
-`;
+  background: white;
 
-const Attachment = styled(PreviewImage)`
-  margin: 9px ${(props) => props.theme.space[3]}px
-    ${(props) => props.theme.space[2]}px;
+  & > * {
+    margin: 9px ${(props) => props.theme.space[3]}px
+      ${(props) => props.theme.space[2]}px;
+  }
 `;
 
 const Footer = styled.footer`
@@ -155,7 +159,7 @@ const Footer = styled.footer`
   bottom: 0;
   padding: ${(props) =>
     `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
-  border-top: ${(props) => props.theme.border.grayLight.light};
+  border-top: ${(props) => props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const Controls = styled.div`
@@ -260,10 +264,16 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   const handleChangeAttachment = async () => {
     if (attachmentRef.current?.files) {
-      const files = Array.from(attachmentRef.current?.files);
+      const files = Array.from(attachmentRef.current.files);
       const previews = await Promise.all(
-        Array.from(files).map(async (file, i) => {
-          return await readAsDataURL(file);
+        Array.from(files).map(async (file) => {
+          if (file.type.match(/video\/.*/)) {
+            return 'video-preview';
+          } else if (file.type.match(/audio\/.*/)) {
+            return 'audio-preview';
+          } else {
+            return await readAsDataURL(file);
+          }
         })
       );
 
@@ -334,13 +344,32 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           <Footer>
             {attachmentPreviews ? (
               <Attachments>
-                {attachmentPreviews.map((preview, i) => (
-                  <Attachment
-                    key={`${i}${attachments[i].name}`}
-                    src={preview}
-                    onRemove={() => handleRemoveAvatar(i)}
-                  />
-                ))}
+                {attachmentPreviews.map((preview, i) => {
+                  if (preview === 'video-preview') {
+                    return (
+                      <VideoPreview
+                        key={i}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  }
+                  if (preview === 'audio-preview') {
+                    return (
+                      <AudioPreview
+                        key={i}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  } else {
+                    return (
+                      <PreviewImage
+                        key={i}
+                        src={preview}
+                        onRemove={() => handleRemoveAvatar(i)}
+                      />
+                    );
+                  }
+                })}
               </Attachments>
             ) : null}
 

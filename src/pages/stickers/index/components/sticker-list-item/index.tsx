@@ -7,7 +7,8 @@ import { Sticker } from '~/state/stickers/stickersSlice';
 const ListItem = styled.li`
   width: 100%;
   padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-bottom: ${(props) => props.theme.border.grayLight.light};
+  border-bottom: ${(props) =>
+    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 const StyledLink = styled(Link)`
