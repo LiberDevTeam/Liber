@@ -46,7 +46,7 @@ export const Menu = styled.div`
   z-index: ${(props) => props.theme.zIndex.front};
 `;
 
-export const Dropdown: React.FC<DropdownProps> = memo(function BaseDropdown({
+export const Dropdown: React.FC<DropdownProps> = memo(function Dropdown({
   overlayStyle,
   ...props
 }) {
