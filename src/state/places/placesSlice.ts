@@ -87,6 +87,7 @@ export const joinPlace = createAsyncThunk<
   });
 
   const place = readPlaceFromDB(kv);
+
   if (checkPlaceValues(place)) {
     dispatch(updatePlace(place));
   }

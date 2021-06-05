@@ -16,7 +16,12 @@
   },
   "overrides": [
     {
-      "files": ["esbuild/**/*.js", "scripts/**/*.js"],
+      "files": [
+        "esbuild/**/*.js",
+        "scripts/**/*.js",
+        "jest/**/*.js",
+        "src/**/*.test.ts"
+      ],
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }
