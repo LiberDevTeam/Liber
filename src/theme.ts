@@ -174,6 +174,7 @@ export const theme = {
   },
   zIndex: {
     front: 10000,
+    dropDown: 10001,
   },
 } as const;
 
