@@ -74,7 +74,8 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 
 export const joinPlace = createAsyncThunk<
   void,
-  { placeId: string; address: string }
+  { placeId: string; address: string },
+  { dispatch: AppThunkDispatch }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const kv = await connectPlaceKeyValue({
@@ -170,7 +171,7 @@ export const updatePlace = createAsyncThunk<
   },
   { dispatch: AppDispatch; state: RootState }
 >(
-  'places/updatePlace',
+  `${MODULE_NAME}/updatePlace`,
   async (
     { placeId, address, name, description, avatar, category },
     { dispatch }
@@ -202,7 +203,7 @@ export const updatePlace = createAsyncThunk<
 );
 
 export const placesSlice = createSlice({
-  name: 'places',
+  name: MODULE_NAME,
   initialState: placesAdapter.getInitialState(),
   reducers: {
     clearUnreadMessages(state, action: PayloadAction<string>) {

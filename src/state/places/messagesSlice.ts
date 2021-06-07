@@ -9,6 +9,7 @@ import {
   placeMessageAdded,
   placeMessagesAdded,
 } from '~/state/actionCreater';
+import { RootState } from '~/state/store';
 
 const MODULE_NAME = 'placeMessages';
 
@@ -23,18 +24,24 @@ export interface Message {
 
 export const connectToMessages = createAsyncThunk<
   Message[],
-  { placeId: string; address: string; hash?: string }
+  { placeId: string; address: string; hash?: string },
+  { state: RootState }
 >(
   `${MODULE_NAME}/connectToMessages`,
   async ({ placeId, address, hash }, thunkAPI) => {
-    const { dispatch } = thunkAPI;
+    const { dispatch, getState } = thunkAPI;
+
+    const connected = getState().placeMessages.connectedPlaces[placeId];
+
     const feed = await connectMessageFeed({
       placeId,
       address,
       hash,
-      onMessageAdd: (messages) => {
-        dispatch(placeMessagesAdded({ messages, placeId }));
-      },
+      onMessageAdd: connected
+        ? undefined
+        : (messages) => {
+            dispatch(placeMessagesAdded({ messages, placeId }));
+          },
     });
 
     return readMessagesFromFeed(feed);
@@ -47,7 +54,11 @@ const messagesAdapter = createEntityAdapter<Message>({
 
 export const messagesSlice = createSlice({
   name: MODULE_NAME,
-  initialState: messagesAdapter.getInitialState(),
+  initialState: messagesAdapter.getInitialState<{
+    connectedPlaces: { [placeId: string]: boolean };
+  }>({
+    connectedPlaces: {},
+  }),
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -59,6 +70,12 @@ export const messagesSlice = createSlice({
       })
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
+      })
+      .addCase(connectToMessages.pending, (state, action) => {
+        state.connectedPlaces[action.meta.arg.placeId] = true;
+      })
+      .addCase(connectToMessages.rejected, (state, action) => {
+        state.connectedPlaces[action.meta.arg.placeId] = false;
       })
       .addCase(connectToMessages.fulfilled, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload);
