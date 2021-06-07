@@ -172,6 +172,10 @@ export const theme = {
   linearGradient: {
     0: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, #000000 125%)',
   },
+  zIndex: {
+    front: 10000,
+    dropDown: 10001,
+  },
 } as const;
 
 type AppTheme = typeof theme;

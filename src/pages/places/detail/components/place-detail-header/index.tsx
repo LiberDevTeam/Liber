@@ -1,12 +1,9 @@
-import Dropdown from 'rc-dropdown';
-import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { BackLink } from '~/components/back-link';
-import { Button } from '~/components/button';
 import { CloseButton } from '~/components/close-button';
+import { Dropdown, Menu, MenuButton, MenuLink } from '~/components/dropdown';
 import { IconButton } from '~/components/icon-button';
 import { IpfsContent } from '~/components/ipfs-content';
 import { SvgBot as BotIcon } from '~/icons/Bot';
@@ -18,6 +15,7 @@ import { SvgPeople as PeopleIcon } from '~/icons/People';
 import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
 
 const Root = styled.header`
+  z-index: ${(props) => props.theme.zIndex.front};
   position: fixed;
   width: 100%;
   top: 0;
@@ -74,47 +72,7 @@ const Actions = styled.div`
   }
 `;
 
-const Menu = styled.div`
-  width: 200px;
-  background: ${(props) => props.theme.colors.bg};
-  box-shadow: ${(props) => props.theme.shadows[1]};
-  border-radius: ${(props) => props.theme.radii.medium}px;
-  padding: ${(props) => props.theme.space[2]}px;
-`;
-
-const menuStyle = css`
-  color: ${(props) => props.theme.colors.primaryText};
-  width: 100%;
-  justify-content: flex-start;
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  font-size: ${(props) => props.theme.fontSizes.sm};
-  padding: ${(props) => props.theme.space[2]}px;
-
-  & span {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const MenuButton = styled(Button)`
-  ${menuStyle};
-`;
-
-const MenuLink = styled(Link)`
-  ${menuStyle};
-  height: 48px;
-  display: flex;
-  align-items: center;
-
-  & > svg {
-    width: 18px;
-    height: 18px;
-    margin-right: ${(props) => props.theme.space[2]}px;
-  }
-`;
-
-const LeaveButton = styled(Button)`
-  ${menuStyle};
+const LeaveButton = styled(MenuButton)`
   color: ${(props) => props.theme.colors.red};
 `;
 
@@ -153,6 +111,7 @@ export interface PlaceDetailHeaderProps {
   description: string;
   onInviteClick: () => void;
   onLeave: () => void;
+  onEditClick: () => void;
 }
 
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
@@ -165,6 +124,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     description,
     onInviteClick,
     onLeave,
+    onEditClick,
   }) {
     const [openInfo, setOpenInfo] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
@@ -203,7 +163,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
                     title={t('Edit Chat')}
                     shape="square"
                     variant="text"
-                    onClick={onInviteClick}
+                    onClick={onEditClick}
                     text={t('Edit Chat')}
                     icon={<EditIcon />}
                   />

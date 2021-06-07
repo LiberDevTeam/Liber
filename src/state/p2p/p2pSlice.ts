@@ -26,22 +26,24 @@ const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
   return messages.filter((m) => m.uid !== uid);
 };
 
-const createMessageReceiveHandler = ({
-  dispatch,
-  placeId,
-  myId,
-}: {
-  dispatch: AppThunkDispatch;
-  placeId: string;
-  myId: string;
-}) => (messages: Message[]): void => {
-  dispatch(
-    placeMessagesAdded({
-      placeId,
-      messages: excludeMyMessages(myId, messages),
-    })
-  );
-};
+const createMessageReceiveHandler =
+  ({
+    dispatch,
+    placeId,
+    myId,
+  }: {
+    dispatch: AppThunkDispatch;
+    placeId: string;
+    myId: string;
+  }) =>
+  (messages: Message[]): void => {
+    dispatch(
+      placeMessagesAdded({
+        placeId,
+        messages: excludeMyMessages(myId, messages),
+      })
+    );
+  };
 
 export const initApp = createAsyncThunk<
   void,
@@ -180,11 +182,18 @@ export const createNewPlace = createAsyncThunk<
       bannedUsers: [],
     };
 
-    Object.keys(place).forEach((key) => {
-      if (key === 'hash') return; // Do not add hash to the place db.
-      const v = place[key as keyof Place];
-      v && placeKeyValue.put(key, v);
-    });
+    await Promise.all(
+      Object.keys(place).map((key) => {
+        if (key === 'hash') {
+          Promise.resolve(); // Do not add hash to the place db.
+        }
+        const v = place[key as keyof Place];
+        if (v === undefined) {
+          return Promise.resolve();
+        }
+        return placeKeyValue.put(key, v);
+      })
+    );
 
     dispatch(placeAdded({ place, messages: [] }));
     dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));

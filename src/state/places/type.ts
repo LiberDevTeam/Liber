@@ -9,19 +9,16 @@ export enum PlacePermission {
 // UserId: PlacePermission
 export type PlacePermissions = Record<string, PlacePermission>;
 
-export interface PlaceInfo {
-  id: string;
+export interface PartialForUpdate {
   name: string;
   description: string;
   avatarCid: string;
-  passwordRequired: boolean;
-  readOnly: boolean;
-  createdAt: number;
   category: number;
 }
 
-export interface Place extends PlaceInfo {
-  swarmKey?: string;
+export interface Place extends PartialForUpdate {
+  id: string;
+  createdAt: number;
   timestamp: number; // the timestamp any user in the place acted at
   messageIds: string[];
   unreadMessages: string[];
@@ -32,4 +29,10 @@ export interface Place extends PlaceInfo {
   keyValAddress: string;
   // user ids
   bannedUsers: string[];
+
+  readOnly: boolean;
+  swarmKey?: string;
+  passwordRequired: boolean;
 }
+
+export type PlaceField = keyof Place;

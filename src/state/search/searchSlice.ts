@@ -1,7 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
 import { Appearance, FeedItem, ItemKind } from '../feed/feedSlice';
-import { PlaceInfo } from '../places/type';
+
+export interface PlaceInfo {
+  id: string;
+  name: string;
+  description: string;
+  avatarCid: string;
+  passwordRequired: boolean;
+  readOnly: boolean;
+  createdAt: number;
+  category: number;
+}
 
 interface SearchState {
   searchPostResult: FeedItem[];
@@ -36,8 +46,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.BIG_CARD,
@@ -53,8 +62,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.DEFAULT,
@@ -70,8 +78,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.BIG_CARD,
@@ -87,8 +94,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.DEFAULT,
@@ -104,8 +110,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
   ];
 
@@ -219,10 +224,8 @@ export const searchSlice = createSlice({
   },
 });
 
-export const {
-  addSearchPostResult,
-  addSearchPlaceResult,
-} = searchSlice.actions;
+export const { addSearchPostResult, addSearchPlaceResult } =
+  searchSlice.actions;
 
 export const selectSearchPostResult = (
   state: RootState

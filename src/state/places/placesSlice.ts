@@ -6,17 +6,19 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
+import { push } from 'connected-react-router';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
-  updatePlace,
+  placeUpdated,
 } from '~/state/actionCreater';
-import { AppThunkDispatch, RootState } from '~/state/store';
+import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
+import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { connectToMessages, Message, selectMessageById } from './messagesSlice';
-import { Place } from './type';
+import { PartialForUpdate, Place, PlaceField } from './type';
 
 const MODULE_NAME = 'places';
 
@@ -48,6 +50,28 @@ const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
 });
 
+const requiredPlaceFields: PlaceField[] = [
+  'id',
+  'name',
+  'description',
+  'avatarCid',
+  'passwordRequired',
+  'readOnly',
+  'createdAt',
+  'category',
+  'timestamp',
+  'messageIds',
+  'unreadMessages',
+  'permissions',
+  'feedAddress',
+  'keyValAddress',
+  'bannedUsers',
+];
+
+const checkPlaceValues = (place: Partial<Place>): place is Place => {
+  return requiredPlaceFields.some((key) => place[key] === undefined) === false;
+};
+
 export const joinPlace = createAsyncThunk<
   void,
   { placeId: string; address: string }
@@ -58,18 +82,16 @@ export const joinPlace = createAsyncThunk<
     address,
     onReplicated: (_kv) => {
       const place = readPlaceFromDB(_kv);
-      console.log(place);
-
-      // NOTE: Don't call the action until the place.id is loaded.
-      if (place.id) {
-        dispatch(updatePlace(place));
+      if (checkPlaceValues(place)) {
+        dispatch(placeUpdated(place));
       }
     },
   });
+
   const place = readPlaceFromDB(kv);
-  dispatch(placeAdded({ place, messages: [] }));
-  if (place?.feedAddress) {
-    dispatch(connectToMessages({ placeId, address: place.feedAddress }));
+
+  if (checkPlaceValues(place)) {
+    dispatch(placeUpdated(place));
   }
 });
 
@@ -136,6 +158,49 @@ export const unbanUser = createAsyncThunk<
   return updatedList;
 });
 
+export const updatePlace = createAsyncThunk<
+  void,
+  {
+    placeId: string;
+    address: string;
+    name: string;
+    category: number;
+    description: string;
+    avatar: File;
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'places/updatePlace',
+  async (
+    { placeId, address, name, description, avatar, category },
+    { dispatch }
+  ) => {
+    const cid = await addIpfsContent(dispatch, avatar);
+
+    const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
+
+    const place: PartialForUpdate = {
+      name,
+      description,
+      avatarCid: cid,
+      category,
+    };
+
+    await Promise.all(
+      Object.keys(place).map((key) => {
+        const v = place[key as keyof PartialForUpdate];
+        if (v === undefined) {
+          return Promise.resolve();
+        }
+        return placeKeyValue.put(key, v);
+      })
+    );
+
+    dispatch(updateOne({ placeId, changes: place }));
+    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
+  }
+);
+
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
@@ -157,11 +222,23 @@ export const placesSlice = createSlice({
       placesAdapter.removeOne(state, action.payload.placeId);
       // TODO expire the messages in the place user left
     },
+    updateOne(
+      state,
+      action: PayloadAction<{ placeId: string; changes: PartialForUpdate }>
+    ) {
+      placesAdapter.updateOne(state, {
+        id: action.payload.placeId,
+        changes: action.payload.changes,
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(updatePlace, (state, action) => {
-        placesAdapter.upsertOne(state, action.payload);
+      .addCase(placeUpdated, (state, action) => {
+        placesAdapter.upsertOne(state, {
+          ...action.payload,
+          messageIds: state.entities[action.payload.id]?.messageIds || [],
+        });
       })
       .addCase(placeMessageAdded, (state, action) => {
         const { placeId, message, mine } = action.payload;
@@ -230,9 +307,10 @@ export const placesSlice = createSlice({
 });
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = (id: string) => (
-  state: RootState
-): Place | undefined => selectors.selectById(state.places, id);
+export const selectPlaceById =
+  (id: string) =>
+  (state: RootState): Place | undefined =>
+    selectors.selectById(state.places, id);
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -240,24 +318,21 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPlaceId = (placeId: string) => (
-  state: RootState
-): Message[] => {
-  const place = selectors.selectById(state.places, placeId);
+export const selectPlaceMessagesByPlaceId =
+  (placeId: string) =>
+  (state: RootState): Message[] => {
+    const place = selectors.selectById(state.places, placeId);
 
-  if (!place) {
-    return [];
-  }
+    if (!place) {
+      return [];
+    }
 
-  return place.messageIds
-    .map((id) => selectMessageById(state.placeMessages, id))
-    .filter(Boolean) as Message[];
-};
+    return place.messageIds
+      .map((id) => selectMessageById(state.placeMessages, id))
+      .filter(Boolean) as Message[];
+  };
 
-export const {
-  clearUnreadMessages,
-  setHash,
-  removePlace,
-} = placesSlice.actions;
+export const { clearUnreadMessages, setHash, removePlace, updateOne } =
+  placesSlice.actions;
 
 export default placesSlice.reducer;

@@ -125,8 +125,9 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
       password,
       readOnly,
     }) {
+      // TODO: category 0 is will be false
       if (avatar && category) {
-        dispatch(
+        await dispatch(
           createNewPlace({
             name,
             description,
@@ -272,6 +273,8 @@ export const NewPlace: React.FC = React.memo(function NewPlace() {
           variant="solid"
           type="submit"
           height={50}
+          // Show loading indicator
+          disabled={formik.isSubmitting}
         />
       </Form>
     </BaseLayout>
