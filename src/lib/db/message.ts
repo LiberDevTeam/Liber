@@ -37,7 +37,9 @@ export const createMessageFeed = async ({
   onMessageAdd: (messages: Message[]) => void;
 }): Promise<FeedStore<Message>> => {
   const dbAddress = `${placeId}${hash ? `-${hash}` : ''}/messages`;
-  const db = await (await getOrbitDB()).feed<Message>(dbAddress, {
+  const db = await (
+    await getOrbitDB()
+  ).feed<Message>(dbAddress, {
     accessController: { write: ['*'] },
   });
   messageFeeds[placeId] = db;
@@ -57,14 +59,16 @@ export const connectMessageFeed = async ({
   placeId: string;
   address: string;
   hash?: string;
-  onMessageAdd: (messages: Message[]) => void;
+  onMessageAdd?: (messages: Message[]) => void;
 }): Promise<FeedStore<Message>> => {
   const dbAddress = getMessagesAddress({ address, placeId, hash });
   const db = await (await getOrbitDB()).feed<Message>(dbAddress);
 
-  db.events.on('replicated', () => {
-    onMessageAdd(readMessagesFromFeed(db));
-  });
+  if (onMessageAdd) {
+    db.events.on('replicated', () => {
+      onMessageAdd(readMessagesFromFeed(db));
+    });
+  }
   messageFeeds[placeId] = db;
 
   return new Promise<FeedStore<Message>>((resolve) => {
