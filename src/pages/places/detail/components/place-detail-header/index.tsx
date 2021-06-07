@@ -1,12 +1,9 @@
-import Dropdown from 'rc-dropdown';
-import 'rc-dropdown/assets/index.css';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { BackLink } from '~/components/back-link';
-import { Button } from '~/components/button';
 import { CloseButton } from '~/components/close-button';
+import { Dropdown, Menu, MenuButton, MenuLink } from '~/components/dropdown';
 import { IconButton } from '~/components/icon-button';
 import { IpfsContent } from '~/components/ipfs-content';
 import { SvgBot as BotIcon } from '~/icons/Bot';
@@ -75,47 +72,7 @@ const Actions = styled.div`
   }
 `;
 
-const Menu = styled.div`
-  width: 200px;
-  background: ${(props) => props.theme.colors.bg};
-  box-shadow: ${(props) => props.theme.shadows[1]};
-  border-radius: ${(props) => props.theme.radii.medium}px;
-  padding: ${(props) => props.theme.space[2]}px;
-`;
-
-const menuStyle = css`
-  color: ${(props) => props.theme.colors.primaryText};
-  width: 100%;
-  justify-content: flex-start;
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  font-size: ${(props) => props.theme.fontSizes.sm};
-  padding: ${(props) => props.theme.space[2]}px;
-
-  & span {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const MenuButton = styled(Button)`
-  ${menuStyle};
-`;
-
-const MenuLink = styled(Link)`
-  ${menuStyle};
-  height: 48px;
-  display: flex;
-  align-items: center;
-
-  & > svg {
-    width: 18px;
-    height: 18px;
-    margin-right: ${(props) => props.theme.space[2]}px;
-  }
-`;
-
-const LeaveButton = styled(Button)`
-  ${menuStyle};
+const LeaveButton = styled(MenuButton)`
   color: ${(props) => props.theme.colors.red};
 `;
 

@@ -45,7 +45,7 @@ const persistConfig = {
   debug,
 };
 
-const reducers = combineReducers({
+export const reducers = combineReducers({
   me: meReducer,
   mypageBots: mypageBotsReducer,
   mypageStickers: mypageStickersReducer,

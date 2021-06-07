@@ -1,5 +1,5 @@
-import KeyValueStore from 'orbit-db-kvstore';
-import { Place, PlacePermissions } from '~/state/places/type';
+import type KeyValueStore from 'orbit-db-kvstore';
+import type { Place, PlacePermissions } from '~/state/places/type';
 import { getOrbitDB } from './orbit';
 
 type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
@@ -61,10 +61,6 @@ export const connectPlaceKeyValue = async ({
     });
   }
 
-  return new Promise<KeyValueStore<PlaceDBValue>>((resolve) => {
-    db.events.on('ready', () => {
-      resolve(db);
-    });
-    db.load();
-  });
+  await db.load();
+  return db;
 };

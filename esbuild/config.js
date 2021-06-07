@@ -4,6 +4,8 @@ const path = require('path');
 const resolve = {
   name: 'resolve',
   setup(build) {
+    // Add custom resolve rules for packages that break building.
+    // These packages have the browser field in package.json, but it doesn't actually support the browser environment.
     build.onResolve({ filter: /^nanoid$/ }, () => {
       return {
         path: path.join(__dirname, '../node_modules/nanoid/index.browser.js'),
@@ -12,6 +14,14 @@ const resolve = {
     build.onResolve({ filter: /^cbor$/ }, () => {
       return {
         path: path.join(__dirname, '../node_modules/cbor-web/dist/cbor.js'),
+      };
+    });
+    build.onResolve({ filter: /^stream$/ }, () => {
+      return {
+        path: path.join(
+          __dirname,
+          '../node_modules/stream-browserify/index.js'
+        ),
       };
     });
   },
