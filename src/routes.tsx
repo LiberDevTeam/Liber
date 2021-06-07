@@ -68,6 +68,12 @@ export const Routes: React.FC = memo(function Routes() {
             path="/places/:address/:placeId/:swarmKey?"
             render={() => <ChatDetail />}
           />
+          <Route
+            exact
+            path="/places/:address/:placeId/edit"
+            render={() => <ChatDetail />}
+          />
+
           <Route exact path="/explore" render={() => <Explore />} />
 
           <Route exact path="/profile" render={() => <ProfilePage />} />
