@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { Button } from '~/components/button';
-import { Checkbox as BaseCheckbox } from '~/components/checkbox';
 import { Input } from '~/components/input';
 import { SelectBox } from '~/components/select-box';
 import { Textarea } from '~/components/textarea';
@@ -36,10 +35,6 @@ const InputText = styled(Input)`
   margin-top: ${(props) => props.theme.space[2]}px;
 `;
 
-const InputPassword = styled(Input)`
-  margin-top: ${(props) => props.theme.space[4]}px;
-`;
-
 const InputDescription = styled(Textarea)`
   margin-top: ${(props) => props.theme.space[5]}px;
   margin-bottom: ${(props) => props.theme.space[15]}px;
@@ -50,38 +45,9 @@ const SubmitButton = styled(Button)`
   margin-top: ${(props) => props.theme.space[4]}px;
 `;
 
-const Subtitle = styled.h2`
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  margin-bottom: ${(props) => props.theme.space[5]}px;
-`;
-
-const OptionGroup = styled.div`
-  margin-bottom: ${(props) => props.theme.space[4]}px;
-  padding-bottom: ${(props) => props.theme.space[4]}px;
-  border-bottom: ${(props) =>
-    props.theme.border.thin(props.theme.colors.gray3)};
-`;
-
-const FlagLabel = styled.label`
-  align-items: center;
-  display: flex;
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  margin-bottom: ${(props) => props.theme.space[1]}px;
-`;
-
-const Description = styled.div`
-  margin-left: ${(props) => props.theme.space[8]}px;
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-weight: ${(props) => props.theme.fontWeights.thin};
-`;
-
-const Checkbox = styled(BaseCheckbox)`
-  margin-right: ${(props) => props.theme.space[3]}px;
-`;
-
 interface FormValues {
   avatar: File | null;
-  category: number | null;
+  category?: number;
   name: string;
   description: string;
 }
@@ -89,17 +55,11 @@ interface FormValues {
 const validationSchema = yup.object({
   name: yup.string().required().min(1).max(50),
   description: yup.string().required().min(5).max(200),
-  isPrivate: yup.bool(),
   avatar: yup.mixed().required(),
-  setPassword: yup.bool(),
-  password: yup.string().when('setPassword', {
-    is: true,
-    then: (s) => s.required().max(50),
-  }),
-  category: yup.number().required(),
+  category: yup.number().required().min(0),
 });
 
-export const EditPlace: React.FC = React.memo(function EditPlace() {
+export const PlaceEdit: React.FC = React.memo(function EditPlace() {
   const dispatch = useDispatch();
   const { placeId, address } =
     useParams<{ placeId: string; address: string }>();
@@ -109,7 +69,7 @@ export const EditPlace: React.FC = React.memo(function EditPlace() {
   const formik = useFormik<FormValues>({
     initialValues: {
       avatar: null,
-      category: place?.category ?? null,
+      category: place?.category,
       name: place?.name ?? '',
       description: place?.description ?? '',
     },
@@ -165,7 +125,7 @@ export const EditPlace: React.FC = React.memo(function EditPlace() {
   return (
     <BaseLayout
       title={PAGE_TITLE}
-      backTo="/places"
+      backTo={`/places/${place?.keyValAddress}/${place?.id}`}
       description={t('editPlaces:Please fill out a form and submit it')}
     >
       <Form onSubmit={formik.handleSubmit}>
@@ -187,6 +147,7 @@ export const EditPlace: React.FC = React.memo(function EditPlace() {
               parseInt(e.currentTarget.value, 10)
             )
           }
+          value={formik.values.category}
           disabled={formik.isSubmitting}
           errorMessage={formik.errors.category}
         />
@@ -210,11 +171,9 @@ export const EditPlace: React.FC = React.memo(function EditPlace() {
           errorMessage={formik.errors.description}
         />
 
-        <Subtitle>Other Options</Subtitle>
-
         <SubmitButton
           shape="rounded"
-          text={t('editPlaces:Start')}
+          text={t('editPlaces:Update')}
           variant="solid"
           type="submit"
           height={50}

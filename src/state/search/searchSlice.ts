@@ -218,7 +218,7 @@ export const searchSlice = createSlice({
     addSearchPostResult: (state, action: PayloadAction<FeedItem[]>) => {
       state.searchPostResult = [...state.searchPostResult, ...action.payload];
     },
-    addSearchPlaceResult: (state, action: PayloadAction<Place[]>) => {
+    addSearchPlaceResult: (state, action: PayloadAction<PlaceInfo[]>) => {
       state.searchPlaceResult = [...state.searchPlaceResult, ...action.payload];
     },
   },

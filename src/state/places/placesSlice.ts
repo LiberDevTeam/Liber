@@ -7,14 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
 import { push } from 'connected-react-router';
-import { getUnixTime } from 'date-fns';
-import { v4 as uuidv4 } from 'uuid';
-import { createMessageFeed } from '~/lib/db/message';
-import {
-  connectPlaceKeyValue,
-  createPlaceKeyValue,
-  readPlaceFromDB,
-} from '~/lib/db/place';
+import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
@@ -25,7 +18,7 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { connectToMessages, Message, selectMessageById } from './messagesSlice';
-import { PartialForUpdate, Place, PlaceField, PlacePermission } from './type';
+import { PartialForUpdate, Place, PlaceField } from './type';
 
 const MODULE_NAME = 'places';
 
@@ -164,112 +157,6 @@ export const unbanUser = createAsyncThunk<
 
   return updatedList;
 });
-
-export const createNewPlace = createAsyncThunk<
-  void,
-  {
-    name: string;
-    category: number;
-    description: string;
-    isPrivate: boolean;
-    avatar: File;
-    password: string;
-    readOnly: boolean;
-  },
-  { dispatch: AppDispatch; state: RootState }
->(
-  'places/createNewPlace',
-  async (
-    { name, description, isPrivate, avatar, password, category, readOnly },
-    { dispatch, getState }
-  ) => {
-    const { me } = getState();
-
-    const cid = await addIpfsContent(dispatch, avatar);
-
-    let swarmKey;
-    if (isPrivate) {
-      // TODO private swarm
-      // const swarmKey = uuidv4()
-      // p2pNodes.privateIpfsNodes[id] = await IPFS.create({})
-    }
-
-    const placeId = uuidv4();
-    const passwordRequired = !!password;
-    const placeKeyValue = await createPlaceKeyValue(placeId);
-    const hash = password ? await digestMessage(password) : undefined;
-    const feed = await createMessageFeed({
-      placeId,
-      hash,
-      onMessageAdd: createMessageReceiveHandler({
-        dispatch,
-        placeId,
-        myId: me.id,
-      }),
-    });
-
-    const timestamp = getUnixTime(new Date());
-
-    const place: Place = {
-      id: placeId,
-      keyValAddress: placeKeyValue.address.root,
-      feedAddress: feed.address.root,
-      name,
-      description,
-      avatarCid: cid,
-      timestamp: timestamp,
-      createdAt: timestamp,
-      swarmKey: swarmKey || undefined,
-      passwordRequired,
-      hash,
-      category,
-      messageIds: [],
-      unreadMessages: [],
-      readOnly,
-      permissions: { [me.id]: PlacePermission.AUTHOR },
-      bannedUsers: [],
-    };
-
-    await Promise.all(
-      Object.keys(place).map((key) => {
-        if (key === 'hash') {
-          Promise.resolve(); // Do not add hash to the place db.
-        }
-        const v = place[key as keyof Place];
-        if (v === undefined) {
-          return Promise.resolve();
-        }
-        return placeKeyValue.put(key, v);
-      })
-    );
-
-    dispatch(placeAdded({ place, messages: [] }));
-    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
-  }
-);
-
-const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
-  return messages.filter((m) => m.uid !== uid);
-};
-
-const createMessageReceiveHandler =
-  ({
-    dispatch,
-    placeId,
-    myId,
-  }: {
-    dispatch: AppThunkDispatch;
-    placeId: string;
-    myId: string;
-  }) =>
-  (messages: Message[]): void => {
-    dispatch(
-      placeMessagesAdded({
-        placeId,
-        messages: excludeMyMessages(myId, messages),
-      })
-    );
-  };
 
 export const updatePlace = createAsyncThunk<
   void,
