@@ -6,17 +6,19 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
+import { push } from 'connected-react-router';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessageAdded,
   placeMessagesAdded,
-  updatePlace,
+  placeUpdated,
 } from '~/state/actionCreater';
-import { AppThunkDispatch, RootState } from '~/state/store';
+import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
+import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { connectToMessages, Message, selectMessageById } from './messagesSlice';
-import type { Place, PlaceField } from './type';
+import { PartialForUpdate, Place, PlaceField } from './type';
 
 const MODULE_NAME = 'places';
 
@@ -81,7 +83,7 @@ export const joinPlace = createAsyncThunk<
     onReplicated: (_kv) => {
       const place = readPlaceFromDB(_kv);
       if (checkPlaceValues(place)) {
-        dispatch(updatePlace(place));
+        dispatch(placeUpdated(place));
       }
     },
   });
@@ -89,7 +91,7 @@ export const joinPlace = createAsyncThunk<
   const place = readPlaceFromDB(kv);
 
   if (checkPlaceValues(place)) {
-    dispatch(updatePlace(place));
+    dispatch(placeUpdated(place));
   }
 });
 
@@ -156,6 +158,49 @@ export const unbanUser = createAsyncThunk<
   return updatedList;
 });
 
+export const updatePlace = createAsyncThunk<
+  void,
+  {
+    placeId: string;
+    address: string;
+    name: string;
+    category: number;
+    description: string;
+    avatar: File;
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'places/updatePlace',
+  async (
+    { placeId, address, name, description, avatar, category },
+    { dispatch }
+  ) => {
+    const cid = await addIpfsContent(dispatch, avatar);
+
+    const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
+
+    const place: PartialForUpdate = {
+      name,
+      description,
+      avatarCid: cid,
+      category,
+    };
+
+    await Promise.all(
+      Object.keys(place).map((key) => {
+        const v = place[key as keyof PartialForUpdate];
+        if (v === undefined) {
+          return Promise.resolve();
+        }
+        return placeKeyValue.put(key, v);
+      })
+    );
+
+    dispatch(updateOne({ placeId, changes: place }));
+    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
+  }
+);
+
 export const placesSlice = createSlice({
   name: 'places',
   initialState: placesAdapter.getInitialState(),
@@ -177,10 +222,19 @@ export const placesSlice = createSlice({
       placesAdapter.removeOne(state, action.payload.placeId);
       // TODO expire the messages in the place user left
     },
+    updateOne(
+      state,
+      action: PayloadAction<{ placeId: string; changes: PartialForUpdate }>
+    ) {
+      placesAdapter.updateOne(state, {
+        id: action.payload.placeId,
+        changes: action.payload.changes,
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(updatePlace, (state, action) => {
+      .addCase(placeUpdated, (state, action) => {
         placesAdapter.upsertOne(state, {
           ...action.payload,
           messageIds: state.entities[action.payload.id]?.messageIds || [],
@@ -278,7 +332,7 @@ export const selectPlaceMessagesByPlaceId =
       .filter(Boolean) as Message[];
   };
 
-export const { clearUnreadMessages, setHash, removePlace } =
+export const { clearUnreadMessages, setHash, removePlace, updateOne } =
   placesSlice.actions;
 
 export default placesSlice.reducer;

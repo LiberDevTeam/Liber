@@ -4,9 +4,9 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { PlaceInfo } from '~/state/places/type';
 import {
   fetchSearchPlaceResult,
+  PlaceInfo,
   selectSearchPlaceResult,
 } from '~/state/search/searchSlice';
 import { theme } from '~/theme';

@@ -111,6 +111,7 @@ export interface PlaceDetailHeaderProps {
   description: string;
   onInviteClick: () => void;
   onLeave: () => void;
+  onEditClick: () => void;
 }
 
 export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
@@ -123,6 +124,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     description,
     onInviteClick,
     onLeave,
+    onEditClick,
   }) {
     const [openInfo, setOpenInfo] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
@@ -161,7 +163,7 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
                     title={t('Edit Chat')}
                     shape="square"
                     variant="text"
-                    onClick={onInviteClick}
+                    onClick={onEditClick}
                     text={t('Edit Chat')}
                     icon={<EditIcon />}
                   />
