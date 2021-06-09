@@ -4,11 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { connectMessageFeed, readMessagesFromFeed } from '~/lib/db/message';
-import {
-  placeAdded,
-  placeMessageAdded,
-  placeMessagesAdded,
-} from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { RootState } from '~/state/store';
 
 const MODULE_NAME = 'placeMessages';
@@ -29,19 +25,17 @@ export const connectToMessages = createAsyncThunk<
 >(
   `${MODULE_NAME}/connectToMessages`,
   async ({ placeId, address, hash }, thunkAPI) => {
-    const { dispatch, getState } = thunkAPI;
-
-    const connected = getState().placeMessages.connectedPlaces[placeId];
+    const { dispatch } = thunkAPI;
 
     const feed = await connectMessageFeed({
       placeId,
       address,
       hash,
-      onMessageAdd: connected
-        ? undefined
-        : (messages) => {
-            dispatch(placeMessagesAdded({ messages, placeId }));
-          },
+      onReceiveEvent: (messages) => {
+        if (messages.length > 0) {
+          dispatch(placeMessagesAdded({ messages, placeId }));
+        }
+      },
     });
 
     return readMessagesFromFeed(feed);
@@ -54,28 +48,15 @@ const messagesAdapter = createEntityAdapter<Message>({
 
 export const messagesSlice = createSlice({
   name: MODULE_NAME,
-  initialState: messagesAdapter.getInitialState<{
-    connectedPlaces: { [placeId: string]: boolean };
-  }>({
-    connectedPlaces: {},
-  }),
+  initialState: messagesAdapter.getInitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(placeAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
       })
-      .addCase(placeMessageAdded, (state, action) => {
-        messagesAdapter.addOne(state, action.payload.message);
-      })
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
-      })
-      .addCase(connectToMessages.pending, (state, action) => {
-        state.connectedPlaces[action.meta.arg.placeId] = true;
-      })
-      .addCase(connectToMessages.rejected, (state, action) => {
-        state.connectedPlaces[action.meta.arg.placeId] = false;
       })
       .addCase(connectToMessages.fulfilled, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload);

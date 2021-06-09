@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex';
-import IPFS, { IPFS as IPFSType } from 'ipfs';
+import Ipfs, { IPFS as IPFSType } from 'ipfs';
 
 let ipfsNode: IPFSType | null;
 const ipfsMutex = new Mutex();
@@ -7,20 +7,20 @@ const ipfsMutex = new Mutex();
 export const getIpfsNode = async (): Promise<IPFSType> => {
   return await ipfsMutex.runExclusive<IPFSType>(async () => {
     if (!ipfsNode) {
-      ipfsNode = await IPFS.create({
+      ipfsNode = await Ipfs.create({
+        repo: '/liber',
         start: true,
         preload: {
-          enabled: true,
+          enabled: false,
         },
-        EXPERIMENTAL: { ipnsPubsub: true },
-        libp2p: {
-          addresses: {
-            listen: [
+        config: {
+          Addresses: {
+            Swarm: [
               '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
               '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
               '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
+              // '/ip4/0.0.0.0/tcp/9090/wss/p2p-webrtc-star',
             ],
-            announce: [],
           },
         },
       });
