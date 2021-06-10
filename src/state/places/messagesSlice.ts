@@ -5,7 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 import { connectMessageFeed, readMessagesFromFeed } from '~/lib/db/message';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
-import { RootState } from '~/state/store';
+import { runBotWorker } from '~/state/bots/botsSlice';
+import { AppThunkDispatch, RootState } from '~/state/store';
 
 const MODULE_NAME = 'placeMessages';
 
@@ -16,7 +17,26 @@ export interface Message {
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
+  bot: boolean;
 }
+
+export const addPlaceMessages = createAsyncThunk<
+  void,
+  { messages: Message[]; placeId: string },
+  { dispatch: AppThunkDispatch }
+>(`${MODULE_NAME}/addMessages`, async ({ placeId, messages }, thunkAPI) => {
+  const dispatch = thunkAPI.dispatch;
+
+  messages
+    .filter((message) => message.bot === false)
+    .map(async (message) => {
+      await dispatch(runBotWorker({ message, placeId }));
+    });
+
+  if (messages.length > 0) {
+    dispatch(placeMessagesAdded({ messages, placeId }));
+  }
+});
 
 export const connectToMessages = createAsyncThunk<
   Message[],
@@ -32,9 +52,7 @@ export const connectToMessages = createAsyncThunk<
       address,
       hash,
       onReceiveEvent: (messages) => {
-        if (messages.length > 0) {
-          dispatch(placeMessagesAdded({ messages, placeId }));
-        }
+        dispatch(addPlaceMessages({ messages, placeId }));
       },
     });
 

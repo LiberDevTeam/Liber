@@ -12,6 +12,8 @@ import {
   createBotKeyValue,
   readBotFromDB,
 } from '~/lib/db/bot';
+import { placeMessagesAdded } from '~/state/actionCreater';
+import { Message } from '~/state/places/messagesSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 
@@ -57,10 +59,10 @@ hogehogehogehoge
 - [http: //liber.live/](http: //liber.live/)
 - [http: //docs.liber.live/](http: //docs.liber.live/)`,
   sourceCode: `
-  if (<input> === ping) {
+  if (message === 'ping') {
     return 'pong';
-  } else if (<input> === hello) {
-    return 'hi <username>';
+  } else if (message === 'hello') {
+    return \`hi \${name}\`;
   }
   `,
   examples: [
@@ -159,6 +161,63 @@ export const fetchBot = createAsyncThunk<
   }
 
   dispatch(addBot(bot));
+});
+
+// let worker: Worker;
+export const setupBotWorker = createAsyncThunk<void, void>(
+  'bots/setupWorker',
+  async () => {
+    if (!window.Worker) {
+      throw new Error(
+        'Worker is not supported this browser. So you cannot run bot process.'
+      );
+    }
+  }
+);
+
+const runWorker = (message: Message, sourceCode: string): Promise<string> => {
+  const worker = new Worker('/worker.js');
+  return new Promise((resolve, reject) => {
+    worker.onmessage = ({ data }) => {
+      resolve(data);
+    };
+    worker.onerror = (e) => {
+      reject(e);
+    };
+    worker.postMessage([message, sourceCode]);
+  });
+};
+
+export const runBotWorker = createAsyncThunk<
+  void,
+  { placeId: string; message: Message },
+  { state: RootState }
+>('bots/runWorker', async ({ placeId, message }, { getState, dispatch }) => {
+  const bots = getState().mypageBots.purchased;
+  await Promise.all(
+    bots.map(async (bot) => {
+      const result = await runWorker(message, bot.sourceCode);
+      console.log(result);
+
+      if (result) {
+        dispatch(
+          placeMessagesAdded({
+            messages: [
+              {
+                id: uuidv4(),
+                authorName: bot.name,
+                uid: bot.id,
+                text: result,
+                timestamp: getUnixTime(new Date()),
+                bot: true,
+              },
+            ],
+            placeId,
+          })
+        );
+      }
+    })
+  );
 });
 
 export const createNewBot = createAsyncThunk<

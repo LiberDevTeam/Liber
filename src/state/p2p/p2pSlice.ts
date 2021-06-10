@@ -4,10 +4,14 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
-import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
+import { placeAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { connectToMessages, Message } from '~/state/places/messagesSlice';
+import {
+  addPlaceMessages,
+  connectToMessages,
+  Message,
+} from '~/state/places/messagesSlice';
 import {
   joinPlace,
   selectAllPlaces,
@@ -18,28 +22,11 @@ import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
-const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
-  return messages.filter((m) => m.uid !== uid);
-};
-
 const createMessageReceiveHandler =
-  ({
-    dispatch,
-    placeId,
-    myId,
-  }: {
-    dispatch: AppThunkDispatch;
-    placeId: string;
-    myId: string;
-  }) =>
+  ({ dispatch, placeId }: { dispatch: AppThunkDispatch; placeId: string }) =>
   (messages: Message[]): void => {
     if (messages.length > 0) {
-      dispatch(
-        placeMessagesAdded({
-          placeId,
-          messages: excludeMyMessages(myId, messages),
-        })
-      );
+      dispatch(addPlaceMessages({ placeId, messages }));
     }
   };
 
@@ -94,6 +81,7 @@ export const publishPlaceMessage = createAsyncThunk<
       uid: me.id,
       text,
       timestamp: getUnixTime(new Date()),
+      bot: false,
     };
 
     if (attachments) {
@@ -153,7 +141,6 @@ export const createNewPlace = createAsyncThunk<
       onReceiveEvent: createMessageReceiveHandler({
         dispatch,
         placeId,
-        myId: me.id,
       }),
     });
 

@@ -193,11 +193,12 @@
     "https": "https-browserify"
   },
   "scripts": {
-    "start": "run-p watch:app watch:sw",
+    "start": "run-p watch:app watch:sw watch:worker",
     "lint": "eslint src/",
     "build:app": "node ./esbuild/build.js",
     "watch:app": "node ./esbuild/dev.js",
     "watch:sw": "node ./esbuild/sw.js",
+    "watch:worker": "node ./esbuild/worker.js",
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "gen": "scaffdog generate",

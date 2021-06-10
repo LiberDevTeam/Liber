@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
 import { Input } from '~/components/input';
 import { MessageView } from '~/components/message-view';
+import { BotMessageView } from '~/components/message-view/bot';
 import { PasswordDialog } from '~/components/password-dialog';
 import { PreviewImage } from '~/components/preview-image';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
@@ -193,7 +194,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     }>();
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
-  const userIds = arrayUniq(messages.map((m) => m.uid));
+  const userIds = arrayUniq(
+    messages.filter((m) => m.bot === false).map((m) => m.uid)
+  );
   const me = useSelector(selectMe);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -212,12 +215,11 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     },
     validateOnMount: true,
     async onSubmit({ text }) {
-      dispatch(publishPlaceMessage({ placeId, text, attachments }));
+      await dispatch(publishPlaceMessage({ placeId, text, attachments }));
 
       formik.resetForm();
       formik.validateForm();
       messageInputRef.current?.focus();
-      messagesBottomRef.current?.scrollIntoView();
 
       setAttachmentPreviews([]);
       setAttachments([]);
@@ -240,6 +242,12 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   useEffect(() => {
     messagesBottomRef.current?.scrollIntoView();
   }, [placeId]);
+
+  useEffect(() => {
+    if (window.pageYOffset === window.scrollY) {
+      messagesBottomRef.current?.scrollIntoView();
+    }
+  }, [messages.length]);
 
   useEffect(() => {
     if (place?.feedAddress) {
@@ -342,17 +350,21 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           )}
 
           <Messages>
-            {messages.map((m) => (
-              <MessageView
-                id={m.id}
-                uid={m.uid}
-                key={m.id}
-                timestamp={m.timestamp}
-                text={m.text}
-                attachmentCidList={m.attachmentCidList}
-                mine={m.uid === me.id}
-              />
-            ))}
+            {messages.map((m) =>
+              m.bot ? (
+                <BotMessageView {...m} key={m.id} />
+              ) : (
+                <MessageView
+                  id={m.id}
+                  uid={m.uid}
+                  key={m.id}
+                  timestamp={m.timestamp}
+                  text={m.text}
+                  attachmentCidList={m.attachmentCidList}
+                  mine={m.uid === me.id}
+                />
+              )
+            )}
             <Observer onChange={handleIntersection}>
               <div ref={messagesBottomRef} />
             </Observer>
