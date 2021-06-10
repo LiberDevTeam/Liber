@@ -4,11 +4,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
-import {
-  placeAdded,
-  placeMessageAdded,
-  placeMessagesAdded,
-} from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages, Message } from '~/state/places/messagesSlice';
@@ -37,12 +33,14 @@ const createMessageReceiveHandler =
     myId: string;
   }) =>
   (messages: Message[]): void => {
-    dispatch(
-      placeMessagesAdded({
-        placeId,
-        messages: excludeMyMessages(myId, messages),
-      })
-    );
+    if (messages.length > 0) {
+      dispatch(
+        placeMessagesAdded({
+          placeId,
+          messages: excludeMyMessages(myId, messages),
+        })
+      );
+    }
   };
 
 export const initApp = createAsyncThunk<
@@ -113,7 +111,6 @@ export const publishPlaceMessage = createAsyncThunk<
     }
 
     await feed.add(message);
-    dispatch(placeMessageAdded({ placeId, message, mine: true }));
   }
 );
 
@@ -153,7 +150,7 @@ export const createNewPlace = createAsyncThunk<
     const feed = await createMessageFeed({
       placeId,
       hash,
-      onMessageAdd: createMessageReceiveHandler({
+      onReceiveEvent: createMessageReceiveHandler({
         dispatch,
         placeId,
         myId: me.id,
