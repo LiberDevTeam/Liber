@@ -28,7 +28,7 @@ export const initUser = createAsyncThunk<User, void, { state: RootState }>(
 
     const user: User = {
       id: userDB.address.root,
-      username: 'Unnamed',
+      username: '',
       avatarCid: '',
 
       // TODO move to private DB
@@ -60,7 +60,6 @@ export const initUser = createAsyncThunk<User, void, { state: RootState }>(
       //   '/orbitdb/yyyyy/yyyyy/place',
       //   '/orbitdb/zzzzz/zzzzz/place',
       // ],
-      //
     };
 
     userDB.set(DB_KEY, user);

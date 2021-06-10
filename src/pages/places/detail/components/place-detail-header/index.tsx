@@ -26,7 +26,7 @@ const Container = styled.div`
   align-items: center;
   background: ${(props) => props.theme.colors.white};
   padding: ${(props) =>
-    `${props.theme.space[12]}px 0 ${props.theme.space[2]}px`};
+    `${props.theme.space[5]}px 0 ${props.theme.space[2]}px`};
   border-bottom: ${(props) =>
     props.theme.border.bold(props.theme.colors.gray3)};
 `;
