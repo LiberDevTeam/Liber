@@ -31,17 +31,16 @@ export const connectToMessages = createAsyncThunk<
   async ({ placeId, address, hash }, thunkAPI) => {
     const { dispatch, getState } = thunkAPI;
 
-    const connected = getState().placeMessages.connectedPlaces[placeId];
-
     const feed = await connectMessageFeed({
       placeId,
       address,
       hash,
-      onMessageAdd: connected
-        ? undefined
-        : (messages) => {
-            dispatch(placeMessagesAdded({ messages, placeId }));
-          },
+      onMessageAdd: (messages) => {
+        const connected = getState().placeMessages.connectedPlaces[placeId];
+        if (connected) {
+          dispatch(placeMessagesAdded({ messages, placeId }));
+        }
+      },
     });
 
     return readMessagesFromFeed(feed);
