@@ -55,8 +55,9 @@ export const usersSlice = createSlice({
   },
 });
 
-const { selectById } = usersAdapter.getSelectors();
+const { selectById, selectAll } = usersAdapter.getSelectors();
 export const selectUserById = selectById;
+export const selectAllUsers = selectAll;
 
 export const selectUsersByIds =
   (ids: string[]) =>

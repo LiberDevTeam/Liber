@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
+import { UserMention } from '~/components/user-mention';
+import { useAppSelector } from '~/hooks';
 import { selectMe } from '~/state/me/meSlice';
+import { selectMessageById } from '~/state/places/messagesSlice';
 import { setSelectedUser } from '~/state/selected-user';
-import { RootState } from '~/state/store';
-import { selectUserById, User } from '~/state/users/usersSlice';
 import { Message } from '../message';
 
 const TextGroup = styled.div<{ mine: boolean }>`
@@ -54,31 +55,50 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
   function MessageView({ id, uid, timestamp, text, attachmentCidList, mine }) {
     const dispatch = useDispatch();
     const me = useSelector(selectMe);
-
-    const user = useSelector<RootState, User | undefined>(
-      (state) => selectUserById(state.users, uid),
-      shallowEqual
+    const message = useAppSelector((state) =>
+      selectMessageById(state.placeMessages, id)
     );
 
     const handleClickUser = useCallback(() => {
-      if (user?.id && me.id !== user.id) {
-        dispatch(setSelectedUser(user.id));
+      if (message?.uid && me.id !== message.uid) {
+        dispatch(setSelectedUser(message.uid));
       }
-    }, [user?.id, dispatch]);
+    }, [message?.uid, dispatch]);
+
+    if (!message) {
+      return null;
+    }
 
     return (
       <>
-        {text && (
-          <TextGroup mine={mine}>
-            <div onClick={handleClickUser}>
-              <UserAvatar userId={uid} />
-            </div>
-            <Body>
-              {mine ? null : <UserName>{user?.username || 'Loading'}</UserName>}
-              <Message mine={mine} text={text} timestamp={timestamp} />
-            </Body>
-          </TextGroup>
-        )}
+        <TextGroup mine={mine}>
+          <div onClick={handleClickUser}>
+            <UserAvatar userId={message.uid} />
+          </div>
+          <Body>
+            {mine ? null : (
+              <UserName>{message.authorName || 'Loading'}</UserName>
+            )}
+
+            <Message
+              mine={mine}
+              contents={message.content.map((value) => {
+                if (typeof value === 'string') {
+                  return value;
+                }
+
+                return (
+                  <UserMention
+                    key={value.userId}
+                    userId={value.userId}
+                    name={value.name}
+                  />
+                );
+              })}
+              timestamp={timestamp}
+            />
+          </Body>
+        </TextGroup>
         {attachmentCidList && attachmentCidList.length > 0 ? (
           <Attachments mine={mine}>
             {attachmentCidList.map((cid) => (

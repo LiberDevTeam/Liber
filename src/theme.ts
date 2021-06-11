@@ -45,7 +45,6 @@ export const GlobalStyles = createGlobalStyle`
 
 const colors = {
   lightText: '#fcfdfe',
-  lightPrimary: '#75a7ff',
   darkPrimary: '#004ec2',
   disabled: '#dedede',
   bg: '#fcfdfe',
@@ -62,6 +61,7 @@ const colors = {
 
   // new design below
   primary: '#2e79f6',
+  lightPrimary: '#578eea',
   gray: '#e1e4e6',
   gray1: '#8FA7B3',
   gray2: '#edf1f2',
@@ -69,6 +69,7 @@ const colors = {
   gray4: '#26404d',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
+  invertedText: '#edf1f2',
   red: '#df2121',
   white: '#ffffff',
   green: '#1fbb2f',
@@ -160,6 +161,7 @@ export const theme = {
     2: 'rgba(143,167,178,0.2) 0 .2rem .5rem',
   },
   radii: {
+    small: 4,
     medium: 12,
     large: 20,
     xl: 32,
