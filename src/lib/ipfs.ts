@@ -20,6 +20,7 @@ export const getIpfsNode = async (): Promise<IPFSType> => {
               '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star/',
               '/dns4/webrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star/',
               // '/ip4/0.0.0.0/tcp/9090/wss/p2p-webrtc-star',
+              '/dns4/salty-temple-29450.herokuapp.com/tcp/443/wss/p2p-webrtc-star',
             ],
           },
         },
