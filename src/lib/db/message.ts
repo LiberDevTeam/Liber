@@ -16,34 +16,34 @@ const getMessagesAddress = ({
 }): string =>
   `/orbitdb/${address}/${placeId}${hash ? `-${hash}` : ''}/messages`;
 // Collect messages exclude already read messages
-const lastHash: Record<string, string> = {};
 export const readMessagesFromFeed = (feed: MessageFeed): Message[] => {
-  const items = feed
-    .iterator({ limit: -1, gt: lastHash[feed.address.root] ?? undefined })
-    .collect();
-  if (items.length > 0) {
-    lastHash[feed.address.root] = items[items.length - 1].hash;
-  }
+  const items = feed.iterator({ limit: -1 }).collect();
   return items.map((item) => item.payload.value);
 };
 
 export const createMessageFeed = async ({
   placeId,
   hash,
-  onMessageAdd,
+  onReceiveEvent,
 }: {
   placeId: string;
   hash?: string;
-  onMessageAdd: (messages: Message[]) => void;
+  onReceiveEvent: (messages: Message[]) => void;
 }): Promise<FeedStore<Message>> => {
   const dbAddress = `${placeId}${hash ? `-${hash}` : ''}/messages`;
-  const db = await (await getOrbitDB()).feed<Message>(dbAddress, {
+  const db = await (
+    await getOrbitDB()
+  ).feed<Message>(dbAddress, {
     accessController: { write: ['*'] },
   });
   messageFeeds[placeId] = db;
-  db.events.on('replicated', () => {
-    onMessageAdd(readMessagesFromFeed(db));
-  });
+
+  const handleEvent = () => onReceiveEvent(readMessagesFromFeed(db));
+  db.events.on('ready', handleEvent);
+  db.events.on('replicated', handleEvent);
+  db.events.on('write', handleEvent);
+  db.events.on('replicate.progress', handleEvent);
+
   await db.load();
   return db;
 };
@@ -52,27 +52,34 @@ export const connectMessageFeed = async ({
   placeId,
   address,
   hash,
-  onMessageAdd,
+  onReceiveEvent,
 }: {
   placeId: string;
   address: string;
   hash?: string;
-  onMessageAdd: (messages: Message[]) => void;
+  onReceiveEvent: (messages: Message[]) => void;
 }): Promise<FeedStore<Message>> => {
-  const dbAddress = getMessagesAddress({ address, placeId, hash });
-  const db = await (await getOrbitDB()).feed<Message>(dbAddress);
+  if (messageFeeds[placeId]) {
+    return messageFeeds[placeId];
+  }
 
-  db.events.on('replicated', () => {
-    onMessageAdd(readMessagesFromFeed(db));
-  });
+  const dbAddress = getMessagesAddress({ address, placeId, hash });
+  const db = await (
+    await getOrbitDB()
+  ).feed<Message>(dbAddress, { overwrite: true });
+
+  const handleEvent = async () => {
+    onReceiveEvent(readMessagesFromFeed(db));
+  };
+  db.events.on('ready', handleEvent);
+  db.events.on('replicated', () => handleEvent());
+  db.events.on('write', handleEvent);
+  db.events.on('replicate.progress', handleEvent);
+
   messageFeeds[placeId] = db;
 
-  return new Promise<FeedStore<Message>>((resolve) => {
-    db.events.on('ready', () => {
-      resolve(db);
-    });
-    db.load();
-  });
+  await db.load();
+  return db;
 };
 
 export const getMessageFeedById = (

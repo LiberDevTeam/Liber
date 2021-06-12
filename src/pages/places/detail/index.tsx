@@ -25,6 +25,7 @@ import { readAsDataURL } from '~/lib/readFile';
 import { LoadingPage } from '~/pages/loading';
 import { selectMe } from '~/state/me/meSlice';
 import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
+import { connectToMessages } from '~/state/places/messagesSlice';
 import {
   banUser,
   clearUnreadMessages,
@@ -205,10 +206,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const messagesBottomRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    dispatch(joinPlace({ placeId, address }));
-  }, [placeId, address]);
-
   const formik = useFormik<FormValues>({
     initialValues: {
       text: '',
@@ -228,6 +225,10 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   });
 
   useEffect(() => {
+    dispatch(joinPlace({ placeId, address }));
+  }, [placeId, address]);
+
+  useEffect(() => {
     dispatch(
       loadUsers({
         userIds,
@@ -239,6 +240,18 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   useEffect(() => {
     messagesBottomRef.current?.scrollIntoView();
   }, [placeId]);
+
+  useEffect(() => {
+    if (place?.feedAddress) {
+      dispatch(
+        connectToMessages({
+          placeId,
+          address: place.feedAddress,
+          hash: place.hash,
+        })
+      );
+    }
+  }, [dispatch, place?.feedAddress, placeId, place?.hash]);
 
   const handleIntersection = useCallback(
     (e) => {

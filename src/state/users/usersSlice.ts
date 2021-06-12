@@ -27,7 +27,9 @@ export const fetchUserData = async (userId: string): Promise<User> => {
 export const loadUsers = createAsyncThunk<User[], { userIds: string[] }>(
   'users/load',
   async ({ userIds }) => {
-    return await Promise.all(userIds.map((userId) => fetchUserData(userId)));
+    return (
+      await Promise.all(userIds.map((userId) => fetchUserData(userId)))
+    ).filter(Boolean);
   }
 );
 
@@ -53,13 +55,14 @@ export const usersSlice = createSlice({
   },
 });
 
-const { selectById } = usersAdapter.getSelectors();
+const { selectById, selectAll } = usersAdapter.getSelectors();
 export const selectUserById = selectById;
+export const selectAllUsers = selectAll;
 
-export const selectUsersByIds = (ids: string[]) => (
-  state: RootState
-): User[] => {
-  return ids
-    .map((id) => selectUserById(state.users, id))
-    .filter(Boolean) as User[];
-};
+export const selectUsersByIds =
+  (ids: string[]) =>
+  (state: RootState): User[] => {
+    return ids
+      .map((id) => selectUserById(state.users, id))
+      .filter(Boolean) as User[];
+  };

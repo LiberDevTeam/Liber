@@ -7,11 +7,6 @@ export const placeAdded =
     place: Place;
     messages: Message[];
   }>('places/placeAdded');
-export const placeMessageAdded = createAction<{
-  placeId: string;
-  message: Message;
-  mine: boolean;
-}>('placeMessages/placeMessageAdded');
 export const placeMessagesAdded = createAction<{
   placeId: string;
   messages: Message[];

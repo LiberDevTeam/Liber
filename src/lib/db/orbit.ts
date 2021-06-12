@@ -10,6 +10,7 @@ export const getOrbitDB = async (): Promise<OrbitDB> => {
   return await orbitDBMutex.runExclusive<OrbitDB>(async () => {
     if (!orbitDB) {
       orbitDB = await OrbitDB.createInstance(await getIpfsNode());
+      console.log(orbitDB.id);
     }
     return orbitDB;
   });

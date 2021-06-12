@@ -10,7 +10,6 @@ import { push } from 'connected-react-router';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
-  placeMessageAdded,
   placeMessagesAdded,
   placeUpdated,
 } from '~/state/actionCreater';
@@ -74,7 +73,8 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 
 export const joinPlace = createAsyncThunk<
   void,
-  { placeId: string; address: string }
+  { placeId: string; address: string },
+  { dispatch: AppThunkDispatch }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, thunkAPI) => {
   const { dispatch } = thunkAPI;
   const kv = await connectPlaceKeyValue({
@@ -170,7 +170,7 @@ export const updatePlace = createAsyncThunk<
   },
   { dispatch: AppDispatch; state: RootState }
 >(
-  'places/updatePlace',
+  `${MODULE_NAME}/updatePlace`,
   async (
     { placeId, address, name, description, avatar, category },
     { dispatch }
@@ -202,7 +202,7 @@ export const updatePlace = createAsyncThunk<
 );
 
 export const placesSlice = createSlice({
-  name: 'places',
+  name: MODULE_NAME,
   initialState: placesAdapter.getInitialState(),
   reducers: {
     clearUnreadMessages(state, action: PayloadAction<string>) {
@@ -240,33 +240,19 @@ export const placesSlice = createSlice({
           messageIds: state.entities[action.payload.id]?.messageIds || [],
         });
       })
-      .addCase(placeMessageAdded, (state, action) => {
-        const { placeId, message, mine } = action.payload;
-        const currentPlace = state.entities[placeId];
-        if (currentPlace === undefined) {
-          throw new Error('Place is not exists');
-        }
-        const newPlace: Place = { ...currentPlace };
-        newPlace.messageIds = [...(newPlace.messageIds || []), message.id];
-        if (mine === false) {
-          newPlace.unreadMessages = newPlace.unreadMessages
-            ? [...newPlace.unreadMessages, message.id]
-            : [message.id];
-        }
-        if (newPlace.timestamp < message.timestamp) {
-          newPlace.timestamp = message.timestamp;
-        }
-        placesAdapter.updateOne(state, { id: placeId, changes: newPlace });
-      })
       .addCase(placeMessagesAdded, (state, action) => {
         const { placeId, messages } = action.payload;
         const place = state.entities[placeId];
 
-        if (place) {
-          const ids = messages.sort(messageSort).map((message) => message.id);
-          place.messageIds = [...new Set(place.messageIds.concat(ids))];
-          place.unreadMessages = [...new Set(place.unreadMessages.concat(ids))];
+        if (!place) {
+          return;
         }
+
+        const sortedMessages = messages.sort(messageSort);
+        const ids = sortedMessages.map((message) => message.id);
+        place.messageIds = arrayUnique(place.messageIds.concat(ids));
+        place.timestamp = sortedMessages[sortedMessages.length - 1].timestamp;
+        // TODO: update unread message
       })
       .addCase(placeAdded, (state, action) => {
         const { place, messages } = action.payload;

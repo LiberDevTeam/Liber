@@ -4,13 +4,15 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { connectMessageFeed, readMessagesFromFeed } from '~/lib/db/message';
-import {
-  placeAdded,
-  placeMessageAdded,
-  placeMessagesAdded,
-} from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
+import { RootState } from '~/state/store';
 
 const MODULE_NAME = 'placeMessages';
+
+export interface Mention {
+  userId?: string;
+  name: string;
+}
 
 export interface Message {
   id: string; // UUID
@@ -19,21 +21,28 @@ export interface Message {
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
+  content: Array<string | Mention>;
+  // mentioned user ids
+  mentions: string[];
 }
 
 export const connectToMessages = createAsyncThunk<
   Message[],
-  { placeId: string; address: string; hash?: string }
+  { placeId: string; address: string; hash?: string },
+  { state: RootState }
 >(
   `${MODULE_NAME}/connectToMessages`,
   async ({ placeId, address, hash }, thunkAPI) => {
     const { dispatch } = thunkAPI;
+
     const feed = await connectMessageFeed({
       placeId,
       address,
       hash,
-      onMessageAdd: (messages) => {
-        dispatch(placeMessagesAdded({ messages, placeId }));
+      onReceiveEvent: (messages) => {
+        if (messages.length > 0) {
+          dispatch(placeMessagesAdded({ messages, placeId }));
+        }
       },
     });
 
@@ -53,9 +62,6 @@ export const messagesSlice = createSlice({
     builder
       .addCase(placeAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);
-      })
-      .addCase(placeMessageAdded, (state, action) => {
-        messagesAdapter.addOne(state, action.payload.message);
       })
       .addCase(placeMessagesAdded, (state, action) => {
         messagesAdapter.upsertMany(state, action.payload.messages);

@@ -4,14 +4,14 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
-import {
-  placeAdded,
-  placeMessageAdded,
-  placeMessagesAdded,
-} from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { connectToMessages, Message } from '~/state/places/messagesSlice';
+import {
+  connectToMessages,
+  Mention,
+  Message,
+} from '~/state/places/messagesSlice';
 import {
   joinPlace,
   selectAllPlaces,
@@ -19,6 +19,7 @@ import {
 } from '~/state/places/placesSlice';
 import { Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { selectAllUsers, User } from '~/state/users/usersSlice';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
@@ -37,12 +38,14 @@ const createMessageReceiveHandler =
     myId: string;
   }) =>
   (messages: Message[]): void => {
-    dispatch(
-      placeMessagesAdded({
-        placeId,
-        messages: excludeMyMessages(myId, messages),
-      })
-    );
+    if (messages.length > 0) {
+      dispatch(
+        placeMessagesAdded({
+          placeId,
+          messages: excludeMyMessages(myId, messages),
+        })
+      );
+    }
   };
 
 export const initApp = createAsyncThunk<
@@ -75,6 +78,30 @@ export const initApp = createAsyncThunk<
   dispatch(finishInitialization());
 });
 
+const messageContentRegex = /@(\S*)/gm;
+const parseText = (text: string, users: User[]): Array<string | Mention> => {
+  const matches = [...text.matchAll(messageContentRegex)];
+  let pos = 0;
+  const result: Array<string | Mention> = [];
+
+  matches.forEach((match) => {
+    const nextPos = (match.index as number) + match[0].length;
+    if (pos !== match.index) {
+      result.push(text.slice(pos, match.index));
+    }
+
+    const user = users.find((user) => user.username === match[1]);
+    result.push({ userId: user?.id, name: match[1] });
+    pos = nextPos;
+  });
+
+  if (pos !== text.length) {
+    result.push(text.slice(pos, text.length));
+  }
+
+  return result;
+};
+
 export const publishPlaceMessage = createAsyncThunk<
   void,
   { text: string; placeId: string; attachments?: File[] },
@@ -84,6 +111,7 @@ export const publishPlaceMessage = createAsyncThunk<
   async ({ placeId, text, attachments }, { dispatch, getState }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
+    const users = selectAllUsers(state.users);
     const me = selectMe(state);
 
     if (!place) {
@@ -95,7 +123,9 @@ export const publishPlaceMessage = createAsyncThunk<
       authorName: me.username,
       uid: me.id,
       text,
+      content: parseText(text, users),
       timestamp: getUnixTime(new Date()),
+      mentions: [],
     };
 
     if (attachments) {
@@ -113,7 +143,6 @@ export const publishPlaceMessage = createAsyncThunk<
     }
 
     await feed.add(message);
-    dispatch(placeMessageAdded({ placeId, message, mine: true }));
   }
 );
 
@@ -153,7 +182,7 @@ export const createNewPlace = createAsyncThunk<
     const feed = await createMessageFeed({
       placeId,
       hash,
-      onMessageAdd: createMessageReceiveHandler({
+      onReceiveEvent: createMessageReceiveHandler({
         dispatch,
         placeId,
         myId: me.id,

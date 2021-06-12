@@ -1,5 +1,5 @@
 import { fromUnixTime } from 'date-fns';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
 
@@ -29,21 +29,21 @@ const Timestamp = styled.span`
 
 interface Props {
   mine: boolean;
-  text: string;
+  contents: ReactNode;
   timestamp: number;
   className?: string;
 }
 
 export const Message: React.FC<Props> = React.memo(function Message({
   mine,
-  text,
+  contents,
   timestamp,
   className,
 }) {
   const time = fromUnixTime(timestamp);
   return (
     <Text mine={mine} className={className}>
-      {text}
+      <div>{contents}</div>
       <Timestamp title={formatTimeStrict(time)}>{formatTime(time)}</Timestamp>
     </Text>
   );
