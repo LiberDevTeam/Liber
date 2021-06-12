@@ -9,6 +9,11 @@ import { RootState } from '~/state/store';
 
 const MODULE_NAME = 'placeMessages';
 
+export interface Mention {
+  userId?: string;
+  name: string;
+}
+
 export interface Message {
   id: string; // UUID
   uid: string;
@@ -16,6 +21,9 @@ export interface Message {
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
+  content: Array<string | Mention>;
+  // mentioned user ids
+  mentions: string[];
 }
 
 export const connectToMessages = createAsyncThunk<

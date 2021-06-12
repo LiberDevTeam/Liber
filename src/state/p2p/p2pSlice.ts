@@ -7,7 +7,11 @@ import { createPlaceKeyValue } from '~/lib/db/place';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { connectToMessages, Message } from '~/state/places/messagesSlice';
+import {
+  connectToMessages,
+  Mention,
+  Message,
+} from '~/state/places/messagesSlice';
 import {
   joinPlace,
   selectAllPlaces,
@@ -15,6 +19,7 @@ import {
 } from '~/state/places/placesSlice';
 import { Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { selectAllUsers, User } from '~/state/users/usersSlice';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
@@ -73,6 +78,30 @@ export const initApp = createAsyncThunk<
   dispatch(finishInitialization());
 });
 
+const messageContentRegex = /@(\S*)/gm;
+const parseText = (text: string, users: User[]): Array<string | Mention> => {
+  const matches = [...text.matchAll(messageContentRegex)];
+  let pos = 0;
+  const result: Array<string | Mention> = [];
+
+  matches.forEach((match) => {
+    const nextPos = (match.index as number) + match[0].length;
+    if (pos !== match.index) {
+      result.push(text.slice(pos, match.index));
+    }
+
+    const user = users.find((user) => user.username === match[1]);
+    result.push({ userId: user?.id, name: match[1] });
+    pos = nextPos;
+  });
+
+  if (pos !== text.length) {
+    result.push(text.slice(pos, text.length));
+  }
+
+  return result;
+};
+
 export const publishPlaceMessage = createAsyncThunk<
   void,
   { text: string; placeId: string; attachments?: File[] },
@@ -82,6 +111,7 @@ export const publishPlaceMessage = createAsyncThunk<
   async ({ placeId, text, attachments }, { dispatch, getState }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
+    const users = selectAllUsers(state.users);
     const me = selectMe(state);
 
     if (!place) {
@@ -93,7 +123,9 @@ export const publishPlaceMessage = createAsyncThunk<
       authorName: me.username,
       uid: me.id,
       text,
+      content: parseText(text, users),
       timestamp: getUnixTime(new Date()),
+      mentions: [],
     };
 
     if (attachments) {
