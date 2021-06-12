@@ -1,75 +1,82 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  connectPrivateFieldsDB,
+  createPrivateFieldsDB,
+} from '~/lib/db/privateFields';
 import { connectUserDB, createUserDB } from '~/lib/db/user';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/usersSlice';
 
-const initialState: User = {
-  id: '',
-  username: '',
+export interface Settings {
+  isIsolation: boolean;
+}
+
+export interface PrivateFields {
+  settings: Settings;
+  joinedPlaces: string[];
+  purchasedBots: string[];
+  purchasedStickers: string[];
+}
+
+const initialPrivateFields = {
   settings: {
     isIsolation: false,
   },
-  avatarCid: '',
+  joinedPlaces: [],
+  purchasedBots: [],
+  purchasedStickers: [],
+};
+
+export interface Me extends User, PrivateFields {}
+
+const initialState: Me = {
+  id: '',
+  botsListingOn: [],
+  stickersListingOn: [],
+  ...initialPrivateFields,
 };
 
 const DB_KEY = 'data';
 
-export const initUser = createAsyncThunk<User, void, { state: RootState }>(
+export const initMe = createAsyncThunk<Me, void, { state: RootState }>(
   'me/init',
   async (_0, { getState }) => {
     const me = getState().me;
     if (me.id) {
-      const userDB = await connectUserDB({ userId: me.id });
-      return userDB.get(DB_KEY);
+      const meDB = await connectPrivateFieldsDB({ userId: me.id });
+      const privFields = meDB.get(DB_KEY);
+
+      const userDB = await createUserDB();
+      const user = userDB.get(DB_KEY);
+      return {
+        ...privFields,
+        ...user,
+      };
     }
 
     const userDB = await createUserDB();
+    const privateDB = await createPrivateFieldsDB();
 
     const user: User = {
       id: userDB.address.root,
       username: '',
       avatarCid: '',
-
-      // TODO move to private DB
-      settings: {
-        isIsolation: false,
-      },
-      // places: [
-      //   '/orbitdb/xxxxx/xxxxx/place',
-      //   '/orbitdb/yyyyy/yyyyy/place',
-      //   '/orbitdb/zzzzz/zzzzz/place',
-      // ],
-      // botsListingOn: [
-      //   '/orbitdb/xxxxx/xxxxx/place',
-      //   '/orbitdb/yyyyy/yyyyy/place',
-      //   '/orbitdb/zzzzz/zzzzz/place',
-      // ],
-      // stickersListingOn: [
-      //   '/orbitdb/xxxxx/xxxxx/place',
-      //   '/orbitdb/yyyyy/yyyyy/place',
-      //   '/orbitdb/zzzzz/zzzzz/place',
-      // ],
-      // botsPurchased: [
-      //   '/orbitdb/xxxxx/xxxxx/place',
-      //   '/orbitdb/yyyyy/yyyyy/place',
-      //   '/orbitdb/zzzzz/zzzzz/place',
-      // ],
-      // stickersPurchased: [
-      //   '/orbitdb/xxxxx/xxxxx/place',
-      //   '/orbitdb/yyyyy/yyyyy/place',
-      //   '/orbitdb/zzzzz/zzzzz/place',
-      // ],
+      botsListingOn: [],
+      stickersListingOn: [],
     };
-
     userDB.set(DB_KEY, user);
+    privateDB.set(DB_KEY, initialPrivateFields);
 
-    return user;
+    return {
+      ...me,
+      ...user,
+    };
   }
 );
 
 export const updateProfile = createAsyncThunk<
-  User,
+  Me,
   { avatar: File | null; username: string },
   { dispatch: AppDispatch; state: RootState }
 >('me/updateProfile', async ({ avatar, username }, { dispatch, getState }) => {
@@ -87,6 +94,75 @@ export const updateProfile = createAsyncThunk<
   return newProfile;
 });
 
+export const updateProperties = createAsyncThunk<
+  Me,
+  {
+    listBot?: string;
+    purchaseBot?: string;
+    listSticker?: string;
+    purchaseSticker?: string;
+  },
+  { dispatch: AppDispatch; state: RootState }
+>(
+  'me/updateProperties',
+  async (
+    { listBot, purchaseBot, listSticker, purchaseSticker },
+    { dispatch, getState }
+  ) => {
+    const me = getState().me;
+    const {
+      botsListingOn,
+      stickersListingOn,
+      purchasedBots,
+      purchasedStickers,
+    } = me;
+
+    let newMe = { ...me };
+
+    if (listBot) {
+      const userDB = await connectUserDB({ userId: me.id });
+      const user = userDB.get(DB_KEY);
+      userDB.set(DB_KEY, {
+        ...user,
+        botsListingOn: [...user.botsListingOn, listBot],
+      });
+      newMe.botsListingOn.push(listBot);
+    }
+
+    if (purchaseBot) {
+      const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+      const priv = privateDB.get(DB_KEY);
+      privateDB.set(DB_KEY, {
+        ...priv,
+        purchasedBots: [...priv.purchasedBots, purchaseBot],
+      });
+      newMe.purchasedBots.push(purchaseBot);
+    }
+
+    if (listSticker) {
+      const userDB = await connectUserDB({ userId: me.id });
+      const user = userDB.get(DB_KEY);
+      userDB.set(DB_KEY, {
+        ...user,
+        stickersListingOn: [...user.stickersListingOn, listSticker],
+      });
+      newMe.stickersListingOn.push(listSticker);
+    }
+
+    if (purchaseSticker) {
+      const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+      const priv = privateDB.get(DB_KEY);
+      privateDB.set(DB_KEY, {
+        ...priv,
+        purchasedStickers: [...priv.purchasedStickers, purchaseSticker],
+      });
+      newMe.purchasedStickers.push(purchaseSticker);
+    }
+
+    return newMe;
+  }
+);
+
 export const meSlice = createSlice({
   name: 'me',
   initialState,
@@ -97,8 +173,9 @@ export const meSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(initUser.fulfilled, (state, action) => action.payload)
-      .addCase(updateProfile.fulfilled, (state, action) => action.payload);
+      .addCase(initMe.fulfilled, (state, action) => action.payload)
+      .addCase(updateProfile.fulfilled, (state, action) => action.payload)
+      .addCase(updateProperties.fulfilled, (state, action) => action.payload);
   },
 });
 

@@ -2,7 +2,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import React, { memo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
-import { initUser } from '~/state/me/meSlice';
+import { initMe } from '~/state/me/meSlice';
 import { initApp } from '~/state/p2p/p2pSlice';
 import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
@@ -35,7 +35,7 @@ export const Routes: React.FC = memo(function Routes() {
   const isInitialized = useAppSelector((state) => state.isInitialized);
 
   useEffect(() => {
-    dispatch(initUser()).then(() => {
+    dispatch(initMe()).then(() => {
       dispatch(initApp());
     });
   }, [dispatch]);
