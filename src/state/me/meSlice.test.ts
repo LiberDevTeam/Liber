@@ -32,8 +32,9 @@ describe('updateProperties', () => {
       id: '',
       botsListingOn: ['botId1'],
       joinedPlaces: [],
+      privateDBAddress: '',
       purchasedBots: ['botId2'],
-      purchasedStickers: ['botId2'],
+      purchasedStickers: ['stickerId2'],
       settings: {
         isIsolation: false,
       },
