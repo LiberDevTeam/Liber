@@ -55,16 +55,14 @@ export const initApp = createAsyncThunk<
     state.me.joinedPlaces.map(async ({ placeId, address }) => {
       await dispatch(joinPlace({ placeId, address }));
       const place = selectPlaceById(placeId)(state);
-      if (place) {
-        place.passwordRequired && place.hash === undefined
-          ? undefined
-          : await dispatch(
-              connectToMessages({
-                placeId: place.id,
-                hash: place.hash,
-                address: place.feedAddress,
-              })
-            );
+      if (place && place.passwordRequired && place.hash === undefined) {
+        await dispatch(
+          connectToMessages({
+            placeId: place.id,
+            hash: place.hash,
+            address: place.feedAddress,
+          })
+        );
       }
     })
   );
