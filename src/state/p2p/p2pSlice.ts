@@ -12,11 +12,7 @@ import {
   Mention,
   Message,
 } from '~/state/places/messagesSlice';
-import {
-  joinPlace,
-  selectAllPlaces,
-  selectPlaceById,
-} from '~/state/places/placesSlice';
+import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
@@ -53,16 +49,13 @@ export const initApp = createAsyncThunk<
   void,
   void,
   { dispatch: AppThunkDispatch; state: RootState }
->('p2p/initApp', async (_, thunkAPI) => {
-  const state = thunkAPI.getState();
-  const dispatch = thunkAPI.dispatch;
-
+>('p2p/initApp', async (_, { dispatch, getState }) => {
+  const state = getState();
   await Promise.all(
-    selectAllPlaces(state).map(async (place) => {
-      return [
-        await dispatch(
-          joinPlace({ placeId: place.id, address: place.keyValAddress })
-        ),
+    state.me.joinedPlaces.map(async ({ placeId, address }) => {
+      await dispatch(joinPlace({ placeId, address }));
+      const place = selectPlaceById(placeId)(state);
+      if (place) {
         place.passwordRequired && place.hash === undefined
           ? undefined
           : await dispatch(
@@ -71,8 +64,8 @@ export const initApp = createAsyncThunk<
                 hash: place.hash,
                 address: place.feedAddress,
               })
-            ),
-      ];
+            );
+      }
     })
   );
 

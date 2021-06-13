@@ -7,7 +7,7 @@ import { connectUserDB, createUserDB } from '~/lib/db/user';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
-import { Me } from './type';
+import { Me, PlacePK } from './type';
 
 const initialPrivateFields = {
   settings: {
@@ -128,7 +128,7 @@ export const updateProperties = createAsyncThunk<
     if (purchaseSticker) {
       const privateDB = await connectPrivateFieldsDB({ userId: me.id });
       const priv = privateDB.get(DB_KEY);
-      priv.purchasedStickers.push(purchaseBot);
+      priv.purchasedStickers.push(purchaseSticker);
       await privateDB.set(DB_KEY, priv);
       newMe = { ...newMe, ...priv };
     }
@@ -136,6 +136,19 @@ export const updateProperties = createAsyncThunk<
     return newMe;
   }
 );
+
+export const appendJoinedPlace = createAsyncThunk<
+  PlacePK,
+  PlacePK,
+  { dispatch: AppDispatch; state: RootState }
+>('me/appendJoinedPlace', async (pk, { getState }) => {
+  const me = getState().me;
+  const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+  const priv = privateDB.get(DB_KEY);
+  priv.joinedPlaces.push(pk);
+  await privateDB.set(DB_KEY, priv);
+  return pk;
+});
 
 export const meSlice = createSlice({
   name: 'me',
@@ -149,7 +162,10 @@ export const meSlice = createSlice({
     builder
       .addCase(initMe.fulfilled, (state, action) => action.payload)
       .addCase(updateProfile.fulfilled, (state, action) => action.payload)
-      .addCase(updateProperties.fulfilled, (state, action) => action.payload);
+      .addCase(updateProperties.fulfilled, (state, action) => action.payload)
+      .addCase(appendJoinedPlace.fulfilled, (state, action) => {
+        state.joinedPlaces.push(action.payload);
+      });
   },
 });
 

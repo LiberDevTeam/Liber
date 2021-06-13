@@ -4,9 +4,14 @@ export interface Settings {
   isIsolation: boolean;
 }
 
+export interface PlacePK {
+  placeId: string;
+  address: string;
+}
+
 export interface PrivateFields {
   settings: Settings;
-  joinedPlaces: string[];
+  joinedPlaces: PlacePK[];
   purchasedBots: string[];
   purchasedStickers: string[];
 }
