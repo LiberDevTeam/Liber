@@ -58,7 +58,7 @@ export const initMe = createAsyncThunk<Me, void, { state: RootState }>(
 
     return {
       ...me,
-      ...user,
+      id: userDB.address.root,
     };
   }
 );

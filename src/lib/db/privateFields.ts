@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { PrivateFields } from '~/state/me/meSlice';
+import { PrivateFields } from '~/state/me/type';
 import { getOrbitDB } from './orbit';
 
 const privateFieldsDB: Record<string, KeyValueStore<PrivateFields>> = {};

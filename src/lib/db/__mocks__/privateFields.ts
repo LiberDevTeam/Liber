@@ -10,11 +10,7 @@ interface DBData {
 }
 
 export const mockPrivateFieldsDB = {
-  set: jest.fn((key: string, val: unknown) => {
-    console.log(key);
-    console.log(val);
-    mockData[key] = val;
-  }),
+  set: jest.fn((key: string, val: unknown) => (mockData[key] = val)),
   get: (key: string) => mockData[key],
 };
 

@@ -19,7 +19,8 @@ import {
 } from '~/state/places/placesSlice';
 import { Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
-import { selectAllUsers, User } from '~/state/users/usersSlice';
+import { User } from '~/state/users/type';
+import { selectAllUsers } from '~/state/users/usersSlice';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 

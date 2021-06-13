@@ -27,8 +27,6 @@ export const getIpfsNode = async (): Promise<IPFSType> => {
         },
       });
     }
-    // @ts-ignore
-    window.ipfsNode = ipfsNode;
     return ipfsNode;
   });
 };

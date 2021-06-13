@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
-import { User } from '../users/usersSlice';
+import { User } from '../users/type';
 
 export enum Appearance {
   DEFAULT,
@@ -65,8 +65,7 @@ export const fetchFeedItems = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.BIG_CARD,
@@ -82,8 +81,7 @@ export const fetchFeedItems = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.DEFAULT,
@@ -99,8 +97,7 @@ export const fetchFeedItems = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.BIG_CARD,
@@ -116,8 +113,7 @@ export const fetchFeedItems = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
     {
       appearance: Appearance.DEFAULT,
@@ -133,8 +129,7 @@ export const fetchFeedItems = createAsyncThunk<
       },
       timestamp: 1617535796,
       attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text:
-        'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
+      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
     },
   ];
 
