@@ -79,7 +79,7 @@ export const SelectBox: React.FC<Props> = React.memo(function Select({
           <DefaultOption>{t(`selectOptions:DEFAULT`)}</DefaultOption>
           {options.map(({ value, label }) => (
             <option key={label} value={value}>
-              {t(`selectOptions: ${id.toUpperCase()}_${label}`)}
+              {t(`selectOptions:${id.toUpperCase()}_${label}`)}
             </option>
           ))}
         </StyledSelect>
