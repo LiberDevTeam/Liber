@@ -8,23 +8,27 @@ export const createPrivateFieldsDB = async (): Promise<
   KeyValueStore<PrivateFields>
 > => {
   const orbitDB = await getOrbitDB();
-  const db = await orbitDB.keyvalue<PrivateFields>('privateFields');
+  const db = await orbitDB.keyvalue<PrivateFields>(`privateFields`);
   privateFieldsDB[db.address.root] = db;
   await db.load();
   return db;
 };
 
 export const connectPrivateFieldsDB = async ({
-  userId,
+  address,
 }: {
-  userId: string;
+  address: string;
 }): Promise<KeyValueStore<PrivateFields>> => {
   const orbitDB = await getOrbitDB();
+  const cached = privateFieldsDB[address];
+  if (cached) {
+    return cached;
+  }
 
   const db = await orbitDB.keyvalue<PrivateFields>(
-    `/orbitdb/${userId}/privateFields`
+    `/orbitdb/${address}/privateFields`
   );
-  privateFieldsDB[userId] = db;
+  privateFieldsDB[address] = db;
   await db.load();
   return db;
 

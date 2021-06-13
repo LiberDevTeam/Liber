@@ -16,4 +16,6 @@ export interface PrivateFields {
   purchasedStickers: string[];
 }
 
-export interface Me extends User, PrivateFields {}
+export interface Me extends User, PrivateFields {
+  privateDBAddress: string;
+}

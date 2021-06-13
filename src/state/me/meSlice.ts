@@ -22,6 +22,7 @@ const initialState: Me = {
   id: '',
   botsListingOn: [],
   stickersListingOn: [],
+  privateDBAddress: '',
   ...initialPrivateFields,
 };
 
@@ -29,36 +30,33 @@ export const DB_KEY = 'data';
 
 export const initMe = createAsyncThunk<Me, void, { state: RootState }>(
   'me/init',
-  async (_0, { getState }) => {
-    const me = getState().me;
-    if (me.id) {
-      const meDB = await connectPrivateFieldsDB({ userId: me.id });
-      const privFields = meDB.get(DB_KEY);
+  async () => {
+    const userDB = await createUserDB();
 
-      const userDB = await createUserDB();
-      const user = userDB.get(DB_KEY);
-      return {
-        ...privFields,
-        ...user,
+    let user: User = userDB.get(DB_KEY);
+    if (!user) {
+      user = {
+        id: userDB.address.root,
+        username: '',
+        avatarCid: '',
+        botsListingOn: [],
+        stickersListingOn: [],
       };
+      await userDB.set(DB_KEY, user);
     }
 
-    const userDB = await createUserDB();
     const privateDB = await createPrivateFieldsDB();
-
-    const user: User = {
-      id: userDB.address.root,
-      username: '',
-      avatarCid: '',
-      botsListingOn: [],
-      stickersListingOn: [],
-    };
-    userDB.set(DB_KEY, user);
-    privateDB.set(DB_KEY, initialPrivateFields);
+    let privateFields = privateDB.get(DB_KEY);
+    if (!privateFields) {
+      privateFields = initialPrivateFields;
+      await privateDB.set(DB_KEY, initialPrivateFields);
+    }
 
     return {
-      ...me,
+      ...user,
+      ...privateFields,
       id: userDB.address.root,
+      privateDBAddress: privateDB.address.root,
     };
   }
 );
@@ -110,7 +108,9 @@ export const updateProperties = createAsyncThunk<
     }
 
     if (purchaseBot) {
-      const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+      const privateDB = await connectPrivateFieldsDB({
+        address: me.privateDBAddress,
+      });
       const priv = privateDB.get(DB_KEY);
       priv.purchasedBots.push(purchaseBot);
       await privateDB.set(DB_KEY, priv);
@@ -126,7 +126,9 @@ export const updateProperties = createAsyncThunk<
     }
 
     if (purchaseSticker) {
-      const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+      const privateDB = await connectPrivateFieldsDB({
+        address: me.privateDBAddress,
+      });
       const priv = privateDB.get(DB_KEY);
       priv.purchasedStickers.push(purchaseSticker);
       await privateDB.set(DB_KEY, priv);
@@ -142,10 +144,11 @@ export const appendJoinedPlace = createAsyncThunk<
   PlacePK,
   { dispatch: AppDispatch; state: RootState }
 >('me/appendJoinedPlace', async (pk, { getState }) => {
-  const me = getState().me;
-  const privateDB = await connectPrivateFieldsDB({ userId: me.id });
+  const privateDB = await connectPrivateFieldsDB({
+    address: getState().me.privateDBAddress,
+  });
   const priv = privateDB.get(DB_KEY);
-  priv.joinedPlaces.push(pk);
+  priv.joinedPlaces = [...priv.joinedPlaces, pk];
   await privateDB.set(DB_KEY, priv);
   return pk;
 });

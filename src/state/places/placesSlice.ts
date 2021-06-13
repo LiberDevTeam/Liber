@@ -75,28 +75,25 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 export const joinPlace = createAsyncThunk<
   void,
   PlacePK,
-  { dispatch: AppThunkDispatch; state: RootState }
->(
-  `${MODULE_NAME}/join`,
-  async ({ placeId, address }, { dispatch, getState }) => {
-    const kv = await connectPlaceKeyValue({
-      placeId,
-      address,
-      onReplicated: (_kv) => {
-        const place = readPlaceFromDB(_kv);
-        if (checkPlaceValues(place)) {
-          dispatch(placeUpdated(place));
-        }
-      },
-    });
+  { dispatch: AppThunkDispatch }
+>(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch }) => {
+  const kv = await connectPlaceKeyValue({
+    placeId,
+    address,
+    onReplicated: (_kv) => {
+      const place = readPlaceFromDB(_kv);
+      if (checkPlaceValues(place)) {
+        dispatch(placeUpdated(place));
+      }
+    },
+  });
 
-    const place = readPlaceFromDB(kv);
+  const place = readPlaceFromDB(kv);
 
-    if (checkPlaceValues(place)) {
-      dispatch(placeUpdated(place));
-    }
+  if (checkPlaceValues(place)) {
+    dispatch(placeUpdated(place));
   }
-);
+});
 
 export const openProtectedPlace = createAsyncThunk<
   void,
