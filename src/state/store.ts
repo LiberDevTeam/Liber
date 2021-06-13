@@ -27,7 +27,7 @@ import { isInitializedSlice } from './isInitialized';
 
 export const history = createHashHistory();
 
-const reducers = combineReducers({
+export const reducers = combineReducers({
   me: meReducer,
   mypageBots: mypageBotsReducer,
   mypageStickers: mypageStickersReducer,

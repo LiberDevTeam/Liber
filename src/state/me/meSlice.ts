@@ -6,18 +6,8 @@ import {
 import { connectUserDB, createUserDB } from '~/lib/db/user';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
-import { User } from '~/state/users/usersSlice';
-
-export interface Settings {
-  isIsolation: boolean;
-}
-
-export interface PrivateFields {
-  settings: Settings;
-  joinedPlaces: string[];
-  purchasedBots: string[];
-  purchasedStickers: string[];
-}
+import { User } from '~/state/users/type';
+import { Me } from './type';
 
 const initialPrivateFields = {
   settings: {
@@ -28,8 +18,6 @@ const initialPrivateFields = {
   purchasedStickers: [],
 };
 
-export interface Me extends User, PrivateFields {}
-
 const initialState: Me = {
   id: '',
   botsListingOn: [],
@@ -37,7 +25,7 @@ const initialState: Me = {
   ...initialPrivateFields,
 };
 
-const DB_KEY = 'data';
+export const DB_KEY = 'data';
 
 export const initMe = createAsyncThunk<Me, void, { state: RootState }>(
   'me/init',
@@ -107,56 +95,42 @@ export const updateProperties = createAsyncThunk<
   'me/updateProperties',
   async (
     { listBot, purchaseBot, listSticker, purchaseSticker },
-    { dispatch, getState }
+    { getState }
   ) => {
     const me = getState().me;
-    const {
-      botsListingOn,
-      stickersListingOn,
-      purchasedBots,
-      purchasedStickers,
-    } = me;
 
     let newMe = { ...me };
 
     if (listBot) {
       const userDB = await connectUserDB({ userId: me.id });
       const user = userDB.get(DB_KEY);
-      userDB.set(DB_KEY, {
-        ...user,
-        botsListingOn: [...user.botsListingOn, listBot],
-      });
-      newMe.botsListingOn.push(listBot);
+      user.botsListingOn.push(listBot);
+      await userDB.set(DB_KEY, user);
+      newMe = { ...newMe, ...user };
     }
 
     if (purchaseBot) {
       const privateDB = await connectPrivateFieldsDB({ userId: me.id });
       const priv = privateDB.get(DB_KEY);
-      privateDB.set(DB_KEY, {
-        ...priv,
-        purchasedBots: [...priv.purchasedBots, purchaseBot],
-      });
-      newMe.purchasedBots.push(purchaseBot);
+      priv.purchasedBots.push(purchaseBot);
+      await privateDB.set(DB_KEY, priv);
+      newMe = { ...newMe, ...priv };
     }
 
     if (listSticker) {
       const userDB = await connectUserDB({ userId: me.id });
       const user = userDB.get(DB_KEY);
-      userDB.set(DB_KEY, {
-        ...user,
-        stickersListingOn: [...user.stickersListingOn, listSticker],
-      });
-      newMe.stickersListingOn.push(listSticker);
+      user.stickersListingOn.push(listSticker);
+      await userDB.set(DB_KEY, user);
+      newMe = { ...newMe, ...user };
     }
 
     if (purchaseSticker) {
       const privateDB = await connectPrivateFieldsDB({ userId: me.id });
       const priv = privateDB.get(DB_KEY);
-      privateDB.set(DB_KEY, {
-        ...priv,
-        purchasedStickers: [...priv.purchasedStickers, purchaseSticker],
-      });
-      newMe.purchasedStickers.push(purchaseSticker);
+      priv.purchasedStickers.push(purchaseBot);
+      await privateDB.set(DB_KEY, priv);
+      newMe = { ...newMe, ...priv };
     }
 
     return newMe;
