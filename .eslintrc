@@ -20,7 +20,8 @@
         "esbuild/**/*.js",
         "scripts/**/*.js",
         "jest/**/*.js",
-        "src/**/*.test.ts"
+        "src/**/*.test.ts",
+        "src/setupTests.ts"
       ],
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
@@ -33,7 +34,7 @@
       }
     },
     {
-      "files": ["src/lib/libp2p.ts", "src/state/p2p/p2pSlice.ts"],
+      "files": ["src/lib/ipfs.ts", "src/state/p2p/p2pSlice.ts"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off"
       }
