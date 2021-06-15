@@ -23,7 +23,7 @@ import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
 import { LoadingPage } from '~/pages/loading';
-import { selectMe } from '~/state/me/meSlice';
+import { appendJoinedPlace, selectMe } from '~/state/me/meSlice';
 import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
 import { connectToMessages } from '~/state/places/messagesSlice';
 import {
@@ -225,7 +225,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   });
 
   useEffect(() => {
-    dispatch(joinPlace({ placeId, address }));
+    const pk = { placeId, address };
+    dispatch(joinPlace(pk));
+    dispatch(appendJoinedPlace(pk));
   }, [placeId, address]);
 
   useEffect(() => {

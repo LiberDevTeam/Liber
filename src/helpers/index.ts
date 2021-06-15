@@ -1,4 +1,4 @@
-import { User } from '~/state/users/usersSlice';
+import { User } from '~/state/users/type';
 
 export const username = (user: User) =>
   user.username ? user.username : 'Unnamed';

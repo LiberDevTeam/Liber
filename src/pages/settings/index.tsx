@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link as BaseLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button as BaseButton } from '~/components/button';
 import { Menu, MenuItem, MenuTitle } from '~/components/icon-menu';
@@ -11,7 +10,6 @@ import { SvgCode as CodeIcon } from '~/icons/Code';
 import { SvgFile as FileIcon } from '~/icons/File';
 import { SvgFileText as FileTextIcon } from '~/icons/FileText';
 import { SvgHeadphone as HeadphoneIcon } from '~/icons/Headphone';
-import { downloadIdbBackup, uploadIdbBackup } from '~/lib/indexedDB';
 import { selectMe, updateIsolationMode } from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
 
@@ -65,24 +63,21 @@ const Button = styled(BaseButton)`
   width: 172px;
 `;
 
-const Links = styled.div``;
-
-const Link = styled(BaseLink)``;
-
 export const SettingsPage: React.FC = React.memo(function SettingsPage() {
   const me = useSelector(selectMe);
   const dispatch = useDispatch();
   const { t } = useTranslation(['common', 'settings']);
   const handleExportBackup = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
-      await downloadIdbBackup();
+      console.log('todo');
+      // await downloadIdbBackup();
     },
     []
   );
   const handleImportBackup = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsImporting(true);
-      await uploadIdbBackup().finally(() => setIsImporting(false));
+      console.log('todo');
     },
     []
   );

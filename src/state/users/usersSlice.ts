@@ -5,17 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import { connectUserDB } from '~/lib/db/user';
 import { RootState } from '../store';
-
-export interface Settings {
-  isIsolation: boolean;
-}
-
-export interface User {
-  id: string;
-  username?: string;
-  avatarCid?: string;
-  settings: Settings;
-}
+import { User } from './type';
 
 const usersAdapter = createEntityAdapter<User>();
 

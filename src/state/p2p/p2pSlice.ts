@@ -12,14 +12,11 @@ import {
   Mention,
   Message,
 } from '~/state/places/messagesSlice';
-import {
-  joinPlace,
-  selectAllPlaces,
-  selectPlaceById,
-} from '~/state/places/placesSlice';
+import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
-import { selectAllUsers, User } from '~/state/users/usersSlice';
+import { User } from '~/state/users/type';
+import { selectAllUsers } from '~/state/users/usersSlice';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
@@ -52,26 +49,21 @@ export const initApp = createAsyncThunk<
   void,
   void,
   { dispatch: AppThunkDispatch; state: RootState }
->('p2p/initApp', async (_, thunkAPI) => {
-  const state = thunkAPI.getState();
-  const dispatch = thunkAPI.dispatch;
-
+>('p2p/initApp', async (_, { dispatch, getState }) => {
+  const state = getState();
   await Promise.all(
-    selectAllPlaces(state).map(async (place) => {
-      return [
+    state.me.joinedPlaces.map(async ({ placeId, address }) => {
+      await dispatch(joinPlace({ placeId, address }));
+      const place = selectPlaceById(placeId)(state);
+      if (place && place.passwordRequired && place.hash === undefined) {
         await dispatch(
-          joinPlace({ placeId: place.id, address: place.keyValAddress })
-        ),
-        place.passwordRequired && place.hash === undefined
-          ? undefined
-          : await dispatch(
-              connectToMessages({
-                placeId: place.id,
-                hash: place.hash,
-                address: place.feedAddress,
-              })
-            ),
-      ];
+          connectToMessages({
+            placeId: place.id,
+            hash: place.hash,
+            address: place.feedAddress,
+          })
+        );
+      }
     })
   );
 
