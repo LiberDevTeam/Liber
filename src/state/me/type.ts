@@ -9,11 +9,21 @@ export interface PlacePK {
   address: string;
 }
 
+export interface BotPK {
+  botId: string;
+  address: string;
+}
+
+export interface StickerPK {
+  stickerId: string;
+  address: string;
+}
+
 export interface PrivateFields {
   settings: Settings;
   joinedPlaces: PlacePK[];
-  purchasedBots: string[];
-  purchasedStickers: string[];
+  purchasedBots: BotPK[];
+  purchasedStickers: StickerPK[];
 }
 
 export interface Me extends User, PrivateFields {

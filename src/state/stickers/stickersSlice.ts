@@ -12,8 +12,11 @@ import {
   createStickerKeyValue,
   readStickerFromDB,
 } from '~/lib/db/sticker';
+import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
+import { DB_KEY } from '../me/meSlice';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
+import { StickerPK, User } from '../users/type';
 
 export const categories = ['ANIMAL_LOVERS'];
 export const categoryOptions = categories.map((label, index) => ({
@@ -98,7 +101,7 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
 }));
 
 export const createNewSticker = createAsyncThunk<
-  void,
+  StickerPK,
   {
     category: number;
     name: string;
@@ -139,12 +142,30 @@ export const createNewSticker = createAsyncThunk<
       v && stickerKeyValue.put(key, v);
     });
 
+    const userDB = await createUserDB();
+    const user = userDB.get(DB_KEY);
+    if (!user) {
+      throw new Error('user is not found');
+    }
+
+    const stickerPK = {
+      stickerId: id,
+      address: stickerKeyValue.address.root,
+    };
+    const newUser: User = {
+      ...user,
+      stickersListingOn: [...user.stickersListingOn, stickerPK],
+    };
+    userDB.set(DB_KEY, newUser);
+
     // TODO: create index to Liber search.
 
     dispatch(addSticker(sticker));
-    dispatch(push(`/stickers/${sticker.id}`));
+    dispatch(push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`));
 
     // TODO: show notification
+
+    return stickerPK;
   }
 );
 

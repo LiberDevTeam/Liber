@@ -14,8 +14,6 @@ import feedReducer from '~/state/feed/feedSlice';
 import marketplaceBotsReducer from '~/state/marketplace/botsSlice';
 import marketplaceStickersReducer from '~/state/marketplace/stickersSlice';
 import meReducer from '~/state/me/meSlice';
-import mypageBotsReducer from '~/state/mypage/botsSlice';
-import mypageStickersReducer from '~/state/mypage/stickersSlice';
 import ipfsContentsReducer from '~/state/p2p/ipfsContentsSlice';
 import placeMessagesReducer from '~/state/places/messagesSlice';
 import placesReducer from '~/state/places/placesSlice';
@@ -29,8 +27,6 @@ export const history = createHashHistory();
 
 export const reducers = combineReducers({
   me: meReducer,
-  mypageBots: mypageBotsReducer,
-  mypageStickers: mypageStickersReducer,
   places: placesReducer,
   placeMessages: placeMessagesReducer,
   ipfsContents: ipfsContentsReducer,

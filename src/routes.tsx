@@ -93,13 +93,13 @@ export const Routes: React.FC = memo(function Routes() {
           <Route exact path="/bots/new" render={() => <BotNewPage />} />
           <Route
             exact
-            path="/bots/:address/:botId"
-            render={() => <BotDetailPage />}
+            path="/bots/:address/:botId/edit"
+            render={() => <BotEditPage />}
           />
           <Route
             exact
-            path="/bots/:address/:botId/edit"
-            render={() => <BotEditPage />}
+            path="/bots/:address/:botId"
+            render={() => <BotDetailPage />}
           />
           <Route exact path="/bots" render={() => <BotsPage />} />
 
