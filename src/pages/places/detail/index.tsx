@@ -1,30 +1,20 @@
 import Observer from '@researchgate/react-intersection-observer';
 import { immutable as arrayUniq } from 'array-unique';
 import { push } from 'connected-react-router';
-import { BaseEmoji, Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-import { useFormik } from 'formik';
-import { lighten } from 'polished';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { IconButton } from '~/components/icon-button';
-import { Input } from '~/components/input';
 import { MessageView } from '~/components/message-view';
 import { PasswordDialog } from '~/components/password-dialog';
-import { PreviewImage } from '~/components/preview-image';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
 import { UserMenu } from '~/components/user-menu';
 import { invitationUrl } from '~/helpers';
-import { SvgAttach as AttachIcon } from '~/icons/Attach';
-import { SvgNavigation as SendIcon } from '~/icons/Navigation';
-import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
-import { readAsDataURL } from '~/lib/readFile';
 import { LoadingPage } from '~/pages/loading';
+import { MessageInput } from '~/pages/places/detail/components/message-input';
 import { appendJoinedPlace, selectMe } from '~/state/me/meSlice';
-import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
 import { connectToMessages } from '~/state/places/messagesSlice';
 import {
   banUser,
@@ -36,25 +26,11 @@ import {
 } from '~/state/places/placesSlice';
 import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
-import { theme } from '~/theme';
-import { AudioPreview } from './components/audio-preview';
 import { PlaceDetailHeader } from './components/place-detail-header';
-import { VideoPreview } from './components/video-preview';
 
 const Root = styled.div`
   padding: ${(props) =>
     `${props.theme.space[14]}px 0 ${props.theme.space[22]}px`};
-`;
-
-const InputFile = styled.input`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  opacity: 0;
-  width: 100%;
-  border: 0;
 `;
 
 const ToastWrapper = styled.div`
@@ -77,81 +53,6 @@ const Messages = styled.div`
   }
 `;
 
-const MessageInput = styled(Input)`
-  flex: 1;
-`;
-
-const MessageActions = styled.div`
-  display: flex;
-
-  & > * {
-    margin-left: ${(props) => props.theme.space[3]}px;
-    color: ${(props) => props.theme.colors.secondaryText};
-
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-`;
-
-const UploadFileButtonGroup = styled.div`
-  position: relative;
-  width: 28px;
-  height: 28px;
-
-  &:active {
-    opacity: 0.8;
-  }
-`;
-
-const StyledIconButton = styled.button`
-  display: inline-flex;
-  width: 54px;
-  height: 54px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.white};
-  margin-left: ${(props) => props.theme.space[2]}px;
-  border-radius: ${(props) => props.theme.radii.round};
-  border: none;
-
-  &:hover {
-    color: ${(props) => props.theme.colors.white};
-    background-color: ${(props) => lighten(0.1, props.theme.colors.primary)};
-  }
-
-  &:active {
-    color: ${(props) => props.theme.colors.white};
-    background-color: ${(props) => lighten(0.2, props.theme.colors.primary)};
-  }
-
-  &:disabled {
-    color: ${(props) => props.theme.colors.white};
-    background-color: ${(props) => props.theme.colors.disabled};
-  }
-
-  & > svg {
-    transform: rotate(90deg);
-  }
-`;
-
-const Attachments = styled.div`
-  position: absolute;
-  bottom: 100%;
-  padding-top: ${(props) => props.theme.space[2]}px;
-  display: flex;
-  overflow-x: auto;
-  align-items: center;
-  width: 100%;
-  background: white;
-
-  & > * {
-    margin: 9px ${(props) => props.theme.space[3]}px
-      ${(props) => props.theme.space[2]}px;
-  }
-`;
-
 const Footer = styled.footer`
   position: fixed;
   background: ${(props) => props.theme.colors.white};
@@ -161,24 +62,6 @@ const Footer = styled.footer`
   padding: ${(props) =>
     `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
   border-top: ${(props) => props.theme.border.bold(props.theme.colors.gray3)};
-`;
-
-const Controls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 ${(props) => props.theme.space[3]}px;
-`;
-
-const EmojiPickerContainer = styled.div`
-  position: absolute;
-  right: ${(props) => props.theme.space[4]}px;
-  margin-bottom: ${(props) => props.theme.space[2]}px;
-  bottom: 100%;
-`;
-
-const Form = styled.form`
-  display: contents;
 `;
 
 export interface FormValues {
@@ -195,34 +78,11 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
   const me = useSelector(selectMe);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const dispatch = useDispatch();
-  const [attachments, setAttachments] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
-  const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
 
-  const messageInputRef = useRef<HTMLInputElement>(null);
   const messagesBottomRef = useRef<HTMLDivElement>(null);
-  const attachmentRef = useRef<HTMLInputElement>(null);
-
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      text: '',
-    },
-    validateOnMount: true,
-    async onSubmit({ text }) {
-      dispatch(publishPlaceMessage({ placeId, text, attachments }));
-
-      formik.resetForm();
-      formik.validateForm();
-      messageInputRef.current?.focus();
-      messagesBottomRef.current?.scrollIntoView();
-
-      setAttachmentPreviews([]);
-      setAttachments([]);
-    },
-  });
 
   useEffect(() => {
     const pk = { placeId, address };
@@ -264,11 +124,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     [dispatch, place?.unreadMessages, placeId]
   );
 
-  const handleRemoveAvatar = useCallback((idx: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i != idx));
-    setAttachmentPreviews((prev) => prev.filter((_, i) => i != idx));
-  }, []);
-
   const handleBanUser = useCallback(
     (userId: string) => {
       if (place?.id) {
@@ -277,28 +132,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     },
     [dispatch, place?.id]
   );
-
-  const handleChangeAttachment = async () => {
-    if (attachmentRef.current?.files) {
-      const files = Array.from(attachmentRef.current.files);
-      const previews = await Promise.all(
-        Array.from(files).map(async (file) => {
-          if (file.type.match(/video\/.*/)) {
-            return 'video-preview';
-          } else if (file.type.match(/audio\/.*/)) {
-            return 'audio-preview';
-          } else {
-            return await readAsDataURL(file);
-          }
-        })
-      );
-
-      setAttachments((prev) => [...prev, ...files]);
-      setAttachmentPreviews((prev) => [...prev, ...previews]);
-
-      attachmentRef.current.value = '';
-    }
-  };
 
   const handleClearUnread = useCallback(() => {
     if (place?.unreadMessages) {
@@ -361,52 +194,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           </Messages>
 
           <Footer>
-            {attachmentPreviews ? (
-              <Attachments>
-                {attachmentPreviews.map((preview, i) => {
-                  if (preview === 'video-preview') {
-                    return (
-                      <VideoPreview
-                        key={i}
-                        onRemove={() => handleRemoveAvatar(i)}
-                      />
-                    );
-                  }
-                  if (preview === 'audio-preview') {
-                    return (
-                      <AudioPreview
-                        key={i}
-                        onRemove={() => handleRemoveAvatar(i)}
-                      />
-                    );
-                  } else {
-                    return (
-                      <PreviewImage
-                        key={i}
-                        src={preview}
-                        onRemove={() => handleRemoveAvatar(i)}
-                      />
-                    );
-                  }
-                })}
-              </Attachments>
-            ) : null}
-
-            {showEmojiPicker ? (
-              <EmojiPickerContainer>
-                <Picker
-                  native
-                  onSelect={(emoji) => {
-                    formik.setFieldValue(
-                      'text',
-                      formik.values.text + ` ${(emoji as BaseEmoji).native} `
-                    );
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              </EmojiPickerContainer>
-            ) : null}
-
             {place.unreadMessages?.length > 0 ? (
               <ToastWrapper>
                 <UnreadToast
@@ -418,57 +205,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
                 />
               </ToastWrapper>
             ) : null}
-
-            <Form onSubmit={formik.handleSubmit}>
-              <Controls>
-                <MessageInput
-                  innerRef={messageInputRef}
-                  name="text"
-                  placeholder="Message..."
-                  value={formik.values.text}
-                  onChange={formik.handleChange}
-                  disabled={formik.isSubmitting}
-                  actions={
-                    <MessageActions>
-                      <IconButton
-                        type="button"
-                        icon={<StickerIcon width={24} height={24} />}
-                        onClick={() => {
-                          setShowEmojiPicker(!showEmojiPicker);
-                        }}
-                      />
-                      <UploadFileButtonGroup>
-                        <IconButton
-                          type="button"
-                          icon={<AttachIcon width={24} height={24} />}
-                          onClick={() => null}
-                          title="Attach file"
-                          disabled={formik.isSubmitting}
-                          color={theme.colors.secondaryText}
-                        />
-                        <InputFile
-                          ref={attachmentRef}
-                          name="attachment"
-                          type="file"
-                          accept="image/*,audio/*,video/*"
-                          onChange={handleChangeAttachment}
-                        />
-                      </UploadFileButtonGroup>
-                    </MessageActions>
-                  }
-                />
-
-                <StyledIconButton
-                  title="Send"
-                  type="submit"
-                  disabled={
-                    formik.values.text === '' && attachmentPreviews.length === 0
-                  }
-                >
-                  <SendIcon width={20} height={20} />
-                </StyledIconButton>
-              </Controls>
-            </Form>
+            <MessageInput placeId={placeId} />
           </Footer>
         </Root>
       </BaseLayout>
