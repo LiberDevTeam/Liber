@@ -24,7 +24,7 @@ const InnerInput = styled.input<{ hasIcon: boolean; textCenter?: boolean }>`
   border-radius: ${(props) => props.theme.radii.xl}px;
   text-overflow: ellipsis;
   outline: none;
-  padding: 0;
+  padding-left: ${(props) => props.theme.space[1]}px;
 
   ::placeholder {
     color: ${(props) => props.theme.colors.secondaryText};
