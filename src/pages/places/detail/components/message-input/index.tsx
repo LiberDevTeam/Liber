@@ -7,12 +7,14 @@ import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
 import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
+import { useAppSelector } from '~/hooks';
 import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
 import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
 import { useReduxDispatch } from '~/state/store';
+import { selectAllUsers } from '~/state/users/usersSlice';
 import { theme } from '~/theme';
 import { AudioPreview } from '../audio-preview';
 import { VideoPreview } from '../video-preview';
@@ -122,6 +124,21 @@ const Controls = styled.div`
   padding: 0 ${(props) => props.theme.space[3]}px;
 `;
 
+const MentionListWrapper = styled.div`
+  padding: ${(props) => props.theme.space[3]}px;
+`;
+
+const MentionList = styled.ul`
+  padding: ${(props) => props.theme.space[2]}px;
+  box-shadow: ${(props) => props.theme.shadows[1]};
+  border-radius: ${(props) => props.theme.radii.medium}px;
+`;
+
+const MentionListItem = styled.li`
+  padding: ${(props) => props.theme.space[1]}px;
+  cursor: pointer;
+`;
+
 export interface FormValues {
   text: string;
 }
@@ -134,9 +151,13 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
   function MessageInput({ placeId }) {
     const dispatch = useReduxDispatch();
 
+    const users = useAppSelector((state) => selectAllUsers(state.users));
+
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [mentionTarget, setMentionTarget] =
+      useState<{ word: string; start: number; end: number } | null>(null);
 
     const messageInputRef = useRef<HTMLInputElement>(null);
     const messagesBottomRef = useRef<HTMLDivElement>(null);
@@ -187,8 +208,71 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
       },
     });
 
+    const handleOnSelect = useCallback(() => {
+      if (!messageInputRef.current) {
+        setMentionTarget(null);
+        return;
+      }
+
+      if (messageInputRef.current.selectionStart === null) {
+        setMentionTarget(null);
+        return;
+      }
+
+      const words = formik.values.text
+        .slice(0, messageInputRef.current.selectionStart)
+        .split(' ');
+
+      if (!words) {
+        setMentionTarget(null);
+        return;
+      }
+
+      const currentPositionWord = words[words.length - 1];
+
+      if (currentPositionWord[0] !== '@') {
+        setMentionTarget(null);
+        return;
+      }
+
+      const word = currentPositionWord.slice(1);
+      setMentionTarget({
+        word,
+        start: messageInputRef.current.selectionStart - word.length,
+        end: messageInputRef.current.selectionStart,
+      });
+    }, [formik.values.text]);
+
+    const mentionList = mentionTarget
+      ? users.filter((user) => user.username?.includes(mentionTarget.word))
+      : [];
+
     return (
       <>
+        {mentionList.length > 0 ? (
+          <MentionListWrapper>
+            <MentionList>
+              {mentionList.map((user) => (
+                <MentionListItem
+                  key={`mention-${user.id}`}
+                  onClick={() => {
+                    if (mentionTarget) {
+                      formik.setFieldValue(
+                        'text',
+                        formik.values.text.slice(0, mentionTarget.start) +
+                          `${user.username} ` +
+                          formik.values.text.slice(mentionTarget.end)
+                      );
+                      setMentionTarget(null);
+                    }
+                  }}
+                >
+                  @{user.username}
+                </MentionListItem>
+              ))}
+            </MentionList>
+          </MentionListWrapper>
+        ) : null}
         {attachmentPreviews ? (
           <Attachments>
             {attachmentPreviews.map((preview, i) => {
@@ -238,6 +322,7 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
             <TextInput
               innerRef={messageInputRef}
               name="text"
+              onSelect={handleOnSelect}
               placeholder="Message..."
               value={formik.values.text}
               onChange={formik.handleChange}
