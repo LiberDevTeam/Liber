@@ -103,65 +103,6 @@ export const updateProfile = createAsyncThunk<
   return newProfile;
 });
 
-// export const updateProperties = createAsyncThunk<
-//   Me,
-//   {
-//     listBot?: string;
-//     purchaseBot?: string;
-//     listSticker?: string;
-//     purchaseSticker?: string;
-//   },
-//   { dispatch: AppDispatch; state: RootState }
-// >(
-//   'me/updateProperties',
-//   async (
-//     { listBot, purchaseBot, listSticker, purchaseSticker },
-//     { getState }
-//   ) => {
-//     const me = getState().me;
-//
-//     let newMe = { ...me };
-//
-//     if (listBot) {
-//       const userDB = await connectUserDB({ userId: me.id });
-//       const user = userDB.get(DB_KEY);
-//       user.botsListingOn.push(listBot);
-//       await userDB.set(DB_KEY, user);
-//       newMe = { ...newMe, ...user };
-//     }
-//
-//     if (purchaseBot) {
-//       const privateDB = await connectPrivateFieldsDB({
-//         address: me.privateDBAddress,
-//       });
-//       const priv = privateDB.get(DB_KEY);
-//       priv.purchasedBots.push(purchaseBot);
-//       await privateDB.set(DB_KEY, priv);
-//       newMe = { ...newMe, ...priv };
-//     }
-//
-//     if (listSticker) {
-//       const userDB = await connectUserDB({ userId: me.id });
-//       const user = userDB.get(DB_KEY);
-//       user.stickersListingOn.push(listSticker);
-//       await userDB.set(DB_KEY, user);
-//       newMe = { ...newMe, ...user };
-//     }
-//
-//     if (purchaseSticker) {
-//       const privateDB = await connectPrivateFieldsDB({
-//         address: me.privateDBAddress,
-//       });
-//       const priv = privateDB.get(DB_KEY);
-//       priv.purchasedStickers.push(purchaseSticker);
-//       await privateDB.set(DB_KEY, priv);
-//       newMe = { ...newMe, ...priv };
-//     }
-//
-//     return newMe;
-//   }
-// );
-
 export const appendJoinedPlace = createAsyncThunk<
   PlacePK,
   PlacePK,
@@ -194,6 +135,9 @@ export const meSlice = createSlice({
       })
       .addCase(createNewSticker.fulfilled, (state, action) => {
         state.stickersListingOn.push(action.payload);
+      })
+      .addCase(createNewBot.fulfilled, (state, action) => {
+        state.botsListingOn.push(action.payload);
       });
   },
 });

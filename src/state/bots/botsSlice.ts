@@ -14,6 +14,7 @@ import {
 } from '~/lib/db/bot';
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
+import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
 
@@ -164,7 +165,7 @@ export const fetchBot = createAsyncThunk<
 });
 
 export const createNewBot = createAsyncThunk<
-  void,
+  BotPK,
   {
     category: number;
     name: string;
@@ -238,6 +239,8 @@ export const createNewBot = createAsyncThunk<
     dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
 
     // TODO: show notification
+
+    return botPK;
   }
 );
 
