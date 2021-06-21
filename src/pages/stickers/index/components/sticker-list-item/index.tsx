@@ -28,6 +28,7 @@ const Avatar = styled(IpfsContent)`
 
 const RightGroup = styled.div`
   width: 75%;
+  overflow-wrap: break-word;
 `;
 
 const Name = styled.p`

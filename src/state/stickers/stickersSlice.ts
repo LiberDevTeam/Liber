@@ -15,8 +15,9 @@ import {
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
 import { DB_KEY } from '../me/meSlice';
+import { StickerPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
-import { StickerPK, User } from '../users/type';
+import { User } from '../users/type';
 
 export const categories = ['ANIMAL_LOVERS'];
 export const categoryOptions = categories.map((label, index) => ({

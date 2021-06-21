@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
-import { selectStickersListingOn } from '~/state/me/meSlice';
+import {
+  selectPurchasedStickers,
+  selectStickersListingOn,
+} from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
 import { StickerListTabPanel } from './components/sticker-list-tab-panel';
 
@@ -53,7 +56,7 @@ const limit = 10;
 
 const Purchased: React.FC = React.memo(function Purchased() {
   const [page, setPage] = useState(1);
-  const stickers = useSelector(selectStickersListingOn);
+  const stickers = useSelector(selectPurchasedStickers);
 
   const handleChangePage = (page: number) => {
     setPage(page);

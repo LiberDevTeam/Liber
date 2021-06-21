@@ -1,4 +1,5 @@
 import React, { memo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -6,6 +7,7 @@ import { Button } from '~/components/button';
 import { IpfsContent } from '~/components/ipfs-content';
 import { selectMe, selectPurchasedStickers } from '~/state/me/meSlice';
 import {
+  categoryOptions,
   fetchSticker,
   selectStickerById,
 } from '~/state/stickers/stickersSlice';
@@ -105,6 +107,7 @@ export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
     ({ stickerId, address }) =>
       stickerId === sticker?.id && address === sticker?.keyValAddress
   );
+  const { t } = useTranslation(['selectOptions']);
 
   useEffect(() => {
     if (!sticker) {
@@ -123,7 +126,13 @@ export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
         <Avatar cid={sticker.contents[0].cid} />
         <Group>
           <Name>{sticker.name}</Name>
-          <StickerCategory>{sticker.category}</StickerCategory>
+          <StickerCategory>
+            {t(
+              `selectOptions:STICKER_CATEGORY_${
+                categoryOptions[sticker.category].label
+              }`
+            )}
+          </StickerCategory>
           <Stock>Stock: Unlimited</Stock>
           <Price>Price: {sticker.price} ETH</Price>
         </Group>
