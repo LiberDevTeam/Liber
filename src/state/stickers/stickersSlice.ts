@@ -14,8 +14,8 @@ import {
 } from '~/lib/db/sticker';
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
+import { stickerAdded } from '../actionCreater';
 import { DB_KEY } from '../me/meSlice';
-import { StickerPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
 
@@ -102,7 +102,7 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
 }));
 
 export const createNewSticker = createAsyncThunk<
-  StickerPK,
+  void,
   {
     category: number;
     name: string;
@@ -166,7 +166,7 @@ export const createNewSticker = createAsyncThunk<
 
     // TODO: show notification
 
-    return stickerPK;
+    dispatch(stickerAdded(stickerPK));
   }
 );
 

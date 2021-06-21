@@ -9,8 +9,9 @@ import { connectUserDB, createUserDB } from '~/lib/db/user';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
+import { botAdded, stickerAdded } from '../actionCreater';
 import { addBots } from '../bots/botsSlice';
-import { addStickers, createNewSticker } from '../stickers/stickersSlice';
+import { addStickers } from '../stickers/stickersSlice';
 import { Me, PlacePK } from './type';
 
 const initialPrivateFields = {
@@ -133,10 +134,10 @@ export const meSlice = createSlice({
       .addCase(appendJoinedPlace.fulfilled, (state, action) => {
         state.joinedPlaces.push(action.payload);
       })
-      .addCase(createNewSticker.fulfilled, (state, action) => {
+      .addCase(stickerAdded, (state, action) => {
         state.stickersListingOn.push(action.payload);
       })
-      .addCase(createNewBot.fulfilled, (state, action) => {
+      .addCase(botAdded, (state, action) => {
         state.botsListingOn.push(action.payload);
       });
   },
