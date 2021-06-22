@@ -1,10 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { Pagination } from '~/components/pagination';
 import { SvgEdit as EditIcon } from '~/icons/Edit';
-import { Bot } from '~/state/bots/botsSlice';
+import { selectBotsByIds } from '~/state/bots/botsSlice';
 
 const Root = styled.div`
   padding-bottom: ${(props) => props.theme.space[6]}px;
@@ -48,7 +49,7 @@ const StyledPagination = styled(Pagination)`
 `;
 
 interface BotListTabPanelProps {
-  bots: Bot[];
+  botIds: string[];
   offset: number;
   limit: number;
   page: number;
@@ -56,21 +57,25 @@ interface BotListTabPanelProps {
 }
 
 export const BotListTabPanel: React.FC<BotListTabPanelProps> = React.memo(
-  function BotListTabPanel({ bots, offset, limit, page, onChangePage }) {
+  function BotListTabPanel({ botIds, offset, limit, page, onChangePage }) {
+    const bots = useSelector(selectBotsByIds(botIds));
     return (
       <Root>
         <List>
-          {bots.slice(offset, offset + limit).map((bot) => (
-            <ListItem key={bot.id}>
-              <StyledLink to={`/bots/${bot.keyValAddress}/${bot.id}`}>
-                <LeftGroup>
-                  <Avatar cid={bot.avatar} />
-                  {bot.name}
-                </LeftGroup>
-                <EditIcon width="24" height="24" />
-              </StyledLink>
-            </ListItem>
-          ))}
+          {bots.slice(offset, offset + limit).map(
+            (bot) =>
+              bot && (
+                <ListItem key={bot.id}>
+                  <StyledLink to={`/bots/${bot.keyValAddress}/${bot.id}`}>
+                    <LeftGroup>
+                      <Avatar cid={bot.avatar} />
+                      {bot.name}
+                    </LeftGroup>
+                    <EditIcon width="24" height="24" />
+                  </StyledLink>
+                </ListItem>
+              )
+          )}
         </List>
         <StyledPagination current={page} onChange={onChangePage} />
       </Root>

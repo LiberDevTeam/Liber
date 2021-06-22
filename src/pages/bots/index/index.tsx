@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
-import {
-  selectBotsListingOn,
-  selectPurchasedBots,
-} from '~/state/mypage/botsSlice';
+import { selectBotsListingOn, selectPurchasedBots } from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
 import { BotListTabPanel } from './bot-list-tab-panel';
 
@@ -63,10 +60,11 @@ const Purchased: React.FC = React.memo(function Purchased() {
   };
 
   const offset = (page - 1) * limit;
+  const botIds = bots.map((bot) => bot.botId);
 
   return (
     <BotListTabPanel
-      bots={bots}
+      botIds={botIds}
       offset={offset}
       limit={limit}
       page={page}
@@ -84,10 +82,11 @@ const ListingOn: React.FC = React.memo(function ListingOn() {
   };
 
   const offset = (page - 1) * limit;
+  const botIds = bots.map((bot) => bot.botId);
 
   return (
     <BotListTabPanel
-      bots={bots}
+      botIds={botIds}
       offset={offset}
       limit={limit}
       page={page}

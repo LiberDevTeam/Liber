@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { Sticker } from '~/state/stickers/stickersSlice';
+import { selectStickersByIds } from '~/state/stickers/stickersSlice';
 import { StickerListItem } from '../sticker-list-item';
 
 const Root = styled.div`
@@ -19,28 +20,33 @@ const StyledPagination = styled(Pagination)`
 interface StickerListTabPanelProps {
   offset: number;
   limit: number;
-  stickers: Sticker[];
+  stickerIds: string[];
   page: number;
   onChangePage: (page: number) => void;
 }
 
-export const StickerListTabPanel: React.FC<StickerListTabPanelProps> = React.memo(
-  function StickerListTabPanel({
+export const StickerListTabPanel: React.FC<StickerListTabPanelProps> =
+  React.memo(function StickerListTabPanel({
     offset,
     limit,
-    stickers,
+    stickerIds,
     page,
     onChangePage,
   }) {
+    const stickers = useSelector(selectStickersByIds(stickerIds));
     return (
       <Root>
         <StickerList>
-          {stickers.slice(offset, offset + limit).map((sticker) => (
-            <StickerListItem key={sticker.id} sticker={sticker} />
-          ))}
+          {stickers
+            .slice(offset, offset + limit)
+            .map(
+              (sticker) =>
+                sticker && (
+                  <StickerListItem key={sticker.id} sticker={sticker} />
+                )
+            )}
         </StickerList>
         <StyledPagination current={page} onChange={onChangePage} />
       </Root>
     );
-  }
-);
+  });

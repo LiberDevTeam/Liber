@@ -12,8 +12,11 @@ import {
   createBotKeyValue,
   readBotFromDB,
 } from '~/lib/db/bot';
+import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
+import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
+import { User } from '../users/type';
 
 export const categories = [
   'ANALYTICS',
@@ -162,7 +165,7 @@ export const fetchBot = createAsyncThunk<
 });
 
 export const createNewBot = createAsyncThunk<
-  void,
+  BotPK,
   {
     category: number;
     name: string;
@@ -214,12 +217,30 @@ export const createNewBot = createAsyncThunk<
       v && botKeyValue.put(key, v);
     });
 
+    const userDB = await createUserDB();
+    const user = userDB.get('data');
+    if (!user) {
+      throw new Error('user is not found');
+    }
+
+    const botPK = {
+      botId: id,
+      address: botKeyValue.address.root,
+    };
+    const newUser: User = {
+      ...user,
+      botsListingOn: [...user.botsListingOn, botPK],
+    };
+    userDB.set('data', newUser);
+
     // TODO: create index to Liber search.
 
     dispatch(addBot(bot));
     dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
 
     // TODO: show notification
+
+    return botPK;
   }
 );
 

@@ -11,7 +11,6 @@ import {
   selectBotById,
 } from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
-import { selectPurchasedBotById } from '~/state/mypage/botsSlice';
 import BaseLayout from '~/templates';
 import { Example } from './components/example';
 
@@ -90,7 +89,6 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
   const { botId, address } = useParams<{ botId: string; address: string }>();
   const me = useSelector(selectMe);
   const bot = useSelector(selectBotById(botId));
-  const purchased = useSelector(selectPurchasedBotById(botId));
   const { t } = useTranslation(['selectOptions']);
 
   useEffect(() => {
@@ -102,10 +100,11 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
   // TODO loading;
   if (!bot) return null;
 
+  const purchased = me.purchasedBots.includes({ botId, address });
   const mine = bot.uid === me.id;
 
   return (
-    <BaseLayout backTo="previous">
+    <BaseLayout backTo="/bots">
       <HeaderContent>
         <Avatar cid={bot.avatar} />
         <Group>

@@ -7,7 +7,7 @@ import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import {
   selectPurchasedStickers,
   selectStickersListingOn,
-} from '~/state/mypage/stickersSlice';
+} from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
 import { StickerListTabPanel } from './components/sticker-list-tab-panel';
 
@@ -63,12 +63,13 @@ const Purchased: React.FC = React.memo(function Purchased() {
   };
 
   const offset = (page - 1) * limit;
+  const stickerIds = stickers.map((sticker) => sticker.stickerId);
 
   return (
     <StickerListTabPanel
       offset={offset}
       limit={limit}
-      stickers={stickers}
+      stickerIds={stickerIds}
       page={page}
       onChangePage={handleChangePage}
     />
@@ -84,12 +85,13 @@ const ListingOn: React.FC = React.memo(function ListingOn() {
   };
 
   const offset = (page - 1) * limit;
+  const stickerIds = stickers.map((sticker) => sticker.stickerId);
 
   return (
     <StickerListTabPanel
       offset={offset}
       limit={limit}
-      stickers={stickers}
+      stickerIds={stickerIds}
       page={page}
       onChangePage={handleChangePage}
     />

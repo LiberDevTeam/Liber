@@ -31,6 +31,6 @@
   "CHAT_CATEGORY_SPORTS": "Sports",
   "CHAT_CATEGORY_TECHNOLOGY": "Technology",
   "CHAT_CATEGORY_TRAVEL": "Travel",
-  "DEFAULT": "Select one",
-  "STICKER_CATEGORY_AnimalLovers": "Animal Lovers"
+  "STICKER_CATEGORY_ANIMAL_LOVERS": "Animal Lovers",
+  "DEFAULT": "Select one"
 }
