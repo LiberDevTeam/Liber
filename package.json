@@ -190,7 +190,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "create:shareddb": "IPFS_REPO=${IPFS_REPO} node ./scripts/create_shared_db.js"
   },
   "msw": {
     "workerDirectory": "public"

@@ -42,3 +42,26 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Shared DB
+
+feeds OrbitDBAddress {
+root: 'zdpuB1RxYZEDyFi8qbSezC97HF4qJ6iegtvfzAWskucaNcSkX',
+path: 'feeds'
+}
+places/search OrbitDBAddress {
+root: 'zdpuAoQKHF5QhdC8xmJ6PwQev2MbgDa5itad6hdd1fyCeJiAm',
+path: 'places/search'
+}
+messages/search OrbitDBAddress {
+root: 'zdpuAsASbZcnzcncfXKXFpTrefRtqzriPAfL8ccK3yXP2AWyW',
+path: 'messages/search'
+}
+stickers/marketplace OrbitDBAddress {
+root: 'zdpuAqjknG3BAV2UJYVGqWSgD3qVZRTDki5PZFN4eqD1b7jy6',
+path: 'stickers/marketplace'
+}
+bots/marketplace OrbitDBAddress {
+root: 'zdpuAnFjTc8GyXLMvU3rXMwyjQyVeK6oRoeRZobpCBF9B4sMk',
+path: 'bots/marketplace'
+}
