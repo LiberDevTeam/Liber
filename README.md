@@ -46,22 +46,22 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 ## Shared DB
 
 feeds OrbitDBAddress {
-root: 'zdpuB1RxYZEDyFi8qbSezC97HF4qJ6iegtvfzAWskucaNcSkX',
+root: 'zdpuAx4S3ZRzHmgqv5MhTbUUNNTYfrMraqZ3569nVkJpLrzzB',
 path: 'feeds'
 }
 places/search OrbitDBAddress {
-root: 'zdpuAoQKHF5QhdC8xmJ6PwQev2MbgDa5itad6hdd1fyCeJiAm',
+root: 'zdpuB1ChFpwkEMjv2quQy36fMUNcZewpK5VQL3GZ91fy6XW4B',
 path: 'places/search'
 }
 messages/search OrbitDBAddress {
-root: 'zdpuAsASbZcnzcncfXKXFpTrefRtqzriPAfL8ccK3yXP2AWyW',
+root: 'zdpuAu4qt2YY9KzbiqC4SpRUXmxGWzfziYCRfXUaCDaQEmtdB',
 path: 'messages/search'
 }
-stickers/marketplace OrbitDBAddress {
-root: 'zdpuAqjknG3BAV2UJYVGqWSgD3qVZRTDki5PZFN4eqD1b7jy6',
-path: 'stickers/marketplace'
-}
 bots/marketplace OrbitDBAddress {
-root: 'zdpuAnFjTc8GyXLMvU3rXMwyjQyVeK6oRoeRZobpCBF9B4sMk',
+root: 'zdpuAy1QWz6TNvKBDyZh6CDt8xD2HijtQHKrKVrKL5mepJ2DC',
 path: 'bots/marketplace'
+}
+stickers/marketplace OrbitDBAddress {
+root: 'zdpuAx63NRK7VuQGmqvrPtUH7TeAa35q9C2H4jB7LqV1uS9xQ',
+path: 'stickers/marketplace'
 }
