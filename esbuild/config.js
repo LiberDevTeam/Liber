@@ -44,10 +44,12 @@ exports.commonConfig = {
   plugins,
   define: {
     global: 'window',
-    APP_PUBLIC_URL: JSON.stringify(process.env.PUBLIC_URL),
-    'process.env.NODE_ENV': JSON.stringify(
-      process.env.NODE_ENV || 'development'
-    ),
+    'process.env': JSON.stringify({
+      PUBLIC_URL: process.env.PUBLIC_URL,
+      GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
+      INFURA_ID: process.env.INFURA_ID,
+      NODE_ENV: process.env.NODE_ENV || 'development',
+    }),
   },
   inject: [paths.inject],
   outdir: paths.outdir,
