@@ -47,6 +47,7 @@ exports.commonConfig = {
     'process.env': JSON.stringify({
       PUBLIC_URL: process.env.PUBLIC_URL,
       GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
+      INFURA_ENDPOINT: process.env.INFURA_ENDPOINT,
       INFURA_ID: process.env.INFURA_ID,
       NODE_ENV: process.env.NODE_ENV || 'development',
     }),
