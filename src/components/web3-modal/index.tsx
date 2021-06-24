@@ -1,7 +1,11 @@
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useState } from 'react';
 import styled, { ThemeConsumer } from 'styled-components';
-import { injectedConnecter, walletConnecter } from '~/lib/web3Provider';
+import {
+  injectedConnecter,
+  networkConnector,
+  walletConnecter,
+} from '~/lib/web3Provider';
 import { Button } from '../button';
 import { Modal } from '../modal';
 
@@ -58,6 +62,7 @@ export const Web3Modal: React.FC<Web3ModalProps> = React.memo(
 
     const handleConnect = useCallback(async (connecterName: string) => {
       await setIsLoading(true);
+      await deactivate();
       switch (connecterName) {
         case 'injected':
           await activate(injectedConnecter);
@@ -75,10 +80,15 @@ export const Web3Modal: React.FC<Web3ModalProps> = React.memo(
       deactivate();
     }, [deactivate]);
 
+    const handleOnClose = useCallback(() => {
+      activate(networkConnector);
+      onClose();
+    }, [activate, onClose]);
+
     return (
       <ThemeConsumer>
         {(theme) => (
-          <Modal open={open} onClose={onClose}>
+          <Modal open={open} onClose={handleOnClose}>
             {active ? (
               <Root>
                 <Image>🔗</Image>
