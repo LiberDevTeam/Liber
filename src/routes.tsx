@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { initMe } from '~/state/me/meSlice';
 import { initApp } from '~/state/p2p/p2pSlice';
+import { WithWeb3 } from './hoc/withWeb3';
 import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
@@ -87,34 +88,69 @@ export const Routes: React.FC = memo(function Routes() {
           <Route
             exact
             path="/marketplace/:type?"
-            render={() => <MarketplacePage />}
+            render={() => (
+              <WithWeb3>
+                <MarketplacePage />
+              </WithWeb3>
+            )}
           />
 
-          <Route exact path="/bots/new" render={() => <BotNewPage />} />
+          <Route
+            exact
+            path="/bots/new"
+            render={() => (
+              <WithWeb3>
+                <BotNewPage />
+              </WithWeb3>
+            )}
+          />
           <Route
             exact
             path="/bots/:address/:botId/edit"
-            render={() => <BotEditPage />}
+            render={() => <WithWeb3><BotEditPage /></WithWeb3>}
           />
           <Route
             exact
             path="/bots/:address/:botId"
-            render={() => <BotDetailPage />}
+            render={() => <WithWeb3><BotDetailPage /></WithWeb3>}
           />
-          <Route exact path="/bots" render={() => <BotsPage />} />
 
-          <Route exact path="/stickers/new" render={() => <StickerNewPage />} />
+          <Route
+            exact
+            path="/stickers/new"
+            render={() => (
+              <WithWeb3>
+                <StickerNewPage />
+              </WithWeb3>
+            )}
+          />
           <Route
             exact
             path="/stickers/:address/:stickerId"
-            render={() => <StickerDetailPage />}
+            render={() => (
+              <WithWeb3>
+                <StickerDetailPage />
+              </WithWeb3>
+            )}
           />
           <Route
             exact
             path="/stickers/:address/:stickerId/edit"
-            render={() => <StickerEditPage />}
+            render={() => (
+              <WithWeb3>
+                <StickerEditPage />
+              </WithWeb3>
+            )}
           />
-          <Route exact path="/stickers" render={() => <StickersPage />} />
+          <Route
+            exact
+            path="/stickers"
+            render={() => (
+              <WithWeb3>
+                <StickersPage />
+              </WithWeb3>
+            )}
+          />
 
           <Route exact path="/settings" render={() => <SettingsPage />} />
 
