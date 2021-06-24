@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useState } from 'react';
 import styled, { ThemeConsumer } from 'styled-components';
-import { injectedConnecter } from '~/lib/web3Provider';
+import { injectedConnecter, walletConnecter } from '~/lib/web3Provider';
 import { Button } from '../button';
 import { Modal } from '../modal';
 
@@ -61,6 +61,9 @@ export const Web3Modal: React.FC<Web3ModalProps> = React.memo(
       switch (connecterName) {
         case 'injected':
           await activate(injectedConnecter);
+          break;
+        case 'wallet':
+          await activate(walletConnecter);
           break;
         default:
           console.log('no connecter match');
