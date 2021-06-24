@@ -81,9 +81,11 @@ export const Web3Modal: React.FC<Web3ModalProps> = React.memo(
     }, [deactivate]);
 
     const handleOnClose = useCallback(() => {
-      activate(networkConnector);
+      if (!active) {
+        activate(networkConnector);
+      }
       onClose();
-    }, [activate, onClose]);
+    }, [active, activate, onClose]);
 
     return (
       <ThemeConsumer>
