@@ -1,11 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  marketplaceNewBots,
-  marketplaceRankingBots,
-  marketplaceSearchBots,
-} from '~/api';
+import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
+import { marketplaceBotSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
-import { addBots, tmpListingOn } from '../bots/botsSlice';
+import { addBots, Bot } from '../bots/botsSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
@@ -14,13 +11,19 @@ export const fetchSearchResult = createAsyncThunk<
 >(
   'marketplace/bots/fetchSearchResult',
   async ({ query, page }, { dispatch }) => {
-    const res = await marketplaceSearchBots(query, page);
-    const { botIds } = await res.json();
+    const limit = 10;
+    const result = marketplaceBotSearch
+      .search(query, { fuzzy: 0.3 })
+      .slice((page - 1) * limit, page * limit);
 
-    // TODO: fetch and store bots information from orbitdb
-    dispatch(addBots(tmpListingOn));
+    const bots: Bot[] = result.map((r) => {
+      const { score, terms, match, ...bot } = r;
+      return bot as Bot;
+    });
 
-    dispatch(paginateSearchResult({ page, botIds }));
+    dispatch(addBots(bots));
+
+    dispatch(paginateSearchResult({ page, bots }));
   }
 );
 
@@ -29,13 +32,13 @@ export const fetchRanking = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/bots/fetchRanking', async ({ page }, { dispatch }) => {
-  const res = await marketplaceRankingBots(page);
-  const { botIds } = await res.json();
+  // TODO change to connect the ranking db
+  const db = await connectMarketplaceBotKeyValue();
+  const bots = Object.values(db.all).reverse();
 
-  // TODO: fetch and store bots information from orbitdb
-  dispatch(addBots(tmpListingOn));
+  dispatch(addBots(bots));
 
-  dispatch(paginateRanking({ page, botIds }));
+  dispatch(paginateRanking({ page, bots }));
 });
 
 export const fetchNew = createAsyncThunk<
@@ -43,25 +46,24 @@ export const fetchNew = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/bots/fetchNew', async ({ page }, { dispatch }) => {
-  const res = await marketplaceNewBots(page);
-  const { botIds } = await res.json();
+  const db = await connectMarketplaceBotKeyValue();
+  const bots = Object.values(db.all).reverse();
 
-  // TODO: fetch and store bots information from orbitdb
-  dispatch(addBots(tmpListingOn));
+  dispatch(addBots(bots));
 
-  dispatch(paginateNew({ page, botIds }));
+  dispatch(paginateNew({ page, bots }));
 });
 
 interface State {
-  searchResultIdsByPage: Record<number, string[]>;
-  rankingIdsByPage: Record<number, string[]>;
-  newIdsByPage: Record<number, string[]>;
+  searchResultBotsByPage: Record<number, Bot[]>;
+  rankingBotsByPage: Record<number, Bot[]>;
+  newBotsByPage: Record<number, Bot[]>;
 }
 
 const initialState: State = {
-  searchResultIdsByPage: {},
-  rankingIdsByPage: {},
-  newIdsByPage: {},
+  searchResultBotsByPage: {},
+  rankingBotsByPage: {},
+  newBotsByPage: {},
 };
 
 export const botsSlice = createSlice({
@@ -70,27 +72,27 @@ export const botsSlice = createSlice({
   reducers: {
     paginateRanking: (
       state,
-      action: PayloadAction<{ page: number; botIds: string[] }>
+      action: PayloadAction<{ page: number; bots: Bot[] }>
     ) => {
-      const { page, botIds } = action.payload;
-      state.rankingIdsByPage[page] = botIds;
+      const { page, bots } = action.payload;
+      state.rankingBotsByPage[page] = bots;
     },
     paginateNew: (
       state,
-      action: PayloadAction<{ page: number; botIds: string[] }>
+      action: PayloadAction<{ page: number; bots: Bot[] }>
     ) => {
-      const { page, botIds } = action.payload;
-      state.newIdsByPage[page] = botIds;
+      const { page, bots } = action.payload;
+      state.newBotsByPage[page] = bots;
     },
     paginateSearchResult: (
       state,
-      action: PayloadAction<{ page: number; botIds: string[] }>
+      action: PayloadAction<{ page: number; bots: Bot[] }>
     ) => {
-      const { page, botIds } = action.payload;
-      state.searchResultIdsByPage[page] = botIds;
+      const { page, bots } = action.payload;
+      state.searchResultBotsByPage[page] = bots;
     },
     clearSearchResult: (state) => {
-      state.searchResultIdsByPage = {};
+      state.searchResultBotsByPage = {};
     },
   },
 });
@@ -102,14 +104,17 @@ export const {
   clearSearchResult,
 } = botsSlice.actions;
 
-export const selectSearchResultIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.searchResultIdsByPage[page] || [];
-export const selectNewIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.newIdsByPage[page] || [];
-export const selectRankingIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceBots.rankingIdsByPage[page] || [];
+export const selectSearchResultBotsByPage =
+  (page: number) =>
+  (state: RootState): Bot[] =>
+    state.marketplaceBots.searchResultBotsByPage[page] || [];
+export const selectNewBotsByPage =
+  (page: number) =>
+  (state: RootState): Bot[] =>
+    state.marketplaceBots.newBotsByPage[page] || [];
+export const selectRankingBotsByPage =
+  (page: number) =>
+  (state: RootState): Bot[] =>
+    state.marketplaceBots.rankingBotsByPage[page] || [];
 
 export default botsSlice.reducer;

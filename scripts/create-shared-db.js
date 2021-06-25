@@ -10,17 +10,21 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   });
 
   const address = 'feeds';
-  const db = await orbitdb.keyvalue(address);
+  const db = await orbitdb.keyvalue(address, {
+    accessController: { write: ['*'] },
+  });
 
   console.log(address, db.address);
 
   [
-    'places/search',
-    'messages/search',
-    'bots/marketplace',
-    'stickers/marketplace',
+    'explore/places',
+    'explore/messages',
+    'marketplace/bots',
+    'marketplace/stickers',
   ].forEach(async (address) => {
-    const db = await orbitdb.keyvalue(address);
+    const db = await orbitdb.keyvalue(address, {
+      accessController: { write: ['*'] },
+    });
     console.log(address, db.address);
   });
 });

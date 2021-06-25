@@ -2,11 +2,10 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { selectBotsByIds } from '~/state/bots/botsSlice';
 import {
   clearSearchResult,
   fetchSearchResult,
-  selectSearchResultIdsByPage,
+  selectSearchResultBotsByPage,
 } from '~/state/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
 
@@ -32,8 +31,7 @@ export const SearchBotResult: React.FC<Props> = memo(function SearchBotResult({
 }) {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const ids = useSelector(selectSearchResultIdsByPage(page));
-  const bots = useSelector(selectBotsByIds(ids));
+  const bots = useSelector(selectSearchResultBotsByPage(page));
 
   useEffect(() => {
     dispatch(clearSearchResult());

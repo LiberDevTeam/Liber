@@ -2,8 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
+import { createSearchIndex } from '~/lib/search';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
@@ -66,6 +68,14 @@ export const initApp = createAsyncThunk<
       }
     })
   );
+
+  const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+  createSearchIndex({
+    bots: Array(10000).fill(Object.values(marketplaceBotDB.all)[0]),
+    // stickers: marketplaceStickerDB.all,
+    // places: searchPlaces.all,
+    // messages: searchMessages.all,
+  });
 
   dispatch(finishInitialization());
 });

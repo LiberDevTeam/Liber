@@ -2,10 +2,9 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { selectBotsByIds } from '~/state/bots/botsSlice';
 import {
   fetchRanking,
-  selectRankingIdsByPage,
+  selectRankingBotsByPage,
 } from '~/state/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
 
@@ -25,8 +24,7 @@ const ListItem = styled.li`
 export const BotRanking: React.FC = memo(function BotRanking() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const ids = useSelector(selectRankingIdsByPage(page));
-  const bots = useSelector(selectBotsByIds(ids));
+  const bots = useSelector(selectRankingBotsByPage(page));
 
   useEffect(() => {
     if (!bots.length) {
