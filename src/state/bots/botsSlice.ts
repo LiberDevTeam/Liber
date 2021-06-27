@@ -12,6 +12,7 @@ import {
   createBotKeyValue,
   readBotFromDB,
 } from '~/lib/db/bot';
+import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
 import { BotPK } from '../me/type';
@@ -233,7 +234,8 @@ export const createNewBot = createAsyncThunk<
     };
     userDB.set('data', newUser);
 
-    // TODO: create index to Liber search.
+    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+    await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
 
     dispatch(addBot(bot));
     dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
@@ -297,7 +299,12 @@ export const updateBot = createAsyncThunk<
       v && botKeyValue.put(key, v);
     });
 
-    // TODO: update index to Liber search.
+    const bot = readBotFromDB(botKeyValue);
+    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+    await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, {
+      ...bot,
+      ...partial,
+    });
 
     dispatch(updateOne({ id: botId, changes: partial }));
     dispatch(push(`/bots/${address}/${botId}`));

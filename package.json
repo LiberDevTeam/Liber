@@ -60,6 +60,7 @@
     "libp2p-webrtc-star": "^0.22.3",
     "libp2p-websockets": "^0.15.7",
     "mini-css-extract-plugin": "1.6.0",
+    "minisearch": "^3.0.3",
     "orbit-db-feedstore": "^1.12.0",
     "orbit-db-kvstore": "^1.12.0",
     "os-browserify": "^0.3.0",
@@ -190,7 +191,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "build-i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "create:shareddb": "node ./scripts/create-shared-db.js"
   },
   "msw": {
     "workerDirectory": "public"

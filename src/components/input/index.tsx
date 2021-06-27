@@ -13,7 +13,7 @@ const Container = styled.div`
   font-size: ${(props) => props.theme.fontSizes.md};
   line-height: ${(props) => props.theme.fontSizes.xl};
   border-radius: ${(props) => props.theme.radii.xl}px;
-  padding: ${(props) => `${props.theme.space[4]}px ${props.theme.space[5]}px`};
+  padding: ${(props) => `${props.theme.space[5]}px ${props.theme.space[4]}px`};
 `;
 
 const InnerInput = styled.input<{ hasIcon: boolean; textCenter?: boolean }>`

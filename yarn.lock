@@ -15034,6 +15034,11 @@ minipass@^3.0.0, minipass@^3.1.1:
   dependencies:
     yallist "^4.0.0"
 
+minisearch@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/minisearch/-/minisearch-3.0.3.tgz#a7cce46dace644d0104856dae4e85774fea26746"
+  integrity sha512-HZnkJUjS6CoEVWxOClSU4PXoivO8q9vVppm2mtnfHLnDarKk47oQ1G/ER1xT5ur4kDZzItEVK0BHfQG6JPNJyw==
+
 minizlib@^1.2.1:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/minizlib/-/minizlib-1.3.3.tgz#2290de96818a34c29551c8a8d301216bd65a861d"

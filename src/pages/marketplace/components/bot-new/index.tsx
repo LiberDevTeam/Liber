@@ -2,8 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
-import { selectBotsByIds } from '~/state/bots/botsSlice';
-import { fetchNew, selectNewIdsByPage } from '~/state/marketplace/botsSlice';
+import { fetchNew, selectNewBotsByPage } from '~/state/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
 
 const Root = styled.div`
@@ -22,8 +21,7 @@ const ListItem = styled.li`
 export const BotNew: React.FC = memo(function BotNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const ids = useSelector(selectNewIdsByPage(page));
-  const bots = useSelector(selectBotsByIds(ids));
+  const bots = useSelector(selectNewBotsByPage(page));
 
   useEffect(() => {
     if (!bots.length) {

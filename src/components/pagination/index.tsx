@@ -11,8 +11,8 @@ const Form = styled.form`
 `;
 
 const StyledInput = styled(Input)`
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
 `;
 
 interface Props {

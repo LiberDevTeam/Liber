@@ -46,7 +46,7 @@ interface Props {
 export const BotItem: React.FC<Props> = memo(function BotItem({ bot }) {
   return (
     <>
-      <StyledLink to={`/bots/${bot.id}`}>
+      <StyledLink to={`/bots/${bot.keyValAddress}/${bot.id}`}>
         <Avatar cid={bot.avatar} />
         <RightGroup>
           <Name>{bot.name}</Name>
