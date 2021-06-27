@@ -34,6 +34,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install --frozen-lockfile --check-files
-      - run: yarn test
+      - run: yarn test:js
+      #- run: yarn test:sol
       - run: yarn typecheck
-      - run: yarn lint
+      - run: yarn lint:js
+      - run: yarn lint:sol

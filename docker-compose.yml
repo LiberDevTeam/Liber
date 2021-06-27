@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  compiler:
+    image: ethereum/solc:0.8.0
+  remix:
+    image: remixproject/remix-ide:latest
+    ports:
+      - 8080:80
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - 8545:8545
+    environment:
+      - DOCKER=true

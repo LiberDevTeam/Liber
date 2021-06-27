@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { marketplaceNewStickers, marketplaceRankingStickers } from '~/api';
 import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
 import { AppDispatch, RootState } from '~/state/store';
 import { addStickers, tmpListingOn } from '../stickers/stickersSlice';
@@ -38,13 +37,15 @@ export const fetchRanking = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchRanking', async ({ page }, { dispatch }) => {
-  const res = await marketplaceRankingStickers(page);
-  const { stickerIds } = await res.json();
+  // const res = await marketplaceRankingStickers(page);
+  // const { stickerIds } = await res.json();
 
   // TODO: fetch and store stickers information from orbitdb
   dispatch(addStickers(tmpListingOn));
 
-  dispatch(paginateRanking({ page, stickerIds }));
+  dispatch(
+    paginateRanking({ page, stickerIds: tmpListingOn.map((s) => s.id) })
+  );
 });
 
 export const fetchNew = createAsyncThunk<
@@ -52,13 +53,13 @@ export const fetchNew = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchNew', async ({ page }, { dispatch }) => {
-  const res = await marketplaceNewStickers(page);
-  const { stickerIds } = await res.json();
+  // const res = await marketplaceNewStickers(page);
+  // const { stickerIds } = await res.json();
 
   // TODO: fetch and store stickers information from orbitdb
   dispatch(addStickers(tmpListingOn));
 
-  dispatch(paginateNew({ page, stickerIds }));
+  dispatch(paginateNew({ page, stickerIds: tmpListingOn.map((s) => s.id) }));
 });
 
 interface State {
@@ -111,14 +112,17 @@ export const {
   clearSearchResult,
 } = stickersSlice.actions;
 
-export const selectSearchResultIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceStickers.searchResultIdsByPage[page] || [];
-export const selectNewIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceStickers.newIdsByPage[page] || [];
-export const selectRankingIdsByPage = (page: number) => (
-  state: RootState
-): string[] => state.marketplaceStickers.rankingIdsByPage[page] || [];
+export const selectSearchResultIdsByPage =
+  (page: number) =>
+  (state: RootState): string[] =>
+    state.marketplaceStickers.searchResultIdsByPage[page] || [];
+export const selectNewIdsByPage =
+  (page: number) =>
+  (state: RootState): string[] =>
+    state.marketplaceStickers.newIdsByPage[page] || [];
+export const selectRankingIdsByPage =
+  (page: number) =>
+  (state: RootState): string[] =>
+    state.marketplaceStickers.rankingIdsByPage[page] || [];
 
 export default stickersSlice.reducer;
