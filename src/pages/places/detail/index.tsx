@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MessageView } from '~/components/message-view';
+import { BotMessageView } from '~/components/message-view/bot';
 import { PasswordDialog } from '~/components/password-dialog';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
@@ -14,8 +15,8 @@ import { UserMenu } from '~/components/user-menu';
 import { invitationUrl } from '~/helpers';
 import { LoadingPage } from '~/pages/loading';
 import { MessageInput } from '~/pages/places/detail/components/message-input';
-import { appendJoinedPlace, selectMe } from '~/state/me/meSlice';
-import { connectToMessages } from '~/state/places/messagesSlice';
+import { appendJoinedPlace } from '~/state/me/meSlice';
+import { connectToMessages } from '~/state/places/async-actions';
 import {
   banUser,
   clearUnreadMessages,
@@ -77,7 +78,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
-  const me = useSelector(selectMe);
 
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -177,17 +177,13 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           )}
 
           <Messages>
-            {messages.map((m) => (
-              <MessageView
-                id={m.id}
-                uid={m.uid}
-                key={m.id}
-                timestamp={m.timestamp}
-                text={m.text}
-                attachmentCidList={m.attachmentCidList}
-                mine={m.uid === me.id}
-              />
-            ))}
+            {messages.map((m) =>
+              m.bot ? (
+                <BotMessageView id={m.id} key={m.id} />
+              ) : (
+                <MessageView id={m.id} key={m.id} />
+              )
+            )}
             <Observer onChange={handleIntersection}>
               <div ref={messagesBottomRef} />
             </Observer>

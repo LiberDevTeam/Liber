@@ -2,7 +2,7 @@ import { BotPK, StickerPK } from '../me/type';
 
 export interface User {
   id: string;
-  username?: string;
+  name?: string;
   avatarCid?: string;
   botsListingOn: BotPK[];
   stickersListingOn: StickerPK[];

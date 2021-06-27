@@ -12,6 +12,7 @@ import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
+import { tmpListingOn } from '~/state/bots/mock';
 import { publishPlaceMessage } from '~/state/places/messagesSlice';
 import { useReduxDispatch } from '~/state/store';
 import { selectAllUsers } from '~/state/users/usersSlice';
@@ -152,6 +153,8 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
     const dispatch = useReduxDispatch();
 
     const users = useAppSelector((state) => selectAllUsers(state.users));
+    // TODO: select place bots
+    const placeBots = tmpListingOn;
 
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
@@ -244,7 +247,9 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
     }, [formik.values.text]);
 
     const mentionList = mentionTarget
-      ? users.filter((user) => user.username?.includes(mentionTarget.word))
+      ? [...placeBots, ...users].filter((user) =>
+          user.name?.includes(mentionTarget.word)
+        )
       : [];
 
     return (
@@ -260,14 +265,14 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
                       formik.setFieldValue(
                         'text',
                         formik.values.text.slice(0, mentionTarget.start) +
-                          `${user.username} ` +
+                          `${user.name} ` +
                           formik.values.text.slice(mentionTarget.end)
                       );
                       setMentionTarget(null);
                     }
                   }}
                 >
-                  @{user.username}
+                  @{user.name}
                 </MentionListItem>
               ))}
             </MentionList>

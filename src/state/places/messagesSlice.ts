@@ -5,40 +5,31 @@ import {
 } from '@reduxjs/toolkit';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  connectMessageFeed,
-  getMessageFeedById,
-  readMessagesFromFeed,
-} from '~/lib/db/message';
+import { getMessageFeedById } from '~/lib/db/message';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
+import { Bot } from '~/state/bots/botsSlice';
+import { tmpListingOn } from '~/state/bots/mock';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
+import { connectToMessages } from '~/state/places/async-actions';
 import { selectPlaceById } from '~/state/places/placesSlice';
+import { Mention, Message } from '~/state/places/type';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
 import { selectAllUsers } from '~/state/users/usersSlice';
 
 const MODULE_NAME = 'placeMessages';
 
-export interface Mention {
-  userId?: string;
-  name: string;
-}
-
-export interface Message {
-  id: string; // UUID
-  uid: string;
-  authorName?: string;
-  timestamp: number;
-  text?: string;
-  attachmentCidList?: string[];
-  content: Array<string | Mention>;
-  // mentioned user ids
-  mentions: string[];
-}
-
 const messageContentRegex = /@(\S*)/gm;
-const parseText = (text: string, users: User[]): Array<string | Mention> => {
+const parseText = ({
+  text,
+  users,
+  bots,
+}: {
+  text: string;
+  users: User[];
+  bots: Bot[];
+}): Array<string | Mention> => {
   const matches = [...text.matchAll(messageContentRegex)];
   let pos = 0;
   const result: Array<string | Mention> = [];
@@ -49,9 +40,18 @@ const parseText = (text: string, users: User[]): Array<string | Mention> => {
       result.push(text.slice(pos, match.index));
     }
 
-    const user = users.find((user) => user.username === match[1]);
-    result.push({ userId: user?.id, name: match[1] });
-    pos = nextPos;
+    // TODO: Use id for matching
+    const user = users.find((user) => user.name === match[1]);
+    if (user) {
+      result.push({ userId: user?.id, name: match[1], bot: false });
+      pos = nextPos;
+    }
+
+    const bot = bots.find((bot) => bot.name === match[1]);
+    if (bot) {
+      result.push({ userId: bot?.id, name: match[1], bot: true });
+      pos = nextPos;
+    }
   });
 
   if (pos !== text.length) {
@@ -59,6 +59,35 @@ const parseText = (text: string, users: User[]): Array<string | Mention> => {
   }
 
   return result;
+};
+
+function resolveBotFromContent(
+  content: Array<string | Mention>,
+  bots: Bot[]
+): Bot[] {
+  return (
+    content.filter((value) => {
+      if (typeof value === 'string' || value.bot === false) {
+        return false;
+      }
+      return true;
+    }) as Mention[]
+  ).map((mention) => {
+    return bots.find((bot) => bot.id === mention.userId);
+  }) as Bot[];
+}
+
+const runBotWorker = (message: Message, botCode: string): Promise<string> => {
+  const worker = new Worker('/worker.js');
+  return new Promise((resolve, reject) => {
+    worker.onmessage = ({ data }) => {
+      resolve(data);
+    };
+    worker.onerror = (e) => {
+      reject(e);
+    };
+    worker.postMessage([message, botCode]);
+  });
 };
 
 export const publishPlaceMessage = createAsyncThunk<
@@ -72,19 +101,24 @@ export const publishPlaceMessage = createAsyncThunk<
     const place = selectPlaceById(placeId)(state);
     const users = selectAllUsers(state.users);
     const me = selectMe(state);
+    // TODO: select bots for the place
+    const purchasedBots = tmpListingOn;
 
     if (!place) {
       throw new Error(`Place (id: ${placeId}) is not exists.`);
     }
 
+    const content = parseText({ text, users, bots: purchasedBots });
+
     const message: Message = {
       id: uuidv4(),
-      authorName: me.username,
+      authorName: me.name,
       uid: me.id,
       text,
-      content: parseText(text, users),
+      content,
       timestamp: getUnixTime(new Date()),
       mentions: [],
+      bot: false,
     };
 
     if (attachments) {
@@ -102,30 +136,23 @@ export const publishPlaceMessage = createAsyncThunk<
     }
 
     await feed.add(message);
-  }
-);
 
-export const connectToMessages = createAsyncThunk<
-  Message[],
-  { placeId: string; address: string; hash?: string },
-  { state: RootState }
->(
-  `${MODULE_NAME}/connectToMessages`,
-  async ({ placeId, address, hash }, thunkAPI) => {
-    const { dispatch } = thunkAPI;
-
-    const feed = await connectMessageFeed({
-      placeId,
-      address,
-      hash,
-      onReceiveEvent: (messages) => {
-        if (messages.length > 0) {
-          dispatch(placeMessagesAdded({ messages, placeId }));
-        }
-      },
+    const bots = resolveBotFromContent(content, purchasedBots);
+    bots.forEach(async (bot) => {
+      const result = await runBotWorker(message, bot.sourceCode);
+      if (result) {
+        feed.add({
+          id: uuidv4(),
+          authorName: bot.name,
+          uid: bot.id,
+          text: result,
+          content: [result],
+          mentions: [],
+          timestamp: getUnixTime(new Date()),
+          bot: true,
+        });
+      }
     });
-
-    return readMessagesFromFeed(feed);
   }
 );
 

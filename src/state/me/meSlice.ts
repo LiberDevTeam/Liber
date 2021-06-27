@@ -44,7 +44,7 @@ export const initMe = createAsyncThunk<
   if (!user) {
     user = {
       id: userDB.address.root,
-      username: '',
+      name: '',
       avatarCid: '',
       botsListingOn: [],
       stickersListingOn: [],
@@ -87,9 +87,9 @@ export const initMe = createAsyncThunk<
 
 export const updateProfile = createAsyncThunk<
   Me,
-  { avatar: File | null; username: string },
+  { avatar: File | null; name: string },
   { dispatch: AppDispatch; state: RootState }
->('me/updateProfile', async ({ avatar, username }, { dispatch, getState }) => {
+>('me/updateProfile', async ({ avatar, name }, { dispatch, getState }) => {
   const me = getState().me;
   const userDB = await connectUserDB({ userId: me.id });
 
@@ -99,7 +99,7 @@ export const updateProfile = createAsyncThunk<
     avatarCid = await addIpfsContent(dispatch, avatar);
   }
 
-  const newProfile = { ...me, username, avatarCid };
+  const newProfile: Me = { ...me, name, avatarCid };
   userDB.set(DB_KEY, newProfile);
   return newProfile;
 });

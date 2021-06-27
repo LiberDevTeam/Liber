@@ -8,9 +8,9 @@ import { createPlaceKeyValue } from '~/lib/db/place';
 import { createSearchIndex } from '~/lib/search';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { connectToMessages, Message } from '~/state/places/messagesSlice';
+import { connectToMessages } from '~/state/places/async-actions';
 import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
-import { Place, PlacePermission } from '~/state/places/type';
+import { Message, Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
@@ -63,6 +63,7 @@ export const initApp = createAsyncThunk<
   );
 
   const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+
   createSearchIndex({
     bots: Array(10000).fill(Object.values(marketplaceBotDB.all)[0]),
     // stickers: marketplaceStickerDB.all,

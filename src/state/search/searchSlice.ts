@@ -40,7 +40,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       id: '33333-33333-33333-33333333331',
       author: {
         id: '55555-55555-55555-5555555555',
-        username: 'NaDaru',
+        name: 'NaDaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
         botsListingOn: [],
         stickersListingOn: [],
@@ -57,7 +57,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       id: '33333-33333-33333-33333333332',
       author: {
         id: '55555-55555-55555-5555555555',
-        username: 'nadaru',
+        name: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
         botsListingOn: [],
         stickersListingOn: [],
@@ -74,7 +74,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       id: '33333-33333-33333-33333333333',
       author: {
         id: '55555-55555-55555-5555555555',
-        username: 'nadaru',
+        name: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
         botsListingOn: [],
         stickersListingOn: [],
@@ -91,7 +91,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       id: '33333-33333-33333-33333333334',
       author: {
         id: '55555-55555-55555-5555555555',
-        username: 'nadaru',
+        name: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
         botsListingOn: [],
         stickersListingOn: [],
@@ -108,7 +108,7 @@ export const fetchSearchPostResult = createAsyncThunk<
       id: '33333-33333-33333-33333333335',
       author: {
         id: '55555-55555-55555-5555555555',
-        username: 'nadaru',
+        name: 'nadaru',
         avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
         botsListingOn: [],
         stickersListingOn: [],

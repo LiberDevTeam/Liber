@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '~/hooks';
-import { selectUserById } from '~/state/users/usersSlice';
+import { selectBotById } from '~/state/bots/botsSlice';
 
 const Root = styled.span`
   background: ${(props) => props.theme.colors.lightPrimary};
@@ -10,15 +10,13 @@ const Root = styled.span`
   padding: 1px 4px;
 `;
 
-export const UserMention: React.FC<{ name: string; userId?: string }> =
-  React.memo(function UserMention({ name, userId }) {
-    const user = useAppSelector((state) =>
-      userId ? selectUserById(state.users, userId) : undefined
-    );
+export const BotMention: React.FC<{ name: string; userId?: string }> =
+  React.memo(function BotMention({ name, userId }) {
+    const bot = useAppSelector(selectBotById(userId));
 
-    if (!user) {
+    if (!bot) {
       return <span>@{name}</span>;
     }
 
-    return <Root>@{user?.name || name}</Root>;
+    return <Root>@{bot?.name || name}</Root>;
   });
