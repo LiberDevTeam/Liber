@@ -2,6 +2,14 @@
   "name": "liber",
   "description": "P2P Messenger",
   "version": "0.1.0",
+  "browser": {
+    "crypto": "crypto-browserify",
+    "stream": "stream-browserify",
+    "path": "path-browserify",
+    "os": "os-browserify/browser",
+    "http": "stream-http",
+    "https": "https-browserify"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -181,36 +189,28 @@
     "*.{sol}": "solhint --fix"
   },
   "main": "src/index.js",
-  "private": true,
-  "browser": {
-    "crypto": "crypto-browserify",
-    "stream": "stream-browserify",
-    "path": "path-browserify",
-    "os": "os-browserify/browser",
-    "http": "stream-http",
-    "https": "https-browserify"
+  "msw": {
+    "workerDirectory": "public"
   },
+  "private": true,
   "scripts": {
-    "postinstall": "npx truffle compile && yarn run build:types && prettier --write @types",
-    "start": "run-p watch:app watch:sw",
+    "build:app": "node ./esbuild/build.js",
+    "build:i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
+    "build:storybook": "build-storybook -s public",
+    "build:types": "npx typechain --target truffle-v5 --out-dir @types ./build/contracts/*.json",
+    "create:shareddb": "node ./scripts/create-shared-db.js",
+    "gen": "scaffdog generate",
     "lint:js": "eslint ./",
     "lint:sol": "solhint --fix ./contracts/**/*.sol",
-    "build:app": "node ./esbuild/build.js",
-    "watch:app": "node ./esbuild/dev.js",
-    "watch:sw": "node ./esbuild/sw.js",
+    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "postinstall": "npx truffle compile && yarn run build:types && prettier --write @types",
+    "prepare": "husky install",
+    "start": "run-p watch:app watch:sw",
+    "storybook": "start-storybook -p 6006 -s public",
     "test:js": "jest",
     "test:sol": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test",
     "typecheck": "tsc --noEmit",
-    "gen": "scaffdog generate",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build:storybook": "build-storybook -s public",
-    "build:i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
-    "prepare": "husky install",
-    "create:shareddb": "node ./scripts/create-shared-db.js",
-    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
-    "build:types": "npx typechain --target truffle-v5 --out-dir @types ./build/contracts/*.json"
-  },
-  "msw": {
-    "workerDirectory": "public"
+    "watch:app": "node ./esbuild/dev.js",
+    "watch:sw": "node ./esbuild/sw.js"
   }
 }
