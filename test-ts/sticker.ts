@@ -9,6 +9,7 @@ contract('LiberSticker', (accounts) => {
   const txDetails: Truffle.TransactionDetails = {
     from: operator,
   };
+  /*
   it('should publish HELLO Sticker max of systems', async () => {
     const instance = await LiberSticker.new(txDetails);
     const balance = await instance.balanceOf(operator, tokenId);
@@ -18,6 +19,7 @@ contract('LiberSticker', (accounts) => {
       'HELLO sticker published in the first account'
     );
   });
+  */
 
   /* todo: additional publish token test
   it("should publish additionaly Sticker max of systems", async() =>{
@@ -66,6 +68,7 @@ contract('LiberSticker', (accounts) => {
   });
   */
 
+  /*
   it('should send a sticker', async () => {
     const instance = await LiberSticker.new(txDetails);
     const transferEvent = await instance.safeTransferFrom(
@@ -93,12 +96,15 @@ contract('LiberSticker', (accounts) => {
       assert.equal(balance.toString(), '1', 'Receiver have a Sticker');
     });
   });
+  */
 
+  /*
   it('should be owner of first token', async () => {
     const instance = await LiberSticker.new(txDetails);
     const publisher = await instance.getPublisher(tokenId);
     assert.equal(publisher, operator, 'Publisher is operator');
   });
+  */
 });
 
 contract('LiberMarket', (accounts) => {
@@ -106,6 +112,7 @@ contract('LiberMarket', (accounts) => {
   const txDetails: Truffle.TransactionDetails = {
     from: operator,
   };
+  /*
   it('should list token to market', async () => {
     const stickerInstance = await LiberSticker.new(txDetails);
     const marketInstance = await LiberMarket.new(txDetails);
@@ -166,4 +173,7 @@ contract('LiberMarket', (accounts) => {
     };
     assert.isOk(await itemId(), 'Listed in market');
   });
+  */
 });
+
+export {};
