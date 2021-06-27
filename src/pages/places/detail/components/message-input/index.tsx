@@ -12,7 +12,7 @@ import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
-import { publishPlaceMessage } from '~/state/p2p/p2pSlice';
+import { publishPlaceMessage } from '~/state/places/messagesSlice';
 import { useReduxDispatch } from '~/state/store';
 import { selectAllUsers } from '~/state/users/usersSlice';
 import { theme } from '~/theme';
