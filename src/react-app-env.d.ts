@@ -2,6 +2,9 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
+    readonly GA_MEASUREMENT_ID: string;
+    readonly INFURA_ENDPOINT: string;
+    readonly INFURA_ID: string;
     readonly NODE_ENV: 'development' | 'production' | 'test';
     readonly PUBLIC_URL: string;
   }
