@@ -29,7 +29,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # SmartContracts build files
-@types/
 build/
 migrations/
 test/
