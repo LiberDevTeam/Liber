@@ -207,7 +207,7 @@
   "scripts": {
     "build:i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
     "build:storybook": "build-storybook -s public",
-    "build:types": "npx typechain --target truffle-v5 --out-dir @types ./build/contracts/*.json",
+    "build:types": "npx typechain --target truffle-v5 --out-dir @types/typechain ./build/contracts/*.json",
     "create:shareddb": "node ./scripts/create-shared-db.js",
     "lint": "eslint src/",
     "build:app": "node ./esbuild/build.js",
