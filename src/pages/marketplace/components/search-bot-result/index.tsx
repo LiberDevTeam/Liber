@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { NotFound } from '~/components/not-found';
 import { Pagination } from '~/components/pagination';
 import {
   clearSearchResult,
@@ -55,7 +56,9 @@ export const SearchBotResult: React.FC<Props> = memo(function SearchBotResult({
   return (
     <Root>
       <List>
-        {bots &&
+        {bots.length === 0 ? (
+          <NotFound />
+        ) : (
           bots.map(
             (bot) =>
               bot && (
@@ -63,7 +66,8 @@ export const SearchBotResult: React.FC<Props> = memo(function SearchBotResult({
                   <BotItem bot={bot} />
                 </ListItem>
               )
-          )}
+          )
+        )}
       </List>
       <Pagination current={page} onChange={handleChangePage} />
     </Root>

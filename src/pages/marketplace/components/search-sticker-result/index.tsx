@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { NotFound } from '~/components/not-found';
 import { Pagination } from '~/components/pagination';
 import {
   clearSearchResult,
@@ -56,7 +57,9 @@ export const SearchStickerResult: React.FC<Props> = memo(
     return (
       <Root>
         <List>
-          {stickers &&
+          {stickers.length === 0 ? (
+            <NotFound />
+          ) : (
             stickers.map(
               (sticker) =>
                 sticker && (
@@ -64,7 +67,8 @@ export const SearchStickerResult: React.FC<Props> = memo(
                     <StickerItem sticker={sticker} />
                   </ListItem>
                 )
-            )}
+            )
+          )}
         </List>
         <Pagination current={page} onChange={handleChangePage} />
       </Root>

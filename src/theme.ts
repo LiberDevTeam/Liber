@@ -67,6 +67,7 @@ const colors = {
   gray2: '#edf1f2',
   gray3: '#F5F8FA',
   gray4: '#26404d',
+  gray5: '#7A7A7A',
   primaryText: '#26404d',
   secondaryText: '#8fa7b2',
   invertedText: '#edf1f2',
