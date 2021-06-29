@@ -26,6 +26,8 @@ const initialPrivateFields = {
 
 const initialState: Me = {
   id: '',
+  // TODO: random name
+  name: '',
   botsListingOn: [],
   stickersListingOn: [],
   privateDBAddress: '',
