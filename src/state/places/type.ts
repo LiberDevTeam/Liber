@@ -29,6 +29,7 @@ export interface Place extends PartialForUpdate {
   keyValAddress: string;
   // user ids
   bannedUsers: string[];
+  bots: string[];
 
   readOnly: boolean;
   swarmKey?: string;

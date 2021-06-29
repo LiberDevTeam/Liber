@@ -4,7 +4,7 @@ export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
   uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
   category: 2,
-  name: 'baku purchased',
+  name: 'baku_purchased',
   description: "Hey everyone. I'm baku.",
   avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
   price: 199999,

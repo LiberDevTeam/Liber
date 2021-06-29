@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const commonTransition = (property: string) =>
@@ -54,18 +54,12 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   checked = false,
   ...args
 }) => {
-  const [isChecked, setIsChecked] = useState<boolean>(checked);
-
-  useEffect(() => {
-    onChange(isChecked);
-  }, [isChecked, onChange]);
-
   return (
-    <Root width={width} checked={isChecked}>
+    <Root width={width} checked={checked}>
       <Input
         type="checkbox"
-        checked={isChecked}
-        onChange={(e) => setIsChecked(e.target.checked)}
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
         {...args}
       />
     </Root>

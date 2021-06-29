@@ -1,5 +1,6 @@
 import { dummyPlace } from '~/mocks/place';
 import { createStore } from '~/test-utils/create-store';
+import { parseText } from './messagesSlice';
 import { joinPlace } from './placesSlice';
 
 jest.mock('~/lib/db/place');
@@ -31,4 +32,36 @@ describe('joinPlace', () => {
       entities: {},
     });
   });
+});
+
+test('parseText', () => {
+  expect(parseText({ text: 'test', bots: [], users: [] })).toEqual(['test']);
+  expect(
+    parseText({
+      text: '@hello test @world',
+      bots: [],
+      users: [],
+    })
+  ).toEqual(['@hello test @world']);
+  expect(
+    parseText({
+      text: '@bot test',
+      bots: [{ id: 'bot', name: 'bot', sourceCode: '' }],
+      users: [],
+    })
+  ).toEqual([{ bot: true, name: 'bot', userId: 'bot' }, ' test']);
+  expect(
+    parseText({
+      text: '@bot',
+      bots: [{ id: 'bot', name: 'bot', sourceCode: '' }],
+      users: [],
+    })
+  ).toEqual([{ bot: true, name: 'bot', userId: 'bot' }]);
+  expect(
+    parseText({
+      text: '@user test',
+      bots: [],
+      users: [{ id: 'user', name: 'user' }],
+    })
+  ).toEqual([{ bot: false, name: 'user', userId: 'user' }, ' test']);
 });
