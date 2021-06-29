@@ -205,12 +205,13 @@
   },
   "private": true,
   "scripts": {
-    "build:app": "node ./esbuild/build.js",
     "build:i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
     "build:storybook": "build-storybook -s public",
     "build:types": "npx typechain --target truffle-v5 --out-dir @types ./build/contracts/*.json",
     "create:shareddb": "node ./scripts/create-shared-db.js",
-    "gen": "scaffdog generate",
+    "lint": "eslint src/",
+    "build:app": "node ./esbuild/build.js",
+    "test": "jest",
     "lint:js": "eslint ./",
     "lint:sol": "solhint --fix ./contracts/**/*.sol",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
@@ -222,6 +223,7 @@
     "test:sol": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test",
     "typecheck": "tsc --noEmit",
     "watch:app": "node ./esbuild/dev.js",
-    "watch:sw": "node ./esbuild/sw.js"
+    "watch:sw": "node ./esbuild/sw.js",
+    "watch:worker": "node ./esbuild/worker.js"
   }
 }

@@ -1,19 +1,22 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { UserAvatar } from '~/components/user-avatar';
 import { UserMention } from '~/components/user-mention';
-import { BotMention } from '~/components/user-mention/bot';
 import { useAppSelector } from '~/hooks';
-import { selectMe } from '~/state/me/meSlice';
+import { Bot, selectBotById } from '~/state/bots/botsSlice';
 import { selectMessageById } from '~/state/places/messagesSlice';
-import { setSelectedUser } from '~/state/selected-user';
 import { Message } from '../message';
 
-const TextGroup = styled.div<{ mine: boolean }>`
+const TextGroup = styled.div`
   display: flex;
-  justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+  justify-content: flex-start;
+`;
+
+const UserImage = styled.img<{ size: number }>`
+  display: inline-block;
+  width: ${(props) => props.size}px;
+  height: ${(props) => props.size}px;
+  border-radius: ${(props) => props.theme.radii.round};
 `;
 
 const UserName = styled.span`
@@ -32,65 +35,53 @@ const Body = styled.div`
   padding-left: ${(props) => props.theme.space[2]}px;
 `;
 
-const Attachment = styled(IpfsContent)<{ mine: boolean }>`
+const Attachment = styled(IpfsContent)`
   max-height: 100px;
   width: auto;
 `;
 
-const Attachments = styled.div<{ mine: boolean }>`
+const Attachments = styled.div`
   display: flex;
-  justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+  justify-content: flex-start;
   margin-left: ${(props) => props.theme.space[6]}px;
 `;
 
-export interface MessageViewProps {
+export interface BotMessageViewProps {
   id: string;
 }
 
-export const MessageView: React.FC<MessageViewProps> = React.memo(
-  function MessageView({ id }) {
-    const dispatch = useDispatch();
-    const me = useSelector(selectMe);
+export const BotMessageView: React.FC<BotMessageViewProps> = React.memo(
+  function BotMessageView({ id }) {
     const message = useAppSelector((state) =>
       selectMessageById(state.placeMessages, id)
     );
-    const mine = message?.uid === me.id;
 
-    const handleClickUser = useCallback(() => {
-      if (message?.uid && mine === false) {
-        dispatch(setSelectedUser(message.uid));
-      }
-    }, [message?.uid, dispatch, mine]);
+    const bot = useAppSelector<Bot | undefined>(selectBotById(message?.uid));
 
-    if (!message) {
+    if (!bot || !message) {
       return null;
     }
 
     return (
       <>
-        <TextGroup mine={mine}>
-          <div onClick={handleClickUser}>
-            <UserAvatar userId={message.uid} />
+        <TextGroup>
+          <div>
+            <UserImage
+              src={`/view/${bot.avatar}`}
+              alt={message.uid}
+              size={28}
+            />
           </div>
           <Body>
-            {mine ? null : (
-              <UserName>{message.authorName || 'Loading'}</UserName>
-            )}
-
+            <UserName>{bot?.name || 'Loading'}</UserName>
             <Message
-              mine={mine}
+              mine={false}
               contents={message.content.map((value) => {
                 if (typeof value === 'string') {
                   return value;
                 }
 
-                return value.bot ? (
-                  <BotMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                ) : (
+                return (
                   <UserMention
                     key={value.userId}
                     userId={value.userId}
@@ -103,9 +94,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
           </Body>
         </TextGroup>
         {message.attachmentCidList && message.attachmentCidList.length > 0 ? (
-          <Attachments mine={mine}>
+          <Attachments>
             {message.attachmentCidList.map((cid) => (
-              <Attachment key={`${id}-${cid}`} cid={cid} mine={mine} />
+              <Attachment key={`${id}-${cid}`} cid={cid} />
             ))}
           </Attachments>
         ) : null}

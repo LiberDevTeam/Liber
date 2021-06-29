@@ -14,6 +14,7 @@ import {
 } from '~/lib/db/bot';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { createUserDB } from '~/lib/db/user';
+import { tmpListingOn } from '~/state/bots/mock';
 import { AppDispatch, RootState } from '~/state/store';
 import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
@@ -42,84 +43,6 @@ export const categories = [
 export const categoryOptions = categories.map((label, index) => ({
   value: `${index}`,
   label,
-}));
-
-export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
-  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
-  category: 2,
-  name: 'baku purchased',
-  description: "Hey everyone. I'm baku.",
-  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-  price: 199999,
-  readme: `# Usage
-
-hogehogehogehoge
-
-## Links
-
-- [http: //liber.live/](http: //liber.live/)
-- [http: //docs.liber.live/](http: //docs.liber.live/)`,
-  sourceCode: `
-  if (<input> === ping) {
-    return 'pong';
-  } else if (<input> === hello) {
-    return 'hi <username>';
-  }
-  `,
-  examples: [
-    {
-      title: 'ping',
-      input: 'ping',
-      output: 'pong',
-    },
-    {
-      title: 'greeting',
-      input: 'hello <@>',
-      output: 'pong',
-    },
-  ],
-  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
-  created: 1622195011,
-  purchased: 1622197011,
-}));
-
-export const tmpListingOn: Bot[] = [...Array(10)].map((_, i) => ({
-  id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
-  uid: `zdpuAtz9efzfAP8AA9iWHq7onLpDHHceqp4GyHj827H925nVn${i}`,
-  category: 2,
-  name: 'baku',
-  description: "Hey everyone. I'm baku.",
-  avatar: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV',
-  price: 199999,
-  readme: `# Usage
-
-hogehogehogehoge
-
-## Links
-
-- [http://liber.live/](http://liber.live/)
-- [http://docs.liber.live/](http://docs.liber.live/)`,
-  sourceCode: `
-if (<input> === ping) {
-  return 'pong';
-} else if (<input> === hello) {
-  return 'hi <username>';
-}`,
-  examples: [
-    {
-      title: 'ping',
-      input: 'ping',
-      output: 'pong',
-    },
-    {
-      title: 'greeting',
-      input: 'hello',
-      output: 'hi',
-    },
-  ],
-  keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
-  created: 1622195011,
 }));
 
 interface PartialForUpdate {
@@ -317,7 +240,9 @@ const botsAdapter = createEntityAdapter<Bot>();
 
 export const botsSlice = createSlice({
   name: 'bots',
-  initialState: botsAdapter.getInitialState(),
+  // initialState: botsAdapter.getInitialState(),
+  initialState: botsAdapter.addMany({ ids: [], entities: {} }, tmpListingOn),
+  // initialState: botsAdapter.getInitialState(),
   reducers: {
     addBots: (state, action: PayloadAction<Bot[]>) =>
       botsAdapter.addMany(state, action.payload),
@@ -337,8 +262,13 @@ export const botsSlice = createSlice({
 export const { updateOne, addBots, addBot } = botsSlice.actions;
 
 const selectors = botsAdapter.getSelectors();
-export const selectBotById = (id: string) => (state: RootState) =>
-  selectors.selectById(state.bots, id);
+export const selectBotById =
+  (id: string | null | undefined) => (state: RootState) => {
+    if (id) {
+      return selectors.selectById(state.bots, id);
+    }
+    return undefined;
+  };
 export const selectBotsByIds = (ids: string[]) => (state: RootState) =>
   ids.map((id) => selectors.selectById(state.bots, id));
 

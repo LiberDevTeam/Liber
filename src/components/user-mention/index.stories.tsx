@@ -1,6 +1,5 @@
 import { Story } from '@storybook/react/types-6-0';
-import React from 'react';
-import { Mention } from '~/state/places/messagesSlice';
+import { Mention } from '~/state/places/type';
 import { UserMention } from './';
 
 export default {

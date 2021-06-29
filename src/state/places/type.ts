@@ -36,3 +36,22 @@ export interface Place extends PartialForUpdate {
 }
 
 export type PlaceField = keyof Place;
+
+export interface Mention {
+  userId?: string;
+  name: string;
+  bot: boolean;
+}
+
+export interface Message {
+  id: string; // UUID
+  uid: string;
+  authorName?: string;
+  timestamp: number;
+  text?: string;
+  attachmentCidList?: string[];
+  content: Array<string | Mention>;
+  // mentioned user ids
+  mentions: string[];
+  bot: boolean;
+}

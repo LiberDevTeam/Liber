@@ -3,22 +3,15 @@ import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
-import { createMessageFeed, getMessageFeedById } from '~/lib/db/message';
+import { createMessageFeed } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
 import { createSearchIndex } from '~/lib/search';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
-import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import {
-  connectToMessages,
-  Mention,
-  Message,
-} from '~/state/places/messagesSlice';
+import { connectToMessages } from '~/state/places/async-actions';
 import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
-import { Place, PlacePermission } from '~/state/places/type';
+import { Message, Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
-import { User } from '~/state/users/type';
-import { selectAllUsers } from '~/state/users/usersSlice';
 import { digestMessage } from '~/utils/digest-message';
 import { finishInitialization } from '../isInitialized';
 
@@ -70,6 +63,7 @@ export const initApp = createAsyncThunk<
   );
 
   const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+
   createSearchIndex({
     bots: Array(10000).fill(Object.values(marketplaceBotDB.all)[0]),
     // stickers: marketplaceStickerDB.all,
@@ -79,74 +73,6 @@ export const initApp = createAsyncThunk<
 
   dispatch(finishInitialization());
 });
-
-const messageContentRegex = /@(\S*)/gm;
-const parseText = (text: string, users: User[]): Array<string | Mention> => {
-  const matches = [...text.matchAll(messageContentRegex)];
-  let pos = 0;
-  const result: Array<string | Mention> = [];
-
-  matches.forEach((match) => {
-    const nextPos = (match.index as number) + match[0].length;
-    if (pos !== match.index) {
-      result.push(text.slice(pos, match.index));
-    }
-
-    const user = users.find((user) => user.username === match[1]);
-    result.push({ userId: user?.id, name: match[1] });
-    pos = nextPos;
-  });
-
-  if (pos !== text.length) {
-    result.push(text.slice(pos, text.length));
-  }
-
-  return result;
-};
-
-export const publishPlaceMessage = createAsyncThunk<
-  void,
-  { text: string; placeId: string; attachments?: File[] },
-  { dispatch: AppDispatch; state: RootState }
->(
-  'p2p/publishPlaceMessage',
-  async ({ placeId, text, attachments }, { dispatch, getState }) => {
-    const state = getState();
-    const place = selectPlaceById(placeId)(state);
-    const users = selectAllUsers(state.users);
-    const me = selectMe(state);
-
-    if (!place) {
-      throw new Error(`Place (id: ${placeId}) is not exists.`);
-    }
-
-    const message: Message = {
-      id: uuidv4(),
-      authorName: me.username,
-      uid: me.id,
-      text,
-      content: parseText(text, users),
-      timestamp: getUnixTime(new Date()),
-      mentions: [],
-    };
-
-    if (attachments) {
-      message.attachmentCidList =
-        (await Promise.all(
-          attachments.map(async (file) => {
-            return await addIpfsContent(dispatch, file);
-          })
-        )) || [];
-    }
-
-    const feed = getMessageFeedById(place.id);
-    if (feed === undefined) {
-      throw new Error(`messages DB is not exists.`);
-    }
-
-    await feed.add(message);
-  }
-);
 
 export const createNewPlace = createAsyncThunk<
   void,

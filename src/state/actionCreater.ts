@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Message } from '~/state/places/messagesSlice';
-import { Place } from '~/state/places/type';
+import { Message, Place } from '~/state/places/type';
 import { BotPK, StickerPK } from './me/type';
 
 export const placeAdded =

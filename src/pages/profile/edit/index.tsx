@@ -36,7 +36,7 @@ const validationSchema = yup.object({});
 
 export interface FormValues {
   avatar: File | null;
-  username: string;
+  name: string;
 }
 
 export const ProfileEditPage: React.FC = () => {
@@ -49,14 +49,14 @@ export const ProfileEditPage: React.FC = () => {
   const formik = useFormik<FormValues>({
     initialValues: {
       avatar: (avatar && avatar.file) || null,
-      username: me.username || '',
+      name: me.name || '',
     },
     validationSchema,
-    async onSubmit({ avatar, username }) {
+    async onSubmit({ avatar, name }) {
       dispatch(
         updateProfile({
           avatar,
-          username,
+          name,
         })
       );
       dispatch(push('/profile'));
@@ -92,9 +92,9 @@ export const ProfileEditPage: React.FC = () => {
         />
         <Label>Name</Label>
         <Input
-          name="username"
+          name="name"
           placeholder="Input Your Name"
-          value={formik.values.username}
+          value={formik.values.name}
           onChange={formik.handleChange}
           disabled={formik.isSubmitting}
         />

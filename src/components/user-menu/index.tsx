@@ -166,7 +166,7 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
       <Header>
         <UserAvatar userId={user.id} size={54} />
         <div>
-          <UserName>{user.username}</UserName>
+          <UserName>{user.name}</UserName>
           <UserId>#{user.id.slice(0, 6)}</UserId>
         </div>
         <CopyButton
