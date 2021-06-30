@@ -5197,10 +5197,10 @@
   dependencies:
     cbor "^5.1.0"
 
-"@truffle/codec@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.11.1.tgz#fbe54d7635bc896b3f746b87e15b8125242bc820"
-  integrity sha512-7Z+BStlCKws+mdpQUb3XGCYCkv80QUtmaLVTbl7/Abzimr63lsCTC/37GLWXeRJ1Vam9JYiZEmzaXUHCqJWsTg==
+"@truffle/codec@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.11.2.tgz#2b32480991b561bcf625f7e8d41d1d869d80d99e"
+  integrity sha512-z3eNmTQ9Oq5W8f6UMyFmA4cTrp87Lvw7LCgBnH3v1trDT4+IiUQjf52bkyZBOVBGu7ngaw7myPRmJ1hwBySbOw==
   dependencies:
     big.js "^5.2.2"
     bn.js "^5.1.3"
@@ -5229,10 +5229,10 @@
     module "^1.2.5"
     original-require "^1.0.1"
 
-"@truffle/db@^0.5.17":
-  version "0.5.17"
-  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-0.5.17.tgz#d60abb4c57674ae55cd630dd7fc9912419ed5ed6"
-  integrity sha512-VF5mkY4VtJvrNQRqTYgiUPrvsaYvs4UeHQysSOuBsff8ck4uM7o7BESlA7KRicysp6hIikNeqTdzwIy1xWkOqg==
+"@truffle/db@^0.5.18":
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-0.5.18.tgz#eed7f9359884ef30ae63dacb31841b6e1fe08840"
+  integrity sha512-97JwchmNoe0AUe500wjbXW4yWyrcUpPtmCFQl7ACqEs4M5gUkn6NqRts0oP3BTGKlsgE+lLdoZqBvgrRDaFjtw==
   dependencies:
     "@truffle/abi-utils" "^0.2.2"
     "@truffle/code-utils" "^1.2.28"
@@ -5254,14 +5254,14 @@
     pouchdb-find "^7.0.0"
     web3-utils "1.3.6"
 
-"@truffle/debugger@^9.1.2":
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-9.1.2.tgz#44ac21a05fd4a7f46a871bbf7a821e31893d7ca5"
-  integrity sha512-/pwPi7C2Lpe5L75IW8d3m+iFPDVR8Ht3g6VKWrJUXPruSW9kK0B316F/AVre/qsTJF69LXLVrV2SKksrTyVCNg==
+"@truffle/debugger@^9.1.3":
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-9.1.3.tgz#2ec20d4ecae2bf6ec0a05a206f94cb7a61b24730"
+  integrity sha512-6WIzRA8XVZHcxHfSXVNnTB87A7oxMV4k7dzffAEYur2vRuAu9ozQGpQn06im86afgZZiS+GvdM5DyzrXwC/gww==
   dependencies:
     "@truffle/abi-utils" "^0.2.2"
-    "@truffle/codec" "^0.11.1"
-    "@truffle/source-map-utils" "^1.3.45"
+    "@truffle/codec" "^0.11.2"
+    "@truffle/source-map-utils" "^1.3.46"
     bn.js "^5.1.3"
     debug "^4.3.1"
     json-pointer "^0.6.0"
@@ -5372,13 +5372,13 @@
     "@truffle/interface-adapter" "^0.5.1"
     web3 "1.3.6"
 
-"@truffle/source-map-utils@^1.3.45":
-  version "1.3.45"
-  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.45.tgz#e2ed61c95f440cba30494ff2a210fa1e862b5d98"
-  integrity sha512-eL8QVMH3fYYeBMcbDg6qv03u/W7Bcoovmd+HmBJKWj1sC02is4Z+ZIXwRcM0qwmaIjwTCGS1DFr5xqTNMJzV1Q==
+"@truffle/source-map-utils@^1.3.46":
+  version "1.3.46"
+  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.46.tgz#958cc4e50c67cf6d0b580ce4bcaef8a9d1120457"
+  integrity sha512-IjYvKGsOxM4x63fDGEY2Hud9iIpheh67ZulBkaAdT8kTEWsHrobOFP2R3WtEpI3nmGuz3k4Y+GqoQeQV4H9MJA==
   dependencies:
     "@truffle/code-utils" "^1.2.28"
-    "@truffle/codec" "^0.11.1"
+    "@truffle/codec" "^0.11.2"
     debug "^4.3.1"
     json-pointer "^0.6.0"
     node-interval-tree "^1.3.3"
@@ -5889,7 +5889,7 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0", "@types/node@^15.6.1":
+"@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.1.tgz#32d43390d5c62c5b6ec486a9bc9c59544de39a08"
   integrity sha512-7EIraBEyRHEe7CH+Fm1XvgqU6uwZN8Q7jppJGcqjROMT29qhAuuOxYB1uEY5UMYQKEmA5D+5tBnhdaPXSsLONA==
@@ -5918,6 +5918,11 @@
   version "14.17.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.1.tgz#5e07e0cb2ff793aa7a1b41deae76221e6166049f"
   integrity sha512-/tpUyFD7meeooTRwl3sYlihx2BrJE7q9XF71EguPFIySj9B7qgnRtHsHTho+0AUm4m1SvWGm6uSncrR94q6Vtw==
+
+"@types/node@^15.12.5":
+  version "15.12.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.5.tgz#9a78318a45d75c9523d2396131bd3cca54b2d185"
+  integrity sha512-se3yX7UHv5Bscf8f1ERKvQOD6sTyycH3hdaoozvaLxgUiY5lIGEeH37AD0G0Qi9kPqihPn0HOfd2yaIEN9VwEg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -6546,14 +6551,14 @@
     "@web3-react/types" "^6.0.7"
     tiny-invariant "^1.0.6"
 
-"@web3-react/walletlink-connector@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@web3-react/walletlink-connector/-/walletlink-connector-6.2.0.tgz#7619bdca5a030b475b3a205f92f949d61e3b9b25"
-  integrity sha512-Vz0QOLHQnZD/xDJfZ+TJ19NLYqy0Ii62RKwaF0xiKnAIcwjrq8MVEPtnY7kB9G1g8EoCD2ghqnWb4NyZTltQHw==
+"@web3-react/walletlink-connector@^6.2.2":
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@web3-react/walletlink-connector/-/walletlink-connector-6.2.2.tgz#a8358f64ad0bd4b34b9a8c7e484fb9564fb4c460"
+  integrity sha512-KiforQAdj9xoI8a/t7oLx2f7fzSTrqUppM/NVplHtIwDgE2AYcxlcAk62F/MA/436U0b3GLGld3MwRNAYyDOZg==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
-    walletlink "^2.1.0"
+    walletlink "^2.1.4"
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
@@ -27274,17 +27279,17 @@ trough@^1.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.5.tgz#b8b639cefad7d0bb2abd37d433ff8293efa5f406"
   integrity sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==
 
-truffle@^5.3.12:
-  version "5.3.12"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.3.12.tgz#124f089c5859fceba3dc3ceaeb5981b51877039d"
-  integrity sha512-JpqIWI40P2Z5mfOnpo8UKEkWKOila/rGaalxM++3uEvylzh+EXQeBgHwE7Kh4iKfqIGXH/cfXDxKXgilTBiMYg==
+truffle@^5.3.13:
+  version "5.3.13"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.3.13.tgz#20098e9a2c2338c728151a7dc845aa21f43533ed"
+  integrity sha512-NawKbUhIz0QnTktyHXt/Ne5cSmCKjp0G61FWNaI7hgnAHGuK50doo2MxkccOj9Wy/e58N4CIXk37s1+6qbgb1Q==
   dependencies:
-    "@truffle/debugger" "^9.1.2"
+    "@truffle/debugger" "^9.1.3"
     app-module-path "^2.2.0"
     mocha "8.1.2"
     original-require "^1.0.1"
   optionalDependencies:
-    "@truffle/db" "^0.5.17"
+    "@truffle/db" "^0.5.18"
     "@truffle/preserve-fs" "^0.2.3"
     "@truffle/preserve-to-buckets" "^0.2.3"
     "@truffle/preserve-to-filecoin" "^0.2.3"
@@ -27555,10 +27560,10 @@ typescript-tuple@^2.2.1:
   dependencies:
     typescript-compare "^0.0.2"
 
-typescript@4.2:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+typescript@4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.4.tgz#3f85b986945bcf31071decdd96cf8bfa65f9dcbc"
+  integrity sha512-uauPG7XZn9F/mo+7MrsRjyvbxFpzemRjKEZXS4AK83oP2KKOJPvb+9cO/gmnv8arWZvhnjVOXz7B49m1l0e9Ew==
 
 typical@^2.6.0, typical@^2.6.1:
   version "2.6.1"
@@ -28323,10 +28328,10 @@ walker@^1.0.7, walker@~1.0.5:
   dependencies:
     makeerror "1.0.x"
 
-walletlink@^2.1.0:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/walletlink/-/walletlink-2.1.4.tgz#afd6f1371a11e6f0b9256fd72dc1d627c6155748"
-  integrity sha512-zddgPwRON2h0v37ClXsY8XaHi2oWUlksOvF5sHdB49VLN2wj4WFnwE4etusE965u0OUF2t3y2aa548/YfqEJRg==
+walletlink@^2.1.4:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/walletlink/-/walletlink-2.1.5.tgz#3ae305c51d77da2ea98b88943d597adc85b8b310"
+  integrity sha512-s1eLN9giGWePCalWZu8hys+WHvpsfxWuuYASxJQUH2X17p0/DnkdclysmI9E+hxwGtNQqho8N9axiBRcEOUcoA==
   dependencies:
     "@metamask/safe-event-emitter" "2.0.0"
     bind-decorator "^1.0.11"

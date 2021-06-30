@@ -2,6 +2,8 @@ version: '3.9'
 services:
   compiler:
     image: ethereum/solc:0.8.0
+    profiles:
+      - runner
   remix:
     image: remixproject/remix-ide:latest
     ports:
