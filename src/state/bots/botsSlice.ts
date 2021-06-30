@@ -14,7 +14,7 @@ import {
 } from '~/lib/db/bot';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { createUserDB } from '~/lib/db/user';
-import { tmpListingOn } from '~/state/bots/mock';
+import { tmpPurchased } from '~/state/bots/mock';
 import { AppDispatch, RootState } from '~/state/store';
 import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
@@ -241,7 +241,7 @@ const botsAdapter = createEntityAdapter<Bot>();
 export const botsSlice = createSlice({
   name: 'bots',
   // initialState: botsAdapter.getInitialState(),
-  initialState: botsAdapter.addMany({ ids: [], entities: {} }, tmpListingOn),
+  initialState: botsAdapter.addMany({ ids: [], entities: {} }, tmpPurchased),
   // initialState: botsAdapter.getInitialState(),
   reducers: {
     addBots: (state, action: PayloadAction<Bot[]>) =>
@@ -269,7 +269,11 @@ export const selectBotById =
     }
     return undefined;
   };
-export const selectBotsByIds = (ids: string[]) => (state: RootState) =>
-  ids.map((id) => selectors.selectById(state.bots, id));
+export const selectBotsByIds =
+  (ids: string[]) =>
+  (state: RootState): Bot[] =>
+    ids
+      .map((id) => selectors.selectById(state.bots, id))
+      .filter(Boolean) as Bot[];
 
 export default botsSlice.reducer;

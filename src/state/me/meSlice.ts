@@ -6,6 +6,7 @@ import {
 } from '~/lib/db/privateFields';
 import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
 import { connectUserDB, createUserDB } from '~/lib/db/user';
+import { tmpPurchased } from '~/state/bots/mock';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
@@ -25,6 +26,8 @@ const initialPrivateFields = {
 
 const initialState: Me = {
   id: '',
+  // TODO: random name
+  name: '',
   botsListingOn: [],
   stickersListingOn: [],
   privateDBAddress: '',
@@ -76,6 +79,12 @@ export const initMe = createAsyncThunk<
     privateFields = initialPrivateFields;
     await privateDB.set(DB_KEY, initialPrivateFields);
   }
+
+  // TODO: remove this lines
+  privateFields.purchasedBots = tmpPurchased.map((bot) => ({
+    address: bot.keyValAddress,
+    botId: bot.id,
+  }));
 
   return {
     ...user,

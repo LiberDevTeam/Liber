@@ -27,6 +27,7 @@ export const readPlaceFromDB = (kv: KeyValueStoreMock): Place => {
     permissions: kv.get('permissions') as PlacePermissions,
     readOnly: kv.get('readOnly') as boolean,
     bannedUsers: kv.get('bannedUsers') as string[],
+    bots: kv.get('bots') as string[],
   };
 };
 export const connectPlaceKeyValue = (): KeyValueStoreMock => {

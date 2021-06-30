@@ -7,8 +7,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { getMessageFeedById } from '~/lib/db/message';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
-import { Bot } from '~/state/bots/botsSlice';
-import { tmpListingOn } from '~/state/bots/mock';
+import { Bot, selectBotsByIds } from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
@@ -20,8 +19,12 @@ import { selectAllUsers } from '~/state/users/usersSlice';
 
 const MODULE_NAME = 'placeMessages';
 
+const isBot = (target: Bot | User): target is Bot => {
+  return 'sourceCode' in target;
+};
+
 const messageContentRegex = /@(\S*)/gm;
-const parseText = ({
+export const parseText = ({
   text,
   users,
   bots,
@@ -34,22 +37,19 @@ const parseText = ({
   let pos = 0;
   const result: Array<string | Mention> = [];
 
+  const mentionTarget: Array<Bot | User> = [...bots, ...users];
+
   matches.forEach((match) => {
     const nextPos = (match.index as number) + match[0].length;
-    if (pos !== match.index) {
-      result.push(text.slice(pos, match.index));
-    }
 
     // TODO: Use id for matching
-    const user = users.find((user) => user.name === match[1]);
-    if (user) {
-      result.push({ userId: user?.id, name: match[1], bot: false });
-      pos = nextPos;
-    }
-
-    const bot = bots.find((bot) => bot.name === match[1]);
-    if (bot) {
-      result.push({ userId: bot?.id, name: match[1], bot: true });
+    const target = mentionTarget.find((user) => user.name === match[1]);
+    if (target) {
+      // Prevent adding empty string
+      if (pos !== match.index) {
+        result.push(text.slice(pos, match.index));
+      }
+      result.push({ userId: target?.id, name: match[1], bot: isBot(target) });
       pos = nextPos;
     }
   });
@@ -101,14 +101,14 @@ export const publishPlaceMessage = createAsyncThunk<
     const place = selectPlaceById(placeId)(state);
     const users = selectAllUsers(state.users);
     const me = selectMe(state);
-    // TODO: select bots for the place
-    const purchasedBots = tmpListingOn;
 
     if (!place) {
       throw new Error(`Place (id: ${placeId}) is not exists.`);
     }
 
-    const content = parseText({ text, users, bots: purchasedBots });
+    const placeBots = selectBotsByIds(place.bots)(state);
+
+    const content = parseText({ text, users, bots: placeBots });
 
     const message: Message = {
       id: uuidv4(),
@@ -137,7 +137,7 @@ export const publishPlaceMessage = createAsyncThunk<
 
     await feed.add(message);
 
-    const bots = resolveBotFromContent(content, purchasedBots);
+    const bots = resolveBotFromContent(content, placeBots);
     bots.forEach(async (bot) => {
       const result = await runBotWorker(message, bot.sourceCode);
       if (result) {

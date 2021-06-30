@@ -98,10 +98,10 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     );
   }, [dispatch, JSON.stringify(userIds)]);
 
-  // Scroll to bottom when open chat
+  // Scroll to bottom when open chat or added new messages
   useEffect(() => {
     messagesBottomRef.current?.scrollIntoView();
-  }, [placeId]);
+  }, [placeId, messages.length]);
 
   useEffect(() => {
     if (place?.feedAddress) {

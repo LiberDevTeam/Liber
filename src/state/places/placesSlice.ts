@@ -137,6 +137,37 @@ export const banUser = createAsyncThunk<
   }
 });
 
+export const toggleBot = createAsyncThunk<
+  string[],
+  { placeId: string; botId: string; value: boolean },
+  { state: RootState }
+>(
+  `${MODULE_NAME}/toggle-bot`,
+  async ({ placeId, botId, value }, { getState }) => {
+    const state = getState();
+    const place = selectPlaceById(placeId)(state);
+
+    if (!place) {
+      throw new Error('Place not found');
+    }
+
+    const placeDB = await connectPlaceKeyValue({
+      placeId,
+      address: place.keyValAddress,
+    });
+    let bots = (placeDB.get('bots') as string[]) || [];
+
+    if (value) {
+      bots = arrayUnique(bots.concat(botId));
+    } else {
+      bots = bots.filter((id) => id !== botId);
+    }
+
+    await placeDB.set('bots', bots);
+    return bots;
+  }
+);
+
 export const unbanUser = createAsyncThunk<
   string[],
   { placeId: string; userId: string },

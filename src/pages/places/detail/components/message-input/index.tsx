@@ -12,8 +12,9 @@ import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
-import { tmpListingOn } from '~/state/bots/mock';
+import { selectBotsByIds } from '~/state/bots/botsSlice';
 import { publishPlaceMessage } from '~/state/places/messagesSlice';
+import { selectPlaceById } from '~/state/places/placesSlice';
 import { useReduxDispatch } from '~/state/store';
 import { selectAllUsers } from '~/state/users/usersSlice';
 import { theme } from '~/theme';
@@ -154,7 +155,8 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
 
     const users = useAppSelector((state) => selectAllUsers(state.users));
     // TODO: select place bots
-    const placeBots = tmpListingOn;
+    const placeBotIds = useAppSelector(selectPlaceById(placeId))?.bots || [];
+    const placeBots = useAppSelector(selectBotsByIds(placeBotIds));
 
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);

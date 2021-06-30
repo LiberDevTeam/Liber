@@ -167,14 +167,10 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
                     text={t('Edit Chat')}
                     icon={<EditIcon />}
                   />
-                  <MenuButton
-                    title={t('Manage Bots')}
-                    shape="square"
-                    variant="text"
-                    onClick={onInviteClick}
-                    text={t('Manage Bots')}
-                    icon={<BotIcon />}
-                  />
+                  <MenuLink to={`/places/${address}/${placeId}/manage-bots`}>
+                    <BotIcon />
+                    {t('Manage Bots')}
+                  </MenuLink>
                   <MenuLink to={`/places/${address}/${placeId}/banned-users`}>
                     <PeopleIcon />
                     {t('Banned Users')}

@@ -2,6 +2,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import React, { memo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
+import { ManageBotsPage } from '~/pages/places/manage-bots';
 import { initMe } from '~/state/me/meSlice';
 import { initApp } from '~/state/p2p/p2pSlice';
 import { WithWeb3 } from './hoc/withWeb3';
@@ -9,7 +10,6 @@ import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
 import { BotEditPage } from './pages/bots/edit';
-import { BotsPage } from './pages/bots/index';
 import { BotNewPage } from './pages/bots/new';
 import { Explore } from './pages/explore';
 import { HomePage } from './pages/home';
@@ -62,8 +62,8 @@ export const Routes: React.FC = memo(function Routes() {
 
           <Route
             exact
-            path="/places/:address/:placeId/bots"
-            render={() => <ChatDetail />}
+            path="/places/:address/:placeId/manage-bots"
+            render={() => <ManageBotsPage />}
           />
           <Route
             exact
@@ -107,12 +107,20 @@ export const Routes: React.FC = memo(function Routes() {
           <Route
             exact
             path="/bots/:address/:botId/edit"
-            render={() => <WithWeb3><BotEditPage /></WithWeb3>}
+            render={() => (
+              <WithWeb3>
+                <BotEditPage />
+              </WithWeb3>
+            )}
           />
           <Route
             exact
             path="/bots/:address/:botId"
-            render={() => <WithWeb3><BotDetailPage /></WithWeb3>}
+            render={() => (
+              <WithWeb3>
+                <BotDetailPage />
+              </WithWeb3>
+            )}
           />
 
           <Route

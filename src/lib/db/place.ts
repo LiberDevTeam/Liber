@@ -37,6 +37,7 @@ export const readPlaceFromDB = (kv: KeyValueStore<PlaceDBValue>): Place => {
     permissions: kv.get('permissions') as PlacePermissions,
     readOnly: kv.get('readOnly') as boolean,
     bannedUsers: kv.get('bannedUsers') as string[],
+    bots: (kv.get('bots') as string[]) || [],
   };
 };
 
