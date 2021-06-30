@@ -4,6 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
+import { NotFound } from '~/components/not-found';
 import {
   fetchSearchPlaceResult,
   PlaceInfo,
@@ -59,6 +60,10 @@ export const SearchPlaceResult: React.FC<SearchPlaceResultProps> = React.memo(
         })
       );
     }, [searchText]);
+
+    if (result.length === 0) {
+      return <NotFound />;
+    }
 
     return (
       <AutoSizer>

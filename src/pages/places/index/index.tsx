@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ChatListItem } from '~/components/chat-list-item';
 import { IconButtonCircle } from '~/components/icon-button-circle';
 import { Input } from '~/components/input';
+import { NotFound } from '~/components/not-found';
 import { SvgPlus as AddIcon } from '~/icons/Plus';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { selectAllPlaces } from '~/state/places/placesSlice';
@@ -62,6 +63,14 @@ export const Places: React.FC = React.memo(function Places() {
     dispatch(push('/places/new'));
   };
 
+  if (places) {
+    // TODO something makes stimulate to join a place new.
+  }
+
+  const filteredPlaces = places.filter((place) =>
+    place.name.includes(searchText)
+  );
+
   return (
     <BaseLayout
       title="Chats"
@@ -81,13 +90,15 @@ export const Places: React.FC = React.memo(function Places() {
             onChange={handleSearchTextChange}
             placeholder="Search"
           />
-          <List>
-            {places
-              .filter((place) => place.name.includes(searchText))
-              .map((place) => (
+          {filteredPlaces.length === 0 ? (
+            <NotFound />
+          ) : (
+            <List>
+              {filteredPlaces.map((place) => (
                 <ChatListItem key={`place-${place.id}`} place={place} />
               ))}
-          </List>
+            </List>
+          )}
         </ListContainer>
       </Root>
     </BaseLayout>

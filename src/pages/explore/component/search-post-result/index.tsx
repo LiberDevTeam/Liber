@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
+import { NotFound } from '~/components/not-found';
 import FeedItemDefault from '~/pages/home/components/feed-item';
 import FeedItemBigImage from '~/pages/home/components/feed-item-big-image';
 import { Appearance, FeedItem, ItemKind } from '~/state/feed/feedSlice';
@@ -47,6 +48,10 @@ export const SearchPostResult: React.FC<SearchPostResultProps> = React.memo(
         })
       );
     }, [searchText]);
+
+    if (result.length === 0) {
+      return <NotFound />;
+    }
 
     return (
       <AutoSizer>
