@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
 import {
   fetchRanking,
-  selectRankingIdsByPage,
+  selectRankingStickersByPage,
 } from '~/state/marketplace/stickersSlice';
-import { selectStickersByIds } from '~/state/stickers/stickersSlice';
 import { StickerItem } from '../sticker-item';
 
 const Root = styled.div`
@@ -25,8 +24,7 @@ const ListItem = styled.li`
 export const StickerRanking: React.FC = memo(function StickerRanking() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const ids = useSelector(selectRankingIdsByPage(page));
-  const stickers = useSelector(selectStickersByIds(ids));
+  const stickers = useSelector(selectRankingStickersByPage(page));
 
   useEffect(() => {
     if (!stickers.length) {

@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
 import {
   fetchNew,
-  selectNewIdsByPage,
+  selectNewStickersByPage,
 } from '~/state/marketplace/stickersSlice';
-import { selectStickersByIds } from '~/state/stickers/stickersSlice';
 import { StickerItem } from '../sticker-item';
 
 const Root = styled.div`
@@ -25,8 +24,7 @@ const ListItem = styled.li`
 export const StickerNew: React.FC = memo(function StickerNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const ids = useSelector(selectNewIdsByPage(page));
-  const stickers = useSelector(selectStickersByIds(ids));
+  const stickers = useSelector(selectNewStickersByPage(page));
 
   useEffect(() => {
     if (!stickers.length) {

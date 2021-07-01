@@ -8,7 +8,6 @@ import {
   fetchSearchResult,
   selectSearchResultIdsByPage,
 } from '~/state/marketplace/stickersSlice';
-import { selectStickersByIds } from '~/state/stickers/stickersSlice';
 import { StickerItem } from '../sticker-item';
 
 const Root = styled.div`
@@ -32,8 +31,7 @@ export const SearchStickerResult: React.FC<Props> = memo(
   function SearchStickerResult({ searchText }) {
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
-    const ids = useSelector(selectSearchResultIdsByPage(page));
-    const stickers = useSelector(selectStickersByIds(ids));
+    const stickers = useSelector(selectSearchResultIdsByPage(page));
 
     useEffect(() => {
       dispatch(clearSearchResult());

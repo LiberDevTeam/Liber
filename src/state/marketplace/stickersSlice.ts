@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
+import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
+import { marketplaceStickerSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
-import { addStickers, tmpListingOn } from '../stickers/stickersSlice';
+import { addStickers, Sticker } from '../stickers/stickersSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
@@ -10,25 +11,19 @@ export const fetchSearchResult = createAsyncThunk<
 >(
   'marketplace/stickers/fetchSearchResult',
   async ({ query, page }, { dispatch }) => {
-    // const res = await marketplaceSearchStickers(query, page);
-    // const { determiners } = await res.json();
-    const determiners = tmpListingOn;
+    const limit = 10;
+    const result = marketplaceStickerSearch
+      .search(query, { fuzzy: 0.3 })
+      .slice((page - 1) * limit, page * limit);
 
-    // TODO: fetch and store stickers information from orbitdb
-    const stickers = await Promise.all(
-      determiners.map(async (sticker) => {
-        return readStickerFromDB(
-          await connectStickerKeyValue({
-            stickerId: sticker.id,
-            address: sticker.keyValAddress,
-          })
-        );
-      })
-    );
+    const stickers: Sticker[] = result.map((r) => {
+      const { score, terms, match, ...sticker } = r;
+      return sticker as Sticker;
+    });
+
     dispatch(addStickers(stickers));
 
-    const stickerIds = stickers.map((s) => s.id);
-    dispatch(paginateSearchResult({ page, stickerIds }));
+    dispatch(paginateSearchResult({ page, stickers }));
   }
 );
 
@@ -37,15 +32,12 @@ export const fetchRanking = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchRanking', async ({ page }, { dispatch }) => {
-  // const res = await marketplaceRankingStickers(page);
-  // const { stickerIds } = await res.json();
+  const db = await connectMarketplaceStickerKeyValue();
+  const stickers = Object.values(db.all).reverse();
 
-  // TODO: fetch and store stickers information from orbitdb
-  dispatch(addStickers(tmpListingOn));
+  dispatch(addStickers(stickers));
 
-  dispatch(
-    paginateRanking({ page, stickerIds: tmpListingOn.map((s) => s.id) })
-  );
+  dispatch(paginateRanking({ page, stickers }));
 });
 
 export const fetchNew = createAsyncThunk<
@@ -53,25 +45,24 @@ export const fetchNew = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchNew', async ({ page }, { dispatch }) => {
-  // const res = await marketplaceNewStickers(page);
-  // const { stickerIds } = await res.json();
+  const db = await connectMarketplaceStickerKeyValue();
+  const stickers = Object.values(db.all).reverse();
 
-  // TODO: fetch and store stickers information from orbitdb
-  dispatch(addStickers(tmpListingOn));
+  dispatch(addStickers(stickers));
 
-  dispatch(paginateNew({ page, stickerIds: tmpListingOn.map((s) => s.id) }));
+  dispatch(paginateNew({ page, stickers }));
 });
 
 interface State {
-  searchResultIdsByPage: Record<number, string[]>;
-  rankingIdsByPage: Record<number, string[]>;
-  newIdsByPage: Record<number, string[]>;
+  searchResultStickersByPage: Record<number, Sticker[]>;
+  rankingStickersByPage: Record<number, Sticker[]>;
+  newStickersByPage: Record<number, Sticker[]>;
 }
 
 const initialState: State = {
-  searchResultIdsByPage: {},
-  rankingIdsByPage: {},
-  newIdsByPage: {},
+  searchResultStickersByPage: {},
+  rankingStickersByPage: {},
+  newStickersByPage: {},
 };
 
 export const stickersSlice = createSlice({
@@ -80,27 +71,27 @@ export const stickersSlice = createSlice({
   reducers: {
     paginateRanking: (
       state,
-      action: PayloadAction<{ page: number; stickerIds: string[] }>
+      action: PayloadAction<{ page: number; stickers: Sticker[] }>
     ) => {
-      const { page, stickerIds } = action.payload;
-      state.rankingIdsByPage[page] = stickerIds;
+      const { page, stickers } = action.payload;
+      state.rankingStickersByPage[page] = stickers;
     },
     paginateNew: (
       state,
-      action: PayloadAction<{ page: number; stickerIds: string[] }>
+      action: PayloadAction<{ page: number; stickers: Sticker[] }>
     ) => {
-      const { page, stickerIds } = action.payload;
-      state.newIdsByPage[page] = stickerIds;
+      const { page, stickers } = action.payload;
+      state.newStickersByPage[page] = stickers;
     },
     paginateSearchResult: (
       state,
-      action: PayloadAction<{ page: number; stickerIds: string[] }>
+      action: PayloadAction<{ page: number; stickers: Sticker[] }>
     ) => {
-      const { page, stickerIds } = action.payload;
-      state.searchResultIdsByPage[page] = stickerIds;
+      const { page, stickers } = action.payload;
+      state.searchResultStickersByPage[page] = stickers;
     },
     clearSearchResult: (state) => {
-      state.searchResultIdsByPage = {};
+      state.searchResultStickersByPage = {};
     },
   },
 });
@@ -114,15 +105,15 @@ export const {
 
 export const selectSearchResultIdsByPage =
   (page: number) =>
-  (state: RootState): string[] =>
-    state.marketplaceStickers.searchResultIdsByPage[page] || [];
-export const selectNewIdsByPage =
+  (state: RootState): Sticker[] =>
+    state.marketplaceStickers.searchResultStickersByPage[page] || [];
+export const selectNewStickersByPage =
   (page: number) =>
-  (state: RootState): string[] =>
-    state.marketplaceStickers.newIdsByPage[page] || [];
-export const selectRankingIdsByPage =
+  (state: RootState): Sticker[] =>
+    state.marketplaceStickers.newStickersByPage[page] || [];
+export const selectRankingStickersByPage =
   (page: number) =>
-  (state: RootState): string[] =>
-    state.marketplaceStickers.rankingIdsByPage[page] || [];
+  (state: RootState): Sticker[] =>
+    state.marketplaceStickers.rankingStickersByPage[page] || [];
 
 export default stickersSlice.reducer;
