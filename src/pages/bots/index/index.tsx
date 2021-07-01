@@ -19,7 +19,7 @@ const StyledButtonLink = styled(Link)`
 
 const tabTitles = ['Listing on', 'Purchased'];
 
-export const BotsPage: React.FC = React.memo(function BotsPage() {
+export const Bots: React.FC = React.memo(function BotsPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (

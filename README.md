@@ -45,6 +45,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Shared DB
 
+```
 feeds OrbitDBAddress {
 root: 'zdpuAtd6UwmbbQBmYUXBPEtWELnfmikSRwBeopW8wsjB1Crz5',
 path: 'feeds'
@@ -65,3 +66,4 @@ marketplace/stickers OrbitDBAddress {
 root: 'zdpuAszVyTNEebdF5Q2StXxswo4sMXjuXtL7sCvbCaxXovJy7',
 path: 'marketplace/stickers'
 }
+```

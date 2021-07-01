@@ -10,6 +10,7 @@ import { useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
 import { BotEditPage } from './pages/bots/edit';
+import { Bots } from './pages/bots/index';
 import { BotNewPage } from './pages/bots/new';
 import { Explore } from './pages/explore';
 import { HomePage } from './pages/home';
@@ -95,6 +96,7 @@ export const Routes: React.FC = memo(function Routes() {
             )}
           />
 
+          <Route exact path="/bots" render={() => <Bots />} />
           <Route
             exact
             path="/bots/new"

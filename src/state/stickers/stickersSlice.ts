@@ -7,6 +7,7 @@ import {
 import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
 import {
   connectStickerKeyValue,
   createStickerKeyValue,
@@ -159,7 +160,11 @@ export const createNewSticker = createAsyncThunk<
     };
     userDB.set(DB_KEY, newUser);
 
-    // TODO: create index to Liber search.
+    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
+    await marketplaceStickerDB.put(
+      `${sticker.keyValAddress}/${sticker.id}`,
+      sticker
+    );
 
     dispatch(addSticker(sticker));
     dispatch(push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`));
@@ -213,7 +218,12 @@ export const updateSticker = createAsyncThunk<
       v && stickerKeyValue.put(key, v);
     });
 
-    // TODO: update index to Liber search.
+    const sticker = readStickerFromDB(stickerKeyValue);
+    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
+    await marketplaceStickerDB.put(`${sticker.keyValAddress}/${sticker.id}`, {
+      ...sticker,
+      ...partial,
+    });
 
     dispatch(updateOne({ id: stickerId, changes: partial }));
     dispatch(push(`/stickers/${address}/${stickerId}`));
