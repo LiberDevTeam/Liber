@@ -28,7 +28,6 @@ const Description = styled.div`
   color: ${(props) => props.theme.colors.secondaryText};
   font-size: ${(props) => props.theme.fontSizes.md};
   font-weight: ${(props) => props.theme.fontWeights.normal};
-  word-break: break-all;
   margin-top: ${(props) => props.theme.space[1]}px;
   padding-bottom: ${(props) => props.theme.space[8]}px;
 `;

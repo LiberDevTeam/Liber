@@ -17,6 +17,7 @@ export const GlobalStyles = createGlobalStyle`
 
   * {
     font-family: ${(props) => props.theme.fontFamily.body};
+    word-break: break-word;
   }
 
   /* Remove default margin */

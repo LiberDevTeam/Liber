@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
 import { push } from 'connected-react-router';
+import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
@@ -211,7 +212,7 @@ export const updatePlace = createAsyncThunk<
 
     const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
 
-    const place: PartialForUpdate = {
+    const partial: PartialForUpdate = {
       name,
       description,
       avatarCid: cid,
@@ -219,8 +220,8 @@ export const updatePlace = createAsyncThunk<
     };
 
     await Promise.all(
-      Object.keys(place).map((key) => {
-        const v = place[key as keyof PartialForUpdate];
+      Object.keys(partial).map((key) => {
+        const v = partial[key as keyof PartialForUpdate];
         if (v === undefined) {
           return Promise.resolve();
         }
@@ -228,7 +229,14 @@ export const updatePlace = createAsyncThunk<
       })
     );
 
-    dispatch(updateOne({ placeId, changes: place }));
+    const marketplacePlaceDB = await connectExplorePlaceKeyValue();
+    const place = marketplacePlaceDB.get(`${address}/${placeId}`);
+    await marketplacePlaceDB.put(`${address}/${placeId}`, {
+      ...place,
+      ...partial,
+    });
+
+    dispatch(updateOne({ placeId, changes: partial }));
     dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
   }
 );
