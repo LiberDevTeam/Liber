@@ -1,9 +1,11 @@
 import MiniSearch from 'minisearch';
 import { Bot } from '~/state/bots/botsSlice';
+import { Place } from '~/state/places/type';
 import { Sticker } from '~/state/stickers/stickersSlice';
 
 export let marketplaceBotSearch: MiniSearch,
-  marketplaceStickerSearch: MiniSearch;
+  marketplaceStickerSearch: MiniSearch,
+  explorePlaceSearch: MiniSearch;
 
 export const createMarketplaceBotSearchIndex = (bots: Bot[]) => {
   marketplaceBotSearch = new MiniSearch({
@@ -54,4 +56,33 @@ export const createMarketplaceStickerSearchIndex = (stickers: Sticker[]) => {
     // processTerm?: (term: string, fieldName?: string) => string | null | undefined | false;
   });
   marketplaceStickerSearch.addAllAsync(stickers);
+};
+
+export const createExplorePlaceSearchIndex = (places: Place[]) => {
+  explorePlaceSearch = new MiniSearch({
+    fields: ['name', 'description', 'avatarCid', 'category', 'createdAt'],
+    storeFields: [
+      'name',
+      'description',
+      'avatarCid',
+      'category',
+      'createdAt',
+      'id',
+      'timestamp',
+      'messageIds',
+      'unreadMessages',
+      'permissions',
+      'feedAddress',
+      'keyValAddress',
+      'bannedUsers',
+      'bots',
+      'readOnly',
+      'swarmKey',
+      'passwordRequired',
+    ],
+    // TODO tuning
+    // tokenize?: (text: string, fieldName?: string) => string[];
+    // processTerm?: (term: string, fieldName?: string) => string | null | undefined | false;
+  });
+  explorePlaceSearch.addAllAsync(places);
 };

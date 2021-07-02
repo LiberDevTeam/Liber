@@ -1,21 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
+import { explorePlaceSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
 import { FeedItem } from '../feed/feedSlice';
-
-export interface PlaceInfo {
-  id: string;
-  name: string;
-  description: string;
-  avatarCid: string;
-  passwordRequired: boolean;
-  readOnly: boolean;
-  createdAt: number;
-  category: number;
-}
+import { Place } from '../places/type';
 
 interface SearchState {
   searchPostResult: FeedItem[];
-  searchPlaceResult: PlaceInfo[];
+  searchPlaceResult: Place[];
 }
 
 const initialState: SearchState = {
@@ -124,97 +116,23 @@ export const fetchSearchPostResult = createAsyncThunk<
 
 export const fetchSearchPlaceResult = createAsyncThunk<
   void,
-  { searchText: string; offset?: number } | void,
+  { searchText: string },
   { dispatch: AppDispatch; state: RootState }
->('search/fetchSearchPlaceResult', async (_, thunkAPI) => {
-  const state = thunkAPI.getState();
-  const dispatch = thunkAPI.dispatch;
+>('search/fetchSearchPlaceResult', async ({ searchText }, { dispatch }) => {
+  let result;
+  if (!searchText) {
+    const db = await connectExplorePlaceKeyValue();
+    result = Object.values(db.all);
+  } else {
+    result = explorePlaceSearch.search(searchText, { fuzzy: 0.3 });
+  }
 
-  const feedItems: PlaceInfo[] = [];
-  // const feedItems: PlaceInfo[] = [
-  //   {
-  //     id: '11111-11111-11111-11111-1111111111',
-  //     name: 'place1',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618239304,
-  //     category: 1,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '22222-22222-22222-22222-2222222222',
-  //     name: 'place2',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618239304,
-  //     category: 2,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '33333-33333-33333-33333-3333333333',
-  //     name: 'place3',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618339304,
-  //     category: 3,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '44444-44444-44444-44444-4444444444',
-  //     name: 'place4',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618449404,
-  //     category: 4,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '11111-11111-11111-11111-1111111111',
-  //     name: 'place1',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618239304,
-  //     category: 1,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '22222-22222-22222-22222-2222222222',
-  //     name: 'place2',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618239304,
-  //     category: 2,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '33333-33333-33333-33333-3333333333',
-  //     name: 'place3',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618339304,
-  //     category: 3,
-  //     readOnly: false,
-  //   },
-  //   {
-  //     id: '44444-44444-44444-44444-4444444444',
-  //     name: 'place4',
-  //     description: 'place1 description',
-  //     avatarCid: 'QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx',
-  //     passwordRequired: false,
-  //     createdAt: 1618449404,
-  //     category: 4,
-  //     readOnly: false,
-  //   },
-  // ];
+  const places: Place[] = result.map((r) => {
+    const { score, terms, match, ...place } = r;
+    return place as Place;
+  });
 
-  dispatch(addSearchPlaceResult(feedItems));
+  dispatch(addSearchPlaceResult(places));
 });
 
 export const searchSlice = createSlice({
@@ -224,7 +142,7 @@ export const searchSlice = createSlice({
     addSearchPostResult: (state, action: PayloadAction<FeedItem[]>) => {
       state.searchPostResult = [...state.searchPostResult, ...action.payload];
     },
-    addSearchPlaceResult: (state, action: PayloadAction<PlaceInfo[]>) => {
+    addSearchPlaceResult: (state, action: PayloadAction<Place[]>) => {
       state.searchPlaceResult = [...state.searchPlaceResult, ...action.payload];
     },
   },

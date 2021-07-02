@@ -2,11 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
 import { createMessageFeed } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
 import {
+  createExplorePlaceSearchIndex,
   createMarketplaceBotSearchIndex,
   createMarketplaceStickerSearchIndex,
 } from '~/lib/search';
@@ -75,6 +77,9 @@ export const initApp = createAsyncThunk<
     createMarketplaceStickerSearchIndex(
       Array(10000).fill(Object.values(db.all)[0])
     );
+  });
+  connectExplorePlaceKeyValue().then((db) => {
+    createExplorePlaceSearchIndex(Array(10000).fill(Object.values(db.all)[0]));
   });
 
   dispatch(finishInitialization());
@@ -160,6 +165,11 @@ export const createNewPlace = createAsyncThunk<
     );
 
     dispatch(placeAdded({ place, messages: [] }));
+
+    place.hash = undefined;
+    const explorePlaceDB = await connectExplorePlaceKeyValue();
+    await explorePlaceDB.put(`${place.keyValAddress}/${place.id}`, place);
+
     dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
   }
 );
