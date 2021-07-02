@@ -120,6 +120,8 @@ export const publishPlaceMessage = createAsyncThunk<
       timestamp: getUnixTime(new Date()),
       mentions: [],
       bot: false,
+      placeId: placeId,
+      placeAddress: place.keyValAddress,
     };
 
     if (attachments) {
