@@ -187,12 +187,16 @@ const Item: React.FC<ItemProps> = memo(function Item({ item, appearance }) {
           return <FeedItemMessageBigImage message={item} />;
         case Appearance.DEFAULT:
           return <FeedItemMessageDefault message={item} />;
+        default:
+          return <FeedItemMessageDefault message={item} />;
       }
     case ItemType.PLACE:
       switch (appearance) {
         case Appearance.BIG_CARD:
           return <FeedItemPlaceBigImage place={item} />;
         case Appearance.DEFAULT:
+          return <FeedItemPlaceDefault place={item} />;
+        default:
           return <FeedItemPlaceDefault place={item} />;
       }
   }
