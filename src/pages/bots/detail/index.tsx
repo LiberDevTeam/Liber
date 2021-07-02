@@ -1,7 +1,9 @@
 import React, { memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import gfm from 'remark-gfm';
 import styled from 'styled-components';
 import { Button } from '~/components/button';
 import { IpfsContent } from '~/components/ipfs-content';
@@ -62,7 +64,15 @@ const Description = styled.p`
   overflow-wrap: break-word;
 `;
 
-const Readme = styled.p``;
+const Readme = styled.div`
+  ul {
+    list-style: initial;
+    padding: revert;
+  }
+  padding: ${(props) => props.theme.space[3]}px;
+  border: ${(props) => props.theme.border.thin(props.theme.colors.gray)};
+  border-radius: ${(props) => props.theme.radii.large}px;
+`;
 
 const EditButton = styled(Button)`
   width: 100%;
@@ -128,7 +138,9 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
 
       <Section>
         <Subtitle>Readme</Subtitle>
-        <Readme>{bot.readme}</Readme>
+        <Readme className="markdown-body">
+          <ReactMarkdown remarkPlugins={[gfm]}>{bot.readme}</ReactMarkdown>
+        </Readme>
       </Section>
 
       <ExampleSection>
