@@ -1,38 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '~/state/store';
-import { User } from '../users/type';
+import { Message, Place } from '../places/type';
 
 export enum Appearance {
   DEFAULT,
   BIG_CARD,
 }
 
-export enum ItemKind {
+export enum ItemType {
   MESSAGE,
   PLACE,
 }
 
-export interface FeedItemMessage {
-  appearance: Appearance;
-  kind: ItemKind.MESSAGE;
-
-  id: string;
-  placeId: string;
-  author: User;
-  timestamp: number;
-  text?: string;
-  attachmentCidList: string[];
+interface FeedItemMessage extends Message {
+  itemType: ItemType.MESSAGE;
 }
 
-export interface FeedItemPlace {
-  appearance: Appearance;
-  kind: ItemKind.PLACE;
-
-  id: string;
-  name: string;
-  description: string;
-  avatarCid: string;
-  timestamp: number;
+interface FeedItemPlace extends Place {
+  itemType: ItemType.PLACE;
 }
 
 export type FeedItem = FeedItemMessage | FeedItemPlace;
@@ -46,99 +31,8 @@ export const fetchFeedItems = createAsyncThunk<
   { lastTimestamp: number } | void,
   { dispatch: AppDispatch; state: RootState }
 >('feed/fetchFeedItems', async (_, thunkAPI) => {
-  const state = thunkAPI.getState();
   const dispatch = thunkAPI.dispatch;
-
-  // TODO fetching from the GraphQL endpoint.
-  const feedItems: FeedItem[] = [
-    {
-      appearance: Appearance.DEFAULT,
-      kind: ItemKind.MESSAGE,
-      placeId: '22222-22222-22222-2222222222',
-
-      id: '33333-33333-33333-33333333331',
-      author: {
-        id: '55555-55555-55555-5555555555',
-        name: 'NaDaru',
-        avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-        botsListingOn: [],
-        stickersListingOn: [],
-      },
-      timestamp: 1617535796,
-      attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-    },
-    {
-      appearance: Appearance.BIG_CARD,
-      kind: ItemKind.MESSAGE,
-      placeId: '22222-22222-22222-2222222222',
-
-      id: '33333-33333-33333-33333333332',
-      author: {
-        id: '55555-55555-55555-5555555555',
-        name: 'nadaru',
-        avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-        botsListingOn: [],
-        stickersListingOn: [],
-      },
-      timestamp: 1617535796,
-      attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-    },
-    {
-      appearance: Appearance.DEFAULT,
-      kind: ItemKind.MESSAGE,
-      placeId: '22222-22222-22222-2222222222',
-
-      id: '33333-33333-33333-33333333333',
-      author: {
-        id: '55555-55555-55555-5555555555',
-        name: 'nadaru',
-        avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-        botsListingOn: [],
-        stickersListingOn: [],
-      },
-      timestamp: 1617535796,
-      attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-    },
-    {
-      appearance: Appearance.BIG_CARD,
-      kind: ItemKind.MESSAGE,
-      placeId: '22222-22222-22222-2222222222',
-
-      id: '33333-33333-33333-33333333334',
-      author: {
-        id: '55555-55555-55555-5555555555',
-        name: 'nadaru',
-        avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-        botsListingOn: [],
-        stickersListingOn: [],
-      },
-      timestamp: 1617535796,
-      attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-    },
-    {
-      appearance: Appearance.DEFAULT,
-      kind: ItemKind.MESSAGE,
-      placeId: '22222-22222-22222-2222222222',
-
-      id: '33333-33333-33333-33333333335',
-      author: {
-        id: '55555-55555-55555-5555555555',
-        name: 'nadaru',
-        avatarCid: 'QmYxKHa7mrEo46YK86HYbSxcjPLbLwDT6aXuL5XzKA3hEJ',
-        botsListingOn: [],
-        stickersListingOn: [],
-      },
-      timestamp: 1617535796,
-      attachmentCidList: ['QmX76A5Ey2H7XDHfSkfNkz3pcDns2tDqV3wpWMzM1c7Mhx'],
-      text: 'Liverpool will be back in action on Monday night when they take on Wolverhampton Wanderers at Molineux Stadium in the Premier...',
-    },
-  ];
-
-  dispatch(addFeedItems(feedItems));
+  dispatch(addFeedItems([]));
 });
 
 const initialState: FeedsState = {

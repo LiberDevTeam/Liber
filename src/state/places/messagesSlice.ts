@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { getMessageFeedById } from '~/lib/db/message';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { Bot, selectBotsByIds } from '~/state/bots/botsSlice';
@@ -137,11 +138,19 @@ export const publishPlaceMessage = createAsyncThunk<
 
     await feed.add(message);
 
+    const exploreMessageDB = await connectExploreMessageKeyValue();
+    if (!place.swarmKey && !place.passwordRequired) {
+      exploreMessageDB.put(
+        `/places/${place.keyValAddress}/${place.id}/messages/${message.id}`,
+        message
+      );
+    }
+
     const bots = resolveBotFromContent(content, placeBots);
     bots.forEach(async (bot) => {
       const result = await runBotWorker(message, bot.sourceCode);
       if (result) {
-        feed.add({
+        const message = {
           id: uuidv4(),
           authorName: bot.name,
           uid: bot.id,
@@ -150,7 +159,14 @@ export const publishPlaceMessage = createAsyncThunk<
           mentions: [],
           timestamp: getUnixTime(new Date()),
           bot: true,
-        });
+        };
+        feed.add(message);
+        if (!place.swarmKey && !place.passwordRequired) {
+          exploreMessageDB.put(
+            `/places/${place.keyValAddress}/${place.id}/messages/${message.id}`,
+            message
+          );
+        }
       }
     });
   }

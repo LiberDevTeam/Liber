@@ -47,7 +47,7 @@ export const Text = styled.div`
 `;
 
 export const Attachment = styled(IpfsContent)`
-  max-height: 200px;
+  max-height: 150px;
   width: 100%;
   border-radius: ${(props) => props.theme.radii.medium}px;
   object-fit: cover;

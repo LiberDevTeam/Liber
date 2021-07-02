@@ -55,4 +55,7 @@ export interface Message {
   // mentioned user ids
   mentions: string[];
   bot: boolean;
+
+  placeId: string;
+  placeAddress: string;
 }

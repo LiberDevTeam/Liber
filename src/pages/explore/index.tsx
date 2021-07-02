@@ -4,8 +4,8 @@ import { Input } from '~/components/input';
 import { TabPanel, TabPanels, Tabs } from '~/components/tabs';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import BaseLayout from '~/templates';
+import { SearchMessageResult } from './component/search-message-result';
 import { SearchPlaceResult } from './component/search-place-result';
-import { SearchPostResult } from './component/search-post-result';
 
 const Root = styled.div`
   width: 100%;
@@ -42,7 +42,7 @@ export const Explore: React.FC = React.memo(function Explore() {
         >
           <TabPanels>
             <TabPanel>
-              <SearchPostResult searchText={searchText} />
+              <SearchMessageResult searchText={searchText} />
             </TabPanel>
             <TabPanel>
               <SearchPlaceResult searchText={searchText} />
