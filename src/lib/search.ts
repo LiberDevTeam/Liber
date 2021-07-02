@@ -94,9 +94,9 @@ export const createExploreMessageSearchIndex = (messages: Message[]) => {
     storeFields: [
       'id',
       'uid',
-      'authorName?',
+      'authorName',
       'timestamp',
-      'text?',
+      'text',
       'attachmentCidList?',
       'content',
       'mentions',
