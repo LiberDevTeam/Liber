@@ -161,6 +161,8 @@ export const publishPlaceMessage = createAsyncThunk<
           mentions: [],
           timestamp: getUnixTime(new Date()),
           bot: true,
+          placeId: placeId,
+          placeAddress: place.keyValAddress,
         };
         feed.add(message);
         if (!place.swarmKey && !place.passwordRequired) {
