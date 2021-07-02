@@ -132,7 +132,7 @@ export const fetchSearchPlaceResult = createAsyncThunk<
     return place as Place;
   });
 
-  dispatch(addSearchPlaceResult(places));
+  dispatch(setSearchPlaceResult(places));
 });
 
 export const searchSlice = createSlice({
@@ -142,13 +142,13 @@ export const searchSlice = createSlice({
     addSearchPostResult: (state, action: PayloadAction<FeedItem[]>) => {
       state.searchPostResult = [...state.searchPostResult, ...action.payload];
     },
-    addSearchPlaceResult: (state, action: PayloadAction<Place[]>) => {
-      state.searchPlaceResult = [...state.searchPlaceResult, ...action.payload];
+    setSearchPlaceResult: (state, action: PayloadAction<Place[]>) => {
+      state.searchPlaceResult = [...action.payload];
     },
   },
 });
 
-export const { addSearchPostResult, addSearchPlaceResult } =
+export const { addSearchPostResult, setSearchPlaceResult } =
   searchSlice.actions;
 
 export const selectSearchPostResult = (
