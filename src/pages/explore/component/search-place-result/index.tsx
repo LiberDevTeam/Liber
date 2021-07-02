@@ -43,7 +43,6 @@ const Container = styled.div`
   position: absolute;
   color: ${(props) => props.theme.colors.white};
   padding: 0 ${(props) => props.theme.space[1]}px;
-  word-break: break-word;
 `;
 
 const Title = styled.h2`
