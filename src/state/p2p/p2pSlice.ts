@@ -84,9 +84,6 @@ export const initApp = createAsyncThunk<
   connectExploreMessageKeyValue().then((db) => {
     createExploreMessageSearchIndex(Object.values(db.all));
   });
-  connectExplorePlaceKeyValue().then((db) => {
-    createExplorePlaceSearchIndex(Array(10000).fill(Object.values(db.all)[0]));
-  });
 
   dispatch(finishInitialization());
 });

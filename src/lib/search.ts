@@ -97,7 +97,7 @@ export const createExploreMessageSearchIndex = (messages: Message[]) => {
       'authorName',
       'timestamp',
       'text',
-      'attachmentCidList?',
+      'attachmentCidList',
       'content',
       'mentions',
       'bot',
