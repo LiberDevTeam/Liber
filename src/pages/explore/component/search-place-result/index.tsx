@@ -39,7 +39,7 @@ const ItemRoot = styled.div<{ bgImg: string }>`
 `;
 
 const Container = styled.div`
-  bottom: 20px;
+  bottom: 10px;
   position: absolute;
   color: ${(props) => props.theme.colors.white};
   padding: 0 ${(props) => props.theme.space[1]}px;
