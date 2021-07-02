@@ -23,6 +23,13 @@ export const loadUsers = createAsyncThunk<User[], { userIds: string[] }>(
   }
 );
 
+export const loadUser = createAsyncThunk<User, { uid: string }>(
+  'users/loadOne',
+  async ({ uid }) => {
+    return fetchUserData(uid);
+  }
+);
+
 export const usersSlice = createSlice({
   name: 'users',
   initialState: usersAdapter.getInitialState<{
@@ -41,6 +48,15 @@ export const usersSlice = createSlice({
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
         usersAdapter.addMany(state, action.payload);
+      })
+      .addCase(loadUser.pending, (state, action) => {
+        // TODO: add implementations
+      })
+      .addCase(loadUser.rejected, (state, action) => {
+        // TODO: add implementations
+      })
+      .addCase(loadUser.fulfilled, (state, action) => {
+        usersAdapter.addOne(state, action.payload);
       });
   },
 });

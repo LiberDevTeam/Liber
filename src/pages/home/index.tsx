@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
@@ -10,15 +10,21 @@ import {
   Appearance,
   FeedItem,
   fetchFeedItems,
-  ItemKind,
+  ItemType,
   selectFeed,
 } from '~/state/feed/feedSlice';
 import { selectMe } from '~/state/me/meSlice';
 import { username } from '../../helpers';
 import BaseLayout from '../../templates';
 import { theme } from '../../theme';
-import FeedItemDefault from './components/feed-item';
-import FeedItemBigImage from './components/feed-item-big-image';
+import {
+  FeedItemMessageDefault,
+  FeedItemPlaceDefault,
+} from './components/feed-item';
+import {
+  FeedItemMessageBigImage,
+  FeedItemPlaceBigImage,
+} from './components/feed-item-big-image';
 
 const Header = styled.div`
   display: flex;
@@ -82,23 +88,44 @@ const ItemContainer = styled.div`
 
 const feedHeight = {
   [Appearance.DEFAULT]: {
-    [ItemKind.MESSAGE]: 320 + theme.space[14],
-    [ItemKind.PLACE]: 320 + theme.space[4],
+    [ItemType.MESSAGE]: 320 + theme.space[14],
+    [ItemType.PLACE]: 320 + theme.space[4],
   },
   [Appearance.BIG_CARD]: {
-    [ItemKind.MESSAGE]: 500 + theme.space[4],
-    [ItemKind.PLACE]: 500 + theme.space[4],
+    [ItemType.MESSAGE]: 500 + theme.space[4],
+    [ItemType.PLACE]: 500 + theme.space[4],
   },
 };
 
-export const HomePage: React.FC = () => {
+export const HomePage: React.FC = memo(function HomePage() {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const feed = useSelector(selectFeed);
+  const { items } = useSelector(selectFeed);
+  const [appearance, setAppearance] = useState<{ [key: string]: Appearance }>(
+    {}
+  );
 
   useEffect(() => {
     dispatch(fetchFeedItems());
   }, [dispatch]);
+
+  useEffect(() => {
+    setAppearance(
+      items.reduce((prev, message) => {
+        // TODO improve the decision logic
+        if (Math.floor(Math.random() * 10) === 0) {
+          return {
+            ...prev,
+            [message.id]: Appearance.BIG_CARD,
+          };
+        }
+        return {
+          ...prev,
+          [message.id]: Appearance.DEFAULT,
+        };
+      }, {})
+    );
+  }, [items]);
 
   return (
     <BaseLayout>
@@ -123,17 +150,20 @@ export const HomePage: React.FC = () => {
           {({ height, width }) => (
             <VariableSizeList
               height={height}
-              itemCount={feed.items.length}
+              itemCount={items.length}
               itemSize={(index) => {
-                return feedHeight[feed.items[index].appearance][
-                  feed.items[index].kind
+                return feedHeight[appearance[items[index].id]][
+                  items[index].itemType
                 ];
               }}
               width={width}
             >
               {({ index, style }) => (
-                <ItemContainer key={feed.items[index].id} style={style}>
-                  <Item item={feed.items[index]} />
+                <ItemContainer key={items[index].id} style={style}>
+                  <Item
+                    item={items[index]}
+                    appearance={appearance[items[index].id]}
+                  />
                 </ItemContainer>
               )}
             </VariableSizeList>
@@ -142,17 +172,32 @@ export const HomePage: React.FC = () => {
       </Feed>
     </BaseLayout>
   );
-};
+});
 
 interface ItemProps {
+  appearance: Appearance;
   item: FeedItem;
 }
 
-const Item: React.FC<ItemProps> = ({ item }) => {
-  switch (item.appearance) {
-    case Appearance.BIG_CARD:
-      return <FeedItemBigImage item={item} />;
-    case Appearance.DEFAULT:
-      return <FeedItemDefault item={item} />;
+const Item: React.FC<ItemProps> = memo(function Item({ item, appearance }) {
+  switch (item.itemType) {
+    case ItemType.MESSAGE:
+      switch (appearance) {
+        case Appearance.BIG_CARD:
+          return <FeedItemMessageBigImage message={item} />;
+        case Appearance.DEFAULT:
+          return <FeedItemMessageDefault message={item} />;
+        default:
+          return <FeedItemMessageDefault message={item} />;
+      }
+    case ItemType.PLACE:
+      switch (appearance) {
+        case Appearance.BIG_CARD:
+          return <FeedItemPlaceBigImage place={item} />;
+        case Appearance.DEFAULT:
+          return <FeedItemPlaceDefault place={item} />;
+        default:
+          return <FeedItemPlaceDefault place={item} />;
+      }
   }
-};
+});

@@ -1,14 +1,16 @@
 import { fromUnixTime } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
+import { useAppSelector } from '~/hooks';
 import { getIpfsNode } from '~/lib/ipfs';
-import { FeedItem, ItemKind } from '~/state/feed/feedSlice';
 import {
   downloadIpfsContent,
   selectIpfsContentByCid,
 } from '~/state/p2p/ipfsContentsSlice';
+import { Message, Place } from '~/state/places/type';
+import { loadUser, selectUserById } from '~/state/users/usersSlice';
 import {
   Avatar,
   Body,
@@ -19,33 +21,45 @@ import {
   Title,
 } from './elements';
 
-interface FeedItemBigImageProps {
-  item: FeedItem;
-}
+export const FeedItemMessageBigImage: React.FC<{ message: Message }> = memo(
+  function FeedItemMessageBigImage({ message }) {
+    const dispatch = useDispatch();
+    const author = useAppSelector((state) =>
+      message.uid ? selectUserById(state.users, message.uid) : undefined
+    );
 
-const FeedItemBigImage: React.FC<FeedItemBigImageProps> = ({ item }) => {
-  switch (item.kind) {
-    case ItemKind.MESSAGE:
-      return (
-        <Component
-          bgCid={item.attachmentCidList[0]}
-          title={item.author.name || shortenUid(item.author)}
-          avatarCid={item.author.avatarCid}
-          text={item.text}
-          timestamp={item.timestamp}
-        />
-      );
-    case ItemKind.PLACE:
-      return (
-        <Component
-          bgCid={item.avatarCid}
-          title={item.name}
-          text={item.description}
-          timestamp={item.timestamp}
-        />
-      );
+    useEffect(() => {
+      dispatch(loadUser({ uid: message.uid }));
+    }, [message.uid]);
+
+    if (!author) {
+      return <>loading...</>;
+    }
+
+    return (
+      <Component
+        bgCid={message.attachmentCidList?.[0] || ''}
+        title={message.authorName || author.name || shortenUid(author)}
+        avatarCid={author.avatarCid}
+        text={message.text}
+        timestamp={message.timestamp}
+      />
+    );
   }
-};
+);
+
+export const FeedItemPlaceBigImage: React.FC<{ place: Place }> = memo(
+  function MessageComponent({ place }) {
+    return (
+      <Component
+        bgCid={place.avatarCid}
+        title={place.name}
+        text={place.description}
+        timestamp={place.timestamp}
+      />
+    );
+  }
+);
 
 interface ComponentProps {
   bgCid: string;
@@ -88,5 +102,3 @@ const Component: React.FC<ComponentProps> = ({
     </Root>
   );
 };
-
-export default FeedItemBigImage;

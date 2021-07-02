@@ -2,12 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
 import { createMessageFeed } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
 import {
+  createExploreMessageSearchIndex,
   createExplorePlaceSearchIndex,
   createMarketplaceBotSearchIndex,
   createMarketplaceStickerSearchIndex,
@@ -69,17 +71,18 @@ export const initApp = createAsyncThunk<
   );
 
   connectMarketplaceBotKeyValue().then((db) => {
-    createMarketplaceBotSearchIndex(
-      Array(10000).fill(Object.values(db.all)[0])
-    );
+    createMarketplaceBotSearchIndex(Object.values(db.all));
   });
   connectMarketplaceStickerKeyValue().then((db) => {
-    createMarketplaceStickerSearchIndex(
-      Array(10000).fill(Object.values(db.all)[0])
-    );
+    createMarketplaceStickerSearchIndex(Object.values(db.all));
   });
+
   connectExplorePlaceKeyValue().then((db) => {
-    createExplorePlaceSearchIndex(Array(10000).fill(Object.values(db.all)[0]));
+    createExplorePlaceSearchIndex(Object.values(db.all));
+  });
+
+  connectExploreMessageKeyValue().then((db) => {
+    createExploreMessageSearchIndex(Object.values(db.all));
   });
 
   dispatch(finishInitialization());

@@ -12,7 +12,7 @@ import { PasswordDialog } from '~/components/password-dialog';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
 import { UserMenu } from '~/components/user-menu';
-import { invitationUrl } from '~/helpers';
+import { invitationUrl, omitText } from '~/helpers';
 import { LoadingPage } from '~/pages/loading';
 import { MessageInput } from '~/pages/places/detail/components/message-input';
 import { appendJoinedPlace } from '~/state/me/meSlice';
@@ -150,7 +150,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           <PlaceDetailHeader
             placeId={place.id}
             address={place.keyValAddress}
-            name={place.name}
+            name={omitText(place.name, 20)}
             avatarCid={place.avatarCid}
             onInviteClick={() => {
               setOpen(true);

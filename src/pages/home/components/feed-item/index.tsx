@@ -1,8 +1,11 @@
 import { fromUnixTime } from 'date-fns';
-import React from 'react';
+import React, { memo, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
-import { FeedItem, ItemKind } from '~/state/feed/feedSlice';
+import { useAppSelector } from '~/hooks';
+import { Message, Place } from '~/state/places/type';
+import { loadUser, selectUserById } from '~/state/users/usersSlice';
 import {
   Attachment,
   Avatar,
@@ -13,35 +16,54 @@ import {
   Title,
 } from './elements';
 
-interface FeedItemDefaultProps {
-  item: FeedItem;
+interface FeedItemMessageDefaultProps {
+  message: Message;
 }
 
-const FeedItemDefault: React.FC<FeedItemDefaultProps> = ({ item }) => {
-  switch (item.kind) {
-    case ItemKind.MESSAGE:
-      return (
-        <Component
-          id={item.id}
-          attachmentCidList={item.attachmentCidList}
-          title={item.author.name || shortenUid(item.author)}
-          avatarCid={item.author.avatarCid}
-          text={item.text}
-          timestamp={item.timestamp}
-        />
-      );
-    case ItemKind.PLACE:
-      return (
-        <Component
-          id={item.id}
-          attachmentCidList={[item.avatarCid]}
-          title={item.name}
-          text={item.description}
-          timestamp={item.timestamp}
-        />
-      );
+export const FeedItemMessageDefault: React.FC<FeedItemMessageDefaultProps> =
+  memo(function FeedItemMessageDefault({ message }) {
+    const dispatch = useDispatch();
+    const author = useAppSelector((state) =>
+      message.uid ? selectUserById(state.users, message.uid) : undefined
+    );
+
+    useEffect(() => {
+      dispatch(loadUser({ uid: message.uid }));
+    }, [message.uid]);
+
+    if (!author) {
+      return <>loading...</>;
+    }
+
+    return (
+      <Component
+        id={message.id}
+        attachmentCidList={message.attachmentCidList}
+        title={message.authorName || author.name || shortenUid(author)}
+        avatarCid={author.avatarCid}
+        text={message.text}
+        timestamp={message.timestamp}
+      />
+    );
+  });
+
+interface FeedItemPlaceDefaultProps {
+  place: Place;
+}
+
+export const FeedItemPlaceDefault: React.FC<FeedItemPlaceDefaultProps> = memo(
+  function FeedItemPlaceDefault({ place }) {
+    return (
+      <Component
+        id={place.id}
+        attachmentCidList={[place.avatarCid]}
+        title={place.name}
+        text={place.description}
+        timestamp={place.timestamp}
+      />
+    );
   }
-};
+);
 
 interface ComponentProps {
   id: string;
@@ -78,5 +100,3 @@ const Component: React.FC<ComponentProps> = ({
     </Root>
   );
 };
-
-export default FeedItemDefault;
