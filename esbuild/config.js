@@ -50,6 +50,7 @@ exports.commonConfig = {
       INFURA_ENDPOINT: process.env.INFURA_ENDPOINT,
       INFURA_ID: process.env.INFURA_ID,
       NODE_ENV: process.env.NODE_ENV || 'development',
+      CHAIN_ID: process.env.CHAIN_ID || '1',
     }),
   },
   inject: [paths.inject],
