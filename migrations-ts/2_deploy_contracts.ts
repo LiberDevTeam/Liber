@@ -1,8 +1,9 @@
+const Migrations = artifacts.require('Migrations');
 const LiberSticker = artifacts.require('LiberSticker');
 const LiberMarket = artifacts.require('LiberMarket');
 
-module.exports = function (deployer: Truffle.Deployer) {
+module.exports = async function (deployer: Truffle.Deployer) {
   // Use deployer to state migration tasks.
-  deployer.deploy(LiberMarket);
-  deployer.deploy(LiberSticker, LiberMarket.address);
+  await deployer.deploy(LiberMarket);
+  await deployer.deploy(LiberSticker, LiberMarket.address);
 } as Truffle.Migration;
