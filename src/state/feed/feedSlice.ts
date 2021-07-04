@@ -62,7 +62,7 @@ export const feedSlice = createSlice({
   initialState,
   reducers: {
     setFeedItems: (state, action: PayloadAction<FeedItem[]>) => {
-      state.items = [...state.items, ...action.payload];
+      state.items = [...action.payload];
     },
   },
 });
