@@ -38,8 +38,8 @@ const List = styled.div`
   padding: ${(props) => props.theme.space[1]}px;
   overflow-y: auto;
 
-  & > div {
-    margin-bottom: ${(props) => props.theme.space[4]}px;
+  & > a {
+    margin-bottom: ${(props) => props.theme.space[2]}px;
 
     &:last-child {
       margin-bottom: 0px;
