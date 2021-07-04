@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
@@ -89,12 +90,16 @@ export const SearchMessageResult: React.FC<SearchMessageResultProps> =
               width={width}
             >
               {({ index, style }) => (
-                <ItemContainer key={result[index].id} style={style}>
-                  <SearchMessageResultItem
-                    message={result[index]}
-                    appearance={appearance[result[index].id]}
-                  />
-                </ItemContainer>
+                <Link
+                  to={`/places/${result[index].placeAddress}/${result[index].placeId}`}
+                >
+                  <ItemContainer key={result[index].id} style={style}>
+                    <SearchMessageResultItem
+                      message={result[index]}
+                      appearance={appearance[result[index].id]}
+                    />
+                  </ItemContainer>
+                </Link>
               )}
             </VariableSizeList>
           )}

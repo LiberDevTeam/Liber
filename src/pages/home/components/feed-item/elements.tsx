@@ -14,7 +14,7 @@ export const Header = styled.div`
   justify-content: space-between;
 `;
 
-export const Avatar = styled(IpfsContent)`
+export const Avatar = styled.img`
   height: 2.5rem;
   width: 2.5rem;
   border-radius: ${(props) => props.theme.radii.round};

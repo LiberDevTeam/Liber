@@ -29,7 +29,7 @@ export const FeedItemMessageDefault: React.FC<FeedItemMessageDefaultProps> =
 
     useEffect(() => {
       dispatch(loadUser({ uid: message.uid }));
-    }, [message.uid]);
+    }, [message]);
 
     if (!author) {
       return <>loading...</>;
@@ -87,7 +87,7 @@ const Component: React.FC<ComponentProps> = ({
     <Root>
       <Header>
         <Title>
-          {avatarCid && <Avatar cid={avatarCid}></Avatar>}
+          {avatarCid && <Avatar src={`/view/${avatarCid}`}></Avatar>}
           {title}
         </Title>
         <Timestamp>{formatTime(time)}</Timestamp>

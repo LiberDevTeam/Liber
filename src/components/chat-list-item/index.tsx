@@ -8,7 +8,6 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { useFnsLocale } from '~/state/hooks/fnsLocale';
 import { Place } from '~/state/places/type';
-import { IpfsContent } from '../ipfs-content';
 
 const activeClassName = 'selected-place';
 
@@ -39,7 +38,7 @@ const LeftContainer = styled.div`
   position: relative;
 `;
 
-const Image = styled(IpfsContent)`
+const Image = styled.img`
   width: 100%;
   height: 100%;
   background: ${(props) => props.theme.colors.bg2};
@@ -147,7 +146,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
         activeClassName={activeClassName}
       >
         <LeftContainer>
-          <Image cid={place.avatarCid} />
+          <Image src={`/view/${place.avatarCid}`} />
           <Status status={status} />
         </LeftContainer>
         <CenterContainer>
