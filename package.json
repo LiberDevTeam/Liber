@@ -41,6 +41,7 @@
     "bfj": "^7.0.2",
     "buffer": "^6.0.3",
     "camelcase": "^6.1.0",
+    "canihazusername": "^2.1.1",
     "cbor-web": "^7.0.5",
     "color-hash": "^2.0.1",
     "connected-react-router": "^6.9.1",

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { generate } from 'canihazusername';
 import { connectBotKeyValue, readBotFromDB } from '~/lib/db/bot';
 import {
   connectPrivateFieldsDB,
@@ -26,7 +27,6 @@ const initialPrivateFields = {
 
 const initialState: Me = {
   id: '',
-  // TODO: random name
   name: '',
   botsListingOn: [],
   stickersListingOn: [],
@@ -47,7 +47,7 @@ export const initMe = createAsyncThunk<
   if (!user) {
     user = {
       id: userDB.address.root,
-      name: '',
+      name: generate('{character}-{english}'),
       avatarCid: '',
       botsListingOn: [],
       stickersListingOn: [],
