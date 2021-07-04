@@ -1,6 +1,7 @@
 import { fromUnixTime } from 'date-fns';
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { useAppSelector } from '~/hooks';
@@ -11,15 +12,7 @@ import {
 } from '~/state/p2p/ipfsContentsSlice';
 import { Message, Place } from '~/state/places/type';
 import { loadUser, selectUserById } from '~/state/users/usersSlice';
-import {
-  Avatar,
-  Body,
-  Content,
-  Header,
-  Root,
-  Timestamp,
-  Title,
-} from './elements';
+import { Avatar, Body, Content, Header, Timestamp, Title } from './elements';
 
 export const FeedItemMessageBigImage: React.FC<{ message: Message }> = memo(
   function FeedItemMessageBigImage({ message }) {
@@ -38,6 +31,7 @@ export const FeedItemMessageBigImage: React.FC<{ message: Message }> = memo(
 
     return (
       <Component
+        linkTo={`/place/${message.placeAddress}/${message.placeId}`}
         bgCid={message.attachmentCidList?.[0] || ''}
         title={message.authorName || author.name || shortenUid(author)}
         avatarCid={author.avatarCid}
@@ -52,6 +46,7 @@ export const FeedItemPlaceBigImage: React.FC<{ place: Place }> = memo(
   function MessageComponent({ place }) {
     return (
       <Component
+        linkTo={`/place/${place.keyValAddress}/${place.id}`}
         bgCid={place.avatarCid}
         title={place.name}
         text={place.description}
@@ -62,6 +57,7 @@ export const FeedItemPlaceBigImage: React.FC<{ place: Place }> = memo(
 );
 
 interface ComponentProps {
+  linkTo: string;
   bgCid: string;
   title: string;
   avatarCid?: string;
@@ -70,6 +66,7 @@ interface ComponentProps {
 }
 
 const Component: React.FC<ComponentProps> = ({
+  linkTo,
   bgCid,
   title,
   avatarCid,
@@ -90,8 +87,8 @@ const Component: React.FC<ComponentProps> = ({
 
   const time = fromUnixTime(timestamp);
   return (
-    <Root bgImg={bgContent?.dataUrl || ''}>
-      <Content>
+    <Link to={linkTo}>
+      <Content bgImg={bgContent?.dataUrl || ''}>
         <Header>
           {avatarCid && <Avatar cid={avatarCid}></Avatar>}
           <Title>{title}</Title>
@@ -99,6 +96,6 @@ const Component: React.FC<ComponentProps> = ({
         </Header>
         <Body>{text}</Body>
       </Content>
-    </Root>
+    </Link>
   );
 };

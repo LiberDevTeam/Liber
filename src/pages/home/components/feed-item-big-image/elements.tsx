@@ -1,11 +1,7 @@
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 
-interface RootProps {
-  bgImg: string;
-}
-
-export const Root = styled.div<RootProps>`
+export const Content = styled.div<{ bgImg: string }>`
   background-image: ${(props) => props.theme.linearGradient[0]},
     url('${(props) => props.bgImg}');
   background-size: cover;
@@ -18,8 +14,6 @@ export const Root = styled.div<RootProps>`
   padding: ${(props) => props.theme.space[3]}px;
   flex: 1;
 `;
-
-export const Content = styled.div``;
 
 export const Header = styled.div`
   height: 2.5rem;

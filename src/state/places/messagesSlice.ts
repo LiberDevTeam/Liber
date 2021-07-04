@@ -6,6 +6,7 @@ import {
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
+import { connectFeedDB } from '~/lib/db/feed';
 import { getMessageFeedById } from '~/lib/db/message';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { Bot, selectBotsByIds } from '~/state/bots/botsSlice';
@@ -17,6 +18,7 @@ import { Mention, Message } from '~/state/places/type';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
 import { selectAllUsers } from '~/state/users/usersSlice';
+import { ItemType } from '../feed/feedSlice';
 
 const MODULE_NAME = 'placeMessages';
 
@@ -147,6 +149,13 @@ export const publishPlaceMessage = createAsyncThunk<
         message
       );
     }
+
+    connectFeedDB().then((db) => {
+      db.add({
+        itemType: ItemType.MESSAGE,
+        ...message,
+      });
+    });
 
     const bots = resolveBotFromContent(content, placeBots);
     bots.forEach(async (bot) => {
