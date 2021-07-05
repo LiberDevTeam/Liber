@@ -10,7 +10,7 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   });
 
   const address = 'feeds';
-  const db = await orbitdb.keyvalue(address, {
+  const db = await orbitdb.feed(address, {
     // TODO restricts users from updating other user's records.
     accessController: { write: ['*'] },
   });

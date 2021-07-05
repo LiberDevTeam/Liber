@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
@@ -11,6 +12,7 @@ import {
   FeedItem,
   fetchFeedItems,
   ItemType,
+  limit,
   selectFeed,
 } from '~/state/feed/feedSlice';
 import { selectMe } from '~/state/me/meSlice';
@@ -100,7 +102,7 @@ const feedHeight = {
 export const HomePage: React.FC = memo(function HomePage() {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const { items } = useSelector(selectFeed);
+  const items = useSelector(selectFeed);
   const [appearance, setAppearance] = useState<{ [key: string]: Appearance }>(
     {}
   );
@@ -111,21 +113,31 @@ export const HomePage: React.FC = memo(function HomePage() {
 
   useEffect(() => {
     setAppearance(
-      items.reduce((prev, message) => {
+      items.reduce((prev, item) => {
         // TODO improve the decision logic
-        if (Math.floor(Math.random() * 10) === 0) {
+        if (
+          Math.floor(Math.random() * 10) === 0 &&
+          ((item.itemType === ItemType.MESSAGE &&
+            item.attachmentCidList?.length) ||
+            (item.itemType === ItemType.PLACE && item.avatarCid))
+        ) {
           return {
             ...prev,
-            [message.id]: Appearance.BIG_CARD,
+            [item.id]: Appearance.BIG_CARD,
           };
         }
         return {
           ...prev,
-          [message.id]: Appearance.DEFAULT,
+          [item.id]: Appearance.DEFAULT,
         };
       }, {})
     );
   }, [items]);
+
+  // wait for finishing the initialization of appearance.
+  if (items.length && appearance[items[items.length - 1].id] === undefined) {
+    return null;
+  }
 
   return (
     <BaseLayout>
@@ -146,29 +158,45 @@ export const HomePage: React.FC = memo(function HomePage() {
       <Greeting>Hello 😊</Greeting>
       <Username>{username(me)}</Username>
       <Feed>
-        <AutoSizer>
-          {({ height, width }) => (
-            <VariableSizeList
-              height={height}
-              itemCount={items.length}
-              itemSize={(index) => {
-                return feedHeight[appearance[items[index].id]][
-                  items[index].itemType
-                ];
-              }}
-              width={width}
-            >
-              {({ index, style }) => (
-                <ItemContainer key={items[index].id} style={style}>
-                  <Item
-                    item={items[index]}
-                    appearance={appearance[items[index].id]}
-                  />
-                </ItemContainer>
+        <InfiniteLoader
+          isItemLoaded={() => true}
+          itemCount={limit}
+          loadMoreItems={(): Promise<any> | null =>
+            new Promise<any>(() => {
+              dispatch(
+                fetchFeedItems({ hash: items[items.length - 1].feedHash })
+              );
+            })
+          }
+        >
+          {({ onItemsRendered, ref }) => (
+            <AutoSizer>
+              {({ height, width }) => (
+                <VariableSizeList
+                  height={height}
+                  onItemsRendered={onItemsRendered}
+                  itemCount={items.length}
+                  itemSize={(index) => {
+                    return feedHeight[appearance[items[index].id]][
+                      items[index].itemType
+                    ];
+                  }}
+                  width={width}
+                  ref={ref}
+                >
+                  {({ index, style }) => (
+                    <ItemContainer key={items[index].id} style={style}>
+                      <Item
+                        item={items[index]}
+                        appearance={appearance[items[index].id]}
+                      />
+                    </ItemContainer>
+                  )}
+                </VariableSizeList>
               )}
-            </VariableSizeList>
+            </AutoSizer>
           )}
-        </AutoSizer>
+        </InfiniteLoader>
       </Feed>
     </BaseLayout>
   );

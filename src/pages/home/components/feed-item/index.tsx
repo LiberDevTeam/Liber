@@ -1,6 +1,7 @@
 import { fromUnixTime } from 'date-fns';
 import React, { memo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { useAppSelector } from '~/hooks';
@@ -43,6 +44,7 @@ export const FeedItemMessageDefault: React.FC<FeedItemMessageDefaultProps> =
         avatarCid={author.avatarCid}
         text={message.text}
         timestamp={message.timestamp}
+        linkTo={`/places/${message.placeAddress}/${message.placeId}`}
       />
     );
   });
@@ -60,6 +62,7 @@ export const FeedItemPlaceDefault: React.FC<FeedItemPlaceDefaultProps> = memo(
         title={place.name}
         text={place.description}
         timestamp={place.timestamp}
+        linkTo={`/places/${place.keyValAddress}/${place.id}`}
       />
     );
   }
@@ -72,6 +75,7 @@ interface ComponentProps {
   avatarCid?: string;
   text?: string;
   timestamp: number;
+  linkTo: string;
 }
 
 const Component: React.FC<ComponentProps> = ({
@@ -81,22 +85,25 @@ const Component: React.FC<ComponentProps> = ({
   avatarCid,
   text,
   timestamp,
+  linkTo,
 }) => {
   const time = fromUnixTime(timestamp);
   return (
-    <Root>
-      <Header>
-        <Title>
-          {avatarCid && <Avatar src={`/view/${avatarCid}`}></Avatar>}
-          {title}
-        </Title>
-        <Timestamp>{formatTime(time)}</Timestamp>
-      </Header>
-      <Text>{text}</Text>
-      {attachmentCidList &&
-        attachmentCidList.map((cid) => (
-          <Attachment cid={cid} key={`${id}-${cid}`} />
-        ))}
-    </Root>
+    <Link to={linkTo}>
+      <Root>
+        <Header>
+          <Title>
+            {avatarCid && <Avatar src={`/view/${avatarCid}`}></Avatar>}
+            {title}
+          </Title>
+          <Timestamp>{formatTime(time)}</Timestamp>
+        </Header>
+        <Text>{text}</Text>
+        {attachmentCidList &&
+          attachmentCidList.map((cid) => (
+            <Attachment cid={cid} key={`${id}-${cid}`} />
+          ))}
+      </Root>
+    </Link>
   );
 };

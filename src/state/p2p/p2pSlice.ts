@@ -4,6 +4,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
+import { connectFeedDB } from '~/lib/db/feed';
 import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
 import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
 import { createMessageFeed } from '~/lib/db/message';
@@ -21,6 +22,7 @@ import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { Message, Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
+import { ItemType } from '../feed/feedSlice';
 import { finishInitialization } from '../isInitialized';
 
 const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
@@ -172,6 +174,13 @@ export const createNewPlace = createAsyncThunk<
     place.hash = undefined;
     const explorePlaceDB = await connectExplorePlaceKeyValue();
     await explorePlaceDB.put(`${place.keyValAddress}/${place.id}`, place);
+
+    connectFeedDB().then((db) => {
+      db.add({
+        itemType: ItemType.PLACE,
+        ...place,
+      });
+    });
 
     dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
   }
