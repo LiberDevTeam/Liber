@@ -150,11 +150,10 @@ export const publishPlaceMessage = createAsyncThunk<
       );
     }
 
-    connectFeedDB().then((db) => {
-      db.add({
-        itemType: ItemType.MESSAGE,
-        ...message,
-      });
+    const feedDB = await connectFeedDB();
+    await feedDB.add({
+      itemType: ItemType.MESSAGE,
+      ...message,
     });
 
     const bots = resolveBotFromContent(content, placeBots);

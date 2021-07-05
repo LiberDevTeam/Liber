@@ -109,7 +109,7 @@ export const HomePage: React.FC = memo(function HomePage() {
 
   useEffect(() => {
     dispatch(fetchFeedItems());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setAppearance(
