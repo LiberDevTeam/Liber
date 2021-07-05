@@ -328,6 +328,12 @@ export const placesSlice = createSlice({
             changes: { hash: undefined },
           });
         }
+      })
+      .addCase(toggleBot.fulfilled, (state, action) => {
+        placesAdapter.updateOne(state, {
+          id: action.meta.arg.placeId,
+          changes: { bots: action.payload },
+        });
       });
   },
 });
