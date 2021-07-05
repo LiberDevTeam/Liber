@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { NotFound } from '~/components/not-found';
 import { Pagination } from '~/components/pagination';
 import { selectStickersByIds } from '~/state/stickers/stickersSlice';
 import { StickerListItem } from '../sticker-list-item';
@@ -34,6 +35,11 @@ export const StickerListTabPanel: React.FC<StickerListTabPanelProps> =
     onChangePage,
   }) {
     const stickers = useSelector(selectStickersByIds(stickerIds));
+
+    if (stickers.length === 0) {
+      return <NotFound />;
+    }
+
     return (
       <Root>
         <StickerList>
