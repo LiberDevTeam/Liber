@@ -7,7 +7,7 @@ import {
 import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
-import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
+import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
 import {
   connectStickerKeyValue,
   createStickerKeyValue,
@@ -160,7 +160,7 @@ export const createNewSticker = createAsyncThunk<
     };
     userDB.set(DB_KEY, newUser);
 
-    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
+    const marketplaceStickerDB = await connectMarketplaceStickerNewKeyValue();
     await marketplaceStickerDB.put(
       `${sticker.keyValAddress}/${sticker.id}`,
       sticker
@@ -219,7 +219,7 @@ export const updateSticker = createAsyncThunk<
     });
 
     const sticker = readStickerFromDB(stickerKeyValue);
-    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
+    const marketplaceStickerDB = await connectMarketplaceStickerNewKeyValue();
     await marketplaceStickerDB.put(`${sticker.keyValAddress}/${sticker.id}`, {
       ...sticker,
       ...partial,

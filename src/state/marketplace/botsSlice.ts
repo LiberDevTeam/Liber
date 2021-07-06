@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
+import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
+import { connectMarketplaceBotRankingKeyValue } from '~/lib/db/marketplace/bot/ranking';
 import { marketplaceBotSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
 import { addBots, Bot } from '../bots/botsSlice';
@@ -33,7 +34,7 @@ export const fetchRanking = createAsyncThunk<
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/bots/fetchRanking', async ({ page }, { dispatch }) => {
   // TODO change to connect the ranking db
-  const db = await connectMarketplaceBotKeyValue();
+  const db = await connectMarketplaceBotRankingKeyValue();
   const bots = Object.values(db.all).reverse();
 
   dispatch(addBots(bots));
@@ -46,7 +47,7 @@ export const fetchNew = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/bots/fetchNew', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceBotKeyValue();
+  const db = await connectMarketplaceBotNewKeyValue();
   const bots = Object.values(db.all).reverse();
 
   dispatch(addBots(bots));

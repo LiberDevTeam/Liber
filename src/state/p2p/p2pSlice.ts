@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectFeedDB } from '~/lib/db/feed';
-import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
-import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
+import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
+import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
 import { createMessageFeed } from '~/lib/db/message';
 import { createPlaceKeyValue } from '~/lib/db/place';
 import {
@@ -72,10 +72,10 @@ export const initApp = createAsyncThunk<
     })
   );
 
-  connectMarketplaceBotKeyValue().then((db) => {
+  connectMarketplaceBotNewKeyValue().then((db) => {
     createMarketplaceBotSearchIndex(Object.values(db.all));
   });
-  connectMarketplaceStickerKeyValue().then((db) => {
+  connectMarketplaceStickerNewKeyValue().then((db) => {
     createMarketplaceStickerSearchIndex(Object.values(db.all));
   });
 

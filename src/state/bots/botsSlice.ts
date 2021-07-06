@@ -12,7 +12,7 @@ import {
   createBotKeyValue,
   readBotFromDB,
 } from '~/lib/db/bot';
-import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
+import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
 import { createUserDB } from '~/lib/db/user';
 import { tmpPurchased } from '~/state/bots/mock';
 import { AppDispatch, RootState } from '~/state/store';
@@ -157,7 +157,7 @@ export const createNewBot = createAsyncThunk<
     };
     userDB.set('data', newUser);
 
-    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+    const marketplaceBotDB = await connectMarketplaceBotNewKeyValue();
     await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
 
     dispatch(addBot(bot));
@@ -223,7 +223,7 @@ export const updateBot = createAsyncThunk<
     });
 
     const bot = readBotFromDB(botKeyValue);
-    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+    const marketplaceBotDB = await connectMarketplaceBotNewKeyValue();
     await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, {
       ...bot,
       ...partial,

@@ -54,16 +54,24 @@ explore/places OrbitDBAddress {
   root: 'zdpuArRZQyEHHEm6JHT5GkEF3ESVYGJ31jbE8ahVzbHDUX6QY',
   path: 'explore/places'
 }
-marketplace/bots OrbitDBAddress {
-  root: 'zdpuAtvSgGR5Y1amv3viEUyUr3Zuf6hzJd1KvPQJVeQfcTY5m',
-  path: 'marketplace/bots'
-}
 explore/messages OrbitDBAddress {
   root: 'zdpuAyatYt9qV41rwVy85VAB3xb66fPXny4uuH7rPYqWrzEgz',
   path: 'explore/messages'
 }
-marketplace/stickers OrbitDBAddress {
-  root: 'zdpuAszVyTNEebdF5Q2StXxswo4sMXjuXtL7sCvbCaxXovJy7',
-  path: 'marketplace/stickers'
+marketplace/stickers/new OrbitDBAddress {
+  root: 'zdpuAmxxN2RxWsvB1Hj4MZ5Kuap2uDkhpG5PAnfPhzyt4VWH8',
+  path: 'marketplace/stickers/new'
+}
+marketplace/bots/new OrbitDBAddress {
+  root: 'zdpuAshd1gdvzDag9tZLKgpQpVyFLCr5CX2fd8MjZpSNb7o5m',
+  path: 'marketplace/bots/new'
+}
+marketplace/bots/ranking OrbitDBAddress {
+  root: 'zdpuAndBaLEbMTpiuK3yWNuiBEhiZ6E6oYCqeuBv1V8CcoEZj',
+  path: 'marketplace/bots/ranking'
+}
+marketplace/stickers/ranking OrbitDBAddress {
+  root: 'zdpuAoxpxkEJ5XyGfY3oZhMLwS7JWkdMqJCNyUHJJ6JVJXgXQ',
+  path: 'marketplace/stickers/ranking'
 }
 ```

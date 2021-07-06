@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
+import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
+import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
 import { marketplaceStickerSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
 import { addStickers, Sticker } from '../stickers/stickersSlice';
@@ -32,7 +33,7 @@ export const fetchRanking = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchRanking', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceStickerKeyValue();
+  const db = await connectMarketplaceStickerRankingKeyValue();
   const stickers = Object.values(db.all).reverse();
 
   dispatch(addStickers(stickers));
@@ -45,7 +46,7 @@ export const fetchNew = createAsyncThunk<
   { page: number },
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchNew', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceStickerKeyValue();
+  const db = await connectMarketplaceStickerNewKeyValue();
   const stickers = Object.values(db.all).reverse();
 
   dispatch(addStickers(stickers));

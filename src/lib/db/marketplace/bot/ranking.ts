@@ -1,14 +1,16 @@
 import KeyValueStore from 'orbit-db-kvstore';
 import { Bot } from '~/state/bots/botsSlice';
-import { getOrbitDB } from '../orbit';
+import { getOrbitDB } from '../../orbit';
 
 let botDB: KeyValueStore<Bot>;
 
-export const readMarketplaceBotFromDB = (kv: KeyValueStore<Bot>): Bot[] => {
+export const readMarketplaceBotRankingFromDB = (
+  kv: KeyValueStore<Bot>
+): Bot[] => {
   return kv.all;
 };
 
-export const connectMarketplaceBotKeyValue = async (): Promise<
+export const connectMarketplaceBotRankingKeyValue = async (): Promise<
   KeyValueStore<Bot>
 > => {
   if (botDB) {
@@ -17,7 +19,7 @@ export const connectMarketplaceBotKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   botDB = await orbitDB.keyvalue<Bot>(
-    '/orbitdb/zdpuAtvSgGR5Y1amv3viEUyUr3Zuf6hzJd1KvPQJVeQfcTY5m/marketplace/bots'
+    '/orbitdb/zdpuAndBaLEbMTpiuK3yWNuiBEhiZ6E6oYCqeuBv1V8CcoEZj/marketplace/bots/ranking'
   );
   await botDB.load();
   return botDB;

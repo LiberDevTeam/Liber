@@ -1,16 +1,16 @@
 import KeyValueStore from 'orbit-db-kvstore';
 import { Sticker } from '~/state/stickers/stickersSlice';
-import { getOrbitDB } from '../orbit';
+import { getOrbitDB } from '../../orbit';
 
 let stickerDB: KeyValueStore<Sticker>;
 
-export const readMarketplaceStickerFromDB = (
+export const readMarketplaceStickerNewFromDB = (
   kv: KeyValueStore<Sticker>
 ): Sticker[] => {
   return kv.all;
 };
 
-export const connectMarketplaceStickerKeyValue = async (): Promise<
+export const connectMarketplaceStickerNewKeyValue = async (): Promise<
   KeyValueStore<Sticker>
 > => {
   if (stickerDB) {
@@ -19,7 +19,7 @@ export const connectMarketplaceStickerKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   stickerDB = await orbitDB.keyvalue<Sticker>(
-    '/orbitdb/zdpuAszVyTNEebdF5Q2StXxswo4sMXjuXtL7sCvbCaxXovJy7/marketplace/stickers'
+    '/orbitdb/zdpuAmxxN2RxWsvB1Hj4MZ5Kuap2uDkhpG5PAnfPhzyt4VWH8/marketplace/stickers/new'
   );
   await stickerDB.load();
   return stickerDB;
