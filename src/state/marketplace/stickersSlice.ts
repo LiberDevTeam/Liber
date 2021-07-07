@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
 import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
 import { marketplaceStickerSearch } from '~/lib/search';
+import { addStickers } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 import { AppDispatch, RootState } from '~/state/store';
-import { addStickers, Sticker } from '../stickers/stickersSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,

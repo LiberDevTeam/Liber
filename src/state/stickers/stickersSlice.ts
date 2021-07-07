@@ -15,10 +15,11 @@ import {
 } from '~/lib/db/sticker';
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
-import { stickerAdded } from '../actionCreater';
 import { DB_KEY } from '../me/meSlice';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
+import { stickerAdded } from './actions';
+import { Sticker, StickerPartialForUpdate } from './types';
 
 export const categories = ['ANIMAL_LOVERS'];
 export const categoryOptions = categories.map((label, index) => ({
@@ -26,82 +27,10 @@ export const categoryOptions = categories.map((label, index) => ({
   label,
 }));
 
-interface PartialForUpdate {
-  category: number;
-  name: string;
-  description: string;
-  price: number;
-  contents: Content[];
-}
-
-export interface Sticker extends PartialForUpdate {
-  id: string;
-  uid: string;
-  keyValAddress: string;
-  created: number;
-  purchaseQty: number;
-}
-
-export interface Content {
-  cid: string;
-}
-
 export interface StickersState {
   purchased: Sticker[];
   listingOn: Sticker[];
 }
-
-export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
-  // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
-  // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: 0,
-  name: 'バク',
-  description: 'モデルやってます。性別はありません',
-  price: 20,
-  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
-  contents: [
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-  ],
-  created: 1619251130,
-  purchaseQty: i,
-}));
-
-export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
-  // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
-  // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: 0,
-  name: 'バク',
-  description: 'モデルやってます。性別はありません',
-  price: 20,
-  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
-  contents: [
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-  ],
-  created: 1619251130,
-  purchaseQty: i,
-}));
 
 export const createNewSticker = createAsyncThunk<
   void,
@@ -207,7 +136,7 @@ export const updateSticker = createAsyncThunk<
       })
     );
 
-    const partial: PartialForUpdate = {
+    const partial: StickerPartialForUpdate = {
       category,
       name,
       description,
@@ -216,7 +145,7 @@ export const updateSticker = createAsyncThunk<
     };
 
     Object.keys(partial).forEach((key) => {
-      const v = partial[key as keyof PartialForUpdate];
+      const v = partial[key as keyof StickerPartialForUpdate];
       v && stickerKeyValue.put(key, v);
     });
 
@@ -263,7 +192,7 @@ export const stickersSlice = createSlice({
       stickersAdapter.addOne(state, action.payload),
     updateOne: (
       state,
-      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+      action: PayloadAction<{ id: string; changes: StickerPartialForUpdate }>
     ) =>
       stickersAdapter.updateOne(state, {
         id: action.payload.id,
@@ -275,9 +204,15 @@ export const stickersSlice = createSlice({
 export const { addStickers, addSticker, updateOne } = stickersSlice.actions;
 
 const selectors = stickersAdapter.getSelectors();
-export const selectStickerById = (id: string) => (state: RootState) =>
-  selectors.selectById(state.stickers, id);
-export const selectStickersByIds = (ids: string[]) => (state: RootState) =>
-  ids.map((id) => selectors.selectById(state.stickers, id));
+export const selectStickerById =
+  (id: string) =>
+  (state: RootState): Sticker | undefined =>
+    selectors.selectById(state.stickers, id);
+export const selectStickersByIds =
+  (ids: string[]) =>
+  (state: RootState): Sticker[] =>
+    ids
+      .map((id) => selectors.selectById(state.stickers, id))
+      .filter(Boolean) as Sticker[];
 
 export default stickersSlice.reducer;

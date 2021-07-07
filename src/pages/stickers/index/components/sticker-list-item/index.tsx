@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { Sticker } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 
 const ListItem = styled.li`
   width: 100%;
@@ -18,7 +18,7 @@ const StyledLink = styled(Link)`
   font-weight: ${(props) => props.theme.fontWeights.medium};
 `;
 
-const Avatar = styled(IpfsContent)`
+const StickerView = styled(IpfsContent)`
   border-radius: ${(props) => props.theme.radii.large}px;
   width: 62px;
   height: 62px;
@@ -56,7 +56,7 @@ export const StickerListItem: React.FC<StickerListItemProps> = React.memo(
     return (
       <ListItem>
         <StyledLink to={`/stickers/${sticker.keyValAddress}/${sticker.id}`}>
-          <Avatar cid={sticker.contents[0].cid} />
+          <StickerView cid={sticker.contents[0].cid} />
           <RightGroup>
             <Name>{sticker.name}</Name>
             <Description>{sticker.description}</Description>
