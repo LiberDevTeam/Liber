@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { UserMention } from '~/components/user-mention';
 import { useAppSelector } from '~/hooks';
 import { Bot, selectBotById } from '~/state/bots/botsSlice';
 import { selectMessageById } from '~/state/places/messagesSlice';
@@ -76,19 +75,7 @@ export const BotMessageView: React.FC<BotMessageViewProps> = React.memo(
             <UserName>{bot?.name || 'Loading'}</UserName>
             <Message
               mine={false}
-              contents={message.content.map((value) => {
-                if (typeof value === 'string') {
-                  return value;
-                }
-
-                return (
-                  <UserMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                );
-              })}
+              contents={message.content}
               timestamp={message.timestamp}
             />
           </Body>

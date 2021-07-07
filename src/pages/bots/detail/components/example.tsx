@@ -84,7 +84,7 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
             </MessageHeader>
             <StyledMessage
               mine={true}
-              contents={example.input}
+              contents={[example.input]}
               timestamp={timestamp}
             />
           </div>
@@ -98,7 +98,7 @@ export const Example: React.FC<ExampleProps> = React.memo(function Example({
             </MessageHeader>
             <StyledMessage
               mine={false}
-              contents={example.output}
+              contents={[example.output]}
               timestamp={timestamp}
             />
           </div>

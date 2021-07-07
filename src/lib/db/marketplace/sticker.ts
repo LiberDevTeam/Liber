@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Sticker } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 import { getOrbitDB } from '../orbit';
 
 let stickerDB: KeyValueStore<Sticker>;

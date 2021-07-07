@@ -189,6 +189,8 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             </Observer>
           </Messages>
 
+          {/* <StickerPanel placeId={placeId} /> */}
+
           <Footer>
             {place.unreadMessages?.length > 0 ? (
               <ToastWrapper>

@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { Sticker } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 
 const StyledLink = styled(Link)`
   display: flex;
@@ -16,7 +16,7 @@ const RightGroup = styled.div`
 `;
 
 const Name = styled.p`
-  margin-stickertom: ${(props) => props.theme.space[1]}px;
+  margin-bottom: ${(props) => props.theme.space[1]}px;
   font-size: ${(props) => props.theme.fontSizes.lg};
 `;
 
@@ -24,7 +24,7 @@ const Description = styled.p`
   font-size: ${(props) => props.theme.fontSizes.sm};
   font-weight: ${(props) => props.theme.fontWeights.thin};
   color: ${(props) => props.theme.colors.secondaryText};
-  margin-stickertom: ${(props) => props.theme.space[1]}px;
+  margin-bottom: ${(props) => props.theme.space[1]}px;
 `;
 const Price = styled.p`
   color: ${(props) => props.theme.colors.green};

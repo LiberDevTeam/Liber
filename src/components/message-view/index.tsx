@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
-import { UserMention } from '~/components/user-mention';
-import { BotMention } from '~/components/user-mention/bot';
 import { useAppSelector } from '~/hooks';
 import { selectMe } from '~/state/me/meSlice';
 import { selectMessageById } from '~/state/places/messagesSlice';
@@ -76,28 +74,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
             {mine ? null : (
               <UserName>{message.authorName || 'Loading'}</UserName>
             )}
-
             <Message
               mine={mine}
-              contents={message.content.map((value) => {
-                if (typeof value === 'string') {
-                  return value;
-                }
-
-                return value.bot ? (
-                  <BotMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                ) : (
-                  <UserMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                );
-              })}
+              sticker={message.sticker}
+              contents={message.content}
               timestamp={message.timestamp}
             />
           </Body>
