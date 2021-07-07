@@ -111,7 +111,7 @@ export const createNewBot = createAsyncThunk<
       examples,
       keyValAddress: botKeyValue.address.root,
       created: getUnixTime(Date.now()),
-      purchaseQty: 0,
+      qtySold: 0,
     };
 
     Object.keys(bot).forEach((key) => {

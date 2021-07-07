@@ -42,36 +42,3 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
-## Shared DB
-
-```
-feeds OrbitDBAddress {
-  root: 'zdpuApp9D5xQSJuV1x4jdfWAAzKLfRZ9949SpuBRTqVRK3YPa',
-  path: 'feeds'
-}
-explore/places OrbitDBAddress {
-  root: 'zdpuArRZQyEHHEm6JHT5GkEF3ESVYGJ31jbE8ahVzbHDUX6QY',
-  path: 'explore/places'
-}
-explore/messages OrbitDBAddress {
-  root: 'zdpuAyatYt9qV41rwVy85VAB3xb66fPXny4uuH7rPYqWrzEgz',
-  path: 'explore/messages'
-}
-marketplace/stickers/new OrbitDBAddress {
-  root: 'zdpuAmxxN2RxWsvB1Hj4MZ5Kuap2uDkhpG5PAnfPhzyt4VWH8',
-  path: 'marketplace/stickers/new'
-}
-marketplace/bots/new OrbitDBAddress {
-  root: 'zdpuAshd1gdvzDag9tZLKgpQpVyFLCr5CX2fd8MjZpSNb7o5m',
-  path: 'marketplace/bots/new'
-}
-marketplace/bots/ranking OrbitDBAddress {
-  root: 'zdpuAndBaLEbMTpiuK3yWNuiBEhiZ6E6oYCqeuBv1V8CcoEZj',
-  path: 'marketplace/bots/ranking'
-}
-marketplace/stickers/ranking OrbitDBAddress {
-  root: 'zdpuAoxpxkEJ5XyGfY3oZhMLwS7JWkdMqJCNyUHJJ6JVJXgXQ',
-  path: 'marketplace/stickers/ranking'
-}
-```

@@ -32,19 +32,8 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
 
   ['marketplace/bots/ranking', 'marketplace/stickers/ranking'].forEach(
     async (address) => {
-      const db = await orbitdb.keyvalue(address, {
-        // @ts-ignore
-        sortFn: SortByPurchaseQty,
-      });
+      const db = await orbitdb.keyvalue(address);
       console.log(address, db.address);
     }
   );
 });
-
-function SortByPurchaseQty(a, b) {
-  return a.purchaseQty === b.purchaseQty
-    ? a
-    : a.purchaseQty < b.purchaseQty
-    ? -1
-    : 1;
-}

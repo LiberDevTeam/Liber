@@ -36,7 +36,7 @@ export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   ],
   keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
   created: 1622195011,
-  purchaseQty: 100,
+  qtySold: 100,
 }));
 
 export const tmpListingOn: Bot[] = [...Array(1)].map((_, i) => ({
@@ -77,5 +77,5 @@ export const tmpListingOn: Bot[] = [...Array(1)].map((_, i) => ({
   ],
   keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
   created: 1622195011,
-  purchaseQty: 200,
+  qtySold: 200,
 }));

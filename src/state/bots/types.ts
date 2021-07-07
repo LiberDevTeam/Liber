@@ -9,7 +9,7 @@ export interface Bot {
   uid: string;
   keyValAddress: string;
   created: number;
-  purchaseQty: number;
+  qtySold: number;
   category: number;
   name: string;
   description: string;
@@ -23,5 +23,5 @@ export interface Bot {
 export type BotPartialForUpdate = Omit<
   Bot,
   // These are the fields that cannot be updated.
-  'id' | 'uid' | 'keyValAddress' | 'created' | 'purchaseQty'
+  'id' | 'uid' | 'keyValAddress' | 'created' | 'qtySold'
 >;

@@ -8,13 +8,13 @@ export interface Sticker {
   description: string;
   price: number;
   contents: Content[];
-  purchaseQty: number;
+  qtySold: number;
 }
 
 export type StickerPartialForUpdate = Omit<
   Sticker,
   // These are the fields that cannot be updated.
-  'id' | 'uid' | 'keyValAddress' | 'created' | 'purchaseQty'
+  'id' | 'uid' | 'keyValAddress' | 'created' | 'qtySold'
 >;
 
 export interface Content {

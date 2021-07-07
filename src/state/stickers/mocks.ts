@@ -23,7 +23,7 @@ export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
     { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
   ],
   created: 1619251130,
-  purchaseQty: 300,
+  qtySold: 300,
 }));
 
 export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
@@ -50,5 +50,5 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
   ],
   created: 1619251130,
   purchased: true,
-  purchaseQty: 140,
+  qtySold: 140,
 }));

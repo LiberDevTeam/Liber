@@ -67,7 +67,7 @@ export const createNewSticker = createAsyncThunk<
         }))
       ),
       created: getUnixTime(Date.now()),
-      purchaseQty: 0,
+      qtySold: 0,
     };
 
     Object.keys(sticker).forEach((key) => {
