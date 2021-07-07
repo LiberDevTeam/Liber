@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Bot, Example } from '~/state/bots/botsSlice';
+import { Bot, Example } from '~/state/bots/types';
 import { getOrbitDB } from './orbit';
 
 type BotDBValue = string | Example[] | number | boolean;

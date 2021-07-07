@@ -3,7 +3,8 @@ import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
 import { connectMarketplaceBotRankingKeyValue } from '~/lib/db/marketplace/bot/ranking';
 import { marketplaceBotSearch } from '~/lib/search';
 import { AppDispatch, RootState } from '~/state/store';
-import { addBots, Bot } from '../bots/botsSlice';
+import { addBots } from '../bots/botsSlice';
+import { Bot } from '../bots/types';
 
 export const fetchSearchResult = createAsyncThunk<
   void,

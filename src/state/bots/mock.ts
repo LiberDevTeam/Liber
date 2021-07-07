@@ -1,4 +1,4 @@
-import { Bot } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 
 export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   id: `b83e2b45-85eb-46c1-9509-3598e86d1d69${i}`,
@@ -36,7 +36,7 @@ export const tmpPurchased: Bot[] = [...Array(10)].map((_, i) => ({
   ],
   keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
   created: 1622195011,
-  purchased: 1622197011,
+  purchaseQty: 100,
 }));
 
 export const tmpListingOn: Bot[] = [...Array(1)].map((_, i) => ({
@@ -77,4 +77,5 @@ export const tmpListingOn: Bot[] = [...Array(1)].map((_, i) => ({
   ],
   keyValAddress: 'zdpuB1UwZHJbcStBbuVgKDzEvayVw1VhXoQTkK3TWnyPA3iRh',
   created: 1622195011,
+  purchaseQty: 200,
 }));

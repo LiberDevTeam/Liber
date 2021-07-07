@@ -1,4 +1,4 @@
-import { Bot } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 import { Mention, Message } from '~/state/places/type';
 import { User } from '~/state/users/type';
 

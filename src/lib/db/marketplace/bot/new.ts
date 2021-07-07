@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Bot } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 import { getOrbitDB } from '../../orbit';
 
 let botDB: KeyValueStore<Bot>;
