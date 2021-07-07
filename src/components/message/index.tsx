@@ -1,7 +1,11 @@
 import { fromUnixTime } from 'date-fns';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { IpfsContent } from '~/components/ipfs-content';
+import { UserMention } from '~/components/user-mention';
+import { BotMention } from '~/components/user-mention/bot';
 import { formatTime, formatTimeStrict } from '~/helpers/time';
+import { MessageContent, StickerItem } from '~/state/places/type';
 
 const Text = styled.div<{ mine: boolean }>`
   padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
@@ -27,23 +31,52 @@ const Timestamp = styled.span`
   margin-top: ${(props) => props.theme.space[2]}px;
 `;
 
+const StickerView = styled(IpfsContent)`
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+`;
+
 interface Props {
   mine: boolean;
-  contents: ReactNode;
+  contents: MessageContent;
   timestamp: number;
   className?: string;
+  sticker?: StickerItem;
 }
 
 export const Message: React.FC<Props> = React.memo(function Message({
   mine,
   contents,
   timestamp,
+  sticker,
   className,
 }) {
   const time = fromUnixTime(timestamp);
   return (
     <Text mine={mine} className={className}>
-      <div>{contents}</div>
+      {sticker && <StickerView cid={sticker.cid} />}
+      <div>
+        {contents.map((value) => {
+          if (typeof value === 'string') {
+            return value;
+          }
+
+          return value.bot ? (
+            <BotMention
+              key={value.userId}
+              userId={value.userId}
+              name={value.name}
+            />
+          ) : (
+            <UserMention
+              key={value.userId}
+              userId={value.userId}
+              name={value.name}
+            />
+          );
+        })}
+      </div>
       <Timestamp title={formatTimeStrict(time)}>{formatTime(time)}</Timestamp>
     </Text>
   );

@@ -113,7 +113,7 @@ export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
     if (!sticker) {
       dispatch(fetchSticker({ stickerId, address }));
     }
-  }, [stickerId, address]);
+  }, [dispatch, stickerId, address, sticker]);
 
   // TODO loading;
   if (!sticker) return null;

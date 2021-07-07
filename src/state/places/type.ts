@@ -44,6 +44,14 @@ export interface Mention {
   bot: boolean;
 }
 
+export interface StickerItem {
+  id: string;
+  cid: string;
+  address: string;
+}
+
+export type MessageContent = Array<string | Mention>;
+
 export interface Message {
   id: string; // UUID
   uid: string;
@@ -51,10 +59,10 @@ export interface Message {
   timestamp: number;
   text?: string;
   attachmentCidList?: string[];
-  content: Array<string | Mention>;
-  // mentioned user ids
-  mentions: string[];
+  content: MessageContent;
   bot: boolean;
+
+  sticker?: StickerItem;
 
   placeId: string;
   placeAddress: string;

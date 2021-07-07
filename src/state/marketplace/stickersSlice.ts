@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
 import { marketplaceStickerSearch } from '~/lib/search';
+import { addStickers } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 import { AppDispatch, RootState } from '~/state/store';
-import { addStickers, Sticker } from '../stickers/stickersSlice';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
