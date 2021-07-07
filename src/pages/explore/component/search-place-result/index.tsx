@@ -69,7 +69,7 @@ export const SearchPlaceResult: React.FC<SearchPlaceResultProps> = React.memo(
           searchText,
         })
       );
-    }, [searchText]);
+    }, [dispatch, searchText]);
 
     if (result.length === 0) {
       return <NotFound />;

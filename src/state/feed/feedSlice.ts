@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { connectFeedDB } from '~/lib/db/feed';
 import { AppDispatch, RootState } from '~/state/store';
 import { Message, Place } from '../places/type';
@@ -28,13 +28,14 @@ interface FeedItemPlace extends Place, WithHash {
 export type FeedItem = FeedItemMessage | FeedItemPlace;
 
 export interface FeedsState {
+  loading: boolean;
   items: FeedItem[];
 }
 
 export const limit = 30;
 
 export const fetchFeedItems = createAsyncThunk<
-  void,
+  FeedItem[],
   { hash: string } | void,
   { dispatch: AppDispatch; state: RootState }
 >('feed/fetchFeedItems', async (args, { dispatch }) => {
@@ -44,31 +45,39 @@ export const fetchFeedItems = createAsyncThunk<
   if (args) {
     options.lt = args.hash;
   }
-  const feedItems = db
+
+  return db
     .iterator(options)
     .collect()
     .map((item) => ({ ...item.payload.value, feedHash: item.hash }));
-  if (feedItems) {
-    dispatch(setFeedItems(feedItems));
-  }
 });
 
 const initialState: FeedsState = {
+  loading: false,
   items: [],
 };
 
 export const feedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {
-    setFeedItems: (state, action: PayloadAction<FeedItem[]>) => {
-      state.items = [...action.payload];
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFeedItems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchFeedItems.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchFeedItems.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload);
+
+        state.items = state.items.concat(action.payload);
+      });
   },
 });
 
-export const { setFeedItems } = feedSlice.actions;
-
-export const selectFeed = (state: RootState) => state.feed.items;
+export const selectFeed = (state: RootState): FeedItem[] => state.feed.items;
 
 export default feedSlice.reducer;

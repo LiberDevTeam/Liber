@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -6,9 +6,6 @@ import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
 import { NotFound } from '~/components/not-found';
 import { FeedItemMessageDefault } from '~/pages/home/components/feed-item';
-import { FeedItemMessageBigImage } from '~/pages/home/components/feed-item-big-image';
-import { Appearance } from '~/state/feed/feedSlice';
-import { Message } from '~/state/places/type';
 import {
   fetchSearchMessageResult,
   selectSearchMessageResult,
@@ -31,18 +28,12 @@ interface SearchMessageResultProps {
   searchText: string;
 }
 
-const feedHeight = {
-  [Appearance.DEFAULT]: 250,
-  [Appearance.BIG_CARD]: 500 + theme.space[4],
-};
-
 export const SearchMessageResult: React.FC<SearchMessageResultProps> =
   React.memo(function SearchMessageResult({ searchText }) {
     const dispatch = useDispatch();
     const result = useSelector(selectSearchMessageResult);
-    const [appearance, setAppearance] = useState<{ [key: string]: Appearance }>(
-      {}
-    );
+    const listRef = useRef<VariableSizeList<any>>(null);
+    const itemHeights = useRef<{ [index: number]: number }>({});
 
     useEffect(() => {
       dispatch(
@@ -50,28 +41,21 @@ export const SearchMessageResult: React.FC<SearchMessageResultProps> =
           searchText,
         })
       );
-    }, [searchText]);
+    }, [dispatch, searchText]);
 
-    useEffect(() => {
-      setAppearance(
-        result.reduce((prev, message) => {
-          // TODO improve the decision logic
-          if (
-            Math.floor(Math.random() * 5) === 0 &&
-            message.attachmentCidList?.length
-          ) {
-            return {
-              ...prev,
-              [message.id]: Appearance.BIG_CARD,
-            };
-          }
-          return {
-            ...prev,
-            [message.id]: Appearance.DEFAULT,
-          };
-        }, {})
-      );
-    }, [result]);
+    const handleRenderRow = useCallback(
+      (index: number, clientHeight: number) => {
+        if (
+          itemHeights.current[index] === undefined ||
+          // Update only if the new height is greater than the current height.
+          itemHeights.current[index] < clientHeight
+        ) {
+          itemHeights.current[index] = clientHeight;
+          listRef.current?.resetAfterIndex(index);
+        }
+      },
+      [listRef]
+    );
 
     if (result.length === 0) {
       return <NotFound />;
@@ -84,19 +68,22 @@ export const SearchMessageResult: React.FC<SearchMessageResultProps> =
             <VariableSizeList
               height={height}
               itemCount={result.length}
-              itemSize={(index) => {
-                return feedHeight[appearance[result[index].id]];
-              }}
+              itemSize={(index) =>
+                itemHeights.current[index] + theme.space[8] || theme.space[8]
+              }
               width={width}
+              ref={listRef}
             >
               {({ index, style }) => (
                 <Link
                   to={`/places/${result[index].placeAddress}/${result[index].placeId}`}
                 >
                   <ItemContainer key={result[index].id} style={style}>
-                    <SearchMessageResultItem
+                    <FeedItemMessageDefault
                       message={result[index]}
-                      appearance={appearance[result[index].id]}
+                      onRender={(clientHeight) => {
+                        handleRenderRow(index, clientHeight);
+                      }}
                     />
                   </ItemContainer>
                 </Link>
@@ -107,22 +94,3 @@ export const SearchMessageResult: React.FC<SearchMessageResultProps> =
       </Root>
     );
   });
-
-interface SearchMessageResultItemProps {
-  message: Message;
-  appearance: Appearance;
-}
-
-const SearchMessageResultItem: React.FC<SearchMessageResultItemProps> = ({
-  message,
-  appearance,
-}) => {
-  switch (appearance) {
-    case Appearance.BIG_CARD:
-      return <FeedItemMessageBigImage message={message} />;
-    case Appearance.DEFAULT:
-      return <FeedItemMessageDefault message={message} />;
-    default:
-      return <FeedItemMessageDefault message={message} />;
-  }
-};

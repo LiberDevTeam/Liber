@@ -1,32 +1,26 @@
-import React, { memo, useEffect, useState } from 'react';
+import Observer from '@researchgate/react-intersection-observer';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import {
-  Appearance,
   FeedItem,
   fetchFeedItems,
   ItemType,
-  limit,
   selectFeed,
 } from '~/state/feed/feedSlice';
 import { selectMe } from '~/state/me/meSlice';
+import { theme } from '~/theme';
 import { username } from '../../helpers';
 import BaseLayout from '../../templates';
-import { theme } from '../../theme';
 import {
   FeedItemMessageDefault,
   FeedItemPlaceDefault,
 } from './components/feed-item';
-import {
-  FeedItemMessageBigImage,
-  FeedItemPlaceBigImage,
-} from './components/feed-item-big-image';
 
 const Header = styled.div`
   display: flex;
@@ -88,56 +82,41 @@ const ItemContainer = styled.div`
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 
-const feedHeight = {
-  [Appearance.DEFAULT]: {
-    [ItemType.MESSAGE]: 320 + theme.space[14],
-    [ItemType.PLACE]: 320 + theme.space[4],
-  },
-  [Appearance.BIG_CARD]: {
-    [ItemType.MESSAGE]: 500 + theme.space[4],
-    [ItemType.PLACE]: 500 + theme.space[4],
-  },
-};
-
+let fetching = false;
 export const HomePage: React.FC = memo(function HomePage() {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
+  const listRef = useRef<VariableSizeList<any>>(null);
   const items = useSelector(selectFeed);
-  const [appearance, setAppearance] = useState<{ [key: string]: Appearance }>(
-    {}
-  );
+  const itemHeights = useRef<{ [index: number]: number }>({});
 
   useEffect(() => {
     dispatch(fetchFeedItems());
   }, [dispatch]);
 
-  useEffect(() => {
-    setAppearance(
-      items.reduce((prev, item) => {
-        // TODO improve the decision logic
-        if (
-          Math.floor(Math.random() * 10) === 0 &&
-          ((item.itemType === ItemType.MESSAGE &&
-            item.attachmentCidList?.length) ||
-            (item.itemType === ItemType.PLACE && item.avatarCid))
-        ) {
-          return {
-            ...prev,
-            [item.id]: Appearance.BIG_CARD,
-          };
-        }
-        return {
-          ...prev,
-          [item.id]: Appearance.DEFAULT,
-        };
-      }, {})
-    );
-  }, [items]);
+  const handleRenderRow = useCallback(
+    (index: number, clientHeight: number) => {
+      if (
+        itemHeights.current[index] === undefined ||
+        // Update only if the new height is greater than the current height.
+        itemHeights.current[index] < clientHeight
+      ) {
+        itemHeights.current[index] = clientHeight;
+        listRef.current?.resetAfterIndex(index);
+      }
+    },
+    [listRef]
+  );
 
-  // wait for finishing the initialization of appearance.
-  if (items.length && appearance[items[items.length - 1].id] === undefined) {
-    return null;
-  }
+  const handleIntersection = () => {
+    if (fetching === false) {
+      dispatch(fetchFeedItems({ hash: items[items.length - 1].feedHash })).then(
+        () => {
+          fetching = false;
+        }
+      );
+    }
+  };
 
   return (
     <BaseLayout>
@@ -158,74 +137,60 @@ export const HomePage: React.FC = memo(function HomePage() {
       <Greeting>Hello 😊</Greeting>
       <Username>{username(me)}</Username>
       <Feed>
-        <InfiniteLoader
-          isItemLoaded={() => true}
-          itemCount={limit}
-          loadMoreItems={(): Promise<any> | null =>
-            new Promise<any>(() => {
-              dispatch(
-                fetchFeedItems({ hash: items[items.length - 1].feedHash })
-              );
-            })
-          }
-        >
-          {({ onItemsRendered, ref }) => (
-            <AutoSizer>
-              {({ height, width }) => (
-                <VariableSizeList
-                  height={height}
-                  onItemsRendered={onItemsRendered}
-                  itemCount={items.length}
-                  itemSize={(index) => {
-                    return feedHeight[appearance[items[index].id]][
-                      items[index].itemType
-                    ];
-                  }}
-                  width={width}
-                  ref={ref}
-                >
-                  {({ index, style }) => (
-                    <ItemContainer key={items[index].id} style={style}>
-                      <Item
-                        item={items[index]}
-                        appearance={appearance[items[index].id]}
-                      />
-                    </ItemContainer>
-                  )}
-                </VariableSizeList>
+        <AutoSizer>
+          {({ height, width }) => (
+            <VariableSizeList
+              height={height}
+              itemCount={items.length}
+              itemSize={(index) => {
+                return (
+                  itemHeights.current[index] + theme.space[8] || theme.space[14]
+                );
+              }}
+              width={width}
+              ref={listRef}
+            >
+              {({ index, style }) => (
+                <ItemContainer key={items[index].id} style={style}>
+                  <Item
+                    index={index}
+                    item={items[index]}
+                    onRender={handleRenderRow}
+                  />
+                  {index === items.length - 1 ? (
+                    <Observer onChange={handleIntersection}>
+                      <div>helo</div>
+                    </Observer>
+                  ) : null}
+                </ItemContainer>
               )}
-            </AutoSizer>
+            </VariableSizeList>
           )}
-        </InfiniteLoader>
+        </AutoSizer>
       </Feed>
     </BaseLayout>
   );
 });
 
 interface ItemProps {
-  appearance: Appearance;
+  index: number;
   item: FeedItem;
+  onRender: (index: number, clientHeight: number) => void;
 }
 
-const Item: React.FC<ItemProps> = memo(function Item({ item, appearance }) {
+const Item: React.FC<ItemProps> = memo(function Item({
+  index,
+  item,
+  onRender,
+}) {
+  const handleRender = (clientHeight: number) => {
+    onRender(index, clientHeight);
+  };
+
   switch (item.itemType) {
     case ItemType.MESSAGE:
-      switch (appearance) {
-        case Appearance.BIG_CARD:
-          return <FeedItemMessageBigImage message={item} />;
-        case Appearance.DEFAULT:
-          return <FeedItemMessageDefault message={item} />;
-        default:
-          return <FeedItemMessageDefault message={item} />;
-      }
+      return <FeedItemMessageDefault message={item} onRender={handleRender} />;
     case ItemType.PLACE:
-      switch (appearance) {
-        case Appearance.BIG_CARD:
-          return <FeedItemPlaceBigImage place={item} />;
-        case Appearance.DEFAULT:
-          return <FeedItemPlaceDefault place={item} />;
-        default:
-          return <FeedItemPlaceDefault place={item} />;
-      }
+      return <FeedItemPlaceDefault place={item} onRender={handleRender} />;
   }
 });
