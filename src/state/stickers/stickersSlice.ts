@@ -39,7 +39,7 @@ export interface Sticker extends PartialForUpdate {
   uid: string;
   keyValAddress: string;
   created: number;
-  purchased?: boolean; // means the current user purchased the sticker.
+  purchaseQty: number;
 }
 
 export interface Content {
@@ -74,6 +74,7 @@ export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
     { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
   ],
   created: 1619251130,
+  purchaseQty: i,
 }));
 
 export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
@@ -99,7 +100,7 @@ export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
     { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
   ],
   created: 1619251130,
-  purchased: true,
+  purchaseQty: i,
 }));
 
 export const createNewSticker = createAsyncThunk<
@@ -137,6 +138,7 @@ export const createNewSticker = createAsyncThunk<
         }))
       ),
       created: getUnixTime(Date.now()),
+      purchaseQty: 0,
     };
 
     Object.keys(sticker).forEach((key) => {

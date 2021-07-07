@@ -67,7 +67,7 @@ export interface Bot extends PartialForUpdate {
   uid: string;
   keyValAddress: string;
   created: number;
-  purchased?: number;
+  purchaseQty: number;
 }
 
 export const fetchBot = createAsyncThunk<
@@ -134,6 +134,7 @@ export const createNewBot = createAsyncThunk<
       examples,
       keyValAddress: botKeyValue.address.root,
       created: getUnixTime(Date.now()),
+      purchaseQty: 0,
     };
 
     Object.keys(bot).forEach((key) => {

@@ -31,6 +31,7 @@ export const readBotFromDB = (kv: KeyValueStore<BotDBValue>): Bot => {
     description: kv.get('description') as string,
     examples: kv.get('examples') as Example[],
     keyValAddress: kv.get('keyValAddress') as string,
+    purchaseQty: kv.get('purchaseQty') as number,
     created: kv.get('created') as number,
   };
 };
