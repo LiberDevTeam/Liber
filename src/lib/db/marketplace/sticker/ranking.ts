@@ -19,7 +19,7 @@ export const connectMarketplaceStickerRankingKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   stickerDB = await orbitDB.keyvalue<Sticker>(
-    '/orbitdb/zdpuAoxpxkEJ5XyGfY3oZhMLwS7JWkdMqJCNyUHJJ6JVJXgXQ/marketplace/stickers/new'
+    '/orbitdb/zdpuApFsqGRAmWvt94t4zbzzohBctSTAnJCAVE6qmaw1gKuN8/marketplace/stickers/ranking'
   );
   await stickerDB.load();
   return stickerDB;

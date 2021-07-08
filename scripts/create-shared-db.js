@@ -32,7 +32,10 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
 
   ['marketplace/bots/ranking', 'marketplace/stickers/ranking'].forEach(
     async (address) => {
-      const db = await orbitdb.keyvalue(address);
+      const db = await orbitdb.keyvalue(address, {
+        accessController: { write: ['*'] },
+        // sortFn: SortByQtySold,
+      });
       console.log(address, db.address);
     }
   );

@@ -35,7 +35,9 @@ export const fetchRanking = createAsyncThunk<
   { dispatch: AppDispatch; state: RootState }
 >('marketplace/stickers/fetchRanking', async ({ page }, { dispatch }) => {
   const db = await connectMarketplaceStickerRankingKeyValue();
-  const stickers = Object.values(db.all).reverse();
+  const stickers = Object.values(db.all)
+    .filter((a: any): a is Sticker => !!a)
+    .sort((a, b) => (a.qtySold > b.qtySold ? -1 : 1));
 
   dispatch(addStickers(stickers));
 

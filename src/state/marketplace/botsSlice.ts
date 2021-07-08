@@ -36,7 +36,9 @@ export const fetchRanking = createAsyncThunk<
 >('marketplace/bots/fetchRanking', async ({ page }, { dispatch }) => {
   // TODO change to connect the ranking db
   const db = await connectMarketplaceBotRankingKeyValue();
-  const bots = Object.values(db.all).reverse();
+  const bots = Object.values(db.all)
+    .filter((a: any): a is Bot => !!a)
+    .sort((a, b) => (a.qtySold > b.qtySold ? -1 : 1));
 
   dispatch(addBots(bots));
 
