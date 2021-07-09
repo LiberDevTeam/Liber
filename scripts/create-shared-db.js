@@ -20,8 +20,8 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   [
     'explore/places',
     'explore/messages',
-    'marketplace/bots',
-    'marketplace/stickers',
+    'marketplace/bots/new',
+    'marketplace/stickers/new',
   ].forEach(async (address) => {
     const db = await orbitdb.keyvalue(address, {
       // TODO restricts users from updating other user's records.
@@ -29,4 +29,14 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
     });
     console.log(address, db.address);
   });
+
+  ['marketplace/bots/ranking', 'marketplace/stickers/ranking'].forEach(
+    async (address) => {
+      const db = await orbitdb.keyvalue(address, {
+        accessController: { write: ['*'] },
+        // sortFn: SortByQtySold,
+      });
+      console.log(address, db.address);
+    }
+  );
 });

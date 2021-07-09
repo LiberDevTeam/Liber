@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { useAppSelector } from '~/hooks';
-import { Bot, selectBotById } from '~/state/bots/botsSlice';
+import { selectBotById } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 import { selectMessageById } from '~/state/places/messagesSlice';
 import { Message } from '../message';
 

@@ -12,13 +12,15 @@ import {
   createBotKeyValue,
   readBotFromDB,
 } from '~/lib/db/bot';
-import { connectMarketplaceBotKeyValue } from '~/lib/db/marketplace/bot';
+import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
+import { connectMarketplaceBotRankingKeyValue } from '~/lib/db/marketplace/bot/ranking';
 import { createUserDB } from '~/lib/db/user';
 import { tmpPurchased } from '~/state/bots/mock';
 import { AppDispatch, RootState } from '~/state/store';
 import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
+import { Bot, BotPartialForUpdate, Example } from './types';
 
 export const categories = [
   'ANALYTICS',
@@ -44,31 +46,6 @@ export const categoryOptions = categories.map((label, index) => ({
   value: `${index}`,
   label,
 }));
-
-interface PartialForUpdate {
-  category: number;
-  name: string;
-  description: string;
-  avatar: string;
-  price: number;
-  readme: string;
-  sourceCode: string;
-  examples: Example[];
-}
-
-export interface Example {
-  title: string;
-  input: string;
-  output: string;
-}
-
-export interface Bot extends PartialForUpdate {
-  id: string;
-  uid: string;
-  keyValAddress: string;
-  created: number;
-  purchased?: number;
-}
 
 export const fetchBot = createAsyncThunk<
   void,
@@ -134,6 +111,7 @@ export const createNewBot = createAsyncThunk<
       examples,
       keyValAddress: botKeyValue.address.root,
       created: getUnixTime(Date.now()),
+      qtySold: 0,
     };
 
     Object.keys(bot).forEach((key) => {
@@ -157,8 +135,12 @@ export const createNewBot = createAsyncThunk<
     };
     userDB.set('data', newUser);
 
-    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
+    const marketplaceBotDB = await connectMarketplaceBotNewKeyValue();
     await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
+
+    const marketplaceBotRankingDB =
+      await connectMarketplaceBotRankingKeyValue();
+    await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
 
     dispatch(addBot(bot));
     dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
@@ -206,7 +188,7 @@ export const updateBot = createAsyncThunk<
       address,
     });
 
-    const partial: PartialForUpdate = {
+    const partial: BotPartialForUpdate = {
       category,
       name,
       description,
@@ -218,16 +200,21 @@ export const updateBot = createAsyncThunk<
     };
 
     Object.keys(partial).forEach((key) => {
-      const v = partial[key as keyof PartialForUpdate];
+      const v = partial[key as keyof BotPartialForUpdate];
       v && botKeyValue.put(key, v);
     });
 
     const bot = readBotFromDB(botKeyValue);
-    const marketplaceBotDB = await connectMarketplaceBotKeyValue();
-    await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, {
+    const newBot = {
       ...bot,
       ...partial,
-    });
+    };
+    const marketplaceBotNewDB = await connectMarketplaceBotNewKeyValue();
+    await marketplaceBotNewDB.put(`${bot.keyValAddress}/${bot.id}`, newBot);
+
+    const marketplaceBotRankingDB =
+      await connectMarketplaceBotRankingKeyValue();
+    await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, newBot);
 
     dispatch(updateOne({ id: botId, changes: partial }));
     dispatch(push(`/bots/${address}/${botId}`));
@@ -250,7 +237,7 @@ export const botsSlice = createSlice({
       botsAdapter.addOne(state, action.payload),
     updateOne: (
       state,
-      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+      action: PayloadAction<{ id: string; changes: BotPartialForUpdate }>
     ) =>
       botsAdapter.updateOne(state, {
         id: action.payload.id,

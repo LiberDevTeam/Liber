@@ -1,5 +1,5 @@
 import MiniSearch from 'minisearch';
-import { Bot } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 import { Message, Place } from '~/state/places/type';
 import { Sticker } from '~/state/stickers/types';
 

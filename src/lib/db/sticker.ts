@@ -30,6 +30,7 @@ export const readStickerFromDB = (
     description: kv.get('description') as string,
     contents: kv.get('contents') as Content[],
     keyValAddress: kv.get('keyValAddress') as string,
+    qtySold: kv.get('qtySold') as number,
     created: kv.get('created') as number,
   };
 };

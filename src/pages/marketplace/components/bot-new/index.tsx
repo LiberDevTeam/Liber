@@ -4,18 +4,10 @@ import styled from 'styled-components';
 import { Pagination } from '~/components/pagination';
 import { fetchNew, selectNewBotsByPage } from '~/state/marketplace/botsSlice';
 import { BotItem } from '../bot-item';
+import { ListItem } from '../list-item';
 
 const Root = styled.div`
   margin: ${(props) => props.theme.space[3]}px 0;
-`;
-
-const List = styled.ul``;
-
-const ListItem = styled.li`
-  width: 100%;
-  padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-bottom: ${(props) =>
-    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 export const BotNew: React.FC = memo(function BotNew() {
@@ -38,7 +30,7 @@ export const BotNew: React.FC = memo(function BotNew() {
 
   return (
     <Root>
-      <List>
+      <ul>
         {bots &&
           bots.map(
             (bot) =>
@@ -48,7 +40,7 @@ export const BotNew: React.FC = memo(function BotNew() {
                 </ListItem>
               )
           )}
-      </List>
+      </ul>
       <Pagination current={page} onChange={handleChangePage} />
     </Root>
   );
