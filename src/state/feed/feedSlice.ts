@@ -28,11 +28,11 @@ interface FeedItemPlace extends Place, WithHash {
 export type FeedItem = FeedItemMessage | FeedItemPlace;
 
 export interface FeedsState {
-  loading: boolean;
+  hasNext: boolean;
   items: FeedItem[];
 }
 
-export const limit = 30;
+export const limit = 5;
 
 export const fetchFeedItems = createAsyncThunk<
   FeedItem[],
@@ -41,19 +41,18 @@ export const fetchFeedItems = createAsyncThunk<
 >('feed/fetchFeedItems', async (args, { dispatch }) => {
   const db = await connectFeedDB();
 
-  const options: { limit: number; lt?: string } = { limit };
-  if (args) {
-    options.lt = args.hash;
-  }
-
   return db
-    .iterator(options)
+    .iterator({
+      limit,
+      lt: args?.hash ?? undefined,
+      reverse: true,
+    })
     .collect()
     .map((item) => ({ ...item.payload.value, feedHash: item.hash }));
 });
 
 const initialState: FeedsState = {
-  loading: false,
+  hasNext: true,
   items: [],
 };
 
@@ -62,19 +61,12 @@ export const feedSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchFeedItems.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchFeedItems.rejected, (state) => {
-        state.loading = false;
-      })
-      .addCase(fetchFeedItems.fulfilled, (state, action) => {
-        state.loading = false;
-        console.log(action.payload);
-
-        state.items = state.items.concat(action.payload);
-      });
+    builder.addCase(fetchFeedItems.fulfilled, (state, action) => {
+      if (action.payload.length < limit) {
+        state.hasNext = false;
+      }
+      state.items = state.items.concat(action.payload);
+    });
   },
 });
 

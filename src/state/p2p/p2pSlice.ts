@@ -20,7 +20,7 @@ import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { Message, Place, PlacePermission } from '~/state/places/type';
-import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { ItemType } from '../feed/feedSlice';
 import { finishInitialization } from '../isInitialized';
@@ -35,7 +35,7 @@ const createMessageReceiveHandler =
     placeId,
     myId,
   }: {
-    dispatch: AppThunkDispatch;
+    dispatch: AppDispatch;
     placeId: string;
     myId: string;
   }) =>
@@ -53,7 +53,7 @@ const createMessageReceiveHandler =
 export const initApp = createAsyncThunk<
   void,
   void,
-  { dispatch: AppThunkDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState }
 >('p2p/initApp', async (_, { dispatch, getState }) => {
   const state = getState();
   await Promise.all(

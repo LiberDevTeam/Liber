@@ -15,7 +15,7 @@ import {
   placeUpdated,
 } from '~/state/actionCreater';
 import { connectToMessages } from '~/state/places/async-actions';
-import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
@@ -77,7 +77,7 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 export const joinPlace = createAsyncThunk<
   void,
   PlacePK,
-  { dispatch: AppThunkDispatch }
+  { dispatch: AppDispatch }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch }) => {
   const kv = await connectPlaceKeyValue({
     placeId,
@@ -100,7 +100,7 @@ export const joinPlace = createAsyncThunk<
 export const openProtectedPlace = createAsyncThunk<
   void,
   { placeId: string; password: string },
-  { dispatch: AppThunkDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState }
 >(
   `${MODULE_NAME}/openProtectedPlace`,
   async ({ placeId, password }, { dispatch, getState }) => {

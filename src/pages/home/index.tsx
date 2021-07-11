@@ -1,10 +1,10 @@
-import Observer from '@researchgate/react-intersection-observer';
 import React, { memo, useCallback, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeList } from 'react-window';
+import { ListOnItemsRenderedProps, VariableSizeList } from 'react-window';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
+import { useAppDispatch, useAppSelector } from '~/hooks';
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import {
@@ -82,11 +82,12 @@ const ItemContainer = styled.div`
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 
-let fetching = false;
+let loading = false;
 export const HomePage: React.FC = memo(function HomePage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const me = useSelector(selectMe);
   const listRef = useRef<VariableSizeList<any>>(null);
+  const hasNext = useAppSelector((state) => state.feed.hasNext);
   const items = useSelector(selectFeed);
   const itemHeights = useRef<{ [index: number]: number }>({});
 
@@ -108,13 +109,15 @@ export const HomePage: React.FC = memo(function HomePage() {
     [listRef]
   );
 
-  const handleIntersection = () => {
-    if (fetching === false) {
-      dispatch(fetchFeedItems({ hash: items[items.length - 1].feedHash })).then(
-        () => {
-          fetching = false;
-        }
+  const handleItemRendered = async ({
+    visibleStopIndex,
+  }: ListOnItemsRenderedProps) => {
+    if (items.length === visibleStopIndex + 1 && loading === false && hasNext) {
+      loading = true;
+      await dispatch(
+        fetchFeedItems({ hash: items[items.length - 1].feedHash })
       );
+      loading = false;
     }
   };
 
@@ -147,6 +150,7 @@ export const HomePage: React.FC = memo(function HomePage() {
                   itemHeights.current[index] + theme.space[8] || theme.space[14]
                 );
               }}
+              onItemsRendered={handleItemRendered}
               width={width}
               ref={listRef}
             >
@@ -157,11 +161,6 @@ export const HomePage: React.FC = memo(function HomePage() {
                     item={items[index]}
                     onRender={handleRenderRow}
                   />
-                  {index === items.length - 1 ? (
-                    <Observer onChange={handleIntersection}>
-                      <div>helo</div>
-                    </Observer>
-                  ) : null}
                 </ItemContainer>
               )}
             </VariableSizeList>
