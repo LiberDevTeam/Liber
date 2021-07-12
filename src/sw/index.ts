@@ -56,6 +56,7 @@ const imageHandler = async ({ url }: { url: URL }) => {
   }
 
   const content = await readIPFSContent(await ipfsNode.cat(match[1]));
+
   const contentType = await FileType.fromBlob(content);
 
   const headers = new Headers();

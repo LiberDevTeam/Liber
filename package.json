@@ -101,7 +101,6 @@
     "react-tabs": "^3.2.2",
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
-    "react-window-infinite-loader": "^1.0.3",
     "redux-logger": "^3.0.6",
     "remark-gfm": "^1.0.0",
     "resolve": "1.20.0",

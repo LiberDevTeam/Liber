@@ -3,6 +3,7 @@ import React, {
   memo,
   ReactElement,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import styled from 'styled-components';
@@ -12,6 +13,7 @@ interface IpfsContentProps {
   className?: string;
   style?: CSSProperties;
   fallbackComponent?: ReactElement;
+  onLoad?: () => void;
 }
 
 const Image = styled.img`
@@ -21,7 +23,8 @@ const Image = styled.img`
 `;
 
 export const IpfsContent: React.FC<IpfsContentProps> = memo(
-  function IpfsContent({ className, cid, style, fallbackComponent }) {
+  function IpfsContent({ className, cid, style, fallbackComponent, onLoad }) {
+    const ref = useRef<HTMLImageElement>(null);
     const [mimeType, setMimeType] = useState<string | null>(null);
     const [content, setContent] = useState<string | null>(null);
     const url = `/view/${cid}`;
@@ -54,7 +57,15 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
       case 'image/jpeg':
       case 'image/png':
       case 'image/webp':
-        return <Image className={className} src={url} style={style} />;
+        return (
+          <Image
+            className={className}
+            src={url}
+            style={style}
+            ref={ref}
+            onLoad={onLoad}
+          />
+        );
     }
 
     if (mimeType.includes('audio/')) {
