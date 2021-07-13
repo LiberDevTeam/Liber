@@ -110,7 +110,7 @@ export const createNewPlace = createAsyncThunk<
   ) => {
     const { me } = getState();
 
-    const cid = await addIpfsContent(dispatch, avatar);
+    const cid = await addIpfsContent(avatar);
 
     let swarmKey;
     if (isPrivate) {

@@ -59,7 +59,9 @@ export const ProfilePage: React.FC = () => {
 
   const handleClickEdit = useCallback(() => {
     dispatch(push('/profile/edit'));
-  }, []);
+  }, [dispatch]);
+
+  console.log(me.avatarCid);
 
   return (
     <BaseLayout

@@ -22,28 +22,35 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
+const Video = styled.video`
+  width: 80%;
+  object-fit: cover;
+`;
+
+function resolveVideoType(mimeType: string): string {
+  if (mimeType === 'video/quicktime') {
+    return 'video/mp4';
+  }
+
+  return mimeType;
+}
+
 export const IpfsContent: React.FC<IpfsContentProps> = memo(
   function IpfsContent({ className, cid, style, fallbackComponent, onLoad }) {
     const ref = useRef<HTMLImageElement>(null);
     const [mimeType, setMimeType] = useState<string | null>(null);
-    const [content, setContent] = useState<string | null>(null);
     const url = `/view/${cid}`;
 
     useEffect(() => {
-      if (content === null) {
-        fetch(url)
-          .then((res) => {
-            setMimeType(res.headers.get('Content-Type'));
-            return res.blob();
-          })
-          .then((blob) => {
-            setContent(URL.createObjectURL(blob));
-          });
+      if (mimeType === null) {
+        fetch(url).then((res) => {
+          setMimeType(res.headers.get('Content-Type') ?? '');
+        });
       }
-    }, [url, content]);
+    }, [url, mimeType]);
 
-    if (!content) {
-      return fallbackComponent ?? null;
+    if (mimeType === null) {
+      return fallbackComponent ?? <div>loading</div>;
     }
 
     if (!mimeType) {
@@ -74,9 +81,9 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
 
     if (mimeType.includes('video/')) {
       return (
-        <video controls>
-          <source src={url} type={mimeType} />
-        </video>
+        <Video controls onLoad={onLoad}>
+          <source src={url} type={resolveVideoType(mimeType)} />
+        </Video>
       );
     }
 

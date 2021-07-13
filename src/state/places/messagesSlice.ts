@@ -91,7 +91,7 @@ export const publishPlaceMessage = createAsyncThunk<
       message.attachmentCidList =
         (await Promise.all(
           attachments.map(async (file) => {
-            return await addIpfsContent(dispatch, file);
+            return await addIpfsContent(file);
           })
         )) || [];
     }
