@@ -105,7 +105,7 @@
     "remark-gfm": "^1.0.0",
     "resolve": "1.20.0",
     "resolve-url-loader": "^4.0.0",
-    "sass-loader": "11.1.1",
+    "sass-loader": "12.1.0",
     "semver": "7.3.5",
     "simple-peer": "^9.11.0",
     "solhint": "^3.3.6",
