@@ -1,11 +1,11 @@
-import { push } from 'connected-react-router';
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { ChatListItem } from '~/components/chat-list-item';
 import { IconButtonCircle } from '~/components/icon-button-circle';
 import { Input } from '~/components/input';
 import { NotFound } from '~/components/not-found';
+import { history } from '~/history';
 import { SvgPlus as AddIcon } from '~/icons/Plus';
 import { SvgSearch as SearchIcon } from '~/icons/Search';
 import { selectAllPlaces } from '~/state/places/placesSlice';
@@ -49,7 +49,6 @@ const List = styled.div`
 
 export const Places: React.FC = React.memo(function Places() {
   const places = useSelector((state: RootState) => selectAllPlaces(state));
-  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState('');
 
   const handleSearchTextChange = useCallback(
@@ -60,7 +59,7 @@ export const Places: React.FC = React.memo(function Places() {
   );
 
   const handleOnClickNew = () => {
-    dispatch(push('/places/new'));
+    history.push('/places/new');
   };
 
   if (places) {

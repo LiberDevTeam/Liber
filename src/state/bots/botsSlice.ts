@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import { history } from '~/history';
 import {
   connectBotKeyValue,
   createBotKeyValue,
@@ -58,7 +58,7 @@ export const fetchBot = createAsyncThunk<
   const db = await connectBotKeyValue({ botId, address });
   const bot = readBotFromDB(db);
   if (!bot) {
-    dispatch(push('/404'));
+    history.push('/404');
     return;
   }
 
@@ -143,7 +143,7 @@ export const createNewBot = createAsyncThunk<
     await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
 
     dispatch(addBot(bot));
-    dispatch(push(`/bots/${bot.keyValAddress}/${bot.id}`));
+    history.push(`/bots/${bot.keyValAddress}/${bot.id}`);
 
     // TODO: show notification
 
@@ -217,7 +217,7 @@ export const updateBot = createAsyncThunk<
     await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, newBot);
 
     dispatch(updateOne({ id: botId, changes: partial }));
-    dispatch(push(`/bots/${address}/${botId}`));
+    history.push(`/bots/${address}/${botId}`);
 
     // TODO: show notification
   }

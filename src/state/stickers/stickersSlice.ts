@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import { history } from '~/history';
 import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
 import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
 import {
@@ -106,7 +106,7 @@ export const createNewSticker = createAsyncThunk<
     );
 
     dispatch(addSticker(sticker));
-    dispatch(push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`));
+    history.push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`);
 
     // TODO: show notification
 
@@ -176,7 +176,7 @@ export const updateSticker = createAsyncThunk<
     );
 
     dispatch(updateOne({ id: stickerId, changes: partial }));
-    dispatch(push(`/stickers/${address}/${stickerId}`));
+    history.push(`/stickers/${address}/${stickerId}`);
 
     // TODO: show notification
   }
@@ -190,7 +190,7 @@ export const fetchSticker = createAsyncThunk<
   const db = await connectStickerKeyValue({ stickerId, address });
   const sticker = readStickerFromDB(db);
   if (!sticker) {
-    dispatch(push('/404'));
+    history.push('/404');
     return;
   }
 

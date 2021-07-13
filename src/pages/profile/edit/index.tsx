@@ -1,4 +1,3 @@
-import { push } from 'connected-react-router';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +6,7 @@ import * as yup from 'yup';
 import { Button } from '~/components/button';
 import { Input as BaseInput } from '~/components/input';
 import { UploadPhoto } from '~/components/upload-photo';
+import { history } from '~/history';
 import { selectMe, updateProfile } from '~/state/me/meSlice';
 import BaseLayout from '~/templates';
 import { fetchIPFSContent } from '~/utils/fetch-file-by-cid';
@@ -56,7 +56,7 @@ export const ProfileEditPage: React.FC = () => {
           name,
         })
       );
-      dispatch(push('/profile'));
+      history.push('/profile');
     },
   });
 

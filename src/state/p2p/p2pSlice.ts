@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { push } from 'connected-react-router';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
+import { history } from '~/history';
 import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectFeedDB } from '~/lib/db/feed';
@@ -182,6 +182,6 @@ export const createNewPlace = createAsyncThunk<
       });
     });
 
-    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
+    history.push(`/places/${placeKeyValue.address.root}/${placeId}`);
   }
 );
