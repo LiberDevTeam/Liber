@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -6,17 +6,13 @@ import { FixedSizeGrid } from 'react-window';
 import styled from 'styled-components';
 import { NotFound } from '~/components/not-found';
 import { omitText } from '~/helpers';
-import { getIpfsNode } from '~/lib/ipfs';
-import {
-  downloadIpfsContent,
-  selectIpfsContentByCid,
-} from '~/state/p2p/ipfsContentsSlice';
 import { Place } from '~/state/places/type';
 import {
   fetchSearchPlaceResult,
   selectSearchPlaceResult,
 } from '~/state/search/searchSlice';
 import { theme } from '~/theme';
+import { fetchIPFSContent } from '~/utils/fetch-file-by-cid';
 
 const ItemContainer = styled.div`
   padding: ${(props) => props.theme.space[2]}px
@@ -118,21 +114,17 @@ const Item: React.FC<ItemProps> = React.memo(function Item({
   width,
   height,
 }) {
-  const dispatch = useDispatch();
-  const bgContent = useSelector(selectIpfsContentByCid(item.avatarCid));
+  const [content, setContent] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      if (!bgContent) {
-        await getIpfsNode();
-        dispatch(downloadIpfsContent({ cid: item.avatarCid }));
-      }
-    })();
-  }, [dispatch, bgContent, item.avatarCid]);
+    fetchIPFSContent(item.avatarCid).then((file) =>
+      setContent(URL.createObjectURL(file))
+    );
+  }, [item.avatarCid]);
 
   return (
     <Link to={`/places/${item.keyValAddress}/${item.id}`}>
-      <ItemRoot bgImg={bgContent?.dataUrl || ''}>
+      <ItemRoot bgImg={content || ''}>
         <Container>
           <Title>{omitText(item.name, 20)}</Title>
           <Description>{omitText(item.description, 15)}</Description>

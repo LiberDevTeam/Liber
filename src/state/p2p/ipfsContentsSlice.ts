@@ -20,8 +20,10 @@ const ipfsContentsAdapter = createEntityAdapter<IpfsContent>({
   selectId: (content) => content.cid,
 });
 
-export const addIpfsContent = async (dispatch: AppDispatch, file: File) => {
-  const content = await (await getIpfsNode()).add({
+export const addIpfsContent = async (file: File): Promise<string> => {
+  const content = await (
+    await getIpfsNode()
+  ).add({
     path: file.name,
     content: file,
   });
@@ -31,15 +33,6 @@ export const addIpfsContent = async (dispatch: AppDispatch, file: File) => {
   if (!fileType) {
     throw new Error('unsupported file format');
   }
-  const dataUrl = await readAsDataURL(file);
-  dispatch(
-    ipfsContentAdded({
-      file,
-      cid,
-      fileType,
-      dataUrl,
-    })
-  );
   return cid;
 };
 
@@ -93,9 +86,9 @@ export const ipfsContentsSlice = createSlice({
 export const { ipfsContentAdded } = ipfsContentsSlice.actions;
 
 const selectors = ipfsContentsAdapter.getSelectors();
-export const selectIpfsContentByCid = (cid?: string) => (
-  state: RootState
-): IpfsContent | undefined =>
-  cid ? selectors.selectById(state.ipfsContents, cid) : undefined;
+export const selectIpfsContentByCid =
+  (cid?: string) =>
+  (state: RootState): IpfsContent | undefined =>
+    cid ? selectors.selectById(state.ipfsContents, cid) : undefined;
 
 export default ipfsContentsSlice.reducer;

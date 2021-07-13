@@ -64,7 +64,7 @@ export const createNewSticker = createAsyncThunk<
       keyValAddress: stickerKeyValue.address.root,
       contents: await Promise.all(
         contents.map(async (content) => ({
-          cid: await addIpfsContent(dispatch, content),
+          cid: await addIpfsContent(content),
         }))
       ),
       created: getUnixTime(Date.now()),
@@ -139,7 +139,7 @@ export const updateSticker = createAsyncThunk<
 
     const newContents = await Promise.all(
       contents.map(async (content) => {
-        const cid = await addIpfsContent(dispatch, content);
+        const cid = await addIpfsContent(content);
         return { cid };
       })
     );

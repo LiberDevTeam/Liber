@@ -7,10 +7,9 @@ import * as yup from 'yup';
 import { Button } from '~/components/button';
 import { Input as BaseInput } from '~/components/input';
 import { UploadPhoto } from '~/components/upload-photo';
-import { readAsDataURL } from '~/lib/readFile';
 import { selectMe, updateProfile } from '~/state/me/meSlice';
-import { selectIpfsContentByCid } from '~/state/p2p/ipfsContentsSlice';
 import BaseLayout from '~/templates';
+import { fetchIPFSContent } from '~/utils/fetch-file-by-cid';
 
 const Label = styled.h2`
   font-weight: ${(props) => props.theme.fontWeights.normal};
@@ -42,13 +41,11 @@ export interface FormValues {
 export const ProfileEditPage: React.FC = () => {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
-  const avatar = useSelector(selectIpfsContentByCid(me.avatarCid));
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    (avatar && avatar.dataUrl) || null
-  );
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
   const formik = useFormik<FormValues>({
     initialValues: {
-      avatar: (avatar && avatar.file) || null,
+      avatar: null,
       name: me.name || '',
     },
     validationSchema,
@@ -64,18 +61,30 @@ export const ProfileEditPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (formik.values.avatar) {
-      readAsDataURL(formik.values.avatar).then((file) => {
-        setAvatarPreview(file);
+    if (me.avatarCid) {
+      fetchIPFSContent(me.avatarCid).then((file) => {
+        formik.setFieldValue('avatar', file);
       });
+    }
+  }, [me.avatarCid, formik]);
+
+  useEffect(() => {
+    if (formik.values.avatar) {
+      setAvatarPreview(URL.createObjectURL(formik.values.avatar));
     } else {
       setAvatarPreview(null);
     }
   }, [formik.values.avatar]);
 
-  const handleChange = useCallback((file: File | null) => {
-    formik.setFieldValue('avatar', file);
-  }, []);
+  const handleChange = useCallback(
+    (file: File | null) => {
+      formik.setFieldValue('avatar', file);
+      if (file) {
+        setAvatarPreview(URL.createObjectURL(file));
+      }
+    },
+    [formik]
+  );
 
   return (
     <BaseLayout

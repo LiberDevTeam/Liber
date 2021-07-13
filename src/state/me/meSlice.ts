@@ -100,14 +100,14 @@ export const updateProfile = createAsyncThunk<
   Me,
   { avatar: File | null; name: string },
   { dispatch: AppDispatch; state: RootState }
->('me/updateProfile', async ({ avatar, name }, { dispatch, getState }) => {
+>('me/updateProfile', async ({ avatar, name }, { getState }) => {
   const me = getState().me;
   const userDB = await connectUserDB({ userId: me.id });
 
   let avatarCid = me.avatarCid;
 
   if (avatar) {
-    avatarCid = await addIpfsContent(dispatch, avatar);
+    avatarCid = await addIpfsContent(avatar);
   }
 
   const newProfile: Me = { ...me, name, avatarCid };

@@ -31,7 +31,7 @@ export const FeedItemMessageDefault: React.FC<FeedItemMessageDefaultProps> =
 
     useEffect(() => {
       dispatch(loadUser({ uid: message.uid }));
-    }, [dispatch, message]);
+    }, [dispatch, message.uid]);
 
     if (!author) {
       return <div>loading...</div>;

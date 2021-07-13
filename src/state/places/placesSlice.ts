@@ -208,7 +208,7 @@ export const updatePlace = createAsyncThunk<
     { placeId, address, name, description, avatar, category },
     { dispatch }
   ) => {
-    const cid = await addIpfsContent(dispatch, avatar);
+    const cid = await addIpfsContent(avatar);
 
     const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
 
