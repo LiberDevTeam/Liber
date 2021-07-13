@@ -6,7 +6,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
-import { push } from 'connected-react-router';
+import { history } from '~/history';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
@@ -237,7 +237,7 @@ export const updatePlace = createAsyncThunk<
     });
 
     dispatch(updateOne({ placeId, changes: partial }));
-    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
+    history.push(`/places/${placeKeyValue.address.root}/${placeId}`);
   }
 );
 

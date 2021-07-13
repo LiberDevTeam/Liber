@@ -4,8 +4,6 @@ import {
   getDefaultMiddleware,
   ThunkAction,
 } from '@reduxjs/toolkit';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createHashHistory } from 'history';
 import { combineReducers } from 'redux';
 import botsReducer from '~/state/bots/botsSlice';
 import feedReducer from '~/state/feed/feedSlice';
@@ -21,8 +19,6 @@ import stickersReducer from '~/state/stickers/stickersSlice';
 import { usersSlice } from '~/state/users/usersSlice';
 import { isInitializedSlice } from './isInitialized';
 
-export const history = createHashHistory();
-
 export const reducers = combineReducers({
   me: meReducer,
   places: placesReducer,
@@ -33,7 +29,6 @@ export const reducers = combineReducers({
   search: searchReducer,
   bots: botsReducer,
   stickers: stickersReducer,
-  router: connectRouter(history),
   marketplaceBots: marketplaceBotsReducer,
   marketplaceStickers: marketplaceStickersReducer,
   selectedUser: selectedUserSlice.reducer,
@@ -42,7 +37,7 @@ export const reducers = combineReducers({
 
 export const store = configureStore({
   reducer: reducers,
-  middleware: [...getDefaultMiddleware({}), routerMiddleware(history)] as const,
+  middleware: [...getDefaultMiddleware({})] as const,
 });
 
 export type RootState = ReturnType<typeof reducers>;

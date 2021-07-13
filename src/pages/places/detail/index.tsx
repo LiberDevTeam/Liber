@@ -1,6 +1,5 @@
 import Observer from '@researchgate/react-intersection-observer';
 import { immutable as arrayUniq } from 'array-unique';
-import { push } from 'connected-react-router';
 import 'emoji-mart/css/emoji-mart.css';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +12,7 @@ import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
 import { UserMenu } from '~/components/user-menu';
 import { invitationUrl, omitText } from '~/helpers';
+import { history } from '~/history';
 import { LoadingPage } from '~/pages/loading';
 import { MessageInput } from '~/pages/places/detail/components/message-input';
 import { appendJoinedPlace } from '~/state/me/meSlice';
@@ -158,10 +158,10 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             description={place.description}
             onLeave={() => {
               dispatch(removePlace({ placeId: place.id }));
-              dispatch(push('/places'));
+              history.push('/places');
             }}
             onEditClick={() => {
-              dispatch(push(`/places/${place.keyValAddress}/${place.id}/edit`));
+              history.push(`/places/${place.keyValAddress}/${place.id}/edit`);
             }}
           />
 
@@ -170,7 +170,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
               placeId={place.id}
               onClose={() => {
                 dispatch(removePlace({ placeId: place.id }));
-                dispatch(push('/places'));
+                history.push('/places');
               }}
             />
           )}

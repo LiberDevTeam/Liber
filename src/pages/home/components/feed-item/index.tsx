@@ -1,7 +1,6 @@
 import { fromUnixTime } from 'date-fns';
 import React, { memo, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { useAppSelector } from '~/hooks';
@@ -103,8 +102,8 @@ const Component: React.FC<ComponentProps> = ({
   }, [onRender, ref]);
 
   return (
-    <Link to={linkTo}>
-      <Root ref={ref}>
+    <Root to={linkTo}>
+      <div ref={ref}>
         <Header>
           <Title>
             {avatarCid && <Avatar src={`/view/${avatarCid}`}></Avatar>}
@@ -125,7 +124,7 @@ const Component: React.FC<ComponentProps> = ({
               }}
             />
           ))}
-      </Root>
-    </Link>
+      </div>
+    </Root>
   );
 };

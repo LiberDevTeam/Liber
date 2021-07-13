@@ -1,11 +1,11 @@
-import { push } from 'connected-react-router';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IconButtonCircle } from '~/components/icon-button-circle';
 import { Menu, MenuItem, MenuTitle } from '~/components/icon-menu';
 import { IpfsContent } from '~/components/ipfs-content';
 import { shortenUid, username } from '~/helpers';
+import { history } from '~/history';
 import { SvgBot as BotIcon } from '~/icons/Bot';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
 import { SvgEdit2 as EditIcon } from '~/icons/Edit2';
@@ -54,12 +54,11 @@ const ID = styled.div`
 `;
 
 export const ProfilePage: React.FC = () => {
-  const dispatch = useDispatch();
   const me = useSelector(selectMe);
 
   const handleClickEdit = useCallback(() => {
-    dispatch(push('/profile/edit'));
-  }, [dispatch]);
+    history.push('/profile/edit');
+  }, []);
 
   console.log(me.avatarCid);
 
