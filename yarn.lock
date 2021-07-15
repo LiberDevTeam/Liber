@@ -14878,6 +14878,14 @@ ip-address@^7.1.0:
     jsbn "1.1.0"
     sprintf-js "1.1.2"
 
+ip-address@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/ip-address/-/ip-address-8.0.0.tgz#00ba9435c8027dd591c491ad64c3e6a52a767ee4"
+  integrity sha512-HAGaTPtx3AJj2p/ymbUjAJzF5bQ+pI6sDDEixHnj+vj1XL9DaK4hGvOOs3mdCMZZLIDOH8T8U6SInpqTk76wXw==
+  dependencies:
+    jsbn "1.1.0"
+    sprintf-js "1.1.2"
+
 ip-regex@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-2.1.0.tgz#fa78bf5d2e6913c911ce9f819ee5146bb6d844e9"
@@ -18760,6 +18768,19 @@ libp2p-utils@^0.3.0, libp2p-utils@^0.3.1:
     multiaddr "^9.0.1"
     private-ip "^2.1.1"
 
+libp2p-utils@^0.4.0:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/libp2p-utils/-/libp2p-utils-0.4.1.tgz#260405434c376db8a1d9023867373b99b81c657f"
+  integrity sha512-kq/US2unamiyY+YwP47dO1uqpAdcbdYI2Fzi9JIEhjfPBaD1MR/uyQ/YP7ABthl3EaxAjIQYd1TVp85d6QKAtQ==
+  dependencies:
+    abortable-iterator "^3.0.0"
+    debug "^4.3.0"
+    err-code "^3.0.1"
+    ip-address "^8.0.0"
+    is-loopback-addr "^1.0.0"
+    multiaddr "^10.0.0"
+    private-ip "^2.1.1"
+
 libp2p-webrtc-peer@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/libp2p-webrtc-peer/-/libp2p-webrtc-peer-10.0.1.tgz#ca28a16e4992e922307badf8f64d71bf9584b0ec"
@@ -18799,7 +18820,7 @@ libp2p-webrtc-star@^0.22.2, libp2p-webrtc-star@^0.22.3:
     stream-to-it "^0.2.2"
     streaming-iterables "^6.0.0"
 
-libp2p-websockets@^0.15.6, libp2p-websockets@^0.15.7:
+libp2p-websockets@^0.15.6:
   version "0.15.9"
   resolved "https://registry.yarnpkg.com/libp2p-websockets/-/libp2p-websockets-0.15.9.tgz#d674779199abfcb222f4fa84eb484f8196405256"
   integrity sha512-tuQ4KezPEiJ/JXGKJUttPgBWTv36NnaqY05lWja8wQwQU3R1NgpH4GRJnTBshGXoBFdvGGJbTxvsJlh15NzMkg==
@@ -18814,6 +18835,24 @@ libp2p-websockets@^0.15.6, libp2p-websockets@^0.15.7:
     mafmt "^9.0.0"
     multiaddr "^9.0.1"
     multiaddr-to-uri "^7.0.0"
+    p-defer "^3.0.0"
+    p-timeout "^4.1.0"
+
+libp2p-websockets@^0.16.1:
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/libp2p-websockets/-/libp2p-websockets-0.16.1.tgz#1138fc0bf4328f521b3cf5dbcf0148a8ea20303a"
+  integrity sha512-HXaCdlAkG5RDZCehEnkoVzQjT1C6NIaCKLERkkZ1ArKG77K7Y7uy+8y81uNZhy4OLQ8jGUMyOvKnjw6EjKJPmw==
+  dependencies:
+    abortable-iterator "^3.0.0"
+    class-is "^1.1.0"
+    debug "^4.3.1"
+    err-code "^3.0.1"
+    ipfs-utils "^8.1.2"
+    it-ws "^4.0.0"
+    libp2p-utils "^0.4.0"
+    mafmt "^10.0.0"
+    multiaddr "^10.0.0"
+    multiaddr-to-uri "^8.0.0"
     p-defer "^3.0.0"
     p-timeout "^4.1.0"
 
@@ -19338,6 +19377,13 @@ lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
+
+mafmt@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/mafmt/-/mafmt-10.0.0.tgz#431726f16e51090b32ada621c402acbdb64fce9c"
+  integrity sha512-K1bziJOXcnepfztu+2Xy9FLKVLaFMDuspmiyJIYRxnO0WOxFSV7XKSdMxMrVZxcvg1+YjlTIvSGTImUHU2k4Aw==
+  dependencies:
+    multiaddr "^10.0.0"
 
 mafmt@^9.0.0:
   version "9.0.0"
@@ -20215,6 +20261,13 @@ multiaddr-to-uri@^7.0.0:
   integrity sha512-VbscDpLcbV0m25tJqfnZSfbjVUuNlPa4BbD5l/7me1t0lc3SWI0XAoO5E/PNJF0e1qUlbdq7yjVFEQjUT+9r0g==
   dependencies:
     multiaddr "^9.0.1"
+
+multiaddr-to-uri@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/multiaddr-to-uri/-/multiaddr-to-uri-8.0.0.tgz#65efe4b1f9de5f6b681aa42ff36a7c8db7625e58"
+  integrity sha512-dq4p/vsOOUdVEd1J1gl+R2GFrXJQH8yjLtz4hodqdVbieg39LvBOdMQRdQnfbg5LSM/q1BYNVf5CBbwZFFqBgA==
+  dependencies:
+    multiaddr "^10.0.0"
 
 multiaddr@^10.0.0:
   version "10.0.0"

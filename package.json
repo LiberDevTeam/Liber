@@ -75,7 +75,7 @@
     "libp2p-gossipsub": "^0.11.0",
     "libp2p-mplex": "^0.10.3",
     "libp2p-webrtc-star": "^0.22.3",
-    "libp2p-websockets": "^0.15.7",
+    "libp2p-websockets": "^0.16.1",
     "mini-css-extract-plugin": "1.6.0",
     "minisearch": "^3.0.3",
     "orbit-db-feedstore": "^1.12.0",
