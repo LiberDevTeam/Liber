@@ -1,11 +1,10 @@
-import { fromUnixTime } from 'date-fns';
 import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserMention } from '~/components/user-mention';
 import { BotMention } from '~/components/user-mention/bot';
-import { formatTime, formatTimeStrict } from '~/helpers/time';
 import { MessageContent, StickerItem } from '~/state/places/type';
+import { MessageTimestamp } from '../message-timestamp';
 
 const Text = styled.div<{ mine: boolean }>`
   padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
@@ -52,7 +51,6 @@ export const Message: React.FC<Props> = React.memo(function Message({
   sticker,
   className,
 }) {
-  const time = fromUnixTime(timestamp);
   return (
     <Text mine={mine} className={className}>
       {sticker && <StickerView cid={sticker.cid} />}
@@ -77,7 +75,7 @@ export const Message: React.FC<Props> = React.memo(function Message({
           );
         })}
       </div>
-      <Timestamp title={formatTimeStrict(time)}>{formatTime(time)}</Timestamp>
+      <MessageTimestamp timestamp={timestamp} />
     </Text>
   );
 });

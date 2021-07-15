@@ -23,7 +23,9 @@ const Image = styled.img`
 `;
 
 const Video = styled.video`
-  width: 80%;
+  max-width: 80%;
+  min-height: 200px;
+  max-height: 300px;
   object-fit: cover;
 `;
 
@@ -43,9 +45,11 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
 
     useEffect(() => {
       if (mimeType === null) {
-        fetch(url).then((res) => {
-          setMimeType(res.headers.get('Content-Type') ?? '');
-        });
+        fetch(url)
+          .then((res) => {
+            setMimeType(res.headers.get('Content-Type') ?? '');
+          })
+          .catch(console.error);
       }
     }, [url, mimeType]);
 
@@ -81,7 +85,7 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
 
     if (mimeType.includes('video/')) {
       return (
-        <Video controls onLoad={onLoad}>
+        <Video controls onLoadedMetadata={onLoad}>
           <source src={url} type={resolveVideoType(mimeType)} />
         </Video>
       );
