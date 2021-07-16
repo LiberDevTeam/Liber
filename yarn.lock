@@ -15299,7 +15299,7 @@ ipfs-http-gateway@^0.4.3:
     uint8arrays "^2.1.3"
     uri-to-multiaddr "^5.0.0"
 
-ipfs-http-response@^0.6.0, ipfs-http-response@^0.6.4:
+ipfs-http-response@^0.6.0:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-0.6.4.tgz#f129386704fecbc9bdee6cb404ac0b922e1634dc"
   integrity sha512-ltQgWaK72IJC7wmwrCZdhewA5Rq2G666y9R4CXkU1rgcqvXDyC0izEDJZN9xNXg17ib9ieS3Dcqc4k+A1te8xw==
@@ -15313,6 +15313,22 @@ ipfs-http-response@^0.6.0, ipfs-http-response@^0.6.4:
     it-to-stream "^1.0.0"
     mime-types "^2.1.27"
     multihashes "^4.0.2"
+    p-try-each "^1.0.1"
+
+ipfs-http-response@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-0.7.0.tgz#9b54792eb51c70809fa7a86a5c5ae67533d3710e"
+  integrity sha512-X9KRQohTCb48aqu5nF9MYz8Z43HsnF2at2J/Lo5PcetAH2rzY/KUz6vAHDWPmL/SWqoCMI1oesaTs6hd9e7lgQ==
+  dependencies:
+    debug "^4.3.1"
+    file-type "^16.0.0"
+    filesize "^6.1.0"
+    it-buffer "^0.1.1"
+    it-concat "^2.0.0"
+    it-reader "^3.0.0"
+    it-to-stream "^1.0.0"
+    mime-types "^2.1.30"
+    multiformats "^9.2.0"
     p-try-each "^1.0.1"
 
 ipfs-http-server@^0.5.2:
@@ -18763,7 +18779,7 @@ libp2p-webrtc-peer@^10.0.1:
     randombytes "^2.0.3"
     readable-stream "^3.4.0"
 
-libp2p-webrtc-star@^0.22.2, libp2p-webrtc-star@^0.22.3:
+libp2p-webrtc-star@^0.22.2:
   version "0.22.4"
   resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.22.4.tgz#01e9279805292e2ec5da01ffa5ff77eefcc4740e"
   integrity sha512-u5da7NJoAanVCNuHKCMz/NwIK/ICc8k9XUtKjA+B1t89CJqU1mghe5owurArI1/oO6H39KGR37W4aK/hgiqJVw==
@@ -18784,6 +18800,33 @@ libp2p-webrtc-star@^0.22.2, libp2p-webrtc-star@^0.22.3:
     multiaddr "^9.0.1"
     p-defer "^3.0.0"
     peer-id "^0.14.2"
+    prom-client "^13.0.0"
+    socket.io "^4.1.2"
+    socket.io-client "^4.1.2"
+    stream-to-it "^0.2.2"
+    streaming-iterables "^6.0.0"
+
+libp2p-webrtc-star@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.23.0.tgz#4882e5e3e211f266ddf0384ba017a6c983570399"
+  integrity sha512-0dLuSFMBQug/Y08kwV6/aOgh2Sn1Nq3GBY6h0o0eQXvVtKFOL+HkbFmcC4jkkaabVvu8JUaYRV2JHlUxJJru9A==
+  dependencies:
+    "@hapi/hapi" "^20.0.0"
+    "@hapi/inert" "^6.0.3"
+    abortable-iterator "^3.0.0"
+    class-is "^1.1.0"
+    debug "^4.2.0"
+    err-code "^3.0.1"
+    ipfs-utils "^8.1.2"
+    it-pipe "^1.1.0"
+    libp2p-utils "^0.4.0"
+    libp2p-webrtc-peer "^10.0.1"
+    mafmt "^10.0.0"
+    menoetius "0.0.2"
+    minimist "^1.2.5"
+    multiaddr "^10.0.0"
+    p-defer "^3.0.0"
+    peer-id "^0.15.0"
     prom-client "^13.0.0"
     socket.io "^4.1.2"
     socket.io-client "^4.1.2"
@@ -19888,7 +19931,7 @@ mime-db@1.48.0, mime-db@1.x.x, "mime-db@>= 1.43.0 < 2":
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.48.0.tgz#e35b31045dd7eada3aaad537ed88a33afbef2d1d"
   integrity sha512-FM3QwxV+TnZYQ2aRqhlKBMHxk10lTbMt3bBkMAp54ddrNeVSfcQYOOKuGuy3Ddrm38I04If834fOUSq1yzslJQ==
 
-mime-types@^2.1.12, mime-types@^2.1.16, mime-types@^2.1.27, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24:
+mime-types@^2.1.12, mime-types@^2.1.16, mime-types@^2.1.27, mime-types@^2.1.30, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24:
   version "2.1.31"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.31.tgz#a00d76b74317c61f9c2db2218b8e9f8e9c5c9e6b"
   integrity sha512-XGZnNzm3QvgKxa8dpzyhFTHmpP3l5YNusmne07VUOXxou9CqUqYa/HBy124RqtVh/O2pECas/MOcsDgpilPOPg==
@@ -20359,10 +20402,10 @@ multicodec@^3.0.1:
     uint8arrays "^2.1.5"
     varint "^6.0.0"
 
-multiformats@^9.0.2, multiformats@^9.1.2, multiformats@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.3.0.tgz#be31fa1ef55b5d92feff4ca4be86dc7db1550f71"
-  integrity sha512-CIZnirGmiw92jpkfmzObOPEAkpW08CgjwxBAliEPWfc2hFHflOngBt3YRaT2H8RKMbGaNlyv7Cza4RbmFYOf1w==
+multiformats@^9.0.2, multiformats@^9.1.2, multiformats@^9.2.0, multiformats@^9.3.0:
+  version "9.4.2"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.4.2.tgz#3995a0b23072657d7a2fa56b2afc745e0ce8e5bd"
+  integrity sha512-GXsulAzqA+EI/iObKWsg9n4PKNVpUTsWdA+Ijn3hJMaVHQ/+dJaClSZ55g8sVKniBjQkouGaVCKCu9c/wwMXQQ==
 
 multihashes@3.1.2, multihashes@^3.0.1:
   version "3.1.2"
@@ -24094,10 +24137,10 @@ react-helmet-async@^1.0.7:
     react-fast-compare "^3.2.0"
     shallowequal "^1.1.0"
 
-react-i18next@^11.10.0:
-  version "11.11.1"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.1.tgz#758edd7ef521f6703c2d6b83f3165d078f7acf35"
-  integrity sha512-MtfzPEOvx0ev2cz0HmrEcduuqkktSa5bfeN8Flp0cvN0xP3H3MRSTa8P6pxPtqstHbRe1cD9QBOr5T/FEV2gOw==
+react-i18next@^11.11.2:
+  version "11.11.2"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.2.tgz#b8568b9f02e323ceb82cb895f41e4e588b8b066c"
+  integrity sha512-42tWoD0X12mJyYtTnK99Hihi2nCc3WIJ23WpUiDwojTWj7w5rfa/cCqo57QLhTFOoYSpG+ydr6Cr1hjtkvmVPw==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
@@ -26739,13 +26782,10 @@ style-loader@1.3.0, style-loader@^1.3.0:
     loader-utils "^2.0.0"
     schema-utils "^2.7.0"
 
-style-loader@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-2.0.0.tgz#9669602fd4690740eaaec137799a03addbbc393c"
-  integrity sha512-Z0gYUJmzZ6ZdRUqpg1r8GsaFKypE+3xAzuFeMuoHgjc9KZv3wMyCRjQIWEbhoFSq7+7yoHXySDJyyWQaPajeiQ==
-  dependencies:
-    loader-utils "^2.0.0"
-    schema-utils "^3.0.0"
+style-loader@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-3.1.0.tgz#e52a22ca2fd1f54c03f2c3e69b10182e68120908"
+  integrity sha512-HYVvBMX3RX7zx71pquZV6EcnPN7Deba+zQteSxCLqt3bxYRphmeMr+2mZMrIZjZ7IMa6aOUhNGn8cXGvWMjClw==
 
 style-to-object@0.3.0, style-to-object@^0.3.0:
   version "0.3.0"
