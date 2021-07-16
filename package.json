@@ -110,7 +110,7 @@
     "solhint": "^3.3.6",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "style-loader": "2.0.0",
+    "style-loader": "3.1.0",
     "styled-components": "^5.3.0",
     "styled-normalize": "^8.0.7",
     "thunky": "^1.1.0",
