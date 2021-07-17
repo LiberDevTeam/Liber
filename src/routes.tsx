@@ -1,12 +1,11 @@
-import { ConnectedRouter } from 'connected-react-router';
 import React, { memo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import { ManageBotsPage } from '~/pages/places/manage-bots';
 import { initMe } from '~/state/me/meSlice';
 import { initApp } from '~/state/p2p/p2pSlice';
+import { history } from './history';
 import { WithWeb3 } from './hoc/withWeb3';
-import { useAppSelector } from './hooks';
+import { useAppDispatch, useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
 import { BotEditPage } from './pages/bots/edit';
@@ -30,10 +29,9 @@ import { StickerEditPage } from './pages/stickers/edit';
 import { StickersPage } from './pages/stickers/index';
 import { StickerNewPage } from './pages/stickers/new';
 import { TrackerProvider } from './state/contexts/tracker';
-import { AppThunkDispatch, history } from './state/store';
 
 export const Routes: React.FC = memo(function Routes() {
-  const dispatch: AppThunkDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isInitialized = useAppSelector((state) => state.isInitialized);
 
   useEffect(() => {
@@ -47,7 +45,7 @@ export const Routes: React.FC = memo(function Routes() {
   }
 
   return (
-    <ConnectedRouter history={history}>
+    <Router history={history}>
       <TrackerProvider>
         {/* your usual react-router-dom v4/v5 routing */}
         <Switch>
@@ -174,6 +172,6 @@ export const Routes: React.FC = memo(function Routes() {
           <Route render={() => <NotFoundPage />} />
         </Switch>
       </TrackerProvider>
-    </ConnectedRouter>
+    </Router>
   );
 });

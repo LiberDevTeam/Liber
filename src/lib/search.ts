@@ -1,7 +1,7 @@
 import MiniSearch from 'minisearch';
-import { Bot } from '~/state/bots/botsSlice';
+import { Bot } from '~/state/bots/types';
 import { Message, Place } from '~/state/places/type';
-import { Sticker } from '~/state/stickers/stickersSlice';
+import { Sticker } from '~/state/stickers/types';
 
 export let marketplaceBotSearch: MiniSearch,
   marketplaceStickerSearch: MiniSearch,
@@ -90,7 +90,7 @@ export const createExplorePlaceSearchIndex = (places: Place[]) => {
 
 export const createExploreMessageSearchIndex = (messages: Message[]) => {
   exploreMessageSearch = new MiniSearch({
-    fields: ['authorName', 'timestamp', 'text', 'mentions'],
+    fields: ['authorName', 'timestamp', 'text'],
     storeFields: [
       'id',
       'uid',
@@ -99,7 +99,6 @@ export const createExploreMessageSearchIndex = (messages: Message[]) => {
       'text',
       'attachmentCidList',
       'content',
-      'mentions',
       'bot',
     ],
     // TODO tuning

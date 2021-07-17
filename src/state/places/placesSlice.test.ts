@@ -1,7 +1,7 @@
 import { dummyPlace } from '~/mocks/place';
 import { createStore } from '~/test-utils/create-store';
-import { parseText } from './messagesSlice';
 import { joinPlace } from './placesSlice';
+import { parseText } from './utils';
 
 jest.mock('~/lib/db/place');
 jest.mock('~/lib/db/bot');

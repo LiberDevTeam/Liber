@@ -6,7 +6,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
-import { push } from 'connected-react-router';
+import { history } from '~/history';
 import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
@@ -15,7 +15,7 @@ import {
   placeUpdated,
 } from '~/state/actionCreater';
 import { connectToMessages } from '~/state/places/async-actions';
-import { AppDispatch, AppThunkDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
@@ -77,7 +77,7 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 export const joinPlace = createAsyncThunk<
   void,
   PlacePK,
-  { dispatch: AppThunkDispatch }
+  { dispatch: AppDispatch }
 >(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch }) => {
   const kv = await connectPlaceKeyValue({
     placeId,
@@ -100,7 +100,7 @@ export const joinPlace = createAsyncThunk<
 export const openProtectedPlace = createAsyncThunk<
   void,
   { placeId: string; password: string },
-  { dispatch: AppThunkDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState }
 >(
   `${MODULE_NAME}/openProtectedPlace`,
   async ({ placeId, password }, { dispatch, getState }) => {
@@ -208,7 +208,7 @@ export const updatePlace = createAsyncThunk<
     { placeId, address, name, description, avatar, category },
     { dispatch }
   ) => {
-    const cid = await addIpfsContent(dispatch, avatar);
+    const cid = await addIpfsContent(avatar);
 
     const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
 
@@ -237,7 +237,7 @@ export const updatePlace = createAsyncThunk<
     });
 
     dispatch(updateOne({ placeId, changes: partial }));
-    dispatch(push(`/places/${placeKeyValue.address.root}/${placeId}`));
+    history.push(`/places/${placeKeyValue.address.root}/${placeId}`);
   }
 );
 
@@ -328,6 +328,12 @@ export const placesSlice = createSlice({
             changes: { hash: undefined },
           });
         }
+      })
+      .addCase(toggleBot.fulfilled, (state, action) => {
+        placesAdapter.updateOne(state, {
+          id: action.meta.arg.placeId,
+          changes: { bots: action.payload },
+        });
       });
   },
 });

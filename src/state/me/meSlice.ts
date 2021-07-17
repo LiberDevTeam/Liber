@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { generate } from 'canihazusername';
 import { connectBotKeyValue, readBotFromDB } from '~/lib/db/bot';
 import {
   connectPrivateFieldsDB,
@@ -6,16 +7,16 @@ import {
 } from '~/lib/db/privateFields';
 import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
 import { connectUserDB, createUserDB } from '~/lib/db/user';
-import { tmpPurchased } from '~/state/bots/mock';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState } from '~/state/store';
 import { User } from '~/state/users/type';
-import { botAdded, stickerAdded } from '../actionCreater';
+import { botAdded } from '../actionCreater';
 import { addBots } from '../bots/botsSlice';
+import { stickerAdded } from '../stickers/actions';
 import { addStickers } from '../stickers/stickersSlice';
-import { Me, PlacePK } from './type';
+import { Me, PlacePK, PrivateFields, StickerPK } from './type';
 
-const initialPrivateFields = {
+const initialPrivateFields: PrivateFields = {
   settings: {
     isIsolation: false,
   },
@@ -26,7 +27,6 @@ const initialPrivateFields = {
 
 const initialState: Me = {
   id: '',
-  // TODO: random name
   name: '',
   botsListingOn: [],
   stickersListingOn: [],
@@ -47,7 +47,7 @@ export const initMe = createAsyncThunk<
   if (!user) {
     user = {
       id: userDB.address.root,
-      name: '',
+      name: generate('{character}-{english}'),
       avatarCid: '',
       botsListingOn: [],
       stickersListingOn: [],
@@ -80,11 +80,13 @@ export const initMe = createAsyncThunk<
     await privateDB.set(DB_KEY, initialPrivateFields);
   }
 
-  // TODO: remove this lines
-  privateFields.purchasedBots = tmpPurchased.map((bot) => ({
-    address: bot.keyValAddress,
-    botId: bot.id,
-  }));
+  // TODO: debug code
+  privateFields.purchasedStickers = [
+    {
+      address: 'zdpuArpuuaVo7ZWpwoyxadzDDAQiXwXhZTsfbi9ppx5H8GRW8',
+      stickerId: '34aa7760-5929-4530-8548-facc4657bdef',
+    },
+  ];
 
   return {
     ...user,
@@ -98,14 +100,14 @@ export const updateProfile = createAsyncThunk<
   Me,
   { avatar: File | null; name: string },
   { dispatch: AppDispatch; state: RootState }
->('me/updateProfile', async ({ avatar, name }, { dispatch, getState }) => {
+>('me/updateProfile', async ({ avatar, name }, { getState }) => {
   const me = getState().me;
   const userDB = await connectUserDB({ userId: me.id });
 
   let avatarCid = me.avatarCid;
 
   if (avatar) {
-    avatarCid = await addIpfsContent(dispatch, avatar);
+    avatarCid = await addIpfsContent(avatar);
   }
 
   const newProfile: Me = { ...me, name, avatarCid };
@@ -157,7 +159,7 @@ export const { updateIsolationMode } = meSlice.actions;
 export const selectMe = (state: RootState): typeof state.me => state.me;
 export const selectPurchasedBots = (state: RootState) => state.me.purchasedBots;
 // export const selectPurchasedBot = (pk: BotPK) => (state: RootState) => state.me.;
-export const selectPurchasedStickers = (state: RootState) =>
+export const selectPurchasedStickers = (state: RootState): StickerPK[] =>
   state.me.purchasedStickers;
 // export const selectPurchasedSticker = (pk: StickerPK) => (state: RootState) => state.me.purchasedStickers.find(({stickerId, address}) => stickerId === pk.stickerId && address === pk.address);
 export const selectBotsListingOn = (state: RootState) => state.me.botsListingOn;

@@ -1,8 +1,11 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 
-export const Root = styled.div`
-  flex: 1;
+export const Root = styled(Link)`
+  /* display: flex; */
+  display: block;
+  width: 100%;
 `;
 
 export const Header = styled.div`
@@ -14,7 +17,7 @@ export const Header = styled.div`
   justify-content: space-between;
 `;
 
-export const Avatar = styled(IpfsContent)`
+export const Avatar = styled.img`
   height: 2.5rem;
   width: 2.5rem;
   border-radius: ${(props) => props.theme.radii.round};

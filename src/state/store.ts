@@ -1,14 +1,10 @@
 import {
   Action,
   configureStore,
+  getDefaultMiddleware,
   ThunkAction,
-  ThunkDispatch,
 } from '@reduxjs/toolkit';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createHashHistory } from 'history';
-import { useDispatch } from 'react-redux';
 import { combineReducers } from 'redux';
-import thunk from 'redux-thunk';
 import botsReducer from '~/state/bots/botsSlice';
 import feedReducer from '~/state/feed/feedSlice';
 import marketplaceBotsReducer from '~/state/marketplace/botsSlice';
@@ -23,8 +19,6 @@ import stickersReducer from '~/state/stickers/stickersSlice';
 import { usersSlice } from '~/state/users/usersSlice';
 import { isInitializedSlice } from './isInitialized';
 
-export const history = createHashHistory();
-
 export const reducers = combineReducers({
   me: meReducer,
   places: placesReducer,
@@ -35,7 +29,6 @@ export const reducers = combineReducers({
   search: searchReducer,
   bots: botsReducer,
   stickers: stickersReducer,
-  router: connectRouter(history),
   marketplaceBots: marketplaceBotsReducer,
   marketplaceStickers: marketplaceStickersReducer,
   selectedUser: selectedUserSlice.reducer,
@@ -44,7 +37,7 @@ export const reducers = combineReducers({
 
 export const store = configureStore({
   reducer: reducers,
-  middleware: [thunk, routerMiddleware(history)],
+  middleware: [...getDefaultMiddleware({})] as const,
 });
 
 export type RootState = ReturnType<typeof reducers>;
@@ -55,7 +48,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 export type AppDispatch = typeof store.dispatch;
-export type AppThunkDispatch = ThunkDispatch<RootState, any, Action>;
-export function useReduxDispatch(): AppThunkDispatch {
-  return useDispatch<AppThunkDispatch>();
-}

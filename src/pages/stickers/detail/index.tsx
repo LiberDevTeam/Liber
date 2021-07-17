@@ -95,11 +95,10 @@ const GalleryImage = styled(IpfsContent)`
 
 export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
   const dispatch = useDispatch();
-  const { stickerId, address } =
-    useParams<{
-      stickerId: string;
-      address: string;
-    }>();
+  const { stickerId, address } = useParams<{
+    stickerId: string;
+    address: string;
+  }>();
   const me = useSelector(selectMe);
   const sticker = useSelector(selectStickerById(stickerId));
   const purchasedStickers = useSelector(selectPurchasedStickers);
@@ -113,7 +112,7 @@ export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
     if (!sticker) {
       dispatch(fetchSticker({ stickerId, address }));
     }
-  }, [stickerId, address]);
+  }, [dispatch, stickerId, address, sticker]);
 
   // TODO loading;
   if (!sticker) return null;

@@ -1,4 +1,5 @@
 import { Web3ReactProvider } from '@web3-react/core';
+import 'github-markdown-css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactModal from 'react-modal';

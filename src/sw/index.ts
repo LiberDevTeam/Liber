@@ -41,7 +41,11 @@ const createPartialContentResponse = async (res: Response) => {
   });
 };
 
-const imageHandler = async ({ url }: { url: URL }) => {
+const imageHandler = async ({ url }: { url?: URL }) => {
+  if (!url) {
+    return new Response();
+  }
+
   const ipfsNode = await getIpfsNode();
   const match = url.pathname.match(cidRegex);
   const cache = await caches.open('ipfs-content-cache');
@@ -55,7 +59,8 @@ const imageHandler = async ({ url }: { url: URL }) => {
     return createPartialContentResponse(cachedResponse);
   }
 
-  const content = await readIPFSContent(await ipfsNode.cat(match[1]));
+  const content = await readIPFSContent(ipfsNode.cat(match[1]));
+
   const contentType = await FileType.fromBlob(content);
 
   const headers = new Headers();

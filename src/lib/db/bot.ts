@@ -1,5 +1,5 @@
 import KeyValueStore from 'orbit-db-kvstore';
-import { Bot, Example } from '~/state/bots/botsSlice';
+import { Bot, Example } from '~/state/bots/types';
 import { getOrbitDB } from './orbit';
 
 type BotDBValue = string | Example[] | number | boolean;
@@ -31,6 +31,7 @@ export const readBotFromDB = (kv: KeyValueStore<BotDBValue>): Bot => {
     description: kv.get('description') as string,
     examples: kv.get('examples') as Example[],
     keyValAddress: kv.get('keyValAddress') as string,
+    qtySold: kv.get('qtySold') as number,
     created: kv.get('created') as number,
   };
 };

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
+import { NotFound } from '~/components/not-found';
 import { Pagination } from '~/components/pagination';
 import { SvgEdit as EditIcon } from '~/icons/Edit';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
@@ -59,6 +60,11 @@ interface BotListTabPanelProps {
 export const BotListTabPanel: React.FC<BotListTabPanelProps> = React.memo(
   function BotListTabPanel({ botIds, offset, limit, page, onChangePage }) {
     const bots = useSelector(selectBotsByIds(botIds));
+
+    if (bots.length === 0) {
+      return <NotFound />;
+    }
+
     return (
       <Root>
         <List>

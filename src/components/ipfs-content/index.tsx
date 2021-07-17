@@ -3,6 +3,7 @@ import React, {
   memo,
   ReactElement,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import styled from 'styled-components';
@@ -12,6 +13,7 @@ interface IpfsContentProps {
   className?: string;
   style?: CSSProperties;
   fallbackComponent?: ReactElement;
+  onLoad?: () => void;
 }
 
 const Image = styled.img`
@@ -20,27 +22,39 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
+const Video = styled.video`
+  max-width: 80%;
+  min-height: 200px;
+  max-height: 300px;
+  object-fit: cover;
+`;
+
+function resolveVideoType(mimeType: string): string {
+  if (mimeType === 'video/quicktime') {
+    return 'video/mp4';
+  }
+
+  return mimeType;
+}
+
 export const IpfsContent: React.FC<IpfsContentProps> = memo(
-  function IpfsContent({ className, cid, style, fallbackComponent }) {
+  function IpfsContent({ className, cid, style, fallbackComponent, onLoad }) {
+    const ref = useRef<HTMLImageElement>(null);
     const [mimeType, setMimeType] = useState<string | null>(null);
-    const [content, setContent] = useState<string | null>(null);
     const url = `/view/${cid}`;
 
     useEffect(() => {
-      if (content === null) {
+      if (mimeType === null) {
         fetch(url)
           .then((res) => {
-            setMimeType(res.headers.get('Content-Type'));
-            return res.blob();
+            setMimeType(res.headers.get('Content-Type') ?? '');
           })
-          .then((blob) => {
-            setContent(URL.createObjectURL(blob));
-          });
+          .catch(console.error);
       }
-    }, [url, content]);
+    }, [url, mimeType]);
 
-    if (!content) {
-      return fallbackComponent ?? null;
+    if (mimeType === null) {
+      return fallbackComponent ?? <div>loading</div>;
     }
 
     if (!mimeType) {
@@ -54,7 +68,15 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
       case 'image/jpeg':
       case 'image/png':
       case 'image/webp':
-        return <Image className={className} src={url} style={style} />;
+        return (
+          <Image
+            className={className}
+            src={url}
+            style={style}
+            ref={ref}
+            onLoad={onLoad}
+          />
+        );
     }
 
     if (mimeType.includes('audio/')) {
@@ -63,9 +85,9 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
 
     if (mimeType.includes('video/')) {
       return (
-        <video controls>
-          <source src={url} type={mimeType} />
-        </video>
+        <Video controls onLoadedMetadata={onLoad}>
+          <source src={url} type={resolveVideoType(mimeType)} />
+        </Video>
       );
     }
 

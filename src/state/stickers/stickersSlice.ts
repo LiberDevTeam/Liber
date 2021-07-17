@@ -11,9 +11,10 @@ import type {
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import MarketContract from 'build/contracts/LiberMarket.json';
 import StickerContract from 'build/contracts/LiberSticker.json';
-import { push } from 'connected-react-router';
 import { getUnixTime } from 'date-fns';
-import { connectMarketplaceStickerKeyValue } from '~/lib/db/marketplace/sticker';
+import { history } from '~/history';
+import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
+import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
 import {
   connectStickerKeyValue,
   createStickerKeyValue,
@@ -21,10 +22,11 @@ import {
 } from '~/lib/db/sticker';
 import { createUserDB } from '~/lib/db/user';
 import { AppDispatch, RootState } from '~/state/store';
-import { stickerAdded } from '../actionCreater';
 import { DB_KEY } from '../me/meSlice';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
+import { stickerAdded } from './actions';
+import { Sticker, StickerPartialForUpdate } from './types';
 
 export const categories = ['ANIMAL_LOVERS'];
 export const categoryOptions = categories.map((label, index) => ({
@@ -32,81 +34,10 @@ export const categoryOptions = categories.map((label, index) => ({
   label,
 }));
 
-interface PartialForUpdate {
-  category: number;
-  name: string;
-  description: string;
-  price: number;
-  contents: Content[];
-}
-
-export interface Sticker extends PartialForUpdate {
-  id: string;
-  uid: string;
-  keyValAddress: string;
-  created: number;
-  purchased?: boolean; // means the current user purchased the sticker.
-}
-
-export interface Content {
-  cid: string;
-}
-
 export interface StickersState {
   purchased: Sticker[];
   listingOn: Sticker[];
 }
-
-export const tmpListingOn: Sticker[] = [...Array(10)].map((_, i) => ({
-  // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
-  // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: 0,
-  name: 'バク',
-  description: 'モデルやってます。性別はありません',
-  price: 20,
-  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
-  contents: [
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-  ],
-  created: 1619251130,
-}));
-
-export const tmpPurchased: Sticker[] = [...Array(10)].map((_, i) => ({
-  // id: `9C095752-A668-4BCB-A61C-7083585BDCD2${i}`,
-  id: 'f3a4e42d-d378-401e-9561-aaa0df48bbf8',
-  // uid: `94801C77-68E9-4193-B253-C91983477A0D${i}`,
-  uid: `zdpuAyXpBz4JabtxnkRGT2jUjvtnpwf4jp1pkq676pGfgyEk7`,
-  category: 0,
-  name: 'バク',
-  description: 'モデルやってます。性別はありません',
-  price: 20,
-  keyValAddress: 'zdpuAreQgca8hSsMvfYT4U9QwWJhxHqKSuGwcfu7g3kStUpcp',
-  contents: [
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmQxjufmnAxWh57aNGBeLFNWymjijv3D2C3EPQks1BuzVh' },
-    { cid: 'QmR76zq8z4ycVQHpJH6YoynkUah2ZfDkodAKJ7PPsGNDmT' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-    { cid: 'QmNQvSkZeh9SwaJL2UNWTLCwmUGa9m6xVS3GunGFKNN8nV' },
-  ],
-  created: 1619251130,
-  purchased: true,
-}));
 
 export const createNewSticker = createAsyncThunk<
   void,
@@ -183,10 +114,11 @@ export const createNewSticker = createAsyncThunk<
       keyValAddress: stickerKeyValue.address.root,
       contents: await Promise.all(
         contents.map(async (content) => ({
-          cid: await addIpfsContent(dispatch, content),
+          cid: await addIpfsContent(content),
         }))
       ),
       created: getUnixTime(Date.now()),
+      qtySold: 0,
     };
 
     Object.keys(sticker).forEach((key) => {
@@ -210,14 +142,21 @@ export const createNewSticker = createAsyncThunk<
     };
     userDB.set(DB_KEY, newUser);
 
-    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
-    await marketplaceStickerDB.put(
+    const marketplaceStickerNewDB =
+      await connectMarketplaceStickerNewKeyValue();
+    await marketplaceStickerNewDB.put(
+      `${sticker.keyValAddress}/${sticker.id}`,
+      sticker
+    );
+    const marketplaceStickerRankingDB =
+      await connectMarketplaceStickerRankingKeyValue();
+    await marketplaceStickerRankingDB.put(
       `${sticker.keyValAddress}/${sticker.id}`,
       sticker
     );
 
     dispatch(addSticker(sticker));
-    dispatch(push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`));
+    history.push(`/stickers/${stickerKeyValue.address.root}/${sticker.id}`);
 
     // TODO: show notification
 
@@ -250,12 +189,12 @@ export const updateSticker = createAsyncThunk<
 
     const newContents = await Promise.all(
       contents.map(async (content) => {
-        const cid = await addIpfsContent(dispatch, content);
+        const cid = await addIpfsContent(content);
         return { cid };
       })
     );
 
-    const partial: PartialForUpdate = {
+    const partial: StickerPartialForUpdate = {
       category,
       name,
       description,
@@ -264,19 +203,30 @@ export const updateSticker = createAsyncThunk<
     };
 
     Object.keys(partial).forEach((key) => {
-      const v = partial[key as keyof PartialForUpdate];
+      const v = partial[key as keyof StickerPartialForUpdate];
       v && stickerKeyValue.put(key, v);
     });
 
     const sticker = readStickerFromDB(stickerKeyValue);
-    const marketplaceStickerDB = await connectMarketplaceStickerKeyValue();
-    await marketplaceStickerDB.put(`${sticker.keyValAddress}/${sticker.id}`, {
+    const newSticker = {
       ...sticker,
       ...partial,
-    });
+    };
+    const marketplaceStickerNewDB =
+      await connectMarketplaceStickerNewKeyValue();
+    await marketplaceStickerNewDB.put(
+      `${sticker.keyValAddress}/${sticker.id}`,
+      newSticker
+    );
+    const marketplaceStickerRankingDB =
+      await connectMarketplaceStickerRankingKeyValue();
+    await marketplaceStickerRankingDB.put(
+      `${sticker.keyValAddress}/${sticker.id}`,
+      newSticker
+    );
 
     dispatch(updateOne({ id: stickerId, changes: partial }));
-    dispatch(push(`/stickers/${address}/${stickerId}`));
+    history.push(`/stickers/${address}/${stickerId}`);
 
     // TODO: show notification
   }
@@ -290,7 +240,7 @@ export const fetchSticker = createAsyncThunk<
   const db = await connectStickerKeyValue({ stickerId, address });
   const sticker = readStickerFromDB(db);
   if (!sticker) {
-    dispatch(push('/404'));
+    history.push('/404');
     return;
   }
 
@@ -311,7 +261,7 @@ export const stickersSlice = createSlice({
       stickersAdapter.addOne(state, action.payload),
     updateOne: (
       state,
-      action: PayloadAction<{ id: string; changes: PartialForUpdate }>
+      action: PayloadAction<{ id: string; changes: StickerPartialForUpdate }>
     ) =>
       stickersAdapter.updateOne(state, {
         id: action.payload.id,
@@ -323,9 +273,15 @@ export const stickersSlice = createSlice({
 export const { addStickers, addSticker, updateOne } = stickersSlice.actions;
 
 const selectors = stickersAdapter.getSelectors();
-export const selectStickerById = (id: string) => (state: RootState) =>
-  selectors.selectById(state.stickers, id);
-export const selectStickersByIds = (ids: string[]) => (state: RootState) =>
-  ids.map((id) => selectors.selectById(state.stickers, id));
+export const selectStickerById =
+  (id: string) =>
+  (state: RootState): Sticker | undefined =>
+    selectors.selectById(state.stickers, id);
+export const selectStickersByIds =
+  (ids: string[]) =>
+  (state: RootState): Sticker[] =>
+    ids
+      .map((id) => selectors.selectById(state.stickers, id))
+      .filter(Boolean) as Sticker[];
 
 export default stickersSlice.reducer;

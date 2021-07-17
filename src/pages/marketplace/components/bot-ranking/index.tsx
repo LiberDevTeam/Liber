@@ -6,19 +6,12 @@ import {
   fetchRanking,
   selectRankingBotsByPage,
 } from '~/state/marketplace/botsSlice';
+import { Badge } from '../badge';
 import { BotItem } from '../bot-item';
+import { ListItem } from '../list-item';
 
 const Root = styled.div`
   margin: ${(props) => props.theme.space[3]}px 0;
-`;
-
-const List = styled.ul``;
-
-const ListItem = styled.li`
-  width: 100%;
-  padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-bottom: ${(props) =>
-    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 export const BotRanking: React.FC = memo(function BotRanking() {
@@ -41,17 +34,18 @@ export const BotRanking: React.FC = memo(function BotRanking() {
 
   return (
     <Root>
-      <List>
+      <ul>
         {bots &&
           bots.map(
-            (bot) =>
+            (bot, i) =>
               bot && (
-                <ListItem>
+                <ListItem key={i}>
+                  {i < 3 && <Badge n={i + 1} />}
                   <BotItem bot={bot} />
                 </ListItem>
               )
           )}
-      </List>
+      </ul>
       <Pagination current={page} onChange={handleChangePage} />
     </Root>
   );

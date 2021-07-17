@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { IconButton } from '~/components/icon-button';
 import { Input } from '~/components/input';
 import { PreviewImage } from '~/components/preview-image';
-import { useAppSelector } from '~/hooks';
+import { useAppDispatch, useAppSelector } from '~/hooks';
 import { SvgAttach as AttachIcon } from '~/icons/Attach';
 import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
@@ -15,7 +15,6 @@ import { readAsDataURL } from '~/lib/readFile';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
 import { publishPlaceMessage } from '~/state/places/messagesSlice';
 import { selectPlaceById } from '~/state/places/placesSlice';
-import { useReduxDispatch } from '~/state/store';
 import { selectAllUsers } from '~/state/users/usersSlice';
 import { theme } from '~/theme';
 import { AudioPreview } from '../audio-preview';
@@ -151,7 +150,7 @@ export interface MessageInputProps {
 
 export const MessageInput: React.FC<MessageInputProps> = memo(
   function MessageInput({ placeId }) {
-    const dispatch = useReduxDispatch();
+    const dispatch = useAppDispatch();
 
     const users = useAppSelector((state) => selectAllUsers(state.users));
     // TODO: select place bots
@@ -161,8 +160,11 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [mentionTarget, setMentionTarget] =
-      useState<{ word: string; start: number; end: number } | null>(null);
+    const [mentionTarget, setMentionTarget] = useState<{
+      word: string;
+      start: number;
+      end: number;
+    } | null>(null);
 
     const messageInputRef = useRef<HTMLInputElement>(null);
     const messagesBottomRef = useRef<HTMLDivElement>(null);

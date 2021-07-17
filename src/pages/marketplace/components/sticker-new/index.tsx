@@ -6,19 +6,11 @@ import {
   fetchNew,
   selectNewStickersByPage,
 } from '~/state/marketplace/stickersSlice';
+import { ListItem } from '../list-item';
 import { StickerItem } from '../sticker-item';
 
 const Root = styled.div`
   margin: ${(props) => props.theme.space[3]}px 0;
-`;
-
-const List = styled.ul``;
-
-const ListItem = styled.li`
-  width: 100%;
-  padding: ${(props) => `${props.theme.space[6]}px ${props.theme.space[5]}px`};
-  border-stickertom: ${(props) =>
-    props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
 export const StickerNew: React.FC = memo(function StickerNew() {
@@ -41,7 +33,7 @@ export const StickerNew: React.FC = memo(function StickerNew() {
 
   return (
     <Root>
-      <List>
+      <ul>
         {stickers &&
           stickers.map(
             (sticker) =>
@@ -51,7 +43,7 @@ export const StickerNew: React.FC = memo(function StickerNew() {
                 </ListItem>
               )
           )}
-      </List>
+      </ul>
       <Pagination current={page} onChange={handleChangePage} />
     </Root>
   );

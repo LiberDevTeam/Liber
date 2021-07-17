@@ -3,17 +3,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
-import { UserMention } from '~/components/user-mention';
-import { BotMention } from '~/components/user-mention/bot';
 import { useAppSelector } from '~/hooks';
+import { Loading } from '~/icons/loading';
 import { selectMe } from '~/state/me/meSlice';
 import { selectMessageById } from '~/state/places/messagesSlice';
 import { setSelectedUser } from '~/state/selected-user';
 import { Message } from '../message';
+import { MessageTimestamp } from '../message-timestamp';
+
+const Root = styled.div``;
+const StyledTimestamp = styled(MessageTimestamp)<{ mine: boolean }>`
+  display: block;
+  text-align: ${(props) => (props.mine ? 'right' : 'left')};
+  padding-left: ${(props) => (props.mine ? 0 : props.theme.space[6])}px;
+`;
 
 const TextGroup = styled.div<{ mine: boolean }>`
   display: flex;
   justify-content: ${(props) => (props.mine ? 'flex-end' : 'flex-start')};
+`;
+
+const AttachmentLoadingWrapper = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const UserName = styled.span`
@@ -66,8 +81,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
       return null;
     }
 
+    const hasTextContent = message.content.length > 0;
+
     return (
-      <>
+      <Root>
         <TextGroup mine={mine}>
           <div onClick={handleClickUser}>
             <UserAvatar userId={message.uid} />
@@ -76,40 +93,36 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
             {mine ? null : (
               <UserName>{message.authorName || 'Loading'}</UserName>
             )}
-
-            <Message
-              mine={mine}
-              contents={message.content.map((value) => {
-                if (typeof value === 'string') {
-                  return value;
-                }
-
-                return value.bot ? (
-                  <BotMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                ) : (
-                  <UserMention
-                    key={value.userId}
-                    userId={value.userId}
-                    name={value.name}
-                  />
-                );
-              })}
-              timestamp={message.timestamp}
-            />
+            {hasTextContent ? (
+              <Message
+                mine={mine}
+                sticker={message.sticker}
+                contents={message.content}
+                timestamp={message.timestamp}
+              />
+            ) : null}
           </Body>
         </TextGroup>
         {message.attachmentCidList && message.attachmentCidList.length > 0 ? (
           <Attachments mine={mine}>
             {message.attachmentCidList.map((cid) => (
-              <Attachment key={`${id}-${cid}`} cid={cid} mine={mine} />
+              <Attachment
+                key={`${id}-${cid}`}
+                cid={cid}
+                mine={mine}
+                fallbackComponent={
+                  <AttachmentLoadingWrapper>
+                    <Loading width={56} height={56} />
+                  </AttachmentLoadingWrapper>
+                }
+              />
             ))}
           </Attachments>
         ) : null}
-      </>
+        {hasTextContent ? null : (
+          <StyledTimestamp timestamp={message.timestamp} mine={mine} />
+        )}
+      </Root>
     );
   }
 );
