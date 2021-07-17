@@ -38,20 +38,26 @@ const paths = {
   },
 };
 
+const envValues = [
+  'PUBLIC_URL',
+  'GA_MEASUREMENT_ID',
+  'INFURA_ENDPOINT',
+  'INFURA_ID',
+  'CHAIN_ID',
+].reduce((prev, key) => {
+  return { ...prev, [`process.env.${key}`]: JSON.stringify(process.env[key]) };
+}, {});
+
 exports.commonConfig = {
   entryPoints: paths.entryPoints,
   bundle: true,
   plugins,
   define: {
     global: 'window',
-    'process.env': JSON.stringify({
-      PUBLIC_URL: process.env.PUBLIC_URL,
-      GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
-      INFURA_ENDPOINT: process.env.INFURA_ENDPOINT,
-      INFURA_ID: process.env.INFURA_ID,
-      NODE_ENV: process.env.NODE_ENV || 'development',
-      CHAIN_ID: process.env.CHAIN_ID || '1',
-    }),
+    'process.env.NODE_ENV': JSON.stringify(
+      process.env.NODE_ENV || 'development'
+    ),
+    ...envValues,
   },
   inject: [paths.inject],
   outdir: paths.outdir,
