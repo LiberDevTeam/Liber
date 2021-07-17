@@ -17,7 +17,7 @@ interface GenerateFromStrProps {
   callback?: () => void; // 埋め込んだDOMが変更された時のCallback関数
 }
 
-const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID || '';
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || '';
 
 const GaDomStr = `
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -110,9 +110,10 @@ export const TrackerProvider: React.FC = ({ children }) => {
   const location = useLocation();
   const me = useSelector(selectMe);
 
-  const isIsolation = useMemo(() => me.settings.isIsolation, [
-    me.settings.isIsolation,
-  ]);
+  const isIsolation = useMemo(
+    () => me.settings.isIsolation,
+    [me.settings.isIsolation]
+  );
 
   const handleMounted = useCallback(
     () => setTracker(new GtagWrapper(GA_MEASUREMENT_ID)),
