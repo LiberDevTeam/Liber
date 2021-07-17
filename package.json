@@ -46,7 +46,7 @@
     "color-hash": "^2.0.1",
     "copy-to-clipboard": "^3.3.1",
     "crypto-browserify": "^3.12.0",
-    "css-loader": "5.2.6",
+    "css-loader": "6.0.0",
     "date-fns": "^2.22.1",
     "dotenv": "10.0.0",
     "dotenv-expand": "5.1.0",
