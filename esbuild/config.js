@@ -43,6 +43,7 @@ const envValues = [
   'GA_MEASUREMENT_ID',
   'INFURA_ENDPOINT',
   'INFURA_ID',
+  'ENABLE_REMOTE_DEBUG',
 ].reduce((prev, key) => {
   return { ...prev, [`process.env.${key}`]: JSON.stringify(process.env[key]) };
 }, {});

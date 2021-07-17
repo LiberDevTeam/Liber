@@ -39,7 +39,7 @@ export const reducers = combineReducers({
 const enhancers: StoreEnhancer[] = [];
 
 // @ts-ignore
-if (!window.devToolsExtension) {
+if (process.env.ENABLE_REMOTE_DEBUG && !window.devToolsExtension) {
   enhancers.push(devToolsEnhancer({ realtime: true, port: 8000 }));
 }
 
