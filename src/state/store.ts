@@ -4,7 +4,8 @@ import {
   getDefaultMiddleware,
   ThunkAction,
 } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
+import { combineReducers, StoreEnhancer } from 'redux';
+import devToolsEnhancer from 'remote-redux-devtools';
 import botsReducer from '~/state/bots/botsSlice';
 import feedReducer from '~/state/feed/feedSlice';
 import marketplaceBotsReducer from '~/state/marketplace/botsSlice';
@@ -35,9 +36,17 @@ export const reducers = combineReducers({
   isInitialized: isInitializedSlice.reducer,
 });
 
+const enhancers: StoreEnhancer[] = [];
+
+// @ts-ignore
+if (!window.devToolsExtension) {
+  enhancers.push(devToolsEnhancer({ realtime: true, port: 8000 }));
+}
+
 export const store = configureStore({
   reducer: reducers,
   middleware: [...getDefaultMiddleware({})] as const,
+  enhancers,
 });
 
 export type RootState = ReturnType<typeof reducers>;

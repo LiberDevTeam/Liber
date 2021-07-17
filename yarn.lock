@@ -5764,6 +5764,13 @@
   dependencies:
     redux "^4.0.0"
 
+"@types/remote-redux-devtools@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@types/remote-redux-devtools/-/remote-redux-devtools-0.5.5.tgz#cc48e4625817ab8688d92058d224b774870a7bff"
+  integrity sha512-Xuya1TegRPAe92+nnEeYpfufE/mtfN99+GH272edaoWohbMA+yP6r+wYqK4sq/fvmoUPtPHtwZR2Mkk+6uHeBQ==
+  dependencies:
+    redux "^4.0.0"
+
 "@types/resolve@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-0.0.8.tgz#f26074d238e02659e323ce1a13d041eee280e194"
@@ -24925,7 +24932,7 @@ remark-squeeze-paragraphs@4.0.0:
   dependencies:
     mdast-squeeze-paragraphs "^4.0.0"
 
-remote-redux-devtools@^0.5.12:
+remote-redux-devtools@^0.5.12, remote-redux-devtools@^0.5.16:
   version "0.5.16"
   resolved "https://registry.yarnpkg.com/remote-redux-devtools/-/remote-redux-devtools-0.5.16.tgz#95b1a4a1988147ca04f3368f3573b661748b3717"
   integrity sha512-xZ2D1VRIWzat5nsvcraT6fKEX9Cfi+HbQBCwzNnUAM8Uicm/anOc60XGalcaDPrVmLug7nhDl2nimEa3bL3K9w==
