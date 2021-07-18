@@ -160,8 +160,11 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [mentionTarget, setMentionTarget] =
-      useState<{ word: string; start: number; end: number } | null>(null);
+    const [mentionTarget, setMentionTarget] = useState<{
+      word: string;
+      start: number;
+      end: number;
+    } | null>(null);
 
     const messageInputRef = useRef<HTMLInputElement>(null);
     const messagesBottomRef = useRef<HTMLDivElement>(null);

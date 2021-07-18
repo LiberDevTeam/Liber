@@ -11,6 +11,7 @@ export enum EthereumChain {
   'ROPSTEN' = 3,
   'RINKEBY' = 4,
   'KOVAN' = 42,
+  'LOCAL' = Number(process.env.CHAIN_ID) || 0,
 }
 
 /* connector */
@@ -19,21 +20,17 @@ const SUPPORT_CHAINIDS = [
   EthereumChain.ROPSTEN,
   EthereumChain.RINKEBY,
   EthereumChain.KOVAN,
+  EthereumChain.LOCAL,
 ];
+
+const defaultChainId =
+  process.env.NODE_ENV === 'development' && EthereumChain.LOCAL !== 0
+    ? EthereumChain.LOCAL
+    : EthereumChain.ROPSTEN;
 
 export const injectedConnecter = new InjectedConnector({
   supportedChainIds: SUPPORT_CHAINIDS,
 });
-
-console.log(
-  'test',
-  SUPPORT_CHAINIDS.reduce((accm, chainId): { [chainId: number]: string } => {
-    return {
-      ...accm,
-      [chainId]: `https://${process.env.INFURA_ENDPOINT}${process.env.INFURA_ID}`,
-    };
-  }, {})
-);
 
 export const networkConnector = new NetworkConnector({
   urls: SUPPORT_CHAINIDS.reduce((accm, chainId): {
@@ -44,7 +41,7 @@ export const networkConnector = new NetworkConnector({
       [chainId]: `https://${process.env.INFURA_ENDPOINT}${process.env.INFURA_ID}`,
     };
   }, {}),
-  defaultChainId: EthereumChain.ROPSTEN,
+  defaultChainId,
 });
 
 export const walletConnecter = new WalletConnectConnector({

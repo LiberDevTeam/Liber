@@ -42,3 +42,64 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Shared DB
+
+```
+feeds OrbitDBAddress {
+root: 'zdpuAtd6UwmbbQBmYUXBPEtWELnfmikSRwBeopW8wsjB1Crz5',
+path: 'feeds'
+}
+explore/places OrbitDBAddress {
+root: 'zdpuArRZQyEHHEm6JHT5GkEF3ESVYGJ31jbE8ahVzbHDUX6QY',
+path: 'explore/places'
+}
+marketplace/bots OrbitDBAddress {
+root: 'zdpuAtvSgGR5Y1amv3viEUyUr3Zuf6hzJd1KvPQJVeQfcTY5m',
+path: 'marketplace/bots'
+}
+explore/messages OrbitDBAddress {
+root: 'zdpuAyatYt9qV41rwVy85VAB3xb66fPXny4uuH7rPYqWrzEgz',
+path: 'explore/messages'
+}
+marketplace/stickers OrbitDBAddress {
+root: 'zdpuAszVyTNEebdF5Q2StXxswo4sMXjuXtL7sCvbCaxXovJy7',
+path: 'marketplace/stickers'
+}
+```
+
+## LiberToken & LiberMarket (Smartcontract, Solidity)
+
+### Relational Libraries
+
+- Truffle https://www.trufflesuite.com/docs/truffle/overview
+- Ganache https://www.trufflesuite.com/docs/ganache/overview
+- Typechain https://github.com/ethereum-ts/TypeChain
+- Solidity(0.8.0) https://docs.soliditylang.org/en/v0.8.0/
+- OpenZeppelin https://docs.openzeppelin.com/contracts/4.x/
+
+### Develop Start
+
+1. (First time only)run `yarn install`
+
+Solidity libraries install from npm.
+
+1a. (run with yarn install) run `yarn build:types`
+
+2. run `docker compose up -d` (use ganache service only)
+
+Ganache cli will be runnning. This is private local blockchain.
+
+3. Look at log. run `docker compose logs ganache` or docker GUI
+
+Private chain accounts private key is displayed in log.
+
+4. Import private chain's account in your wallet.
+
+Please check your wallet help.
+
+5. run `yarn migrate`
+
+Solidity files compile and run
+
+Complete! Lets start developping!

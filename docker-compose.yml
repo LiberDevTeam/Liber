@@ -12,5 +12,5 @@ services:
     image: trufflesuite/ganache-cli:latest
     ports:
       - 8545:8545
-    environment:
-      - DOCKER=true
+    entrypoint:
+      ['node', '/app/ganache-core.docker.cli.js', '--networkId', '1337']

@@ -7,6 +7,7 @@ declare namespace NodeJS {
     readonly INFURA_ID: string;
     readonly NODE_ENV: 'development' | 'production' | 'test';
     readonly PUBLIC_URL: string;
+    readonly CHAIN_ID: string;
   }
 }
 
