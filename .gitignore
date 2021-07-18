@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -11,10 +11,10 @@
 # production
 /build
 
-/public/main.js
-/public/main.css
-/public/sw.js
-/public/worker.js
+/packages/app/public/main.js
+/packages/app/public/main.css
+/packages/app/public/sw.js
+/packages/app/public/worker.js
 
 # misc
 .DS_Store
