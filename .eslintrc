@@ -34,7 +34,11 @@
       }
     },
     {
-      "files": ["src/lib/ipfs.ts", "src/state/p2p/p2pSlice.ts"],
+      "files": [
+        "src/lib/ipfs.ts",
+        "src/state/p2p/p2pSlice.ts",
+        "src/state/store.ts"
+      ],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off"
       }

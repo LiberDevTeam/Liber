@@ -44,6 +44,7 @@ const envValues = [
   'INFURA_ENDPOINT',
   'INFURA_ID',
   'CHAIN_ID',
+  'ENABLE_REMOTE_DEBUG',
 ].reduce((prev, key) => {
   return { ...prev, [`process.env.${key}`]: JSON.stringify(process.env[key]) };
 }, {});
