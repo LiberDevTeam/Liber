@@ -1,2 +1,2 @@
-website/*
-public/*
+packages/website/*
+packages/app/public/*

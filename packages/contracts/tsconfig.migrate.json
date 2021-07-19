@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "isolatedModules": false,
+    "module": "CommonJS",
+    "noEmit": false,
+    "outDir": "./migrations",
+    "sourceMap": false
+  },
+  "extends": "../../tsconfig.json",
+  "include": ["./migrations-ts/*.ts", "./@types-typechain/**/*.ts"],
+  "exclude": []
+}
