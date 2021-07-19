@@ -1,5 +1,5 @@
 const path = require('path');
-const { plugins } = require('./config.js');
+const { plugins, watch } = require('./config.js');
 
 require('esbuild')
   .build({
@@ -14,14 +14,6 @@ require('esbuild')
     },
     outdir: path.join(__dirname, '../public'),
     inject: [path.join(__dirname, './shims.js')],
-    watch: {
-      onRebuild(error, result) {
-        if (error) {
-          console.error('watch build failed:', error);
-        } else {
-          console.log('watch build succeeded:', result);
-        }
-      },
-    },
+    watch,
   })
   .catch(() => process.exit(1));

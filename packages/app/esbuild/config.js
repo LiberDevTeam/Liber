@@ -1,4 +1,5 @@
 require('dotenv').config();
+const args = process.argv.slice(2);
 const path = require('path');
 
 const resolve = {
@@ -51,6 +52,18 @@ const envValues = [
 ].reduce((prev, key) => {
   return { ...prev, [`process.env.${key}`]: JSON.stringify(process.env[key]) };
 }, {});
+
+exports.watch = args.includes('--watch')
+  ? {
+      onRebuild(error, result) {
+        if (error) {
+          console.error('watch build failed:', error);
+        } else {
+          console.log('watch build succeeded:', result);
+        }
+      },
+    }
+  : undefined;
 
 exports.commonConfig = {
   absWorkingDir: process.cwd(),
