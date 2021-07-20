@@ -202,15 +202,15 @@
     "build:app": "node ./esbuild/build.js",
     "build:sw": "node ./esbuild/sw.js",
     "build:worker": "node ./esbuild/worker.js",
-    "build": "run-p build:app build:sw",
+    "build": "run-p build:app build:sw build:worker",
     "test": "jest",
     "migrate:dev": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "migrate:ropsten": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network ropsten",
-    "start": "run-p watch:app watch:sw",
+    "start": "run-p watch:*",
     "storybook": "start-storybook -p 6006 -s public",
     "typecheck": "tsc --noEmit",
     "watch:app": "node ./esbuild/dev.js",
-    "watch:sw": "node ./esbuild/sw.js",
-    "watch:worker": "node ./esbuild/worker.js"
+    "watch:sw": "node ./esbuild/sw.js --watch",
+    "watch:worker": "node ./esbuild/worker.js --watch"
   }
 }
