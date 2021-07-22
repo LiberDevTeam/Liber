@@ -7,12 +7,15 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   const orbitdb = await OrbitDB.createInstance(ipfs, {
     directory: process.env.ORBITDB_DIRECTORY,
     identity: JSON.parse(process.env.ORBITDB_IDENTITY),
+    AccessControllers,
   });
 
   const address = 'feeds';
   const db = await orbitdb.feed(address, {
     // TODO restricts users from updating other user's records.
-    accessController: { write: ['*'] },
+    accessController: {
+      type: 'record-based',
+    },
   });
 
   console.log(address, db.address);
@@ -25,7 +28,9 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   ].forEach(async (address) => {
     const db = await orbitdb.keyvalue(address, {
       // TODO restricts users from updating other user's records.
-      accessController: { write: ['*'] },
+      accessController: {
+        type: 'record-based',
+      },
     });
     console.log(address, db.address);
   });
@@ -33,8 +38,9 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   ['marketplace/bots/ranking', 'marketplace/stickers/ranking'].forEach(
     async (address) => {
       const db = await orbitdb.keyvalue(address, {
-        accessController: { write: ['*'] },
-        // sortFn: SortByQtySold,
+        accessController: {
+          type: 'record-based',
+        },
       });
       console.log(address, db.address);
     }

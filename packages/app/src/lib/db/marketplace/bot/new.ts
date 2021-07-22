@@ -17,7 +17,8 @@ export const connectMarketplaceBotNewKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   botDB = await orbitDB.keyvalue<Bot>(
-    '/orbitdb/zdpuAshd1gdvzDag9tZLKgpQpVyFLCr5CX2fd8MjZpSNb7o5m/marketplace/bots/new'
+    '/orbitdb/zdpuAvH1V2sSMNqQ44F6T6zmAisUuDmNuLT1BhnBiqBGYCkVs/marketplace/bots/new',
+    { accessController: { type: 'record-based' } }
   );
   await botDB.load();
   return botDB;

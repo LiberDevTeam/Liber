@@ -23,7 +23,7 @@ export const connectExploreMessageKeyValue = async (): Promise<
 
     const orbitDB = await getOrbitDB();
     messageDB = await orbitDB.keyvalue<Message>(
-      '/orbitdb/zdpuAyatYt9qV41rwVy85VAB3xb66fPXny4uuH7rPYqWrzEgz/explore/messages'
+      '/orbitdb/zdpuAxq5rSrNPWCt7FmfjaGFpgoTXKnCyufDuhhX5WGduYjeN/explore/messages'
     );
     await messageDB.load();
     return messageDB;

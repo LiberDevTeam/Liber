@@ -5,13 +5,14 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
-import type {
-  LiberMarketInstance,
-  LiberStickerInstance,
-} from 'contracts/@types-typechain';
-import MarketContract from 'contracts/build/contracts/LiberMarket.json';
-import StickerContract from 'contracts/build/contracts/LiberSticker.json';
 import { getUnixTime } from 'date-fns';
+// import type {
+//   LiberMarketInstance,
+//   LiberStickerInstance,
+// } from 'contracts/@types-typechain';
+// import MarketContract from 'contracts/build/contracts/LiberMarket.json';
+// import StickerContract from 'contracts/build/contracts/LiberSticker.json';
+import { v4 as uuidv4 } from 'uuid';
 import Web3 from 'web3';
 import { history } from '~/history';
 import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
@@ -61,47 +62,49 @@ export const createNewSticker = createAsyncThunk<
     const { library, chainId, account } = web3React;
 
     // web3 PublishToken
-    if (!(chainId && account && library)) return;
-    const marketAddress =
-      (MarketContract.networks as any)[String(chainId)] || '';
-    const stickerAddress =
-      (StickerContract.networks as any)[String(chainId)] || '';
-    const marketContract = new library.eth.Contract(
-      MarketContract.abi as any,
-      marketAddress
-    ) as unknown as LiberMarketInstance;
-    const stickerContract = new library.eth.Contract(
-      StickerContract.abi as any,
-      stickerAddress
-    ) as unknown as LiberStickerInstance;
-    if (!(marketContract && stickerContract)) return;
-    const publishedTokenId = (
-      await stickerContract.methods.publishNewSticker()
-    ).logs
-      .filter((log) => log.event === 'PublishToken')
-      .reduce((accm, log) => {
-        console.log('publish token event log', log);
-        if ('tokenId' in log.args) {
-          return log.args.tokenId.toString();
-        }
-        return accm;
-      }, '');
-    const listedTokenId = (
-      await marketContract.methods.listToken(
-        stickerAddress,
-        publishedTokenId,
-        price,
-        true
-      )
-    ).logs
-      .filter((log) => log.event === 'ListItem')
-      .reduce((accm, log) => {
-        console.log('list token event log', log);
-        if ('itemId' in log.args) {
-          return log.args.itemId.toString();
-        }
-        return accm;
-      }, '');
+    // if (!(chainId && account && library)) return;
+    // const marketAddress =
+    //   (MarketContract.networks as any)[String(chainId)] || '';
+    // const stickerAddress =
+    //   (StickerContract.networks as any)[String(chainId)] || '';
+    // const marketContract = new library.eth.Contract(
+    //   MarketContract.abi as any,
+    //   marketAddress
+    // ) as unknown as LiberMarketInstance;
+    // const stickerContract = new library.eth.Contract(
+    //   StickerContract.abi as any,
+    //   stickerAddress
+    // ) as unknown as LiberStickerInstance;
+    // if (!(marketContract && stickerContract)) return;
+    // const publishedTokenId = (
+    //   await stickerContract.methods.publishNewSticker()
+    // ).logs
+    //   .filter((log) => log.event === 'PublishToken')
+    //   .reduce((accm, log) => {
+    //     console.log('publish token event log', log);
+    //     if ('tokenId' in log.args) {
+    //       return log.args.tokenId.toString();
+    //     }
+    //     return accm;
+    //   }, '');
+    // const listedTokenId = (
+    //   await marketContract.methods.listToken(
+    //     stickerAddress,
+    //     publishedTokenId,
+    //     price,
+    //     true
+    //   )
+    // ).logs
+    //   .filter((log) => log.event === 'ListItem')
+    //   .reduce((accm, log) => {
+    //     console.log('list token event log', log);
+    //     if ('itemId' in log.args) {
+    //       return log.args.itemId.toString();
+    //     }
+    //     return accm;
+    //   }, '');
+
+    const listedTokenId = uuidv4();
 
     const stickerKeyValue = await createStickerKeyValue(listedTokenId);
 

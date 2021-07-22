@@ -17,7 +17,7 @@ export const connectExplorePlaceKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   placeDB = await orbitDB.keyvalue<Place>(
-    '/orbitdb/zdpuArRZQyEHHEm6JHT5GkEF3ESVYGJ31jbE8ahVzbHDUX6QY/explore/places'
+    '/orbitdb/zdpuAr29Ev8JiJ9VMx5UXFa6roGppMt7BM1RwjjU9HBWJK4Pd/explore/places'
   );
   await placeDB.load();
   return placeDB;
