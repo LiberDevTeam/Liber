@@ -49,6 +49,13 @@ const envValues = [
   'INFURA_ID',
   'CHAIN_ID',
   'ENABLE_REMOTE_DEBUG',
+  'FEEDS_DB_ADDRESS',
+  'EXPLORE_PLACE_DB_ADDRESS',
+  'EXPLORE_MESSAGE_DB_ADDRESS',
+  'MARKETPLACE_STICKER_NEW_DB_ADDRESS',
+  'MARKETPLACE_BOT_NEW_DB_ADDRESS',
+  'MARKETPLACE_STICKER_RANKING_DB_ADDRESS',
+  'MARKETPLACE_BOT_RANKING_DB_ADDRESS',
 ].reduce((prev, key) => {
   return { ...prev, [`process.env.${key}`]: JSON.stringify(process.env[key]) };
 }, {});

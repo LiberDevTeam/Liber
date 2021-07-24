@@ -43,31 +43,6 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Shared DB
-
-```
-feeds OrbitDBAddress {
-root: 'zdpuAtd6UwmbbQBmYUXBPEtWELnfmikSRwBeopW8wsjB1Crz5',
-path: 'feeds'
-}
-explore/places OrbitDBAddress {
-root: 'zdpuArRZQyEHHEm6JHT5GkEF3ESVYGJ31jbE8ahVzbHDUX6QY',
-path: 'explore/places'
-}
-marketplace/bots OrbitDBAddress {
-root: 'zdpuAtvSgGR5Y1amv3viEUyUr3Zuf6hzJd1KvPQJVeQfcTY5m',
-path: 'marketplace/bots'
-}
-explore/messages OrbitDBAddress {
-root: 'zdpuAyatYt9qV41rwVy85VAB3xb66fPXny4uuH7rPYqWrzEgz',
-path: 'explore/messages'
-}
-marketplace/stickers OrbitDBAddress {
-root: 'zdpuAszVyTNEebdF5Q2StXxswo4sMXjuXtL7sCvbCaxXovJy7',
-path: 'marketplace/stickers'
-}
-```
-
 ## LiberToken & LiberMarket (Smartcontract, Solidity)
 
 ### Relational Libraries

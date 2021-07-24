@@ -18,6 +18,7 @@ export interface PartialForUpdate {
 
 export interface Place extends PartialForUpdate {
   id: string;
+  signature?: string;
   createdAt: number;
   timestamp: number; // the timestamp any user in the place acted at
   messageIds: string[];

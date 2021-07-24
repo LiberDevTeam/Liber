@@ -1,5 +1,9 @@
 // @ts-nocheck
 
+const { unmarshalSecp256k1PublicKey: unmarshal } =
+  require('libp2p-crypto').keys.supportedKeys.secp256k1;
+const Buffer = require('safe-buffer').Buffer;
+
 import AccessControllers from 'orbit-db-access-controllers';
 import AccessController from 'orbit-db-access-controllers/src/access-controller-interface';
 
@@ -9,10 +13,30 @@ class RecordBasedAccessController extends AccessController {
   } // Return the type for this controller
 
   async canAppend(entry, identityProvider) {
-    console.log(entry);
-    console.log(identityProvider);
     // logic to determine if entry can be added, for example:
-    if (identityProvider.verifyIdentity(entry.identity)) return true;
+    if (!identityProvider.verifyIdentity(entry.identity)) return false;
+
+    const { value, key, op } = entry.payload;
+
+    if (op === 'ADD') return true;
+
+    const match = key.match(/([^/]+)\/([^/]+\/[^/]+)/i, '');
+
+    // public key is not found in the key.
+    if (!match || match.length <= 1) return false;
+
+    const publicKey = match[1];
+
+    let id = Buffer.from(match[2]);
+
+    try {
+      const pubKey = unmarshal(Buffer.from(publicKey, 'hex'));
+      const v = await pubKey.verify(id, Buffer.from(value.signature, 'hex'));
+      return v;
+    } catch (e) {
+      console.error(e);
+      // Catch error: sig length wrong
+    }
 
     return false;
   }

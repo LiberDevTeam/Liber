@@ -19,7 +19,7 @@ export const connectMarketplaceStickerNewKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   stickerDB = await orbitDB.keyvalue<Sticker>(
-    '/orbitdb/zdpuAmaUSdDEJBK6kHHFvaWieFhxygH5NX9yGE4QPVaXkJ68S/marketplace/stickers/new',
+    process.env.MARKETPLACE_STICKER_NEW_DB_ADDRESS || '',
     { accessController: { type: 'record-based' } }
   );
   await stickerDB.load();

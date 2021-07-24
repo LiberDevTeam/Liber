@@ -15,7 +15,6 @@
   "private": true,
   "scripts": {
     "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
-    "create:shareddb": "node ./scripts/create-shared-db.js",
     "test": "jest",
     "lint": "run-p lint:js lint:sol",
     "lint:js": "eslint ./**/*.ts",
@@ -27,6 +26,9 @@
     "postbuild": "yarn run build:types",
     "test:js": "jest",
     "test:sol": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test",
+    "migrate:dev": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "migrate:ropsten": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network ropsten",
+    "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
     "typecheck": "tsc --noEmit"
   }
 }

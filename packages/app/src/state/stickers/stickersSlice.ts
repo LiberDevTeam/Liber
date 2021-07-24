@@ -148,15 +148,30 @@ export const createNewSticker = createAsyncThunk<
 
     const marketplaceStickerNewDB =
       await connectMarketplaceStickerNewKeyValue();
+    const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      sticker
+      `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceStickerNewDB.identity.id),
+          `${sticker.keyValAddress}/${sticker.id}`
+        ),
+        ...sticker,
+      }
     );
+
     const marketplaceStickerRankingDB =
       await connectMarketplaceStickerRankingKeyValue();
+    const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      sticker
+      `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
+          `${sticker.keyValAddress}/${sticker.id}`
+        ),
+        ...sticker,
+      }
     );
 
     dispatch(addSticker(sticker));
@@ -216,17 +231,33 @@ export const updateSticker = createAsyncThunk<
       ...sticker,
       ...partial,
     };
+
     const marketplaceStickerNewDB =
       await connectMarketplaceStickerNewKeyValue();
+    const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      newSticker
+      `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceStickerNewDB.identity.id),
+          `${sticker.keyValAddress}/${sticker.id}`
+        ),
+        ...newSticker,
+      }
     );
+
     const marketplaceStickerRankingDB =
       await connectMarketplaceStickerRankingKeyValue();
+    const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      newSticker
+      `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
+          `${sticker.keyValAddress}/${sticker.id}`
+        ),
+        ...newSticker,
+      }
     );
 
     dispatch(updateOne({ id: stickerId, changes: partial }));

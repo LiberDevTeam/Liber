@@ -18,9 +18,7 @@ export const connectFeedDB = async (): Promise<FeedStore<FeedItem>> => {
     }
 
     const orbitDB = await getOrbitDB();
-    feedDB = await orbitDB.feed<FeedItem>(
-      '/orbitdb/zdpuB2yFYHfDXGkLuoGTpzSidwvJ8LSGc4MxDGzVm6bFqmezt/feeds'
-    );
+    feedDB = await orbitDB.feed<FeedItem>(process.env.FEEDS_DB_ADDRESS || '');
     await feedDB.load();
     return feedDB;
 
