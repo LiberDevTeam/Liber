@@ -1,6 +1,5 @@
 import { Mutex } from 'async-mutex';
 import Ipfs, { IPFS as IPFSType } from 'ipfs';
-import uint8ArrayFromString from 'uint8arrays/from-string';
 
 let ipfsNode: IPFSType | null;
 const ipfsMutex = new Mutex();
@@ -32,7 +31,8 @@ export const getIpfsNode = async (): Promise<IPFSType> => {
 };
 
 export const encrypt = async (obj: any): Promise<Uint8Array> => {
-  const arr = uint8ArrayFromString(JSON.stringify(obj));
+  const encoder = new TextEncoder();
+  const arr = encoder.encode(JSON.stringify(obj));
   const node = await getIpfsNode();
   // @ts-ignore
   return node.libp2p.peerId.pubKey.encrypt(arr);

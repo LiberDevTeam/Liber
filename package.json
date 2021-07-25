@@ -33,6 +33,7 @@
   "scripts": {
     "start": "yarn workspace app start",
     "build": "yarn workspace app build",
+    "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "typecheck": "yarn workspaces run typecheck",
     "prepare": "husky install"
