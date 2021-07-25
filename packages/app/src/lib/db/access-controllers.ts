@@ -1,11 +1,17 @@
 // @ts-nocheck
 
-const { unmarshalSecp256k1PublicKey: unmarshal } =
-  require('libp2p-crypto').keys.supportedKeys.secp256k1;
-const Buffer = require('safe-buffer').Buffer;
-
+import Libp2pCrypto from 'libp2p-crypto';
 import AccessControllers from 'orbit-db-access-controllers';
 import AccessController from 'orbit-db-access-controllers/src/access-controller-interface';
+import { Buffer } from 'safe-buffer';
+
+const {
+  keys: {
+    supportedKeys: {
+      secp256k1: { unmarshalSecp256k1PublicKey: unmarshal },
+    },
+  },
+} = Libp2pCrypto;
 
 class RecordBasedAccessController extends AccessController {
   static get type() {
@@ -35,8 +41,6 @@ class RecordBasedAccessController extends AccessController {
 
     return false;
   }
-
-  async grant(access, identity) {} // Logic for granting access to identity
 
   async save() {
     // return parameters needed for loading
