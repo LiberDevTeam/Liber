@@ -138,7 +138,7 @@
     "@types/color-hash": "^1.0.0",
     "@types/emoji-mart": "^3.0.4",
     "@types/faker": "^5.5.7",
-    "@types/gtag.js": "^0.0.5",
+    "@types/gtag.js": "^0.0.7",
     "@types/jest": "^26.0.23",
     "@types/mocha": "^8.2.2",
     "@types/node": "^16.3.2",
