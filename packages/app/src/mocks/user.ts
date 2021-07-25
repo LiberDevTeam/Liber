@@ -1,8 +1,8 @@
 import { User } from '~/state/users/type';
 
-export const dummyUser = (id: string): User => ({
+export const dummyUser = (id: string, name?: string): User => ({
   id,
-  name: 'user-name',
+  name: name ?? 'user-name',
   botsListingOn: [],
   stickersListingOn: [],
 });

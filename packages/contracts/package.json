@@ -13,7 +13,9 @@
   "exports": {
     "./build/contracts/*": "./build/contracts/*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  },
   "private": true,
   "scripts": {
     "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
