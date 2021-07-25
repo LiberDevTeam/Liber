@@ -31,8 +31,7 @@ class RecordBasedAccessController extends AccessController {
 
     try {
       const pubKey = unmarshal(Buffer.from(publicKey, 'hex'));
-      const v = await pubKey.verify(id, Buffer.from(value.signature, 'hex'));
-      return v;
+      return await pubKey.verify(id, Buffer.from(value.signature, 'hex'));
     } catch (e) {
       console.error(e);
       // Catch error: sig length wrong

@@ -21,10 +21,6 @@ IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   console.log(`FEEDS_DB_ADDRESS=${db.address}`);
 
   [
-    // { dbPath: 'explore/places', envVarName: 'EXPLORE_PLACE_DB_ADDRESS' },
-    // { dbPath: 'explore/messages', envVarName: 'EXPLORE_MESSAGE_DB_ADDRESS' },
-    // { dbPath: 'marketplace/bots/new', envVarName: 'MARKETPLACE_BOT_NEW_DB_ADDRESS' },
-    // { dbPath: 'marketplace/stickers/new', envVarName: 'MARKETPLACE_STICKER_NEW_DB_ADDRESS' },
     ['explore/places', 'EXPLORE_PLACE_DB_ADDRESS'],
     ['explore/messages', 'EXPLORE_MESSAGE_DB_ADDRESS'],
     ['marketplace/bots/new', 'MARKETPLACE_BOT_NEW_DB_ADDRESS'],
