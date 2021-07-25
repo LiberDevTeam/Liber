@@ -1,4 +1,6 @@
+import { dummyBot } from '~/mocks/bot';
 import { dummyPlace } from '~/mocks/place';
+import { dummyUser } from '~/mocks/user';
 import { createStore } from '~/test-utils/create-store';
 import { joinPlace } from './placesSlice';
 import { parseText } from './utils';
@@ -45,23 +47,23 @@ test('parseText', () => {
   ).toEqual(['@hello test @world']);
   expect(
     parseText({
-      text: '@bot test',
-      bots: [{ id: 'bot', name: 'bot', sourceCode: '' }],
+      text: `@${dummyBot.name} test`,
+      bots: [dummyBot],
       users: [],
     })
-  ).toEqual([{ bot: true, name: 'bot', userId: 'bot' }, ' test']);
+  ).toEqual([{ bot: true, name: dummyBot.name, userId: dummyBot.id }, ' test']);
   expect(
     parseText({
-      text: '@bot',
-      bots: [{ id: 'bot', name: 'bot', sourceCode: '' }],
+      text: `@${dummyBot.name}`,
+      bots: [dummyBot],
       users: [],
     })
-  ).toEqual([{ bot: true, name: 'bot', userId: 'bot' }]);
+  ).toEqual([{ bot: true, name: dummyBot.name, userId: dummyBot.id }]);
   expect(
     parseText({
       text: '@user test',
       bots: [],
-      users: [{ id: 'user', name: 'user' }],
+      users: [dummyUser('user', 'user')],
     })
   ).toEqual([{ bot: false, name: 'user', userId: 'user' }, ' test']);
 });
