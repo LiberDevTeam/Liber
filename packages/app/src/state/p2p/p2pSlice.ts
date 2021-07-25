@@ -179,7 +179,7 @@ export const createNewPlace = createAsyncThunk<
       {
         signature: await keystore.sign(
           await keystore.getKey(explorePlaceDB.identity.id),
-          `${place.keyValAddress}/${place.id}`
+          JSON.stringify(place)
         ),
         ...place,
       }

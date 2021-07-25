@@ -20,18 +20,14 @@ class RecordBasedAccessController extends AccessController {
 
     if (op === 'ADD') return true;
 
-    const match = key.match(/([^/]+)\/([^/]+\/[^/]+)/i, '');
+    const [, publicKey, _] = key.split('/');
 
-    // public key is not found in the key.
-    if (!match || match.length <= 1) return false;
-
-    const publicKey = match[1];
-
-    let id = Buffer.from(match[2]);
+    const { signature, ...omitted } = value;
+    const data = Buffer.from(JSON.stringify(omitted));
 
     try {
       const pubKey = unmarshal(Buffer.from(publicKey, 'hex'));
-      return await pubKey.verify(id, Buffer.from(value.signature, 'hex'));
+      return await pubKey.verify(data, Buffer.from(signature, 'hex'));
     } catch (e) {
       console.error(e);
       // Catch error: sig length wrong

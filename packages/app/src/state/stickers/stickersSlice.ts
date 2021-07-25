@@ -159,7 +159,7 @@ export const createNewSticker = createAsyncThunk<
       {
         signature: await keystore1.sign(
           await keystore1.getKey(marketplaceStickerNewDB.identity.id),
-          `${sticker.keyValAddress}/${sticker.id}`
+          JSON.stringify(sticker)
         ),
         ...sticker,
       }
@@ -173,7 +173,7 @@ export const createNewSticker = createAsyncThunk<
       {
         signature: await keystore2.sign(
           await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
-          `${sticker.keyValAddress}/${sticker.id}`
+          JSON.stringify(sticker)
         ),
         ...sticker,
       }
@@ -245,7 +245,7 @@ export const updateSticker = createAsyncThunk<
       {
         signature: await keystore1.sign(
           await keystore1.getKey(marketplaceStickerNewDB.identity.id),
-          `${sticker.keyValAddress}/${sticker.id}`
+          JSON.stringify(newSticker)
         ),
         ...newSticker,
       }
@@ -259,7 +259,7 @@ export const updateSticker = createAsyncThunk<
       {
         signature: await keystore2.sign(
           await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
-          `${sticker.keyValAddress}/${sticker.id}`
+          JSON.stringify(newSticker)
         ),
         ...newSticker,
       }

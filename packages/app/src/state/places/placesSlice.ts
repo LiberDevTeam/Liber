@@ -232,14 +232,17 @@ export const updatePlace = createAsyncThunk<
     const explorePlaceDB = await connectExplorePlaceKeyValue();
     const key = `/${explorePlaceDB.identity.publicKey}/${address}/${placeId}`;
     const place = explorePlaceDB.get(key);
+    const newPlace = {
+      ...place,
+      ...partial,
+    };
     const keystore = explorePlaceDB.identity.provider.keystore;
     await explorePlaceDB.put(key, {
       signature: await keystore.sign(
         await keystore.getKey(explorePlaceDB.identity.id),
-        `${address}/${placeId}`
+        JSON.stringify(newPlace)
       ),
-      ...place,
-      ...partial,
+      ...newPlace,
     });
 
     dispatch(updateOne({ placeId, changes: partial }));
