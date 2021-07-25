@@ -110,7 +110,7 @@
     "styled-components": "^5.3.0",
     "styled-normalize": "^8.0.7",
     "truffle": "^5.3.13",
-    "typechain": "^5.1.1",
+    "typechain": "^5.1.2",
     "upload-element": "^1.0.1",
     "url-loader": "4.1.1",
     "uuid": "^8.3.1",
