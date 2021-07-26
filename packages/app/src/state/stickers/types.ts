@@ -1,5 +1,6 @@
 export interface Sticker {
   id: string;
+  signature?: string;
   uid: string;
   keyValAddress: string;
   created: number;

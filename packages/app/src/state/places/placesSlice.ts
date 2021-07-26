@@ -229,11 +229,20 @@ export const updatePlace = createAsyncThunk<
       })
     );
 
-    const marketplacePlaceDB = await connectExplorePlaceKeyValue();
-    const place = marketplacePlaceDB.get(`${address}/${placeId}`);
-    await marketplacePlaceDB.put(`${address}/${placeId}`, {
+    const explorePlaceDB = await connectExplorePlaceKeyValue();
+    const key = `/${explorePlaceDB.identity.publicKey}/${address}/${placeId}`;
+    const place = explorePlaceDB.get(key);
+    const newPlace = {
       ...place,
       ...partial,
+    };
+    const keystore = explorePlaceDB.identity.provider.keystore;
+    await explorePlaceDB.put(key, {
+      signature: await keystore.sign(
+        await keystore.getKey(explorePlaceDB.identity.id),
+        JSON.stringify(newPlace)
+      ),
+      ...newPlace,
     });
 
     dispatch(updateOne({ placeId, changes: partial }));

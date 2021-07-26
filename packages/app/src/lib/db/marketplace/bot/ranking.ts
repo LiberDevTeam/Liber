@@ -19,7 +19,8 @@ export const connectMarketplaceBotRankingKeyValue = async (): Promise<
 
   const orbitDB = await getOrbitDB();
   botDB = await orbitDB.keyvalue<Bot>(
-    '/orbitdb/zdpuAp198z9Lr4kAamfNnoeaHuAxh8iMJA2yoWJ8oGdPjgkg9/marketplace/bots/ranking'
+    process.env.MARKETPLACE_BOT_RANKING_DB_ADDRESS || '',
+    { accessController: { type: 'record-based' } }
   );
   await botDB.load();
   return botDB;

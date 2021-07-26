@@ -135,12 +135,32 @@ export const createNewBot = createAsyncThunk<
     };
     userDB.set('data', newUser);
 
-    const marketplaceBotDB = await connectMarketplaceBotNewKeyValue();
-    await marketplaceBotDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
+    const marketplaceNewBotDB = await connectMarketplaceBotNewKeyValue();
+    const keystore1 = marketplaceNewBotDB.identity.provider.keystore;
+    await marketplaceNewBotDB.put(
+      `/${marketplaceNewBotDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceNewBotDB.identity.id),
+          JSON.stringify(bot)
+        ),
+        ...bot,
+      }
+    );
 
     const marketplaceBotRankingDB =
       await connectMarketplaceBotRankingKeyValue();
-    await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, bot);
+    const keystore2 = marketplaceNewBotDB.identity.provider.keystore;
+    await marketplaceBotRankingDB.put(
+      `/${marketplaceBotRankingDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceBotRankingDB.identity.id),
+          JSON.stringify(bot)
+        ),
+        ...bot,
+      }
+    );
 
     dispatch(addBot(bot));
     history.push(`/bots/${bot.keyValAddress}/${bot.id}`);
@@ -209,12 +229,32 @@ export const updateBot = createAsyncThunk<
       ...bot,
       ...partial,
     };
-    const marketplaceBotNewDB = await connectMarketplaceBotNewKeyValue();
-    await marketplaceBotNewDB.put(`${bot.keyValAddress}/${bot.id}`, newBot);
+    const marketplaceNewBotDB = await connectMarketplaceBotNewKeyValue();
+    const keystore1 = marketplaceNewBotDB.identity.provider.keystore;
+    await marketplaceNewBotDB.put(
+      `/${marketplaceNewBotDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceNewBotDB.identity.id),
+          JSON.stringify(newBot)
+        ),
+        ...newBot,
+      }
+    );
 
     const marketplaceBotRankingDB =
       await connectMarketplaceBotRankingKeyValue();
-    await marketplaceBotRankingDB.put(`${bot.keyValAddress}/${bot.id}`, newBot);
+    const keystore2 = marketplaceNewBotDB.identity.provider.keystore;
+    await marketplaceBotRankingDB.put(
+      `/${marketplaceBotRankingDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceBotRankingDB.identity.id),
+          JSON.stringify(newBot)
+        ),
+        ...newBot,
+      }
+    );
 
     dispatch(updateOne({ id: botId, changes: partial }));
     history.push(`/bots/${address}/${botId}`);

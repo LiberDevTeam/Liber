@@ -173,7 +173,17 @@ export const createNewPlace = createAsyncThunk<
 
     place.hash = undefined;
     const explorePlaceDB = await connectExplorePlaceKeyValue();
-    await explorePlaceDB.put(`${place.keyValAddress}/${place.id}`, place);
+    const keystore = explorePlaceDB.identity.provider.keystore;
+    await explorePlaceDB.put(
+      `/${explorePlaceDB.identity.publicKey}/${place.keyValAddress}/${place.id}`,
+      {
+        signature: await keystore.sign(
+          await keystore.getKey(explorePlaceDB.identity.id),
+          JSON.stringify(place)
+        ),
+        ...place,
+      }
+    );
 
     connectFeedDB().then((db) => {
       db.add({

@@ -66,21 +66,21 @@ export const createNewSticker = createAsyncThunk<
       (MarketContract.networks as any)[String(chainId)] || '';
     const stickerAddress =
       (StickerContract.networks as any)[String(chainId)] || '';
-    const marketContract = (new library.eth.Contract(
+    const marketContract = new library.eth.Contract(
       MarketContract.abi as any,
       marketAddress
-    ) as unknown) as LiberMarketInstance;
-    const stickerContract = (new library.eth.Contract(
+    ) as unknown as LiberMarketInstance;
+    const stickerContract = new library.eth.Contract(
       StickerContract.abi as any,
       stickerAddress
-    ) as unknown) as LiberStickerInstance;
+    ) as unknown as LiberStickerInstance;
     if (!(marketContract && stickerContract)) return;
-    const publishedTokenId = ((
-      await stickerContract.methods.publishNewSticker()
-    ).logs as {
-      event: string;
-      args: { tokenId: number };
-    }[])
+    const publishedTokenId = (
+      (await stickerContract.methods.publishNewSticker()).logs as {
+        event: string;
+        args: { tokenId: number };
+      }[]
+    )
       .filter((log) => log.event === 'PublishToken')
       .reduce((accm, log) => {
         console.log('publish token event log', log);
@@ -89,17 +89,19 @@ export const createNewSticker = createAsyncThunk<
         }
         return accm;
       }, '');
-    const listedTokenId = ((
-      await marketContract.methods.listToken(
-        stickerAddress,
-        publishedTokenId,
-        price,
-        true
-      )
-    ).logs as {
-      event: string;
-      args: { itemId: number };
-    }[])
+    const listedTokenId = (
+      (
+        await marketContract.methods.listToken(
+          stickerAddress,
+          publishedTokenId,
+          price,
+          true
+        )
+      ).logs as {
+        event: string;
+        args: { itemId: number };
+      }[]
+    )
       .filter((log) => log.event === 'ListItem')
       .reduce((accm, log) => {
         console.log('list token event log', log);
@@ -149,15 +151,32 @@ export const createNewSticker = createAsyncThunk<
     };
     userDB.set(DB_KEY, newUser);
 
-    const marketplaceStickerNewDB = await connectMarketplaceStickerNewKeyValue();
+    const marketplaceStickerNewDB =
+      await connectMarketplaceStickerNewKeyValue();
+    const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      sticker
+      `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceStickerNewDB.identity.id),
+          JSON.stringify(sticker)
+        ),
+        ...sticker,
+      }
     );
-    const marketplaceStickerRankingDB = await connectMarketplaceStickerRankingKeyValue();
+
+    const marketplaceStickerRankingDB =
+      await connectMarketplaceStickerRankingKeyValue();
+    const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      sticker
+      `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
+          JSON.stringify(sticker)
+        ),
+        ...sticker,
+      }
     );
 
     dispatch(addSticker(sticker));
@@ -217,15 +236,33 @@ export const updateSticker = createAsyncThunk<
       ...sticker,
       ...partial,
     };
-    const marketplaceStickerNewDB = await connectMarketplaceStickerNewKeyValue();
+
+    const marketplaceStickerNewDB =
+      await connectMarketplaceStickerNewKeyValue();
+    const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      newSticker
+      `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore1.sign(
+          await keystore1.getKey(marketplaceStickerNewDB.identity.id),
+          JSON.stringify(newSticker)
+        ),
+        ...newSticker,
+      }
     );
-    const marketplaceStickerRankingDB = await connectMarketplaceStickerRankingKeyValue();
+
+    const marketplaceStickerRankingDB =
+      await connectMarketplaceStickerRankingKeyValue();
+    const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
-      `${sticker.keyValAddress}/${sticker.id}`,
-      newSticker
+      `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
+      {
+        signature: await keystore2.sign(
+          await keystore2.getKey(marketplaceStickerRankingDB.identity.id),
+          JSON.stringify(newSticker)
+        ),
+        ...newSticker,
+      }
     );
 
     dispatch(updateOne({ id: stickerId, changes: partial }));
@@ -276,14 +313,15 @@ export const stickersSlice = createSlice({
 export const { addStickers, addSticker, updateOne } = stickersSlice.actions;
 
 const selectors = stickersAdapter.getSelectors();
-export const selectStickerById = (id: string) => (
-  state: RootState
-): Sticker | undefined => selectors.selectById(state.stickers, id);
-export const selectStickersByIds = (ids: string[]) => (
-  state: RootState
-): Sticker[] =>
-  ids
-    .map((id) => selectors.selectById(state.stickers, id))
-    .filter(Boolean) as Sticker[];
+export const selectStickerById =
+  (id: string) =>
+  (state: RootState): Sticker | undefined =>
+    selectors.selectById(state.stickers, id);
+export const selectStickersByIds =
+  (ids: string[]) =>
+  (state: RootState): Sticker[] =>
+    ids
+      .map((id) => selectors.selectById(state.stickers, id))
+      .filter(Boolean) as Sticker[];
 
 export default stickersSlice.reducer;

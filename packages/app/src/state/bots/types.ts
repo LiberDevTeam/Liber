@@ -6,6 +6,7 @@ export interface Example {
 
 export interface Bot {
   id: string;
+  signature?: string;
   uid: string;
   keyValAddress: string;
   created: number;

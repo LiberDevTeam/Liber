@@ -19,7 +19,6 @@
   "private": true,
   "scripts": {
     "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
-    "create:shareddb": "node ./scripts/create-shared-db.js",
     "test": "exit 0",
     "test:js": "exit 0",
     "test:sol": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test",
