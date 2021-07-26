@@ -102,6 +102,7 @@
     "react-window": "^1.8.6",
     "redux-logger": "^3.0.6",
     "remark-gfm": "^1.0.0",
+    "safe-buffer": "^5.2.1",
     "simple-peer": "^9.11.0",
     "solhint": "^3.3.6",
     "stream-browserify": "^3.0.0",
@@ -126,7 +127,7 @@
   "devDependencies": {
     "@babel/cli": "^7.14.3",
     "@babel/core": "7.14.8",
-    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-actions": "^6.3.6",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
     "@storybook/node-logger": "^6.2.9",
@@ -198,21 +199,18 @@
   "scripts": {
     "build:i18next": "cross-env NODE_ENV=development babel './src/**/*.tsx'",
     "build:storybook": "build-storybook -s public",
-    "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
-    "create:shareddb": "node ./scripts/create-shared-db.js",
     "lint": "eslint src/",
     "build:app": "node ./esbuild/build.js",
     "build:sw": "node ./esbuild/sw.js",
     "build:worker": "node ./esbuild/worker.js",
     "build": "run-p build:app build:sw build:worker",
     "test": "jest",
-    "migrate:dev": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
-    "migrate:ropsten": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network ropsten",
-    "start": "run-p watch:*",
+    "start": "run-p watch:app watch:sw",
     "storybook": "start-storybook -p 6006 -s public",
     "typecheck": "tsc --noEmit",
     "watch:app": "node ./esbuild/dev.js",
-    "watch:sw": "node ./esbuild/sw.js --watch",
-    "watch:worker": "node ./esbuild/worker.js --watch"
+    "watch:sw": "node ./esbuild/sw.js",
+    "watch:worker": "node ./esbuild/worker.js",
+    "create:shareddb": "node ./src/create-shared-db.js"
   }
 }
