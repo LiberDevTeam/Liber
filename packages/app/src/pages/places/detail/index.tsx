@@ -47,10 +47,12 @@ const ToastWrapper = styled.div`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   padding: ${(props) =>
     `0 ${props.theme.space[3]}px 0 ${props.theme.space[2]}px`};
   & > * {
-    margin-top: ${(props) => props.theme.space[5]}px;
+    margin-top: ${(props) => props.theme.space[3]}px;
   }
 `;
 
@@ -87,7 +89,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     const pk = { placeId, address };
     dispatch(joinPlace(pk));
     dispatch(appendJoinedPlace(pk));
-  }, [placeId, address]);
+  }, [dispatch, placeId, address]);
 
   useEffect(() => {
     dispatch(

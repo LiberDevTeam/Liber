@@ -19,6 +19,7 @@
   "private": true,
   "scripts": {
     "build:types": "npx typechain --target truffle-v5 --out-dir @types-typechain ./build/contracts/*.json && prettier --write @types-typechain",
+    "build": "truffle compile",
     "test": "exit 0",
     "test:js": "exit 0",
     "test:sol": "tsc -p ./tsconfig.test.json --outDir ./test && truffle test",
@@ -27,8 +28,6 @@
     "lint:sol": "solhint --fix ./contracts/**/*.sol",
     "migrate:dev": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "migrate:ropsten": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network ropsten",
-    "postinstall": "yarn build && yarn build:types",
-    "build": "truffle compile",
     "postbuild": "yarn run build:types",
     "typecheck": "tsc --noEmit"
   }
