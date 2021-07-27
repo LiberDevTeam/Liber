@@ -27,7 +27,7 @@
     "lint:sol": "solhint --fix ./contracts/**/*.sol",
     "migrate:dev": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "migrate:ropsten": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network ropsten",
-    "postinstall": "yarn build && yarn build:types",
+    "postinstall": "yarn build",
     "build": "truffle compile",
     "postbuild": "yarn run build:types",
     "typecheck": "tsc --noEmit"
