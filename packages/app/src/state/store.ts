@@ -1,9 +1,4 @@
-import {
-  Action,
-  configureStore,
-  getDefaultMiddleware,
-  ThunkAction,
-} from '@reduxjs/toolkit';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { combineReducers, StoreEnhancer } from 'redux';
 import devToolsEnhancer from 'remote-redux-devtools';
 import botsReducer from '~/state/bots/botsSlice';
@@ -45,7 +40,7 @@ if (process.env.ENABLE_REMOTE_DEBUG && !window.devToolsExtension) {
 
 export const store = configureStore({
   reducer: reducers,
-  middleware: [...getDefaultMiddleware({})] as const,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({}),
   enhancers,
 });
 
