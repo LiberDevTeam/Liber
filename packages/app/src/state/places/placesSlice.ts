@@ -19,7 +19,7 @@ import { AppDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
-import { selectMessageById } from './messagesSlice';
+import { addReaction, selectMessageById } from './messagesSlice';
 import { Message, PartialForUpdate, Place, PlaceField } from './type';
 
 const MODULE_NAME = 'places';
@@ -343,15 +343,20 @@ export const placesSlice = createSlice({
           id: action.meta.arg.placeId,
           changes: { bots: action.payload },
         });
+      })
+      .addCase(addReaction.fulfilled, (state, action) => {
+        placesAdapter.updateOne(state, {
+          id: action.meta.arg.placeId,
+          changes: { reactions: action.payload },
+        });
       });
   },
 });
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById =
-  (id: string) =>
-  (state: RootState): Place | undefined =>
-    selectors.selectById(state.places, id);
+export const selectPlaceById = (id: string) => (
+  state: RootState
+): Place | undefined => selectors.selectById(state.places, id);
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -359,21 +364,25 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPlaceId =
-  (placeId: string) =>
-  (state: RootState): Message[] => {
-    const place = selectors.selectById(state.places, placeId);
+export const selectPlaceMessagesByPlaceId = (placeId: string) => (
+  state: RootState
+): Message[] => {
+  const place = selectors.selectById(state.places, placeId);
 
-    if (!place) {
-      return [];
-    }
+  if (!place) {
+    return [];
+  }
 
-    return place.messageIds
-      .map((id) => selectMessageById(state.placeMessages, id))
-      .filter(Boolean) as Message[];
-  };
+  return place.messageIds
+    .map((id) => selectMessageById(state.placeMessages, id))
+    .filter(Boolean) as Message[];
+};
 
-export const { clearUnreadMessages, setHash, removePlace, updateOne } =
-  placesSlice.actions;
+export const {
+  clearUnreadMessages,
+  setHash,
+  removePlace,
+  updateOne,
+} = placesSlice.actions;
 
 export default placesSlice.reducer;

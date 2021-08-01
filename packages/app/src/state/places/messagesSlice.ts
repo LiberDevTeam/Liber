@@ -8,13 +8,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
 import { connectFeedDB } from '~/lib/db/feed';
 import { getMessageFeedById } from '~/lib/db/message';
+import { getPlaceDB } from '~/lib/db/place';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { selectPlaceById } from '~/state/places/placesSlice';
-import { Message, Place, StickerItem } from '~/state/places/type';
+import {
+  Message,
+  Place,
+  Reaction,
+  ReactionMap,
+  StickerItem,
+} from '~/state/places/type';
 import {
   parseText,
   resolveBotFromContent,
@@ -26,7 +33,9 @@ import { ItemType } from '../feed/feedSlice';
 
 const MODULE_NAME = 'placeMessages';
 
-function createMessage(props: Omit<Message, 'id' | 'timestamp'>): Message {
+function createMessage(
+  props: Omit<Message, 'id' | 'timestamp' | 'reactions'>
+): Message {
   return {
     ...props,
     id: uuidv4(),
@@ -64,7 +73,7 @@ export const publishPlaceMessage = createAsyncThunk<
   { dispatch: AppDispatch; state: RootState }
 >(
   `${MODULE_NAME}/publishPlaceMessage`,
-  async ({ placeId, text, attachments }, { dispatch, getState }) => {
+  async ({ placeId, text, attachments }, { getState }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
     const users = selectAllUsers(state.users);
@@ -119,6 +128,54 @@ export const publishPlaceMessage = createAsyncThunk<
   }
 );
 
+export const addReaction = createAsyncThunk<
+  ReactionMap,
+  { placeId: string; messageId: string; emojiId: string },
+  { state: RootState }
+>(
+  `${MODULE_NAME}/addReaction`,
+  async ({ placeId, messageId, emojiId }, { getState }) => {
+    const state = getState();
+    const me = selectMe(state);
+
+    const db = getPlaceDB(placeId);
+
+    if (!db) {
+      throw new Error('Cannot find place database');
+    }
+
+    const currentMap = db.get('reactions') as ReactionMap;
+    let messageReactions = currentMap[messageId] || [];
+
+    if (messageReactions.find((r) => r.emojiId === emojiId)) {
+      messageReactions = messageReactions.map((r) => {
+        if (r.emojiId !== emojiId) {
+          return r;
+        }
+
+        // remove
+        if (r.userIds.includes(me.id)) {
+          return { emojiId, userIds: r.userIds.filter((id) => id !== me.id) };
+        }
+
+        // add
+        return { emojiId, userIds: r.userIds.concat(me.id) };
+      });
+    } else {
+      messageReactions = messageReactions.concat({ emojiId, userIds: [me.id] });
+    }
+
+    const newMap = {
+      ...currentMap,
+      [messageId]: messageReactions.filter((r) => r.userIds.length > 0),
+    };
+
+    await db.put('reactions', newMap);
+
+    return newMap;
+  }
+);
+
 export const sendSticker = createAsyncThunk<
   void,
   { placeId: string; item: StickerItem },
@@ -169,5 +226,13 @@ export const messagesSlice = createSlice({
 });
 
 export const selectMessageById = messagesAdapter.getSelectors().selectById;
+export const selectMessageReactionsByMessage = (
+  message: Message | undefined
+) => (state: RootState): Reaction[] => {
+  if (!message) {
+    return [];
+  }
+  return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
+};
 
 export default messagesSlice.reducer;

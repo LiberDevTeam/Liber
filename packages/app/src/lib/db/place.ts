@@ -1,8 +1,14 @@
 import type KeyValueStore from 'orbit-db-kvstore';
-import type { Place, PlacePermissions } from '~/state/places/type';
+import type { Place, PlacePermissions, ReactionMap } from '~/state/places/type';
 import { getOrbitDB } from './orbit';
 
-type PlaceDBValue = string | number | string[] | boolean | PlacePermissions;
+type PlaceDBValue =
+  | string
+  | number
+  | string[]
+  | boolean
+  | PlacePermissions
+  | ReactionMap;
 
 const placeKeyValues: Record<string, KeyValueStore<PlaceDBValue>> = {};
 const getPlaceAddress = (address: string, placeId: string): string =>
@@ -38,6 +44,7 @@ export const readPlaceFromDB = (kv: KeyValueStore<PlaceDBValue>): Place => {
     readOnly: kv.get('readOnly') as boolean,
     bannedUsers: kv.get('bannedUsers') as string[],
     bots: (kv.get('bots') as string[]) || [],
+    reactions: (kv.get('reactions') as ReactionMap) || {},
   };
 };
 
@@ -64,4 +71,10 @@ export const connectPlaceKeyValue = async ({
 
   await db.load();
   return db;
+};
+
+export const getPlaceDB = (
+  placeId: string
+): KeyValueStore<PlaceDBValue> | undefined => {
+  return placeKeyValues[placeId];
 };
