@@ -12,6 +12,5 @@ export const createDummyMessage = (
   placeId: '',
   timestamp: getUnixTime(faker.datatype.datetime()),
   uid: faker.datatype.uuid(),
-  reactions: [],
   ...partialMessage,
 });

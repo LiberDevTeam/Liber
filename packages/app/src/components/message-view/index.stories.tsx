@@ -12,10 +12,6 @@ export default {
 
 const message = createDummyMessage({
   content: ['Hello, World'],
-  reactions: [
-    { count: 10, me: false, emojiId: '+1' },
-    { count: 5, me: true, emojiId: 'smiley' },
-  ],
 });
 
 const myMessage = createDummyMessage({

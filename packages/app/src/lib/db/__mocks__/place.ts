@@ -1,4 +1,4 @@
-import { Place, PlacePermissions } from '~/state/places/type';
+import { Place, PlacePermissions, ReactionMap } from '~/state/places/type';
 
 let mockData: DBData = {};
 
@@ -28,6 +28,7 @@ export const readPlaceFromDB = (kv: KeyValueStoreMock): Place => {
     readOnly: kv.get('readOnly') as boolean,
     bannedUsers: kv.get('bannedUsers') as string[],
     bots: kv.get('bots') as string[],
+    reactions: (kv.get('reactions') || {}) as ReactionMap,
   };
 };
 export const connectPlaceKeyValue = (): KeyValueStoreMock => {

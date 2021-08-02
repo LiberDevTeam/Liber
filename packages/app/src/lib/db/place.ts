@@ -44,7 +44,7 @@ export const readPlaceFromDB = (kv: KeyValueStore<PlaceDBValue>): Place => {
     readOnly: kv.get('readOnly') as boolean,
     bannedUsers: kv.get('bannedUsers') as string[],
     bots: (kv.get('bots') as string[]) || [],
-    reactions: (kv.get('reactions') as ReactionMap) || {},
+    reactions: (kv.get('reactions') || {}) as ReactionMap,
   };
 };
 
