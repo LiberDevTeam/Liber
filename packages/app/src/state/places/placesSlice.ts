@@ -14,12 +14,12 @@ import {
   placeMessagesAdded,
   placeUpdated,
 } from '~/state/actionCreater';
-import { connectToMessages } from '~/state/places/async-actions';
+import { addReaction, connectToMessages } from '~/state/places/async-actions';
 import { AppDispatch, RootState } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
-import { addReaction, selectMessageById } from './messagesSlice';
+import { selectMessageById } from './messagesSlice';
 import { Message, PartialForUpdate, Place, PlaceField } from './type';
 
 const MODULE_NAME = 'places';

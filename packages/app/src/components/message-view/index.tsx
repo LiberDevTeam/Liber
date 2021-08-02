@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '~/hooks';
 import { selectMe } from '~/state/me/meSlice';
-import { addReaction, selectMessageById } from '~/state/places/messagesSlice';
+import { addReaction } from '~/state/places/async-actions';
+import { selectMessageById } from '~/state/places/messagesSlice';
 import { MyMessageView } from './mine';
 import { UserMessageView } from './user';
 
