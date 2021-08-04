@@ -22,14 +22,6 @@ const Text = styled.div<{ mine: boolean }>`
     props.mine ? props.theme.colors.bgGray : props.theme.colors.bgBlue};
 `;
 
-const Timestamp = styled.span`
-  font-size: ${(props) => props.theme.fontSizes.xs};
-  line-height: ${(props) => props.theme.fontSizes['2xl']};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  color: ${(props) => props.theme.colors.secondaryText};
-  margin-top: ${(props) => props.theme.space[2]}px;
-`;
-
 const StickerView = styled(IpfsContent)`
   width: 100%;
   max-height: 200px;
