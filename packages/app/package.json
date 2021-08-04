@@ -65,7 +65,7 @@
     "i18next-http-backend": "^1.2.6",
     "identity-obj-proxy": "3.0.0",
     "immer": "9.0.5",
-    "ipfs": "^0.55.2",
+    "ipfs": "^0.56.1",
     "ipfs-core": "^0.9.1",
     "ipfs-http-response": "^0.7.0",
     "it-to-stream": "^1.0.0",
