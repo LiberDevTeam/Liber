@@ -16,6 +16,16 @@ export interface PartialForUpdate {
   category: number;
 }
 
+export interface Reaction {
+  userIds: string[];
+  // emoji-mart/EmojiData's id
+  emojiId: string;
+}
+
+export interface ReactionMap {
+  [messageId: string]: Reaction[];
+}
+
 export interface Place extends PartialForUpdate {
   id: string;
   signature?: string;
@@ -35,6 +45,8 @@ export interface Place extends PartialForUpdate {
   readOnly: boolean;
   swarmKey?: string;
   passwordRequired: boolean;
+
+  reactions: ReactionMap;
 }
 
 export type PlaceField = keyof Place;

@@ -14,7 +14,7 @@ import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { selectPlaceById } from '~/state/places/placesSlice';
-import { Message, Place, StickerItem } from '~/state/places/type';
+import { Message, Place, Reaction, StickerItem } from '~/state/places/type';
 import {
   parseText,
   resolveBotFromContent,
@@ -26,7 +26,9 @@ import { ItemType } from '../feed/feedSlice';
 
 const MODULE_NAME = 'placeMessages';
 
-function createMessage(props: Omit<Message, 'id' | 'timestamp'>): Message {
+function createMessage(
+  props: Omit<Message, 'id' | 'timestamp' | 'reactions'>
+): Message {
   return {
     ...props,
     id: uuidv4(),
@@ -64,7 +66,7 @@ export const publishPlaceMessage = createAsyncThunk<
   { dispatch: AppDispatch; state: RootState }
 >(
   `${MODULE_NAME}/publishPlaceMessage`,
-  async ({ placeId, text, attachments }, { dispatch, getState }) => {
+  async ({ placeId, text, attachments }, { getState }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
     const users = selectAllUsers(state.users);
@@ -169,5 +171,13 @@ export const messagesSlice = createSlice({
 });
 
 export const selectMessageById = messagesAdapter.getSelectors().selectById;
+export const selectMessageReactionsByMessage = (
+  message: Message | undefined
+) => (state: RootState): Reaction[] => {
+  if (!message) {
+    return [];
+  }
+  return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
+};
 
 export default messagesSlice.reducer;

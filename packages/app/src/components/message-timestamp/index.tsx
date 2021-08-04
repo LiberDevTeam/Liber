@@ -8,7 +8,6 @@ const Root = styled.span`
   line-height: ${(props) => props.theme.fontSizes['2xl']};
   font-weight: ${(props) => props.theme.fontWeights.medium};
   color: ${(props) => props.theme.colors.secondaryText};
-  margin-top: ${(props) => props.theme.space[2]}px;
 `;
 
 interface Props {

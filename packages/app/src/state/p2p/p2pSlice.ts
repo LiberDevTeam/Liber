@@ -154,6 +154,7 @@ export const createNewPlace = createAsyncThunk<
       permissions: { [me.id]: PlacePermission.AUTHOR },
       bannedUsers: [],
       bots: [],
+      reactions: {},
     };
 
     await Promise.all(

@@ -19,4 +19,5 @@ export const dummyPlace = (id: string): Place => ({
   bannedUsers: [],
   readOnly: false,
   bots: [],
+  reactions: {},
 });
