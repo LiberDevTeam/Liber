@@ -132,7 +132,7 @@
     "@babel/core": "7.14.8",
     "@storybook/addon-actions": "^6.3.6",
     "@storybook/addon-essentials": "^6.2.9",
-    "@storybook/addon-links": "^6.2.9",
+    "@storybook/addon-links": "^6.3.6",
     "@storybook/node-logger": "^6.2.9",
     "@storybook/react": "^6.2.9",
     "@types/array-unique": "^0.3.0",
