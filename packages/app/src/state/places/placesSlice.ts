@@ -7,15 +7,13 @@ import {
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
 import { history } from '~/history';
-import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
-import { connectPlaceKeyValue, readPlaceFromDB } from '~/lib/db/place';
 import {
   placeAdded,
   placeMessagesAdded,
   placeUpdated,
-} from '~/state/actionCreater';
+} from '~/state/actionCreator';
 import { addReaction, connectToMessages } from '~/state/places/async-actions';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
@@ -77,20 +75,20 @@ const checkPlaceValues = (place: Partial<Place>): place is Place => {
 export const joinPlace = createAsyncThunk<
   void,
   PlacePK,
-  { dispatch: AppDispatch }
->(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch }) => {
-  const kv = await connectPlaceKeyValue({
+  { dispatch: AppDispatch; extra: ThunkExtra }
+>(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch, extra }) => {
+  const kv = await extra.db.place.connect({
     placeId,
     address,
     onReplicated: (_kv) => {
-      const place = readPlaceFromDB(_kv);
+      const place = extra.db.place.read(_kv);
       if (checkPlaceValues(place)) {
         dispatch(placeUpdated(place));
       }
     },
   });
 
-  const place = readPlaceFromDB(kv);
+  const place = extra.db.place.read(kv);
 
   if (checkPlaceValues(place)) {
     dispatch(placeUpdated(place));
@@ -122,13 +120,13 @@ export const openProtectedPlace = createAsyncThunk<
 export const banUser = createAsyncThunk<
   void,
   { placeId: string; userId: string },
-  { state: RootState }
->(`${MODULE_NAME}/ban`, async ({ placeId, userId }, { getState }) => {
+  { state: RootState; extra: ThunkExtra }
+>(`${MODULE_NAME}/ban`, async ({ placeId, userId }, { getState, extra }) => {
   const state = getState();
   const place = selectPlaceById(placeId)(state);
 
   if (place) {
-    const placeDB = await connectPlaceKeyValue({
+    const placeDB = await extra.db.place.connect({
       placeId,
       address: place.keyValAddress,
     });
@@ -141,10 +139,10 @@ export const banUser = createAsyncThunk<
 export const toggleBot = createAsyncThunk<
   string[],
   { placeId: string; botId: string; value: boolean },
-  { state: RootState }
+  { state: RootState; extra: ThunkExtra }
 >(
   `${MODULE_NAME}/toggle-bot`,
-  async ({ placeId, botId, value }, { getState }) => {
+  async ({ placeId, botId, value }, { getState, extra }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
 
@@ -152,7 +150,7 @@ export const toggleBot = createAsyncThunk<
       throw new Error('Place not found');
     }
 
-    const placeDB = await connectPlaceKeyValue({
+    const placeDB = await extra.db.place.connect({
       placeId,
       address: place.keyValAddress,
     });
@@ -172,15 +170,15 @@ export const toggleBot = createAsyncThunk<
 export const unbanUser = createAsyncThunk<
   string[],
   { placeId: string; userId: string },
-  { state: RootState }
->(`${MODULE_NAME}/unban`, async ({ placeId, userId }, { getState }) => {
+  { state: RootState; extra: ThunkExtra }
+>(`${MODULE_NAME}/unban`, async ({ placeId, userId }, { getState, extra }) => {
   const state = getState();
   const place = selectPlaceById(placeId)(state);
 
   if (!place) {
     throw new Error('Place not found');
   }
-  const placeDB = await connectPlaceKeyValue({
+  const placeDB = await extra.db.place.connect({
     placeId,
     address: place.keyValAddress,
   });
@@ -201,16 +199,16 @@ export const updatePlace = createAsyncThunk<
     description: string;
     avatar: File;
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   `${MODULE_NAME}/updatePlace`,
   async (
     { placeId, address, name, description, avatar, category },
-    { dispatch }
+    { dispatch, extra }
   ) => {
     const cid = await addIpfsContent(avatar);
 
-    const placeKeyValue = await connectPlaceKeyValue({ placeId, address });
+    const placeKeyValue = await extra.db.place.connect({ placeId, address });
 
     const partial: PartialForUpdate = {
       name,
@@ -229,7 +227,7 @@ export const updatePlace = createAsyncThunk<
       })
     );
 
-    const explorePlaceDB = await connectExplorePlaceKeyValue();
+    const explorePlaceDB = await extra.db.explorePlace.connect();
     const key = `/${explorePlaceDB.identity.publicKey}/${address}/${placeId}`;
     const place = explorePlaceDB.get(key);
     const newPlace = {
@@ -354,9 +352,10 @@ export const placesSlice = createSlice({
 });
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = (id: string) => (
-  state: RootState
-): Place | undefined => selectors.selectById(state.places, id);
+export const selectPlaceById =
+  (id: string) =>
+  (state: RootState): Place | undefined =>
+    selectors.selectById(state.places, id);
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -364,25 +363,21 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPlaceId = (placeId: string) => (
-  state: RootState
-): Message[] => {
-  const place = selectors.selectById(state.places, placeId);
+export const selectPlaceMessagesByPlaceId =
+  (placeId: string) =>
+  (state: RootState): Message[] => {
+    const place = selectors.selectById(state.places, placeId);
 
-  if (!place) {
-    return [];
-  }
+    if (!place) {
+      return [];
+    }
 
-  return place.messageIds
-    .map((id) => selectMessageById(state.placeMessages, id))
-    .filter(Boolean) as Message[];
-};
+    return place.messageIds
+      .map((id) => selectMessageById(state.placeMessages, id))
+      .filter(Boolean) as Message[];
+  };
 
-export const {
-  clearUnreadMessages,
-  setHash,
-  removePlace,
-  updateOne,
-} = placesSlice.actions;
+export const { clearUnreadMessages, setHash, removePlace, updateOne } =
+  placesSlice.actions;
 
 export default placesSlice.reducer;

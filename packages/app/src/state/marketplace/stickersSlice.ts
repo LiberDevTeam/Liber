@@ -1,10 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
-import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
 import { marketplaceStickerSearch } from '~/lib/search';
 import { addStickers } from '~/state/stickers/stickersSlice';
 import { Sticker } from '~/state/stickers/types';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 
 export const fetchSearchResult = createAsyncThunk<
   void,
@@ -32,24 +30,27 @@ export const fetchSearchResult = createAsyncThunk<
 export const fetchRanking = createAsyncThunk<
   void,
   { page: number },
-  { dispatch: AppDispatch; state: RootState }
->('marketplace/stickers/fetchRanking', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceStickerRankingKeyValue();
-  const stickers = Object.values(db.all)
-    .filter((a: any): a is Sticker => !!a)
-    .sort((a, b) => (a.qtySold > b.qtySold ? -1 : 1));
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>(
+  'marketplace/stickers/fetchRanking',
+  async ({ page }, { dispatch, extra }) => {
+    const db = await extra.db.marketplaceStickerRanking.connect();
+    const stickers = Object.values(db.all)
+      .filter((a: any): a is Sticker => !!a)
+      .sort((a, b) => (a.qtySold > b.qtySold ? -1 : 1));
 
-  dispatch(addStickers(stickers));
+    dispatch(addStickers(stickers));
 
-  dispatch(paginateRanking({ page, stickers }));
-});
+    dispatch(paginateRanking({ page, stickers }));
+  }
+);
 
 export const fetchNew = createAsyncThunk<
   void,
   { page: number },
-  { dispatch: AppDispatch; state: RootState }
->('marketplace/stickers/fetchNew', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceStickerNewKeyValue();
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('marketplace/stickers/fetchNew', async ({ page }, { dispatch, extra }) => {
+  const db = await extra.db.marketplaceStickerNew.connect();
   const stickers = Object.values(db.all).reverse();
 
   dispatch(addStickers(stickers));

@@ -7,16 +7,8 @@ import {
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { history } from '~/history';
-import {
-  connectBotKeyValue,
-  createBotKeyValue,
-  readBotFromDB,
-} from '~/lib/db/bot';
-import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
-import { connectMarketplaceBotRankingKeyValue } from '~/lib/db/marketplace/bot/ranking';
-import { createUserDB } from '~/lib/db/user';
 import { tmpPurchased } from '~/state/bots/mock';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { BotPK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
@@ -53,10 +45,10 @@ export const fetchBot = createAsyncThunk<
     botId: string;
     address: string;
   },
-  { dispatch: AppDispatch; state: RootState }
->('bots/fetchBot', async ({ botId, address }, { dispatch }) => {
-  const db = await connectBotKeyValue({ botId, address });
-  const bot = readBotFromDB(db);
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('bots/fetchBot', async ({ botId, address }, { dispatch, extra }) => {
+  const db = await extra.db.bot.connect({ botId, address });
+  const bot = extra.db.bot.read(db);
   if (!bot) {
     history.push('/404');
     return;
@@ -77,7 +69,7 @@ export const createNewBot = createAsyncThunk<
     sourceCode: string;
     examples: Example[];
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'bots/createNewBot',
   async (
@@ -91,12 +83,12 @@ export const createNewBot = createAsyncThunk<
       sourceCode,
       examples,
     },
-    { dispatch, getState }
+    { dispatch, getState, extra }
   ) => {
     const { me } = getState();
 
     const id = uuidv4();
-    const botKeyValue = await createBotKeyValue(id);
+    const botKeyValue = await extra.db.bot.create(id);
 
     const bot: Bot = {
       id,
@@ -119,7 +111,7 @@ export const createNewBot = createAsyncThunk<
       v && botKeyValue.put(key, v);
     });
 
-    const userDB = await createUserDB();
+    const userDB = await extra.db.user.create();
     const user = userDB.get('data');
     if (!user) {
       throw new Error('user is not found');
@@ -135,7 +127,7 @@ export const createNewBot = createAsyncThunk<
     };
     userDB.set('data', newUser);
 
-    const marketplaceNewBotDB = await connectMarketplaceBotNewKeyValue();
+    const marketplaceNewBotDB = await extra.db.marketplaceBotNew.connect();
     const keystore1 = marketplaceNewBotDB.identity.provider.keystore;
     await marketplaceNewBotDB.put(
       `/${marketplaceNewBotDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
@@ -149,7 +141,7 @@ export const createNewBot = createAsyncThunk<
     );
 
     const marketplaceBotRankingDB =
-      await connectMarketplaceBotRankingKeyValue();
+      await extra.db.marketplaceBotRanking.connect();
     const keystore2 = marketplaceNewBotDB.identity.provider.keystore;
     await marketplaceBotRankingDB.put(
       `/${marketplaceBotRankingDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
@@ -185,7 +177,7 @@ export const updateBot = createAsyncThunk<
     sourceCode: string;
     examples: Example[];
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'bots/updateBot',
   async (
@@ -201,9 +193,9 @@ export const updateBot = createAsyncThunk<
       sourceCode,
       examples,
     },
-    { dispatch }
+    { dispatch, extra }
   ) => {
-    const botKeyValue = await connectBotKeyValue({
+    const botKeyValue = await extra.db.bot.connect({
       botId,
       address,
     });
@@ -224,12 +216,12 @@ export const updateBot = createAsyncThunk<
       v && botKeyValue.put(key, v);
     });
 
-    const bot = readBotFromDB(botKeyValue);
+    const bot = extra.db.bot.read(botKeyValue);
     const newBot = {
       ...bot,
       ...partial,
     };
-    const marketplaceNewBotDB = await connectMarketplaceBotNewKeyValue();
+    const marketplaceNewBotDB = await extra.db.marketplaceBotNew.connect();
     const keystore1 = marketplaceNewBotDB.identity.provider.keystore;
     await marketplaceNewBotDB.put(
       `/${marketplaceNewBotDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
@@ -243,7 +235,7 @@ export const updateBot = createAsyncThunk<
     );
 
     const marketplaceBotRankingDB =
-      await connectMarketplaceBotRankingKeyValue();
+      await extra.db.marketplaceBotRanking.connect();
     const keystore2 = marketplaceNewBotDB.identity.provider.keystore;
     await marketplaceBotRankingDB.put(
       `/${marketplaceBotRankingDB.identity.publicKey}/${bot.keyValAddress}/${bot.id}`,
