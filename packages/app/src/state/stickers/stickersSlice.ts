@@ -14,15 +14,7 @@ import StickerContract from 'contracts/build/contracts/LiberSticker.json';
 import { getUnixTime } from 'date-fns';
 import Web3 from 'web3';
 import { history } from '~/history';
-import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
-import { connectMarketplaceStickerRankingKeyValue } from '~/lib/db/marketplace/sticker/ranking';
-import {
-  connectStickerKeyValue,
-  createStickerKeyValue,
-  readStickerFromDB,
-} from '~/lib/db/sticker';
-import { createUserDB } from '~/lib/db/user';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { DB_KEY } from '../me/meSlice';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { User } from '../users/type';
@@ -50,12 +42,12 @@ export const createNewSticker = createAsyncThunk<
     contents: File[];
     web3React: Web3ReactContextInterface<Web3>;
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'stickers/createNewSticker',
   async (
     { category, name, description, contents, price, web3React },
-    { dispatch, getState }
+    { dispatch, getState, extra }
   ) => {
     const { me } = getState();
     const { library, chainId, account } = web3React;
@@ -111,7 +103,7 @@ export const createNewSticker = createAsyncThunk<
         return accm;
       }, '');
 
-    const stickerKeyValue = await createStickerKeyValue(listedTokenId);
+    const stickerKeyValue = await extra.db.sticker.create(listedTokenId);
 
     const sticker: Sticker = {
       id: listedTokenId,
@@ -135,7 +127,7 @@ export const createNewSticker = createAsyncThunk<
       v && stickerKeyValue.put(key, v);
     });
 
-    const userDB = await createUserDB();
+    const userDB = await extra.db.user.create();
     const user = userDB.get(DB_KEY);
     if (!user) {
       throw new Error('user is not found');
@@ -152,7 +144,7 @@ export const createNewSticker = createAsyncThunk<
     userDB.set(DB_KEY, newUser);
 
     const marketplaceStickerNewDB =
-      await connectMarketplaceStickerNewKeyValue();
+      await extra.db.marketplaceStickerNew.connect();
     const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
       `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
@@ -166,7 +158,7 @@ export const createNewSticker = createAsyncThunk<
     );
 
     const marketplaceStickerRankingDB =
-      await connectMarketplaceStickerRankingKeyValue();
+      await extra.db.marketplaceStickerRanking.connect();
     const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
       `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
@@ -199,14 +191,14 @@ export const updateSticker = createAsyncThunk<
     price: number;
     contents: File[];
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'stickers/updateSticker',
   async (
     { stickerId, address, category, name, description, price, contents },
-    { dispatch }
+    { dispatch, extra }
   ) => {
-    const stickerKeyValue = await connectStickerKeyValue({
+    const stickerKeyValue = await extra.db.sticker.connect({
       stickerId,
       address,
     });
@@ -231,14 +223,14 @@ export const updateSticker = createAsyncThunk<
       v && stickerKeyValue.put(key, v);
     });
 
-    const sticker = readStickerFromDB(stickerKeyValue);
+    const sticker = extra.db.sticker.read(stickerKeyValue);
     const newSticker = {
       ...sticker,
       ...partial,
     };
 
     const marketplaceStickerNewDB =
-      await connectMarketplaceStickerNewKeyValue();
+      await extra.db.marketplaceStickerNew.connect();
     const keystore1 = marketplaceStickerNewDB.identity.provider.keystore;
     await marketplaceStickerNewDB.put(
       `/${marketplaceStickerNewDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
@@ -252,7 +244,7 @@ export const updateSticker = createAsyncThunk<
     );
 
     const marketplaceStickerRankingDB =
-      await connectMarketplaceStickerRankingKeyValue();
+      await extra.db.marketplaceStickerRanking.connect();
     const keystore2 = marketplaceStickerRankingDB.identity.provider.keystore;
     await marketplaceStickerRankingDB.put(
       `/${marketplaceStickerRankingDB.identity.publicKey}/${sticker.keyValAddress}/${sticker.id}`,
@@ -275,17 +267,20 @@ export const updateSticker = createAsyncThunk<
 export const fetchSticker = createAsyncThunk<
   void,
   { stickerId: string; address: string },
-  { dispatch: AppDispatch; state: RootState }
->('stickers/fetchSticker', async ({ stickerId, address }, { dispatch }) => {
-  const db = await connectStickerKeyValue({ stickerId, address });
-  const sticker = readStickerFromDB(db);
-  if (!sticker) {
-    history.push('/404');
-    return;
-  }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>(
+  'stickers/fetchSticker',
+  async ({ stickerId, address }, { dispatch, extra }) => {
+    const db = await extra.db.sticker.connect({ stickerId, address });
+    const sticker = extra.db.sticker.read(db);
+    if (!sticker) {
+      history.push('/404');
+      return;
+    }
 
-  dispatch(addSticker(sticker));
-});
+    dispatch(addSticker(sticker));
+  }
+);
 
 const stickersAdapter = createEntityAdapter<Sticker>();
 

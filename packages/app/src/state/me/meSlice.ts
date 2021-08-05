@@ -1,14 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generate } from 'canihazusername';
-import { connectBotKeyValue, readBotFromDB } from '~/lib/db/bot';
-import {
-  connectPrivateFieldsDB,
-  createPrivateFieldsDB,
-} from '~/lib/db/privateFields';
-import { connectStickerKeyValue, readStickerFromDB } from '~/lib/db/sticker';
-import { connectUserDB, createUserDB } from '~/lib/db/user';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { User } from '~/state/users/type';
 import { botAdded } from '../actionCreater';
 import { addBots } from '../bots/botsSlice';
@@ -39,9 +32,9 @@ export const DB_KEY = 'data';
 export const initMe = createAsyncThunk<
   Me,
   void,
-  { dispatch: AppDispatch; state: RootState }
->('me/init', async (_0, { dispatch }) => {
-  const userDB = await createUserDB();
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('me/init', async (_0, { dispatch, extra }) => {
+  const userDB = await extra.db.user.create();
 
   let user: User = userDB.get(DB_KEY);
   if (!user) {
@@ -57,8 +50,8 @@ export const initMe = createAsyncThunk<
 
   const stickers = await Promise.all(
     user.stickersListingOn.map(async ({ stickerId, address }) => {
-      const stickerDB = await connectStickerKeyValue({ stickerId, address });
-      return readStickerFromDB(stickerDB);
+      const stickerDB = await extra.db.sticker.connect({ stickerId, address });
+      return extra.db.sticker.read(stickerDB);
     })
   );
 
@@ -66,14 +59,14 @@ export const initMe = createAsyncThunk<
 
   const bots = await Promise.all(
     user.botsListingOn.map(async ({ botId, address }) => {
-      const botDB = await connectBotKeyValue({ botId, address });
-      return readBotFromDB(botDB);
+      const botDB = await extra.db.bot.connect({ botId, address });
+      return extra.db.bot.read(botDB);
     })
   );
 
   dispatch(addBots(bots));
 
-  const privateDB = await createPrivateFieldsDB();
+  const privateDB = await extra.db.privateFields.create();
   let privateFields = privateDB.get(DB_KEY);
   if (!privateFields) {
     privateFields = initialPrivateFields;
@@ -99,10 +92,10 @@ export const initMe = createAsyncThunk<
 export const updateProfile = createAsyncThunk<
   Me,
   { avatar: File | null; name: string },
-  { dispatch: AppDispatch; state: RootState }
->('me/updateProfile', async ({ avatar, name }, { getState }) => {
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('me/updateProfile', async ({ avatar, name }, { getState, extra }) => {
   const me = getState().me;
-  const userDB = await connectUserDB({ userId: me.id });
+  const userDB = await extra.db.user.connect({ userId: me.id });
 
   let avatarCid = me.avatarCid;
 
@@ -118,9 +111,9 @@ export const updateProfile = createAsyncThunk<
 export const appendJoinedPlace = createAsyncThunk<
   PlacePK,
   PlacePK,
-  { dispatch: AppDispatch; state: RootState }
->('me/appendJoinedPlace', async (pk, { getState }) => {
-  const privateDB = await connectPrivateFieldsDB({
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('me/appendJoinedPlace', async (pk, { getState, extra }) => {
+  const privateDB = await extra.db.privateFields.connect({
     address: getState().me.privateDBAddress,
   });
   const priv = privateDB.get(DB_KEY);

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { connectFeedDB } from '~/lib/db/feed';
-import { AppDispatch, RootState } from '~/state/store';
+import { RootState, ThunkExtra } from '~/state/store';
 import { Message, Place } from '../places/type';
 
 export enum Appearance {
@@ -37,9 +36,9 @@ export const limit = 5;
 export const fetchFeedItems = createAsyncThunk<
   FeedItem[],
   { hash: string } | void,
-  { dispatch: AppDispatch; state: RootState }
->('feed/fetchFeedItems', async (args, { dispatch }) => {
-  const db = await connectFeedDB();
+  { extra: ThunkExtra }
+>('feed/fetchFeedItems', async (args, { extra }) => {
+  const db = await extra.db.feed.connect();
 
   return db
     .iterator({

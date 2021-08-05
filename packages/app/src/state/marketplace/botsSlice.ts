@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
-import { connectMarketplaceBotRankingKeyValue } from '~/lib/db/marketplace/bot/ranking';
 import { marketplaceBotSearch } from '~/lib/search';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { addBots } from '../bots/botsSlice';
 import { Bot } from '../bots/types';
 
@@ -32,10 +30,10 @@ export const fetchSearchResult = createAsyncThunk<
 export const fetchRanking = createAsyncThunk<
   void,
   { page: number },
-  { dispatch: AppDispatch; state: RootState }
->('marketplace/bots/fetchRanking', async ({ page }, { dispatch }) => {
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('marketplace/bots/fetchRanking', async ({ page }, { dispatch, extra }) => {
   // TODO change to connect the ranking db
-  const db = await connectMarketplaceBotRankingKeyValue();
+  const db = await extra.db.marketplaceBotRanking.connect();
   const bots = Object.values(db.all)
     .filter((a: any): a is Bot => !!a)
     .sort((a, b) => (a.qtySold > b.qtySold ? -1 : 1));
@@ -48,9 +46,9 @@ export const fetchRanking = createAsyncThunk<
 export const fetchNew = createAsyncThunk<
   void,
   { page: number },
-  { dispatch: AppDispatch; state: RootState }
->('marketplace/bots/fetchNew', async ({ page }, { dispatch }) => {
-  const db = await connectMarketplaceBotNewKeyValue();
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('marketplace/bots/fetchNew', async ({ page }, { dispatch, extra }) => {
+  const db = await extra.db.marketplaceBotNew.connect();
   const bots = Object.values(db.all).reverse();
 
   dispatch(addBots(bots));

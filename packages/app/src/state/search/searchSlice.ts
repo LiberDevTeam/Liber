@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
-import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
 import { exploreMessageSearch, explorePlaceSearch } from '~/lib/search';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { Message, Place } from '../places/type';
 
 interface SearchState {
@@ -18,44 +16,50 @@ const initialState: SearchState = {
 export const fetchSearchMessageResult = createAsyncThunk<
   void,
   { searchText: string },
-  { dispatch: AppDispatch; state: RootState }
->('search/fetchSearchMessageResult', async ({ searchText }, { dispatch }) => {
-  let result;
-  if (!searchText) {
-    const db = await connectExploreMessageKeyValue();
-    result = Object.values(db.all);
-  } else {
-    result = exploreMessageSearch.search(searchText, { fuzzy: 0.3 });
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>(
+  'search/fetchSearchMessageResult',
+  async ({ searchText }, { dispatch, extra }) => {
+    let result;
+    if (!searchText) {
+      const db = await extra.db.exploreMessage.connect();
+      result = Object.values(db.all);
+    } else {
+      result = exploreMessageSearch.search(searchText, { fuzzy: 0.3 });
+    }
+
+    const messages: Message[] = result.map((r) => {
+      const { score, terms, match, ...message } = r;
+      return message as Message;
+    });
+
+    dispatch(setSearchMessageResult(messages));
   }
-
-  const messages: Message[] = result.map((r) => {
-    const { score, terms, match, ...message } = r;
-    return message as Message;
-  });
-
-  dispatch(setSearchMessageResult(messages));
-});
+);
 
 export const fetchSearchPlaceResult = createAsyncThunk<
   void,
   { searchText: string },
-  { dispatch: AppDispatch; state: RootState }
->('search/fetchSearchPlaceResult', async ({ searchText }, { dispatch }) => {
-  let result;
-  if (!searchText) {
-    const db = await connectExplorePlaceKeyValue();
-    result = Object.values(db.all);
-  } else {
-    result = explorePlaceSearch.search(searchText, { fuzzy: 0.3 });
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>(
+  'search/fetchSearchPlaceResult',
+  async ({ searchText }, { dispatch, extra }) => {
+    let result;
+    if (!searchText) {
+      const db = await extra.db.explorePlace.connect();
+      result = Object.values(db.all);
+    } else {
+      result = explorePlaceSearch.search(searchText, { fuzzy: 0.3 });
+    }
+
+    const places: Place[] = result.map((r) => {
+      const { score, terms, match, ...place } = r;
+      return place as Place;
+    });
+
+    dispatch(setSearchPlaceResult(places));
   }
-
-  const places: Place[] = result.map((r) => {
-    const { score, terms, match, ...place } = r;
-    return place as Place;
-  });
-
-  dispatch(setSearchPlaceResult(places));
-});
+);
 
 export const searchSlice = createSlice({
   name: 'search',

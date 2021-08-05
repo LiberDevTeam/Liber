@@ -2,13 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { history } from '~/history';
-import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
-import { connectExplorePlaceKeyValue } from '~/lib/db/explore/place';
-import { connectFeedDB } from '~/lib/db/feed';
-import { connectMarketplaceBotNewKeyValue } from '~/lib/db/marketplace/bot/new';
-import { connectMarketplaceStickerNewKeyValue } from '~/lib/db/marketplace/sticker/new';
-import { createMessageFeed } from '~/lib/db/message';
-import { createPlaceKeyValue } from '~/lib/db/place';
 import {
   createExploreMessageSearchIndex,
   createExplorePlaceSearchIndex,
@@ -20,7 +13,7 @@ import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
 import { Message, Place, PlacePermission } from '~/state/places/type';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { ItemType } from '../feed/feedSlice';
 import { finishInitialization } from '../isInitialized';
@@ -53,8 +46,8 @@ const createMessageReceiveHandler =
 export const initApp = createAsyncThunk<
   void,
   void,
-  { dispatch: AppDispatch; state: RootState }
->('p2p/initApp', async (_, { dispatch, getState }) => {
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>('p2p/initApp', async (_, { dispatch, getState, extra }) => {
   const state = getState();
   await Promise.all(
     state.me.joinedPlaces.map(async ({ placeId, address }) => {
@@ -72,18 +65,19 @@ export const initApp = createAsyncThunk<
     })
   );
 
-  connectMarketplaceBotNewKeyValue().then((db) => {
+  extra.db.marketplaceBotRanking.connect().then((db) => {
     createMarketplaceBotSearchIndex(Object.values(db.all));
   });
-  connectMarketplaceStickerNewKeyValue().then((db) => {
+
+  extra.db.marketplaceStickerNew.connect().then((db) => {
     createMarketplaceStickerSearchIndex(Object.values(db.all));
   });
 
-  connectExplorePlaceKeyValue().then((db) => {
+  extra.db.explorePlace.connect().then((db) => {
     createExplorePlaceSearchIndex(Object.values(db.all));
   });
 
-  connectExploreMessageKeyValue().then((db) => {
+  extra.db.exploreMessage.connect().then((db) => {
     createExploreMessageSearchIndex(Object.values(db.all));
   });
 
@@ -101,12 +95,12 @@ export const createNewPlace = createAsyncThunk<
     password: string;
     readOnly: boolean;
   },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'p2p/createNewPlace',
   async (
     { name, description, isPrivate, avatar, password, category, readOnly },
-    { dispatch, getState }
+    { dispatch, getState, extra }
   ) => {
     const { me } = getState();
 
@@ -121,9 +115,10 @@ export const createNewPlace = createAsyncThunk<
 
     const placeId = uuidv4();
     const passwordRequired = !!password;
-    const placeKeyValue = await createPlaceKeyValue(placeId);
+    const placeKeyValue = await extra.db.place.create(placeId);
     const hash = password ? await digestMessage(password) : undefined;
-    const feed = await createMessageFeed({
+
+    const feed = await extra.db.message.create({
       placeId,
       hash,
       onReceiveEvent: createMessageReceiveHandler({
@@ -173,7 +168,7 @@ export const createNewPlace = createAsyncThunk<
     dispatch(placeAdded({ place, messages: [] }));
 
     place.hash = undefined;
-    const explorePlaceDB = await connectExplorePlaceKeyValue();
+    const explorePlaceDB = await extra.db.explorePlace.connect();
     const keystore = explorePlaceDB.identity.provider.keystore;
     await explorePlaceDB.put(
       `/${explorePlaceDB.identity.publicKey}/${place.keyValAddress}/${place.id}`,
@@ -186,7 +181,7 @@ export const createNewPlace = createAsyncThunk<
       }
     );
 
-    connectFeedDB().then((db) => {
+    extra.db.feed.connect().then((db) => {
       db.add({
         itemType: ItemType.PLACE,
         ...place,

@@ -5,9 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
-import { connectExploreMessageKeyValue } from '~/lib/db/explore/message';
-import { connectFeedDB } from '~/lib/db/feed';
-import { getMessageFeedById } from '~/lib/db/message';
+import { AppDB } from '~/lib/db';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
@@ -20,7 +18,7 @@ import {
   resolveBotFromContent,
   runBotWorker,
 } from '~/state/places/utils';
-import { AppDispatch, RootState } from '~/state/store';
+import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { selectAllUsers } from '~/state/users/usersSlice';
 import { ItemType } from '../feed/feedSlice';
 
@@ -36,10 +34,10 @@ function createMessage(
   };
 }
 
-async function sendMessage(place: Place, message: Message) {
-  const messageFeed = getMessageFeedById(place.id);
-  const exploreMessageDB = await connectExploreMessageKeyValue();
-  const feedDB = await connectFeedDB();
+async function sendMessage(place: Place, message: Message, db: AppDB) {
+  const messageFeed = db.message.get(place.id);
+  const exploreMessageDB = await db.exploreMessage.connect();
+  const feedDB = await db.feed.connect();
 
   if (messageFeed === undefined) {
     throw new Error(`messages DB is not exists.`);
@@ -63,10 +61,10 @@ async function sendMessage(place: Place, message: Message) {
 export const publishPlaceMessage = createAsyncThunk<
   void,
   { text: string; placeId: string; attachments?: File[] },
-  { dispatch: AppDispatch; state: RootState }
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   `${MODULE_NAME}/publishPlaceMessage`,
-  async ({ placeId, text, attachments }, { getState }) => {
+  async ({ placeId, text, attachments }, { getState, extra }) => {
     const state = getState();
     const place = selectPlaceById(placeId)(state);
     const users = selectAllUsers(state.users);
@@ -98,7 +96,7 @@ export const publishPlaceMessage = createAsyncThunk<
         )) || [];
     }
 
-    await sendMessage(place, message);
+    await sendMessage(place, message, extra.db);
 
     const bots = resolveBotFromContent(content, placeBots);
     bots.forEach(async (bot) => {
@@ -114,7 +112,8 @@ export const publishPlaceMessage = createAsyncThunk<
             bot: true,
             placeId: placeId,
             placeAddress: place.keyValAddress,
-          })
+          }),
+          extra.db
         );
       }
     });
@@ -124,29 +123,33 @@ export const publishPlaceMessage = createAsyncThunk<
 export const sendSticker = createAsyncThunk<
   void,
   { placeId: string; item: StickerItem },
-  { dispatch: AppDispatch; state: RootState }
->(`${MODULE_NAME}/sendSticker`, async ({ placeId, item }, { getState }) => {
-  const state = getState();
-  const place = selectPlaceById(placeId)(state);
-  const me = selectMe(state);
+  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
+>(
+  `${MODULE_NAME}/sendSticker`,
+  async ({ placeId, item }, { getState, extra }) => {
+    const state = getState();
+    const place = selectPlaceById(placeId)(state);
+    const me = selectMe(state);
 
-  if (!place) {
-    throw new Error(`Place (id: ${placeId}) is not exists.`);
+    if (!place) {
+      throw new Error(`Place (id: ${placeId}) is not exists.`);
+    }
+
+    await sendMessage(
+      place,
+      createMessage({
+        authorName: me.name,
+        uid: me.id,
+        content: [],
+        placeId: placeId,
+        placeAddress: place.keyValAddress,
+        bot: false,
+        sticker: item,
+      }),
+      extra.db
+    );
   }
-
-  await sendMessage(
-    place,
-    createMessage({
-      authorName: me.name,
-      uid: me.id,
-      content: [],
-      placeId: placeId,
-      placeAddress: place.keyValAddress,
-      bot: false,
-      sticker: item,
-    })
-  );
-});
+);
 
 const messagesAdapter = createEntityAdapter<Message>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
@@ -171,13 +174,13 @@ export const messagesSlice = createSlice({
 });
 
 export const selectMessageById = messagesAdapter.getSelectors().selectById;
-export const selectMessageReactionsByMessage = (
-  message: Message | undefined
-) => (state: RootState): Reaction[] => {
-  if (!message) {
-    return [];
-  }
-  return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
-};
+export const selectMessageReactionsByMessage =
+  (message: Message | undefined) =>
+  (state: RootState): Reaction[] => {
+    if (!message) {
+      return [];
+    }
+    return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
+  };
 
 export default messagesSlice.reducer;

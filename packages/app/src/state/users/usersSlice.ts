@@ -3,32 +3,37 @@ import {
   createEntityAdapter,
   createSlice,
 } from '@reduxjs/toolkit';
-import { connectUserDB } from '~/lib/db/user';
-import { RootState } from '../store';
+import { AppDB } from '~/lib/db';
+import { RootState, ThunkExtra } from '../store';
 import { User } from './type';
 
 const usersAdapter = createEntityAdapter<User>();
 
-export const fetchUserData = async (userId: string): Promise<User> => {
-  const user = await connectUserDB({ userId });
+export const fetchUserData = async (
+  userId: string,
+  db: AppDB
+): Promise<User> => {
+  const user = await db.user.connect({ userId });
   return user.get('data');
 };
 
-export const loadUsers = createAsyncThunk<User[], { userIds: string[] }>(
-  'users/load',
-  async ({ userIds }) => {
-    return (
-      await Promise.all(userIds.map((userId) => fetchUserData(userId)))
-    ).filter(Boolean);
-  }
-);
+export const loadUsers = createAsyncThunk<
+  User[],
+  { userIds: string[] },
+  { extra: ThunkExtra }
+>('users/load', async ({ userIds }, { extra }) => {
+  return (
+    await Promise.all(userIds.map((userId) => fetchUserData(userId, extra.db)))
+  ).filter(Boolean);
+});
 
-export const loadUser = createAsyncThunk<User, { uid: string }>(
-  'users/loadOne',
-  async ({ uid }) => {
-    return fetchUserData(uid);
-  }
-);
+export const loadUser = createAsyncThunk<
+  User,
+  { uid: string },
+  { extra: ThunkExtra }
+>('users/loadOne', async ({ uid }, { extra }) => {
+  return fetchUserData(uid, extra.db);
+});
 
 export const usersSlice = createSlice({
   name: 'users',

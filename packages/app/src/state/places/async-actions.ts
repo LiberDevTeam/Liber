@@ -1,21 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { connectMessageFeed, readMessagesFromFeed } from '~/lib/db/message';
 import { getPlaceDB } from '~/lib/db/place';
 import { placeMessagesAdded } from '~/state/actionCreater';
 import { selectMe } from '~/state/me/meSlice';
 import { Message, ReactionMap } from '~/state/places/type';
-import { RootState } from '~/state/store';
+import { RootState, ThunkExtra } from '~/state/store';
 
 export const connectToMessages = createAsyncThunk<
   Message[],
   { placeId: string; address: string; hash?: string },
-  { state: RootState }
+  { state: RootState; extra: ThunkExtra }
 >(
   'placeMessages/connectToMessages',
-  async ({ placeId, address, hash }, thunkAPI) => {
-    const { dispatch } = thunkAPI;
-
-    const feed = await connectMessageFeed({
+  async ({ placeId, address, hash }, { dispatch, extra }) => {
+    const feed = await extra.db.message.connect({
       placeId,
       address,
       hash,
@@ -26,7 +23,7 @@ export const connectToMessages = createAsyncThunk<
       },
     });
 
-    return readMessagesFromFeed(feed);
+    return extra.db.message.read(feed);
   }
 );
 
