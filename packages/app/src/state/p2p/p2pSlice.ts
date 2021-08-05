@@ -8,7 +8,7 @@ import {
   createMarketplaceBotSearchIndex,
   createMarketplaceStickerSearchIndex,
 } from '~/lib/search';
-import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreator';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';

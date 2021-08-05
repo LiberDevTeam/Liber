@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getPlaceDB } from '~/lib/db/place';
 import { placeMessagesAdded } from '~/state/actionCreator';
 import { selectMe } from '~/state/me/meSlice';
 import { Message, ReactionMap } from '~/state/places/type';
@@ -30,13 +29,13 @@ export const connectToMessages = createAsyncThunk<
 export const addReaction = createAsyncThunk<
   ReactionMap,
   { placeId: string; messageId: string; emojiId: string },
-  { state: RootState }
+  { state: RootState; extra: ThunkExtra }
 >(
   'placeMessages/addReaction',
-  async ({ placeId, messageId, emojiId }, { getState }) => {
+  async ({ placeId, messageId, emojiId }, { getState, extra }) => {
     const state = getState();
     const me = selectMe(state);
-    const db = getPlaceDB(placeId);
+    const db = extra.db.place.get(placeId);
 
     if (!db) {
       throw new Error('Cannot find place database');

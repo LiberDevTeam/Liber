@@ -33,6 +33,7 @@ import {
 import {
   connectPlaceKeyValue,
   createPlaceKeyValue,
+  getPlaceDB,
   readPlaceFromDB,
 } from './place';
 import { connectPrivateFieldsDB, createPrivateFieldsDB } from './privateFields';
@@ -48,6 +49,7 @@ export const appDB = {
     connect: connectPlaceKeyValue,
     read: readPlaceFromDB,
     create: createPlaceKeyValue,
+    get: getPlaceDB,
   },
   message: {
     connect: connectMessageFeed,
