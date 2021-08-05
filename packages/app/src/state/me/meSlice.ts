@@ -3,7 +3,7 @@ import { generate } from 'canihazusername';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { User } from '~/state/users/type';
-import { botAdded } from '../actionCreater';
+import { botAdded } from '../actionCreator';
 import { addBots } from '../bots/botsSlice';
 import { stickerAdded } from '../stickers/actions';
 import { addStickers } from '../stickers/stickersSlice';

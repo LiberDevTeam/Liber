@@ -6,7 +6,7 @@ import {
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { AppDB } from '~/lib/db';
-import { placeAdded, placeMessagesAdded } from '~/state/actionCreater';
+import { placeAdded, placeMessagesAdded } from '~/state/actionCreator';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
 import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';

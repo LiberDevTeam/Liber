@@ -11,7 +11,7 @@ import {
   placeAdded,
   placeMessagesAdded,
   placeUpdated,
-} from '~/state/actionCreater';
+} from '~/state/actionCreator';
 import { addReaction, connectToMessages } from '~/state/places/async-actions';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';

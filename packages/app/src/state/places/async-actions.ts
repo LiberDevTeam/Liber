@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getPlaceDB } from '~/lib/db/place';
-import { placeMessagesAdded } from '~/state/actionCreater';
+import { placeMessagesAdded } from '~/state/actionCreator';
 import { selectMe } from '~/state/me/meSlice';
 import { Message, ReactionMap } from '~/state/places/type';
 import { RootState, ThunkExtra } from '~/state/store';
