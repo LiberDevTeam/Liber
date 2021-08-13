@@ -9,7 +9,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
-    '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
+    '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|json)$)':
       '<rootDir>/jest/fileTransform.js',
   },
   transformIgnorePatterns: [
