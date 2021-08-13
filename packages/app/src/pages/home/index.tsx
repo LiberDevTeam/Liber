@@ -92,7 +92,9 @@ export const HomePage: React.FC = memo(function HomePage() {
   const itemHeights = useRef<{ [index: number]: number }>({});
 
   useEffect(() => {
-    dispatch(fetchFeedItems());
+    if (items.length === 0) {
+      dispatch(fetchFeedItems());
+    }
   }, [dispatch]);
 
   const handleRenderRow = useCallback(
