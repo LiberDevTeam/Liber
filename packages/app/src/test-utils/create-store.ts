@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, DeepPartial } from '@reduxjs/toolkit';
 import { createHashHistory } from 'history';
 import { AppDB } from '~/lib/db';
 import { reducers } from '~/state/reducers';
@@ -9,7 +9,7 @@ export const history = createHashHistory();
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createStore = (
   preloadedState: Partial<RootState> = {},
-  appDB: any = {}
+  appDB: DeepPartial<AppDB> = {}
 ) =>
   configureStore({
     preloadedState,

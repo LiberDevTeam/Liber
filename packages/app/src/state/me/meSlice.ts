@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import arrayUnique from 'array-unique';
 import { generate } from 'canihazusername';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
@@ -32,8 +33,12 @@ export const DB_KEY = 'data';
 export const initMe = createAsyncThunk<
   Me,
   void,
-  { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
->('me/init', async (_0, { dispatch, extra }) => {
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+    extra: ThunkExtra;
+  }
+>('me/init', async (_, { dispatch, extra }) => {
   const userDB = await extra.db.user.create();
 
   let user: User = userDB.get(DB_KEY);
@@ -48,23 +53,23 @@ export const initMe = createAsyncThunk<
     await userDB.set(DB_KEY, user);
   }
 
-  const stickers = await Promise.all(
+  Promise.all(
     user.stickersListingOn.map(async ({ stickerId, address }) => {
       const stickerDB = await extra.db.sticker.connect({ stickerId, address });
       return extra.db.sticker.read(stickerDB);
     })
-  );
+  ).then((stickers) => {
+    dispatch(addStickers(stickers));
+  });
 
-  dispatch(addStickers(stickers));
-
-  const bots = await Promise.all(
+  Promise.all(
     user.botsListingOn.map(async ({ botId, address }) => {
       const botDB = await extra.db.bot.connect({ botId, address });
       return extra.db.bot.read(botDB);
     })
-  );
-
-  dispatch(addBots(bots));
+  ).then((bots) => {
+    dispatch(addBots(bots));
+  });
 
   const privateDB = await extra.db.privateFields.create();
   let privateFields = privateDB.get(DB_KEY);
@@ -109,7 +114,7 @@ export const updateProfile = createAsyncThunk<
 });
 
 export const appendJoinedPlace = createAsyncThunk<
-  PlacePK,
+  PlacePK[],
   PlacePK,
   { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >('me/appendJoinedPlace', async (pk, { getState, extra }) => {
@@ -117,9 +122,9 @@ export const appendJoinedPlace = createAsyncThunk<
     address: getState().me.privateDBAddress,
   });
   const priv = privateDB.get(DB_KEY);
-  priv.joinedPlaces = [...priv.joinedPlaces, pk];
+  priv.joinedPlaces = arrayUnique([...priv.joinedPlaces, pk]);
   await privateDB.set(DB_KEY, priv);
-  return pk;
+  return priv.joinedPlaces;
 });
 
 export const meSlice = createSlice({
@@ -136,10 +141,12 @@ export const meSlice = createSlice({
       .addCase(updateProfile.fulfilled, (state, action) => action.payload)
       // .addCase(updateProperties.fulfilled, (state, action) => action.payload)
       .addCase(appendJoinedPlace.fulfilled, (state, action) => {
-        state.joinedPlaces.push(action.payload);
+        state.joinedPlaces = action.payload;
       })
       .addCase(stickerAdded, (state, action) => {
-        state.stickersListingOn.push(action.payload);
+        state.stickersListingOn = arrayUnique(
+          state.stickersListingOn.concat(action.payload)
+        );
       })
       .addCase(botAdded, (state, action) => {
         state.botsListingOn.push(action.payload);

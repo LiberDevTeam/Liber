@@ -16,7 +16,6 @@ import { history } from '~/history';
 import { LoadingPage } from '~/pages/loading';
 import { MessageInput } from '~/pages/places/detail/components/message-input';
 import { appendJoinedPlace } from '~/state/me/meSlice';
-import { connectToMessages } from '~/state/places/async-actions';
 import {
   banUser,
   clearUnreadMessages,
@@ -76,6 +75,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     placeId: string;
     address: string;
   }>();
+
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.map((m) => m.uid));
@@ -97,24 +97,13 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
         userIds,
       })
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, JSON.stringify(userIds)]);
 
   // Scroll to bottom when open chat or added new messages
   useEffect(() => {
     messagesBottomRef.current?.scrollIntoView();
   }, [placeId, messages.length]);
-
-  useEffect(() => {
-    if (place?.feedAddress) {
-      dispatch(
-        connectToMessages({
-          placeId,
-          address: place.feedAddress,
-          hash: place.hash,
-        })
-      );
-    }
-  }, [dispatch, place?.feedAddress, placeId, place?.hash]);
 
   const handleIntersection = useCallback(
     (e) => {

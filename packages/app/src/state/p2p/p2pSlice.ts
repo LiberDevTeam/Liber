@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import getUnixTime from 'date-fns/getUnixTime';
 import { v4 as uuidv4 } from 'uuid';
 import { history } from '~/history';
+import { addDBEventHandler, readAllFeedItems } from '~/lib/db/utils';
 import {
   createExploreMessageSearchIndex,
   createExplorePlaceSearchIndex,
@@ -10,8 +11,7 @@ import {
 } from '~/lib/search';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreator';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { connectToMessages } from '~/state/places/async-actions';
-import { joinPlace, selectPlaceById } from '~/state/places/placesSlice';
+import { joinPlace } from '~/state/places/placesSlice';
 import { Message, Place, PlacePermission } from '~/state/places/type';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
@@ -22,27 +22,6 @@ const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
   return messages.filter((m) => m.uid !== uid);
 };
 
-const createMessageReceiveHandler =
-  ({
-    dispatch,
-    placeId,
-    myId,
-  }: {
-    dispatch: AppDispatch;
-    placeId: string;
-    myId: string;
-  }) =>
-  (messages: Message[]): void => {
-    if (messages.length > 0) {
-      dispatch(
-        placeMessagesAdded({
-          placeId,
-          messages: excludeMyMessages(myId, messages),
-        })
-      );
-    }
-  };
-
 export const initApp = createAsyncThunk<
   void,
   void,
@@ -51,17 +30,7 @@ export const initApp = createAsyncThunk<
   const state = getState();
   await Promise.all(
     state.me.joinedPlaces.map(async ({ placeId, address }) => {
-      await dispatch(joinPlace({ placeId, address }));
-      const place = selectPlaceById(placeId)(state);
-      if (place && place.passwordRequired && place.hash === undefined) {
-        await dispatch(
-          connectToMessages({
-            placeId: place.id,
-            hash: place.hash,
-            address: place.feedAddress,
-          })
-        );
-      }
+      dispatch(joinPlace({ placeId, address }));
     })
   );
 
@@ -121,11 +90,18 @@ export const createNewPlace = createAsyncThunk<
     const feed = await extra.db.message.create({
       placeId,
       hash,
-      onReceiveEvent: createMessageReceiveHandler({
-        dispatch,
-        placeId,
-        myId: me.id,
-      }),
+    });
+
+    addDBEventHandler(feed, () => {
+      const messages = excludeMyMessages(me.id, readAllFeedItems(feed));
+      if (messages.length > 0) {
+        dispatch(
+          placeMessagesAdded({
+            placeId,
+            messages,
+          })
+        );
+      }
     });
 
     const timestamp = getUnixTime(new Date());

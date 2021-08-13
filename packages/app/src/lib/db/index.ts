@@ -1,3 +1,4 @@
+import { readAllFeedItems } from '~/lib/db/utils';
 import { connectBotKeyValue, createBotKeyValue, readBotFromDB } from './bot';
 import {
   connectExploreMessageKeyValue,
@@ -28,7 +29,6 @@ import {
   connectMessageFeed,
   createMessageFeed,
   getMessageFeedById,
-  readMessagesFromFeed,
 } from './message';
 import {
   connectPlaceKeyValue,
@@ -53,9 +53,9 @@ export const appDB = {
   },
   message: {
     connect: connectMessageFeed,
-    read: readMessagesFromFeed,
     get: getMessageFeedById,
     create: createMessageFeed,
+    read: readAllFeedItems,
   },
   explorePlace: {
     connect: connectExplorePlaceKeyValue,

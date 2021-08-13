@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { addDBEventHandler } from '~/lib/db/utils';
 import { placeMessagesAdded } from '~/state/actionCreator';
 import { selectMe } from '~/state/me/meSlice';
 import { Message, ReactionMap } from '~/state/places/type';
@@ -15,11 +16,13 @@ export const connectToMessages = createAsyncThunk<
       placeId,
       address,
       hash,
-      onReceiveEvent: (messages) => {
-        if (messages.length > 0) {
-          dispatch(placeMessagesAdded({ messages, placeId }));
-        }
-      },
+    });
+
+    addDBEventHandler(feed, () => {
+      const messages = extra.db.message.read(feed);
+      if (messages.length > 0) {
+        dispatch(placeMessagesAdded({ messages, placeId }));
+      }
     });
 
     return extra.db.message.read(feed);

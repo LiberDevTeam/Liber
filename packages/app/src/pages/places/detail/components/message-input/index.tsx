@@ -13,6 +13,7 @@ import { SvgNavigation as SendIcon } from '~/icons/Navigation';
 import { SvgSmilingFace as StickerIcon } from '~/icons/SmilingFace';
 import { readAsDataURL } from '~/lib/readFile';
 import { selectBotsByIds } from '~/state/bots/botsSlice';
+import { selectIsMessageConnected } from '~/state/connectedMessage';
 import { publishPlaceMessage } from '~/state/places/messagesSlice';
 import { selectPlaceById } from '~/state/places/placesSlice';
 import { selectAllUsers } from '~/state/users/usersSlice';
@@ -156,6 +157,9 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
     // TODO: select place bots
     const placeBotIds = useAppSelector(selectPlaceById(placeId))?.bots || [];
     const placeBots = useAppSelector(selectBotsByIds(placeBotIds));
+    const isMessageConnected = useAppSelector(
+      selectIsMessageConnected(placeId)
+    );
 
     const [attachments, setAttachments] = useState<File[]>([]);
     const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
@@ -332,10 +336,10 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
               innerRef={messageInputRef}
               name="text"
               onSelect={handleOnSelect}
-              placeholder="Message..."
+              placeholder={'Message...'}
               value={formik.values.text}
               onChange={formik.handleChange}
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || isMessageConnected === false}
               actions={
                 <MessageActions>
                   <IconButton
@@ -351,7 +355,9 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
                       icon={<AttachIcon width={24} height={24} />}
                       onClick={() => null}
                       title="Attach file"
-                      disabled={formik.isSubmitting}
+                      disabled={
+                        formik.isSubmitting || isMessageConnected === false
+                      }
                       color={theme.colors.secondaryText}
                     />
                     <InputFile
@@ -360,6 +366,9 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
                       type="file"
                       accept="image/*,audio/*,video/*"
                       onChange={handleChangeAttachment}
+                      disabled={
+                        formik.isSubmitting || isMessageConnected === false
+                      }
                     />
                   </UploadFileButtonGroup>
                 </MessageActions>
@@ -370,7 +379,9 @@ export const MessageInput: React.FC<MessageInputProps> = memo(
               title="Send"
               type="submit"
               disabled={
-                formik.values.text === '' && attachmentPreviews.length === 0
+                (formik.values.text === '' &&
+                  attachmentPreviews.length === 0) ||
+                isMessageConnected === false
               }
             >
               <SendIcon width={20} height={20} />
