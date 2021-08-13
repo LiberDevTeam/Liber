@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import botsReducer from '~/state/bots/botsSlice';
+import { connectedMessage } from '~/state/connectedMessage';
 import feedReducer from '~/state/feed/feedSlice';
 import marketplaceBotsReducer from '~/state/marketplace/botsSlice';
 import marketplaceStickersReducer from '~/state/marketplace/stickersSlice';
@@ -27,4 +28,5 @@ export const reducers = combineReducers({
   marketplaceStickers: marketplaceStickersReducer,
   selectedUser: selectedUserSlice.reducer,
   isInitialized: isInitializedSlice.reducer,
+  connectedMessage: connectedMessage.reducer,
 });
