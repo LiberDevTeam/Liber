@@ -6,6 +6,7 @@ export const Root = styled(Link)`
   /* display: flex; */
   display: block;
   width: 100%;
+  color: ${(props) => props.theme.colors.primaryText};
 `;
 
 export const Header = styled.div`
@@ -29,7 +30,7 @@ export const Avatar = styled.img`
 
 export const Title = styled.div`
   font-size: ${(props) => props.theme.fontSizes['xl']};
-  font-weight: ${(props) => props.theme.fontWeights.bold};
+  font-weight: ${(props) => props.theme.fontWeights.semibold};
   display: flex;
   align-items: center;
 `;
@@ -39,7 +40,7 @@ export const Timestamp = styled.span`
   margin-top: ${(props) => props.theme.space[1]}px;
   margin-right: ${(props) => props.theme.space[3]}px;
   font-size: ${(props) => props.theme.fontSizes['sm']};
-  font-weight: ${(props) => props.theme.fontWeights.bold};
+  font-weight: ${(props) => props.theme.fontWeights.light};
   opacity: 0.6;
 `;
 
