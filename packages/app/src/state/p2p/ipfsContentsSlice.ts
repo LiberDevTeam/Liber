@@ -28,7 +28,7 @@ export const addIpfsContent = async (file: File): Promise<string> => {
     content: file,
   });
 
-  const cid = content.cid.toBaseEncodedString();
+  const cid = content.cid.toString();
   const fileType = await FileType.fromStream(file.stream());
   if (!fileType) {
     throw new Error('unsupported file format');
