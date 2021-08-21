@@ -6,6 +6,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { default as arrayUnique } from 'array-unique';
+import getUnixTime from 'date-fns/getUnixTime';
 import { history } from '~/history';
 import {
   placeAdded,
@@ -306,7 +307,11 @@ export const placesSlice = createSlice({
 
         const ids = sortedMessages.map((message) => message.id);
         place.messageIds = arrayUnique(place.messageIds.concat(ids));
-        place.timestamp = sortedMessages[sortedMessages.length - 1].timestamp;
+        if (sortedMessages.length === 0) {
+          place.timestamp = getUnixTime(new Date());
+        } else {
+          place.timestamp = sortedMessages[sortedMessages.length - 1].timestamp;
+        }
         // TODO: update unread message
       })
       .addCase(placeAdded, (state, action) => {
@@ -360,9 +365,10 @@ export const placesSlice = createSlice({
 });
 
 const selectors = placesAdapter.getSelectors();
-export const selectPlaceById = (id: string) => (
-  state: RootState
-): Place | undefined => selectors.selectById(state.places, id);
+export const selectPlaceById =
+  (id: string) =>
+  (state: RootState): Place | undefined =>
+    selectors.selectById(state.places, id);
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -370,25 +376,21 @@ export const selectAllPlaces = (state: RootState): Place[] =>
 export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
-export const selectPlaceMessagesByPlaceId = (placeId: string) => (
-  state: RootState
-): Message[] => {
-  const place = selectors.selectById(state.places, placeId);
+export const selectPlaceMessagesByPlaceId =
+  (placeId: string) =>
+  (state: RootState): Message[] => {
+    const place = selectors.selectById(state.places, placeId);
 
-  if (!place) {
-    return [];
-  }
+    if (!place) {
+      return [];
+    }
 
-  return place.messageIds
-    .map((id) => selectMessageById(state.placeMessages, id))
-    .filter(Boolean) as Message[];
-};
+    return place.messageIds
+      .map((id) => selectMessageById(state.placeMessages, id))
+      .filter(Boolean) as Message[];
+  };
 
-export const {
-  clearUnreadMessages,
-  setHash,
-  removePlace,
-  updateOne,
-} = placesSlice.actions;
+export const { clearUnreadMessages, setHash, removePlace, updateOne } =
+  placesSlice.actions;
 
 export default placesSlice.reducer;
