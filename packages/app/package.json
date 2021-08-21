@@ -119,7 +119,7 @@
     "web-vitals": "^2.1.0",
     "web3": "^1.5.0",
     "webpack-manifest-plugin": "4.0.2",
-    "workbox-cacheable-response": "^6.1.5",
+    "workbox-cacheable-response": "^6.2.4",
     "workbox-core": "^6.1.5",
     "workbox-routing": "^6.1.5",
     "yup": "^0.32.9"
