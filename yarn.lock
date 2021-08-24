@@ -22898,13 +22898,10 @@ orbit-db-identity-provider@~0.3.0, orbit-db-identity-provider@~0.3.1:
     ethers "^5.0.8"
     orbit-db-keystore "~0.3.5"
 
-orbit-db-io@^0.3.0, orbit-db-io@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/orbit-db-io/-/orbit-db-io-0.3.0.tgz#cbc84c629431ea63a2c32d73f4638c8c92ebc444"
-  integrity sha512-yWyhDR9vqw2+8tuOT+erKWkc9cL2QuemSVZgPjEm7nn+zkBzbacbfUdbgKtbtgUp8VDKhCzph2LfEEVhs6F5HA==
-  dependencies:
-    cids "^1.0.0"
-    ipld-dag-pb "^0.20.0"
+orbit-db-io@^0.3.0, orbit-db-io@^1.0.0, orbit-db-io@~0.3.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/orbit-db-io/-/orbit-db-io-1.0.0.tgz#ca9a6027d2113485238e64b1149780b28a75655d"
+  integrity sha512-r+HPGggN+YLW0boBIuOaFniNfILX/V5SMJwx7bG+p7snGOr9WQKFrmMRzMGhy3ntPDig8jRFEm1tHInUOkgAlA==
 
 orbit-db-keystore@~0.3.0, orbit-db-keystore@~0.3.5:
   version "0.3.5"
