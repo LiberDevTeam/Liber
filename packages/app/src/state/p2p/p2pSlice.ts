@@ -11,15 +11,22 @@ import {
 } from '~/lib/search';
 import { placeAdded, placeMessagesAdded } from '~/state/actionCreator';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
-import { joinPlace } from '~/state/places/placesSlice';
+import { joinPlace } from '~/state/places/async-actions';
 import { Message, Place, PlacePermission } from '~/state/places/type';
+import { isSystemMessage } from '~/state/places/utils';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { ItemType } from '../feed/feedSlice';
 import { finishInitialization } from '../isInitialized';
 
 const excludeMyMessages = (uid: string, messages: Message[]): Message[] => {
-  return messages.filter((m) => m.uid !== uid);
+  return messages.filter((m) => {
+    if (isSystemMessage(m)) {
+      return false;
+    } else {
+      return m.uid !== uid;
+    }
+  });
 };
 
 export const initApp = createAsyncThunk<

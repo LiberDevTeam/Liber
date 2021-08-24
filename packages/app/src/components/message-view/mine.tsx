@@ -8,6 +8,7 @@ import {
   selectMessageById,
   selectMessageReactionsByMessage,
 } from '~/state/places/messagesSlice';
+import { NormalMessage } from '~/state/places/type';
 import { Message } from '../message';
 import { MessageTimestamp } from '../message-timestamp';
 import { Reactions } from './reactions';
@@ -57,7 +58,7 @@ export const MyMessageView: React.FC<MessageViewProps> = ({
 }) => {
   const message = useAppSelector((state) =>
     selectMessageById(state.placeMessages, id)
-  );
+  ) as NormalMessage | undefined;
   const me = useAppSelector(selectMe);
   const reactions = useAppSelector(selectMessageReactionsByMessage(message));
 

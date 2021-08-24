@@ -12,7 +12,13 @@ import { selectMe } from '~/state/me/meSlice';
 import { addIpfsContent } from '~/state/p2p/ipfsContentsSlice';
 import { connectToMessages } from '~/state/places/async-actions';
 import { selectPlaceById } from '~/state/places/placesSlice';
-import { Message, Place, Reaction, StickerItem } from '~/state/places/type';
+import {
+  Message,
+  NormalMessage,
+  Place,
+  Reaction,
+  StickerItem,
+} from '~/state/places/type';
 import {
   parseText,
   resolveBotFromContent,
@@ -25,8 +31,8 @@ import { ItemType } from '../feed/feedSlice';
 const MODULE_NAME = 'placeMessages';
 
 function createMessage(
-  props: Omit<Message, 'id' | 'timestamp' | 'reactions'>
-): Message {
+  props: Omit<NormalMessage, 'id' | 'timestamp' | 'reactions'>
+): NormalMessage {
   return {
     ...props,
     id: uuidv4(),

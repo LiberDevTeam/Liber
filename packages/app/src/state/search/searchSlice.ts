@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { exploreMessageSearch, explorePlaceSearch } from '~/lib/search';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
-import { Message, Place } from '../places/type';
+import { NormalMessage, Place } from '../places/type';
 
 interface SearchState {
-  searchMessageResult: Message[];
+  searchMessageResult: NormalMessage[];
   searchPlaceResult: Place[];
 }
 
@@ -28,9 +28,9 @@ export const fetchSearchMessageResult = createAsyncThunk<
       result = exploreMessageSearch.search(searchText, { fuzzy: 0.3 });
     }
 
-    const messages: Message[] = result.map((r) => {
+    const messages: NormalMessage[] = result.map((r) => {
       const { score, terms, match, ...message } = r;
-      return message as Message;
+      return message as NormalMessage;
     });
 
     dispatch(setSearchMessageResult(messages));
@@ -65,7 +65,7 @@ export const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSearchMessageResult: (state, action: PayloadAction<Message[]>) => {
+    setSearchMessageResult: (state, action: PayloadAction<NormalMessage[]>) => {
       state.searchMessageResult = [...action.payload];
     },
     setSearchPlaceResult: (state, action: PayloadAction<Place[]>) => {

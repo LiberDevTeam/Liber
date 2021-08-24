@@ -1,6 +1,11 @@
 import { getUnixTime } from 'date-fns';
 import { faker } from '~/mocks/faker';
-import { Message, Place } from '~/state/places/type';
+import {
+  Message,
+  Place,
+  SystemMessage,
+  SystemMessageType,
+} from '~/state/places/type';
 
 export const createDummyMessage = (
   partialMessage: Partial<Message> = {}
@@ -25,6 +30,19 @@ export const createDummyMessageForPlace = (
   placeAddress: place.feedAddress,
   placeId: place.id,
   timestamp: getUnixTime(faker.datatype.datetime()),
+  uid: faker.datatype.uuid(),
+  ...partialMessage,
+});
+
+export const createSystemMessage = (
+  place: Place,
+  partialMessage: Partial<SystemMessage> = {}
+): SystemMessage => ({
+  id: faker.datatype.uuid(),
+  placeAddress: place.feedAddress,
+  placeId: place.id,
+  timestamp: getUnixTime(faker.datatype.datetime()),
+  type: SystemMessageType.JOIN,
   uid: faker.datatype.uuid(),
   ...partialMessage,
 });

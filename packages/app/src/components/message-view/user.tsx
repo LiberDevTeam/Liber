@@ -10,6 +10,7 @@ import {
   selectMessageById,
   selectMessageReactionsByMessage,
 } from '~/state/places/messagesSlice';
+import { NormalMessage } from '~/state/places/type';
 import { setSelectedUser } from '~/state/selected-user';
 import { Message } from '../message';
 import { MessageTimestamp } from '../message-timestamp';
@@ -80,7 +81,7 @@ export const UserMessageView: React.FC<MessageViewProps> = ({
   const me = useAppSelector(selectMe);
   const message = useAppSelector((state) =>
     selectMessageById(state.placeMessages, id)
-  );
+  ) as NormalMessage | undefined;
   const reactions = useAppSelector(selectMessageReactionsByMessage(message));
 
   const handleClickUser = useCallback(() => {
