@@ -6586,10 +6586,10 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0", "@types/node@^16.4.10":
-  version "16.4.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.10.tgz#e57e2a54fc6da58da94b3571b1cb456d39f88597"
-  integrity sha512-TmVHsm43br64js9BqHWqiDZA+xMtbUpI1MBIA0EyiBmoV9pcEYFOSdj5fr6enZNfh4fChh+AGOLIzGwJnkshyQ==
+"@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0", "@types/node@^16.7.2":
+  version "16.7.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.7.2.tgz#0465a39b5456b61a04d98bd5545f8b34be340cb7"
+  integrity sha512-TbG4TOx9hng8FKxaVrCisdaxKxqEwJ3zwHoCWXZ0Jw6mnvTInpaB99/2Cy4+XxpXtjNv9/TgfGSvZFyfV/t8Fw==
 
 "@types/node@10.12.18":
   version "10.12.18"
@@ -6773,10 +6773,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-window-infinite-loader@^1.0.3":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@types/react-window-infinite-loader/-/react-window-infinite-loader-1.0.4.tgz#2130555d3037f842e6fff939a6563849fd4d1046"
-  integrity sha512-bfztJr6udQ/8+/KsomCDOh/bWQv9uQZzpvPwhZC/izKuVdilH+yv/ql4m9Dql5DgbomGiKPzphaZrqIf2ApyTA==
+"@types/react-window-infinite-loader@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-window-infinite-loader/-/react-window-infinite-loader-1.0.5.tgz#32469a6a47438d9ebf1b5f5719943f494ea0abdf"
+  integrity sha512-3v45+4oBNJpSroULtb2EgTJyyK4pCjOMCg+RT/HnA3or5zY4jYufv6uH9NWPyLv0nx8dqt1s4nJqHilfthwKSw==
   dependencies:
     "@types/react" "*"
     "@types/react-window" "*"
