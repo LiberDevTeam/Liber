@@ -1,4 +1,3 @@
-import { Web3ReactProvider } from '@web3-react/core';
 import 'github-markdown-css';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -7,7 +6,6 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import '~/lib/i18n';
-import { getLibrary } from './lib/web3Provider';
 import { Routes } from './routes';
 import * as serviceWorker from './serviceWorker';
 import { store } from './state/store';
@@ -29,15 +27,13 @@ async function run() {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <Normalize />
-            <GlobalStyles />
-            <Routes />
-          </ThemeProvider>
-        </Provider>
-      </Web3ReactProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Normalize />
+          <GlobalStyles />
+          <Routes />
+        </ThemeProvider>
+      </Provider>
     </React.StrictMode>,
     document.getElementById('root')
   );

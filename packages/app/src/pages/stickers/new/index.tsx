@@ -1,9 +1,7 @@
-import { useWeb3React } from '@web3-react/core';
 import { useFormik } from 'formik';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import Web3 from 'web3';
 import * as yup from 'yup';
 import { Button } from '~/components/button';
 import { ErrorMessage } from '~/components/error-message';
@@ -111,7 +109,6 @@ const validationSchema = yup.object({
 export const StickerNewPage: React.FC = React.memo(function StickerNewPage() {
   const dispatch = useDispatch();
   const [contentPreview, setContentPreview] = useState<string[]>([]);
-  const web3React = useWeb3React<Web3>();
   const formik = useFormik<FormValues>({
     initialValues: {
       name: '',

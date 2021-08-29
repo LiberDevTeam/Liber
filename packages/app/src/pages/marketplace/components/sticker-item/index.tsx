@@ -53,7 +53,7 @@ export const StickerItem: React.FC<Props> = memo(function StickerItem({
         <RightGroup>
           <Name>{sticker.name}</Name>
           <Description>{sticker.description}</Description>
-          <Price>{sticker.price} ETH</Price>
+          {/* <Price>{sticker.price} ETH</Price> */}
         </RightGroup>
       </StyledLink>
     </>
