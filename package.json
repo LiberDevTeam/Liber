@@ -14,7 +14,8 @@
     "packages/*"
   ],
   "resolutions": {
-    "orbit-db-io": "^1.0.0"
+    "orbit-db-io": "^1.0.0",
+    "orbit-db-store": "^4.1.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
