@@ -126,7 +126,6 @@ export const StickerNewPage: React.FC = React.memo(function StickerNewPage() {
             description,
             contents,
             price,
-            web3React,
           })
         );
     },

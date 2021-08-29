@@ -76,7 +76,7 @@ export const createNewSticker = createAsyncThunk<
     }
 
     const stickerPK = {
-      stickerId: listedTokenId,
+      stickerId: id,
       address: stickerKeyValue.address.root,
     };
     const newUser: User = {
