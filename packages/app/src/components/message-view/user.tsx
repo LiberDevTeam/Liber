@@ -28,7 +28,6 @@ const Root = styled.div`
 const StyledTimestamp = styled(MessageTimestamp)`
   display: block;
   text-align: left;
-  padding-left: ${(props) => props.theme.space[6]}px;
 `;
 
 const AvatarWrapper = styled.div`
@@ -127,15 +126,19 @@ export const UserMessageView: React.FC<MessageViewProps> = ({
           ))}
         </Attachments>
       ) : null}
+
+      {hasTextContent ? null : (
+        <>
+          <div />
+          <StyledTimestamp timestamp={message.timestamp} />
+        </>
+      )}
       <StyledReactions
         id={message.id}
         myId={me.id}
         onClick={onReactionClick}
         reactions={reactions}
       />
-      {hasTextContent ? null : (
-        <StyledTimestamp timestamp={message.timestamp} />
-      )}
     </Root>
   );
 };
