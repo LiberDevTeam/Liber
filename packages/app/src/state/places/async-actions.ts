@@ -30,7 +30,7 @@ export const sendJoinedMessage = createAsyncThunk<
 
 export const connectToMessages = createAsyncThunk<
   Message[],
-  { placeId: string; address: string; hash?: string },
+  { placeId: string; address: string; hash: string | null },
   { state: RootState; extra: ThunkExtra }
 >(
   'placeMessages/connectToMessages',

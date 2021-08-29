@@ -12,7 +12,7 @@ const getMessagesAddress = ({
 }: {
   address: string;
   placeId: string;
-  hash?: string;
+  hash: string | null;
 }): string =>
   `/orbitdb/${address}/${placeId}${hash ? `-${hash}` : ''}/messages`;
 
@@ -42,7 +42,7 @@ export const connectMessageFeed = async ({
 }: {
   placeId: string;
   address: string;
-  hash?: string;
+  hash: string | null;
 }): Promise<FeedStore<Message>> => {
   if (messageFeeds[placeId]) {
     return messageFeeds[placeId];
