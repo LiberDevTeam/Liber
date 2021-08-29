@@ -15,6 +15,8 @@ export const dummyPlace = (id: string): Place => ({
   keyValAddress: '',
   passwordRequired: false,
   category: 0,
+  hash: null,
+  swarmKey: null,
   permissions: {},
   bannedUsers: [],
   readOnly: false,

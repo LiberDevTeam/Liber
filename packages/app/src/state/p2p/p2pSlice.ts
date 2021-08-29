@@ -92,7 +92,7 @@ export const createNewPlace = createAsyncThunk<
     const placeId = uuidv4();
     const passwordRequired = !!password;
     const placeKeyValue = await extra.db.place.create(placeId);
-    const hash = password ? await digestMessage(password) : undefined;
+    const hash = password ? await digestMessage(password) : null;
 
     const feed = await extra.db.message.create({
       placeId,
@@ -122,7 +122,7 @@ export const createNewPlace = createAsyncThunk<
       avatarCid: cid,
       timestamp: timestamp,
       createdAt: timestamp,
-      swarmKey: swarmKey || undefined,
+      swarmKey: swarmKey || null,
       passwordRequired,
       hash,
       category,
@@ -141,7 +141,7 @@ export const createNewPlace = createAsyncThunk<
           Promise.resolve(); // Do not add hash to the place db.
         }
         const v = place[key as keyof Place];
-        if (v === undefined) {
+        if (v === undefined || v === null) {
           return Promise.resolve();
         }
         return placeKeyValue.put(key, v);
@@ -150,9 +150,10 @@ export const createNewPlace = createAsyncThunk<
 
     dispatch(placeAdded({ place, messages: [] }));
 
-    place.hash = undefined;
+    place.hash = null;
     const explorePlaceDB = await extra.db.explorePlace.connect();
     const keystore = explorePlaceDB.identity.provider.keystore;
+    console.log(place);
     await explorePlaceDB.put(
       `/${explorePlaceDB.identity.publicKey}/${place.keyValAddress}/${place.id}`,
       {

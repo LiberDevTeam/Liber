@@ -22,6 +22,8 @@ export const readPlaceFromDB = (kv: KeyValueStoreMock): Place => {
     timestamp: kv.get('timestamp') as number,
     passwordRequired: kv.get('passwordRequired') as boolean,
     category: kv.get('category') as number,
+    swarmKey: null,
+    hash: null,
     messageIds: [],
     unreadMessages: [],
     permissions: kv.get('permissions') as PlacePermissions,

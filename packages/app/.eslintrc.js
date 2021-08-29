@@ -32,7 +32,7 @@ module.exports = {
       },
     },
     {
-      files: ['src/create-shared-db.js'],
+      files: ['src/create-shared-db.ts'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-var-requires': 'off',

@@ -1,14 +1,16 @@
 // @ts-nocheck
 
-require('dotenv').config();
-
-const IPFS = require('ipfs');
-const OrbitDB = require('orbit-db');
+import dotenv from 'dotenv';
+import IPFS from 'ipfs';
+import OrbitDB from 'orbit-db';
+import AccessControllers from './lib/db/access-controllers';
+dotenv.config();
 
 IPFS.create({ repo: process.env.IPFS_REPO }).then(async (ipfs) => {
   const orbitdb = await OrbitDB.createInstance(ipfs, {
     directory: process.env.ORBITDB_DIRECTORY,
     identity: JSON.parse(process.env.ORBITDB_IDENTITY || '{}'),
+    AccessControllers,
   });
 
   const db = await orbitdb.feed('feeds', {
