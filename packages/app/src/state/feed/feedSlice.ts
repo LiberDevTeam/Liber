@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState, ThunkExtra } from '~/state/store';
-import { Message, Place } from '../places/type';
+import { NormalMessage, Place } from '../places/type';
 
 export enum Appearance {
   DEFAULT,
@@ -16,7 +16,7 @@ interface WithHash {
   feedHash: string;
 }
 
-interface FeedItemMessage extends Message, WithHash {
+interface FeedItemMessage extends NormalMessage, WithHash {
   itemType: ItemType.MESSAGE;
 }
 

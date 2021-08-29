@@ -65,18 +65,46 @@ export interface StickerItem {
 
 export type MessageContent = Array<string | Mention>;
 
-export interface Message {
+export interface NormalMessage {
   id: string; // UUID
   uid: string;
-  authorName?: string;
   timestamp: number;
+  content: MessageContent;
+  bot: boolean;
+  placeId: string;
+  placeAddress: string;
+
+  text?: string;
+  authorName?: string;
+  sticker?: StickerItem;
+  attachmentCidList?: string[];
+}
+
+export enum SystemMessageType {
+  JOIN,
+  OTHER,
+}
+
+interface MessageBase {
+  id: string; // UUID
+  timestamp: number;
+  placeId: string;
+  placeAddress: string;
+}
+
+export type SystemMessage =
+  | (MessageBase & { type: SystemMessageType.JOIN; uid: string })
+  | (MessageBase & { type: SystemMessageType.OTHER });
+
+export interface NormalMessage extends MessageBase {
+  uid: string;
+  authorName?: string;
   text?: string;
   attachmentCidList?: string[];
   content: MessageContent;
   bot: boolean;
 
   sticker?: StickerItem;
-
-  placeId: string;
-  placeAddress: string;
 }
+
+export type Message = SystemMessage | NormalMessage;

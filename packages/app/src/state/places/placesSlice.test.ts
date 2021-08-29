@@ -1,8 +1,8 @@
 import { dummyBot } from '~/mocks/bot';
 import { dummyPlace } from '~/mocks/place';
 import { dummyUser } from '~/mocks/user';
+import { joinPlace } from '~/state/places/async-actions';
 import { createStore } from '~/test-utils/create-store';
-import { joinPlace } from './placesSlice';
 import { parseText } from './utils';
 
 const createMockKeyValue = <T>(item: T) => ({

@@ -1,5 +1,12 @@
 import { Bot } from '~/state/bots/types';
-import { Mention, Message } from '~/state/places/type';
+import {
+  Mention,
+  Message,
+  NormalMessage,
+  Place,
+  PlaceField,
+  SystemMessage,
+} from '~/state/places/type';
 import { User } from '~/state/users/type';
 
 export function resolveBotFromContent(
@@ -75,3 +82,37 @@ export const parseText = ({
 
   return result;
 };
+
+export function isNormalMessage(message: Message): message is NormalMessage {
+  if ('content' in message) {
+    return true;
+  }
+
+  return false;
+}
+
+export function isSystemMessage(message: Message): message is SystemMessage {
+  return isNormalMessage(message) === false;
+}
+
+const requiredPlaceFields: PlaceField[] = [
+  'id',
+  'name',
+  'description',
+  'avatarCid',
+  'passwordRequired',
+  'readOnly',
+  'createdAt',
+  'category',
+  'timestamp',
+  'messageIds',
+  'unreadMessages',
+  'permissions',
+  'feedAddress',
+  'keyValAddress',
+  'bannedUsers',
+];
+
+export function checkPlaceValues(place: Partial<Place>): place is Place {
+  return requiredPlaceFields.some((key) => place[key] === undefined) === false;
+}

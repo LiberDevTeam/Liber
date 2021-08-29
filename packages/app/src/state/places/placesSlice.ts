@@ -16,10 +16,9 @@ import {
 import { addReaction, connectToMessages } from '~/state/places/async-actions';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
-import { PlacePK } from '../me/type';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { selectMessageById } from './messagesSlice';
-import { Message, PartialForUpdate, Place, PlaceField } from './type';
+import { Message, PartialForUpdate, Place } from './type';
 
 const MODULE_NAME = 'places';
 
@@ -49,58 +48,6 @@ const messageSort = (a: Message, b: Message): number =>
 
 const placesAdapter = createEntityAdapter<Place>({
   sortComparer: (a, b) => a.timestamp - b.timestamp,
-});
-
-const requiredPlaceFields: PlaceField[] = [
-  'id',
-  'name',
-  'description',
-  'avatarCid',
-  'passwordRequired',
-  'readOnly',
-  'createdAt',
-  'category',
-  'timestamp',
-  'messageIds',
-  'unreadMessages',
-  'permissions',
-  'feedAddress',
-  'keyValAddress',
-  'bannedUsers',
-];
-
-const checkPlaceValues = (place: Partial<Place>): place is Place => {
-  return requiredPlaceFields.some((key) => place[key] === undefined) === false;
-};
-
-export const joinPlace = createAsyncThunk<
-  void,
-  PlacePK,
-  { dispatch: AppDispatch; extra: ThunkExtra }
->(`${MODULE_NAME}/join`, async ({ placeId, address }, { dispatch, extra }) => {
-  const kv = await extra.db.place.connect({
-    placeId,
-    address,
-    onReplicated: (_kv) => {
-      const place = extra.db.place.read(_kv);
-      if (checkPlaceValues(place)) {
-        dispatch(placeUpdated(place));
-      }
-    },
-  });
-
-  const place = extra.db.place.read(kv);
-
-  if (checkPlaceValues(place)) {
-    dispatch(
-      connectToMessages({
-        placeId: place.id,
-        hash: place.hash,
-        address: place.feedAddress,
-      })
-    );
-    dispatch(placeUpdated(place));
-  }
 });
 
 export const openProtectedPlace = createAsyncThunk<

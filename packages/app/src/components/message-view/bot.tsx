@@ -5,6 +5,7 @@ import { useAppSelector } from '~/hooks';
 import { selectBotById } from '~/state/bots/botsSlice';
 import { Bot } from '~/state/bots/types';
 import { selectMessageById } from '~/state/places/messagesSlice';
+import { NormalMessage } from '~/state/places/type';
 import { Message } from '../message';
 
 const TextGroup = styled.div`
@@ -54,7 +55,7 @@ export const BotMessageView: React.FC<BotMessageViewProps> = React.memo(
   function BotMessageView({ id }) {
     const message = useAppSelector((state) =>
       selectMessageById(state.placeMessages, id)
-    );
+    ) as NormalMessage | undefined;
 
     const bot = useAppSelector<Bot | undefined>(selectBotById(message?.uid));
 

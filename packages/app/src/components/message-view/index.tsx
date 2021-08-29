@@ -1,8 +1,11 @@
 import React, { useCallback } from 'react';
+import { BotMessageView } from '~/components/message-view/bot';
+import { SystemMessageView } from '~/components/message-view/system';
 import { useAppDispatch, useAppSelector } from '~/hooks';
 import { selectMe } from '~/state/me/meSlice';
 import { addReaction } from '~/state/places/async-actions';
 import { selectMessageById } from '~/state/places/messagesSlice';
+import { isSystemMessage } from '~/state/places/utils';
 import { MyMessageView } from './mine';
 import { UserMessageView } from './user';
 
@@ -31,6 +34,20 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(
       },
       [dispatch, placeId]
     );
+
+    if (!message) {
+      return null;
+    }
+
+    if (isSystemMessage(message)) {
+      return (
+        <SystemMessageView id={id} onReactionClick={handleReactionClick} />
+      );
+    }
+
+    if (message.bot) {
+      return <BotMessageView id={id} />;
+    }
 
     const mine = message?.uid === me.id;
 

@@ -3,7 +3,7 @@ import { MessageInput, MessageInputProps } from '.';
 
 export default {
   component: MessageInput,
-  title: 'molecules/PlaceDetailHeader',
+  title: 'molecules/message-input',
   argTypes: {
     onInviteClick: {
       action: 'onInviteClick',

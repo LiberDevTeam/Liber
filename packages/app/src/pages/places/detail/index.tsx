@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MessageView } from '~/components/message-view';
-import { BotMessageView } from '~/components/message-view/bot';
 import { PasswordDialog } from '~/components/password-dialog';
 import { SharePlaceDialog } from '~/components/share-place-dialog';
 import { UnreadToast } from '~/components/unread-toast';
@@ -15,15 +14,15 @@ import { invitationUrl, omitText } from '~/helpers';
 import { history } from '~/history';
 import { LoadingPage } from '~/pages/loading';
 import { MessageInput } from '~/pages/places/detail/components/message-input';
-import { appendJoinedPlace } from '~/state/me/meSlice';
+import { joinPlace } from '~/state/places/async-actions';
 import {
   banUser,
   clearUnreadMessages,
-  joinPlace,
   removePlace,
   selectPlaceById,
   selectPlaceMessagesByPlaceId,
 } from '~/state/places/placesSlice';
+import { isNormalMessage } from '~/state/places/utils';
 import { loadUsers } from '~/state/users/usersSlice';
 import BaseLayout from '~/templates';
 import { PlaceDetailHeader } from './components/place-detail-header';
@@ -62,7 +61,7 @@ const Footer = styled.footer`
   left: 0;
   bottom: 0;
   padding: ${(props) =>
-    `${props.theme.space[2]}px 0 ${props.theme.space[5]}px`};
+    `${props.theme.space[2]}px 0 ${props.theme.space[2]}px`};
   border-top: ${(props) => props.theme.border.bold(props.theme.colors.gray3)};
 `;
 
@@ -78,7 +77,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
-  const userIds = arrayUniq(messages.map((m) => m.uid));
+  const userIds = arrayUniq(messages.filter(isNormalMessage).map((m) => m.uid));
 
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -88,7 +87,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   useEffect(() => {
     const pk = { placeId, address };
     dispatch(joinPlace(pk));
-    dispatch(appendJoinedPlace(pk));
   }, [dispatch, placeId, address]);
 
   useEffect(() => {
@@ -167,13 +165,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           )}
 
           <Messages>
-            {messages.map((m) =>
-              m.bot ? (
-                <BotMessageView id={m.id} key={m.id} />
-              ) : (
-                <MessageView id={m.id} key={m.id} placeId={place.id} />
-              )
-            )}
+            {messages.map((m) => (
+              <MessageView id={m.id} key={m.id} placeId={place.id} />
+            ))}
             <Observer onChange={handleIntersection}>
               <div ref={messagesBottomRef} />
             </Observer>

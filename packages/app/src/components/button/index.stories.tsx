@@ -5,8 +5,8 @@ import { Button, ButtonProps } from '.';
 export default {
   component: Button,
   title: 'atoms/Button',
-  argTypes: {
-    text: { control: 'text', defaultValue: 'Liber' },
+  args: {
+    text: 'Liber',
     shape: {
       control: {
         type: 'select',

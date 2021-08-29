@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { shortenUid } from '~/helpers';
 import { formatTime } from '~/helpers/time';
 import { useAppSelector } from '~/hooks';
-import { Message, Place } from '~/state/places/type';
+import { NormalMessage, Place } from '~/state/places/type';
 import { loadUser, selectUserById } from '~/state/users/usersSlice';
 import {
   Attachment,
@@ -17,7 +17,7 @@ import {
 } from './elements';
 
 interface FeedItemMessageDefaultProps {
-  message: Message;
+  message: NormalMessage;
   onRender: (clientHeight: number) => void;
 }
 
