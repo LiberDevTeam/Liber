@@ -51,7 +51,7 @@ export const BotItem: React.FC<Props> = memo(function BotItem({ bot }) {
         <RightGroup>
           <Name>{bot.name}</Name>
           <Description>{bot.description}</Description>
-          <Price>{bot.price} ETH</Price>
+          <Price>0 ETH</Price>
         </RightGroup>
       </StyledLink>
     </>

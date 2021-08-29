@@ -138,7 +138,7 @@ export const StickerEditPage: React.FC = memo(function StickerNewPage() {
             category,
             name,
             description,
-            price,
+            price: 0,
             contents,
           })
         );
@@ -234,22 +234,6 @@ export const StickerEditPage: React.FC = memo(function StickerNewPage() {
             maxLength={200}
             errorMessage={formik.errors.description}
           />
-        </Section>
-
-        <Section>
-          <Subtitle>Price</Subtitle>
-          <PriceInner>
-            <Input
-              type="number"
-              name="price"
-              placeholder="Price ETH"
-              value={formik.values.price}
-              onChange={formik.handleChange}
-              disabled={formik.isSubmitting}
-              errorMessage={formik.errors.price}
-            />
-            <Term>ETH</Term>
-          </PriceInner>
         </Section>
 
         <Section>

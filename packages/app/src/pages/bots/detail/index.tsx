@@ -127,7 +127,7 @@ export const BotDetailPage: React.FC = memo(function BotDetailPage() {
             )}
           </Category>
           <Stock>Stock: Unlimited</Stock>
-          <Price>Price: {bot.price} ETH</Price>
+          <Price>Price: 0 ETH</Price>
         </Group>
       </HeaderContent>
 

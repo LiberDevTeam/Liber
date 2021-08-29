@@ -4,15 +4,8 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
-import type {
-  LiberMarketInstance,
-  LiberStickerInstance,
-} from 'contracts/@types-typechain';
-import MarketContract from 'contracts/build/contracts/LiberMarket.json';
-import StickerContract from 'contracts/build/contracts/LiberSticker.json';
 import { getUnixTime } from 'date-fns';
-import Web3 from 'web3';
+import { v4 as uuidv4 } from 'uuid';
 import { history } from '~/history';
 import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { DB_KEY } from '../me/meSlice';
@@ -40,73 +33,22 @@ export const createNewSticker = createAsyncThunk<
     price: number;
     description: string;
     contents: File[];
-    web3React: Web3ReactContextInterface<Web3>;
   },
   { dispatch: AppDispatch; state: RootState; extra: ThunkExtra }
 >(
   'stickers/createNewSticker',
   async (
-    { category, name, description, contents, price, web3React },
+    { category, name, description, contents, price },
     { dispatch, getState, extra }
   ) => {
     const { me } = getState();
-    const { library, chainId, account } = web3React;
 
-    // web3 PublishToken
-    if (!(chainId && account && library)) return;
-    const marketAddress =
-      (MarketContract.networks as any)[String(chainId)] || '';
-    const stickerAddress =
-      (StickerContract.networks as any)[String(chainId)] || '';
-    const marketContract = new library.eth.Contract(
-      MarketContract.abi as any,
-      marketAddress
-    ) as unknown as LiberMarketInstance;
-    const stickerContract = new library.eth.Contract(
-      StickerContract.abi as any,
-      stickerAddress
-    ) as unknown as LiberStickerInstance;
-    if (!(marketContract && stickerContract)) return;
-    const publishedTokenId = (
-      (await stickerContract.methods.publishNewSticker()).logs as {
-        event: string;
-        args: { tokenId: number };
-      }[]
-    )
-      .filter((log) => log.event === 'PublishToken')
-      .reduce((accm, log) => {
-        console.log('publish token event log', log);
-        if ('tokenId' in log.args) {
-          return log.args.tokenId.toString();
-        }
-        return accm;
-      }, '');
-    const listedTokenId = (
-      (
-        await marketContract.methods.listToken(
-          stickerAddress,
-          publishedTokenId,
-          price,
-          true
-        )
-      ).logs as {
-        event: string;
-        args: { itemId: number };
-      }[]
-    )
-      .filter((log) => log.event === 'ListItem')
-      .reduce((accm, log) => {
-        console.log('list token event log', log);
-        if ('itemId' in log.args) {
-          return log.args.itemId.toString();
-        }
-        return accm;
-      }, '');
+    const id = uuidv4();
 
-    const stickerKeyValue = await extra.db.sticker.create(listedTokenId);
+    const stickerKeyValue = await extra.db.sticker.create(id);
 
     const sticker: Sticker = {
-      id: listedTokenId,
+      id,
       category,
       uid: me.id,
       name,
@@ -134,7 +76,7 @@ export const createNewSticker = createAsyncThunk<
     }
 
     const stickerPK = {
-      stickerId: listedTokenId,
+      stickerId: id,
       address: stickerKeyValue.address.root,
     };
     const newUser: User = {
