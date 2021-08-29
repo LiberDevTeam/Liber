@@ -21,8 +21,8 @@ const Root = styled.div`
 
 const Body = styled.div`
   display: grid;
-  grid-auto-flow: column;
-  gap: ${(props) => props.theme.space[2]}px;
+  grid-auto-flow: row;
+  gap: ${(props) => props.theme.space[1]}px;
   color: ${(props) => props.theme.colors.secondaryText};
   overflow-wrap: break-word;
   justify-self: end;
@@ -30,6 +30,8 @@ const Body = styled.div`
 
 const UserName = styled.span`
   color: ${(props) => props.theme.colors.primaryText};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
+  margin-right: ${(props) => props.theme.space[1]}px;
 `;
 
 const StyledReactions = styled(Reactions)``;
@@ -54,8 +56,10 @@ export const SystemMessageView: React.FC<MessageViewProps> = ({
       return (
         <Root>
           <Body>
-            <UserName>{message.id}</UserName>
-            <span>is joined this place!</span>
+            <div>
+              <UserName>{message.id}</UserName>
+              <span>is joined this place!</span>
+            </div>
             <MessageTimestamp timestamp={message.timestamp} />
           </Body>
           <StyledReactions

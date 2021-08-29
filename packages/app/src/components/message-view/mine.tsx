@@ -50,7 +50,9 @@ const Attachments = styled.div`
   justify-content: flex-end;
 `;
 
-const StyledReactions = styled(Reactions)``;
+const StyledReactions = styled(Reactions)`
+  justify-self: flex-end;
+`;
 
 export const MyMessageView: React.FC<MessageViewProps> = ({
   id,
@@ -95,15 +97,15 @@ export const MyMessageView: React.FC<MessageViewProps> = ({
           ))}
         </Attachments>
       ) : null}
+      {hasTextContent ? null : (
+        <StyledTimestamp timestamp={message.timestamp} />
+      )}
       <StyledReactions
         id={message.id}
         myId={me.id}
         onClick={onReactionClick}
         reactions={reactions}
       />
-      {hasTextContent ? null : (
-        <StyledTimestamp timestamp={message.timestamp} />
-      )}
     </Root>
   );
 };
