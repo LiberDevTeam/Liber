@@ -60,7 +60,6 @@ const Body = styled.div`
 
 const Attachment = styled(IpfsContent)`
   max-height: 100px;
-  width: auto;
 `;
 
 const Attachments = styled.div`
