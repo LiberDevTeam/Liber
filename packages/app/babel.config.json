@@ -8,5 +8,6 @@
         "outputPath": "./public/locales/{{locale}}/{{ns}}.json"
       }
     ]
-  ]
+  ],
+  "sourceType": "module"
 }
