@@ -192,7 +192,7 @@ export const BotEditPage: React.FC = React.memo(function BotEditPage() {
             name,
             description,
             readme,
-            price,
+            price: 0,
             sourceCode,
             examples,
           })
@@ -305,22 +305,6 @@ export const BotEditPage: React.FC = React.memo(function BotEditPage() {
               maxLength={200}
               errorMessage={formik.errors.description}
             />
-          </Section>
-
-          <Section>
-            <Subtitle>Price</Subtitle>
-            <PriceInner>
-              <Input
-                type="number"
-                name="price"
-                placeholder="999999"
-                value={formik.values.price}
-                onChange={formik.handleChange}
-                disabled={formik.isSubmitting}
-                errorMessage={formik.errors.price}
-              />
-              <Term>ETH</Term>
-            </PriceInner>
           </Section>
 
           <Section>

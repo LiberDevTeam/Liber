@@ -60,7 +60,7 @@ export const StickerListItem: React.FC<StickerListItemProps> = React.memo(
           <RightGroup>
             <Name>{sticker.name}</Name>
             <Description>{sticker.description}</Description>
-            <Price>{sticker.price} ETH</Price>
+            <Price>0 ETH</Price>
           </RightGroup>
         </StyledLink>
       </ListItem>

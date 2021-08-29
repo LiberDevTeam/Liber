@@ -133,7 +133,7 @@ export const StickerDetailPage: React.FC = memo(function StickerDetailPage() {
             )}
           </StickerCategory>
           <Stock>Stock: Unlimited</Stock>
-          <Price>Price: {sticker.price} ETH</Price>
+          <Price>Price: 0 ETH</Price>
         </Group>
       </HeaderContent>
 
