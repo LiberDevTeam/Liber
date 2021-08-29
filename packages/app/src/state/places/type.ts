@@ -57,13 +57,17 @@ export interface Mention {
   bot: boolean;
 }
 
+export interface URLText {
+  value: string;
+}
+
 export interface StickerItem {
   id: string;
   cid: string;
   address: string;
 }
 
-export type MessageContent = Array<string | Mention>;
+export type MessageContent = Array<string | Mention | URLText>;
 
 export interface NormalMessage {
   id: string; // UUID

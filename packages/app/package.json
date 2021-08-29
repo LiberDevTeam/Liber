@@ -65,6 +65,7 @@
     "ipfs": "^0.58.1",
     "ipfs-core": "^0.9.1",
     "ipfs-http-response": "^0.7.0",
+    "is-absolute-url": "^4.0.1",
     "it-to-stream": "^1.0.0",
     "jest": "27.0.6",
     "jest-circus": "27.0.6",
