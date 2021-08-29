@@ -21,10 +21,12 @@ export const createMessageFeed = async ({
   hash,
 }: {
   placeId: string;
-  hash?: string;
+  hash: string | null;
 }): Promise<FeedStore<Message>> => {
   const dbAddress = `${placeId}${hash ? `-${hash}` : ''}/messages`;
-  const db = await (await getOrbitDB()).feed<Message>(dbAddress, {
+  const db = await (
+    await getOrbitDB()
+  ).feed<Message>(dbAddress, {
     accessController: { write: ['*'] },
   });
   messageFeeds[placeId] = db;
@@ -47,7 +49,9 @@ export const connectMessageFeed = async ({
   }
 
   const dbAddress = getMessagesAddress({ address, placeId, hash });
-  const db = await (await getOrbitDB()).feed<Message>(dbAddress, {
+  const db = await (
+    await getOrbitDB()
+  ).feed<Message>(dbAddress, {
     overwrite: true,
   });
 

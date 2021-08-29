@@ -33,7 +33,7 @@ export interface Place extends PartialForUpdate {
   timestamp: number; // the timestamp any user in the place acted at
   messageIds: string[];
   unreadMessages: string[];
-  hash?: string;
+  hash: string | null;
   permissions: PlacePermissions;
   // orbit db id
   feedAddress: string;
@@ -43,7 +43,7 @@ export interface Place extends PartialForUpdate {
   bots: string[];
 
   readOnly: boolean;
-  swarmKey?: string;
+  swarmKey: string | null;
   passwordRequired: boolean;
 
   reactions: ReactionMap;
