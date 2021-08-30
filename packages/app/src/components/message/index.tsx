@@ -4,6 +4,7 @@ import { IpfsContent } from '~/components/ipfs-content';
 import { UserMention } from '~/components/user-mention';
 import { BotMention } from '~/components/user-mention/bot';
 import { MessageContent, StickerItem } from '~/state/places/type';
+import { isURLText } from '~/state/places/utils';
 import { MessageTimestamp } from '../message-timestamp';
 
 const Text = styled.div<{ mine: boolean }>`
@@ -20,6 +21,10 @@ const Text = styled.div<{ mine: boolean }>`
   flex-direction: column;
   background: ${(props) =>
     props.mine ? props.theme.colors.bgGray : props.theme.colors.bgBlue};
+`;
+
+const Link = styled.a`
+  color: ${(props) => props.theme.colors.darkPrimary};
 `;
 
 const StickerView = styled(IpfsContent)`
@@ -47,22 +52,34 @@ export const Message: React.FC<Props> = React.memo(function Message({
     <Text mine={mine} className={className}>
       {sticker && <StickerView cid={sticker.cid} />}
       <div>
-        {contents.map((value) => {
-          if (typeof value === 'string') {
-            return value;
+        {contents.map((content) => {
+          if (typeof content === 'string') {
+            return content;
           }
 
-          return value.bot ? (
+          if (isURLText(content)) {
+            return (
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={content.value}
+              >
+                {content.value}
+              </Link>
+            );
+          }
+
+          return content.bot ? (
             <BotMention
-              key={value.userId}
-              userId={value.userId}
-              name={value.name}
+              key={content.userId}
+              userId={content.userId}
+              name={content.name}
             />
           ) : (
             <UserMention
-              key={value.userId}
-              userId={value.userId}
-              name={value.name}
+              key={content.userId}
+              userId={content.userId}
+              name={content.name}
             />
           );
         })}

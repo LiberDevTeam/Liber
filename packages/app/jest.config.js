@@ -12,10 +12,7 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|json)$)':
       '<rootDir>/jest/fileTransform.js',
   },
-  transformIgnorePatterns: [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
+  transformIgnorePatterns: ['^.+\\.module\\.(css|sass|scss)$'],
   modulePaths: [],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',

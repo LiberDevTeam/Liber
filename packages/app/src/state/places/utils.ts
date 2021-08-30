@@ -1,24 +1,44 @@
+import isAbsoluteUrl from 'is-absolute-url';
 import { Bot } from '~/state/bots/types';
 import {
   Mention,
   Message,
+  MessageContent,
   NormalMessage,
   Place,
   PlaceField,
   SystemMessage,
+  URLText,
 } from '~/state/places/type';
 import { User } from '~/state/users/type';
 
+export function isURLText(
+  content: string | Mention | URLText
+): content is URLText {
+  if (typeof content === 'string') {
+    return false;
+  }
+
+  if ('value' in content) {
+    return true;
+  }
+
+  return false;
+}
+
 export function resolveBotFromContent(
-  content: Array<string | Mention>,
+  content: MessageContent,
   bots: Bot[]
 ): Bot[] {
   return (
-    content.filter((value) => {
-      if (typeof value === 'string' || value.bot === false) {
+    content.filter((c) => {
+      if (typeof c === 'string') {
         return false;
       }
-      return true;
+      if (isURLText(c)) {
+        return false;
+      }
+      return c.bot;
     }) as Mention[]
   ).map((mention) => {
     return bots.find((bot) => bot.id === mention.userId);
@@ -45,7 +65,7 @@ export function isBot(target: Bot | User): target is Bot {
   return 'sourceCode' in target;
 }
 
-const messageContentRegex = /@(\S*)/gm;
+const mentionRegex = /^@/;
 export const parseText = ({
   text,
   users,
@@ -54,31 +74,32 @@ export const parseText = ({
   text: string;
   users: User[];
   bots: Bot[];
-}): Array<string | Mention> => {
-  const matches = [...text.matchAll(messageContentRegex)];
-  let pos = 0;
-  const result: Array<string | Mention> = [];
-
+}): MessageContent => {
+  const result: MessageContent = [];
   const mentionTarget: Array<Bot | User> = [...bots, ...users];
-
-  matches.forEach((match) => {
-    const nextPos = (match.index as number) + match[0].length;
-
-    // TODO: Use id for matching
-    const target = mentionTarget.find((user) => user.name === match[1]);
-    if (target) {
-      // Prevent adding empty string
-      if (pos !== match.index) {
-        result.push(text.slice(pos, match.index));
+  const words = text.split(' ');
+  words.forEach((word) => {
+    if (mentionRegex.test(word)) {
+      const username = word.slice(1);
+      const target = mentionTarget.find((user) => user.name === username);
+      if (target && target?.id) {
+        result.push({ userId: target.id, name: username, bot: isBot(target) });
+        return;
       }
-      result.push({ userId: target?.id, name: match[1], bot: isBot(target) });
-      pos = nextPos;
     }
-  });
 
-  if (pos !== text.length) {
-    result.push(text.slice(pos, text.length));
-  }
+    if (isAbsoluteUrl(word)) {
+      result.push({ value: word });
+      return;
+    }
+
+    if (result.length > 0 && typeof result[result.length - 1] === 'string') {
+      result[result.length - 1] = `${result[result.length - 1]} ${word}`;
+      return;
+    }
+
+    result.push(word);
+  });
 
   return result;
 };

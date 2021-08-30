@@ -67,7 +67,7 @@ test('parseText', () => {
       bots: [dummyBot],
       users: [],
     })
-  ).toEqual([{ bot: true, name: dummyBot.name, userId: dummyBot.id }, ' test']);
+  ).toEqual([{ bot: true, name: dummyBot.name, userId: dummyBot.id }, 'test']);
   expect(
     parseText({
       text: `@${dummyBot.name}`,
@@ -81,5 +81,16 @@ test('parseText', () => {
       bots: [],
       users: [dummyUser('user', 'user')],
     })
-  ).toEqual([{ bot: false, name: 'user', userId: 'user' }, ' test']);
+  ).toEqual([{ bot: false, name: 'user', userId: 'user' }, 'test']);
+  expect(
+    parseText({
+      text: '@user https://google.com test',
+      bots: [],
+      users: [dummyUser('user', 'user')],
+    })
+  ).toEqual([
+    { bot: false, name: 'user', userId: 'user' },
+    { value: 'https://google.com' },
+    'test',
+  ]);
 });
