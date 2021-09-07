@@ -69,6 +69,8 @@ export interface FormValues {
   text: string;
 }
 
+const RENDER_CHUNK_SIZE = 10;
+
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const { placeId, address } = useParams<{
     placeId: string;
@@ -78,6 +80,8 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
   const userIds = arrayUniq(messages.filter(isNormalMessage).map((m) => m.uid));
+  const [renderItemCount, setRenderItemCount] = useState(RENDER_CHUNK_SIZE);
+  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
 
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -127,6 +131,24 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
     }
   }, [dispatch, place?.unreadMessages, placeId]);
 
+  const handleLoadingMessages = useCallback(
+    ({ isIntersecting }) => {
+      if (isIntersecting && messages.length > 0) {
+        setIsLoadingMoreMessages(true);
+      }
+    },
+    [messages.length]
+  );
+
+  useEffect(() => {
+    if (isLoadingMoreMessages) {
+      setIsLoadingMoreMessages(false);
+      setRenderItemCount(
+        Math.min(renderItemCount + RENDER_CHUNK_SIZE, messages.length)
+      );
+    }
+  }, [isLoadingMoreMessages, renderItemCount, messages.length]);
+
   if (!place) {
     return <LoadingPage text="Connecting to place..." />;
   }
@@ -165,7 +187,16 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
           )}
 
           <Messages>
-            {messages.map((m) => (
+            {isLoadingMoreMessages === false &&
+            renderItemCount < messages.length ? (
+              <Observer
+                onChange={handleLoadingMessages}
+                rootMargin="0px 0px -50px 0px"
+              >
+                <div />
+              </Observer>
+            ) : null}
+            {messages.slice(messages.length - renderItemCount).map((m) => (
               <MessageView id={m.id} key={m.id} placeId={place.id} />
             ))}
             <Observer onChange={handleIntersection}>
