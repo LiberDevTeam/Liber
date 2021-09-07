@@ -153,7 +153,6 @@ export const createNewPlace = createAsyncThunk<
     place.hash = null;
     const explorePlaceDB = await extra.db.explorePlace.connect();
     const keystore = explorePlaceDB.identity.provider.keystore;
-    console.log(place);
     await explorePlaceDB.put(
       `/${explorePlaceDB.identity.publicKey}/${place.keyValAddress}/${place.id}`,
       {
