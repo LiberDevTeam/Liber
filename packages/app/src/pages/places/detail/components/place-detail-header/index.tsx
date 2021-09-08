@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { BackLink } from '~/components/back-link';
 import { CloseButton } from '~/components/close-button';
 import { Dropdown, Menu, MenuButton, MenuLink } from '~/components/dropdown';
@@ -14,11 +14,25 @@ import { SvgMoreVertical as MenuIcon } from '~/icons/MoreVertical';
 import { SvgPeople as PeopleIcon } from '~/icons/People';
 import { SvgPersonAdd as InviteIcon } from '~/icons/PersonAdd';
 
-const Root = styled.header`
+const hideHeader = css`
+  transition-timing-function: ease;
+  transition: transform 0.6s;
+  transform: translate(0, -86px);
+`;
+
+const showHeader = css`
+  transition-timing-function: ease;
+  transition: transform 0.3s;
+  transform: translate(0, 0);
+`;
+
+const Root = styled.header<{ hide: boolean }>`
   z-index: ${(props) => props.theme.zIndex.front};
   position: fixed;
   width: 100%;
   top: 0;
+
+  ${(props) => (props.hide ? hideHeader : showHeader)};
 `;
 
 const Container = styled.div`
@@ -129,9 +143,29 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     const [openInfo, setOpenInfo] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
     const { t } = useTranslation('chat');
+    const [goingUp, setGoingUp] = useState(false);
+
+    useEffect(() => {
+      let previousY = 9999;
+      const updateNav = () => {
+        setGoingUp(window.pageYOffset > 1 && window.pageYOffset > previousY);
+        previousY = window.pageYOffset;
+      };
+
+      document.addEventListener('scroll', updateNav, {
+        capture: true,
+        passive: true,
+      });
+
+      return () =>
+        document.removeEventListener('scroll', updateNav, {
+          capture: true,
+          passive: true,
+        } as any);
+    }, []);
 
     return (
-      <Root>
+      <Root hide={goingUp}>
         <Container>
           <BackLink backTo="/places" />
           <Avatar cid={avatarCid} fallbackComponent={<AvatarPlaceholder />} />
