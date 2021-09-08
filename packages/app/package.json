@@ -98,7 +98,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.3",
     "react-tabs": "3.2.2",
-    "react-virtualized-auto-sizer": "1.0.5",
+    "react-virtualized-auto-sizer": "1.0.6",
     "react-window": "1.8.6",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.3.0",
