@@ -20500,23 +20500,7 @@ libp2p-floodsub@^0.27.0:
     time-cache "^0.3.0"
     uint8arrays "^2.1.5"
 
-libp2p-gossipsub@0.11.0, libp2p-gossipsub@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.11.0.tgz#160c5a6bf63eb66d07a389a6a0cfb193440511a0"
-  integrity sha512-UY/c7bGLq+qjJih3Z4Q4N0qLn4pzYTiRZfWQd++19t+5Xmw4gFI7Z6iqs0jIcguHDIUilPnVhu8rDIGhvQAj1g==
-  dependencies:
-    "@types/debug" "^4.1.5"
-    debug "^4.3.1"
-    denque "^1.5.0"
-    err-code "^3.0.1"
-    it-pipe "^1.1.0"
-    libp2p-interfaces "^1.0.1"
-    peer-id "^0.15.0"
-    protobufjs "^6.11.2"
-    time-cache "^0.3.0"
-    uint8arrays "^2.1.5"
-
-libp2p-gossipsub@^0.11.1:
+libp2p-gossipsub@0.11.3, libp2p-gossipsub@^0.11.1:
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.11.3.tgz#353f81c6c7cbf2b7da98524151ec246b8f2f5497"
   integrity sha512-5Ol2OGYEcRb1wAv7QVhNVxSywLj8a+wB+bQayyS3zLfuQyB5dL3tJk7iubvk+ucG/pUzI0xjnunJabst2l4e1Q==
@@ -20531,6 +20515,22 @@ libp2p-gossipsub@^0.11.1:
     protobufjs "^6.11.2"
     time-cache "^0.3.0"
     uint8arrays "^3.0.0"
+
+libp2p-gossipsub@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.11.0.tgz#160c5a6bf63eb66d07a389a6a0cfb193440511a0"
+  integrity sha512-UY/c7bGLq+qjJih3Z4Q4N0qLn4pzYTiRZfWQd++19t+5Xmw4gFI7Z6iqs0jIcguHDIUilPnVhu8rDIGhvQAj1g==
+  dependencies:
+    "@types/debug" "^4.1.5"
+    debug "^4.3.1"
+    denque "^1.5.0"
+    err-code "^3.0.1"
+    it-pipe "^1.1.0"
+    libp2p-interfaces "^1.0.1"
+    peer-id "^0.15.0"
+    protobufjs "^6.11.2"
+    time-cache "^0.3.0"
+    uint8arrays "^2.1.5"
 
 libp2p-interfaces@^1.0.0, libp2p-interfaces@^1.0.1:
   version "1.0.1"
