@@ -25952,10 +25952,10 @@ prettier-bytes@1.0.4:
   resolved "https://registry.yarnpkg.com/prettier-bytes/-/prettier-bytes-1.0.4.tgz#994b02aa46f699c50b6257b5faaa7fe2557e62d6"
   integrity sha1-mUsCqkb2mcULYle1+qp/4lV+YtY=
 
-prettier-plugin-organize-imports@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-2.2.0.tgz#dcdd5222416a90bd819734f131fea4a22b1c613a"
-  integrity sha512-2WM3moc/cAPCCsSneYhaL4+mMws0Bypbxz+98wuRyaA7GMokhOECVkQCG7l2hcH+9/4d5NsgZs9yktfwDy4r7A==
+prettier-plugin-organize-imports@2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-2.3.3.tgz#6877bcf8ca02569198d8f419c954a0d90a95de15"
+  integrity sha512-PBOwQ8vEIB2b7B3gCuBG7D+dqsr1fsTR4TSAjNacRVdHJrD0yzgz9grOLPSyfwJm+NUTZLyWeHoZ+1mHaUrk+g==
 
 prettier-plugin-solidity@^1.0.0-alpha.59:
   version "1.0.0-beta.17"
