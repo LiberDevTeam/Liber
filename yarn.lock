@@ -32679,7 +32679,7 @@ web3-utils@1.5.2, web3-utils@^1.0.0-beta.31:
     randombytes "^2.1.0"
     utf8 "3.0.0"
 
-web3@*, web3@1.5.0:
+web3@*:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.5.0.tgz#2c1d8c910ce9c8c33ca4e5a130c02eda9c0f82bf"
   integrity sha512-p6mOU+t11tV5Z0W9ISO2ReZlbB1ICp755ogl3OXOWZ+/oWy12wwnIva+z+ypsZc3P8gaoGaTvEwSfXM9NF164w==

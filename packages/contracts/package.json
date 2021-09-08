@@ -8,7 +8,7 @@
     "@typechain/truffle-v5": "5.0.0",
     "@types/web3": "1.2.2",
     "dotenv": "10.0.0",
-    "web3": "1.5.0"
+    "web3": "1.5.2"
   },
   "exports": {
     "./build/contracts/*": "./build/contracts/*"
