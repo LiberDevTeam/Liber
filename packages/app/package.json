@@ -52,7 +52,7 @@
     "emoji-mart": "3.0.1",
     "end-of-stream": "1.4.4",
     "file-loader": "6.2.0",
-    "file-type": "16.5.1",
+    "file-type": "16.5.3",
     "formik": "2.2.9",
     "fs-extra": "10.0.0",
     "ganache-cli": "6.12.2",
