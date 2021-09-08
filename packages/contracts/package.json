@@ -5,7 +5,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "4.3.1",
     "@truffle/hdwallet-provider": "1.5.0",
-    "@typechain/truffle-v5": "5.0.0",
+    "@typechain/truffle-v5": "5.1.0",
     "@types/web3": "1.2.2",
     "dotenv": "10.0.0",
     "web3": "1.5.2"
