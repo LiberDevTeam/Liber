@@ -77,7 +77,7 @@
     "libp2p-webrtc-star": "0.23.0",
     "libp2p-websockets": "0.16.1",
     "mini-css-extract-plugin": "2.2.2",
-    "minisearch": "3.0.4",
+    "minisearch": "3.1.0",
     "orbit-db-feedstore": "1.12.0",
     "orbit-db-kvstore": "1.12.0",
     "os-browserify": "0.3.0",
