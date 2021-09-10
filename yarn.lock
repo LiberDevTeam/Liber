@@ -10449,10 +10449,10 @@ catering@^2.0.0:
   resolved "https://registry.yarnpkg.com/catering/-/catering-2.0.0.tgz#15ce31bcbffafbf62855ea7677b0e5d23581233d"
   integrity sha512-aD/WmxhGwUGsVPrj8C80vH7C7GphJilYVSdudoV4u16XdrLF7CVyfBmENsc4tLTVsJJzCRid8GbwJ7mcPLee6Q==
 
-cbor-web@7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-7.0.6.tgz#6e23a0c58db4c38e485e395de511b9e2f628961c"
-  integrity sha512-A6ZH12jcDJG9PS7StugO78G+ok23SAjxMugGInPBy4IItiH6hYzybi6HQkGjWw9jBEGQpIBkleB2mizxYZIpLw==
+cbor-web@8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-8.0.1.tgz#0c2723d4b484e1dd1aa79de618f955c07c25fefd"
+  integrity sha512-9+HxS+B0VaIYMbBZ7g9WFlC0CbGObiMI+w6De0oZsWLh/m0iAjz0FFuByJeDgvUTJxe8JvesWSuGCwbd9vzFjg==
 
 cbor@^5.1.0:
   version "5.2.0"
