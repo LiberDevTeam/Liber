@@ -31,7 +31,7 @@ export interface FeedsState {
   items: FeedItem[];
 }
 
-export const limit = 5;
+export const limit = 10;
 
 export const fetchFeedItems = createAsyncThunk<
   FeedItem[],

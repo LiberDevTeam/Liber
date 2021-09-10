@@ -33,7 +33,7 @@ export const FeedItemMessageDefault: React.FC<FeedItemMessageDefaultProps> =
     }, [dispatch, message.uid]);
 
     if (!author) {
-      return <div>loading...</div>;
+      return <div style={{ height: 70 }}>loading...</div>;
     }
 
     return (

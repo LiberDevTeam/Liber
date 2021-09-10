@@ -29,7 +29,7 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
-    "*.{js|ts|tsx}": "yarn lint:js --cache --fix",
+    "*.{js|ts|tsx}": "yarn eslint --cache --fix",
     "*.{js,ts,tsx,css,scss,sass,md}": "prettier --write",
     "*.{sol}": "solhint --fix"
   },
