@@ -15030,11 +15030,6 @@ filesize@6.1.0:
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.1.0.tgz#e81bdaa780e2451d714d71c0d7a4f3238d37ad00"
   integrity sha512-LpCHtPQ3sFx67z+uh2HnSyWSLLu5Jxo21795uRDuar/EOuYWXib5EmPaGIBuSnRqH2IODiKA2k5re/K9OnN/Yg==
 
-filesize@^6.1.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.4.0.tgz#914f50471dd66fdca3cefe628bd0cde4ef769bcd"
-  integrity sha512-mjFIpOHC4jbfcTfoh4rkWpI31mF7viw9ikj/JyLoKzqlwG/YsefKfvYlYhdYdg/9mtK2z1AzgN/0LvVQ3zdlSQ==
-
 filesize@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-8.0.0.tgz#532db71cb8a04df7d403da054a28de1b648534e0"
@@ -17539,23 +17534,7 @@ ipfs-http-gateway@^0.6.3:
     uint8arrays "^3.0.0"
     uri-to-multiaddr "^6.0.0"
 
-ipfs-http-response@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-0.7.0.tgz#9b54792eb51c70809fa7a86a5c5ae67533d3710e"
-  integrity sha512-X9KRQohTCb48aqu5nF9MYz8Z43HsnF2at2J/Lo5PcetAH2rzY/KUz6vAHDWPmL/SWqoCMI1oesaTs6hd9e7lgQ==
-  dependencies:
-    debug "^4.3.1"
-    file-type "^16.0.0"
-    filesize "^6.1.0"
-    it-buffer "^0.1.1"
-    it-concat "^2.0.0"
-    it-reader "^3.0.0"
-    it-to-stream "^1.0.0"
-    mime-types "^2.1.30"
-    multiformats "^9.2.0"
-    p-try-each "^1.0.1"
-
-ipfs-http-response@^1.0.1:
+ipfs-http-response@1.0.1, ipfs-http-response@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-1.0.1.tgz#0f709917c69dc527ff7c75d025d54f9ee010ef3f"
   integrity sha512-rRKcN84uRSNd+Sr+yHrGL1xcBTCP0ovqrChw6b2b72Jp1JrbqgPd2fZEFs33TNbcl5Um5tnDG+AkKB/hkcxfWw==

@@ -64,7 +64,7 @@
     "immer": "9.0.6",
     "ipfs": "0.58.4",
     "ipfs-core": "0.10.6",
-    "ipfs-http-response": "0.7.0",
+    "ipfs-http-response": "1.0.1",
     "is-absolute-url": "4.0.1",
     "it-to-stream": "1.0.0",
     "jest": "27.1.0",
