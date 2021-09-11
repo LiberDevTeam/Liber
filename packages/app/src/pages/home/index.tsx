@@ -1,14 +1,14 @@
 import Observer from '@researchgate/react-intersection-observer';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Virtuoso } from 'react-virtuoso';
 import { VariableSizeList } from 'react-window';
 import styled, { css } from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
-import { username } from '~/helpers';
 import { useAppDispatch, useAppSelector } from '~/hooks';
-import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
+import { SvgLogo } from '~/icons/Logo';
 import {
   FeedItem,
   fetchFeedItems,
@@ -22,7 +22,7 @@ import {
   FeedItemPlaceDefault,
 } from './components/feed-item';
 
-const HEADER_HEIGHT = 240;
+const HEADER_HEIGHT = 90;
 
 const hideHeader = css`
   transition-timing-function: ease;
@@ -40,8 +40,9 @@ const Header = styled.header<{ hide: boolean }>`
   position: fixed;
   z-index: ${(props) => props.theme.zIndex.front};
   width: 100%;
-  padding-top: ${(props) => props.theme.space[15]}px;
+  padding-top: ${(props) => props.theme.space[3]}px;
   background-color: ${(props) => props.theme.colors.white};
+  box-shadow: ${(props) => props.theme.shadows[1]};
 
   ${(props) => (props.hide ? hideHeader : showHeader)};
 `;
@@ -49,8 +50,9 @@ const Header = styled.header<{ hide: boolean }>`
 const HeaderTop = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: ${(props) => props.theme.space[10]}px;
-  padding: 0 ${(props) => props.theme.space[5]}px;
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.space[3]}px;
+  padding: 0 ${(props) => props.theme.space[3]}px;
 `;
 
 const Avatar = styled(IpfsContent)`
@@ -62,21 +64,7 @@ const AvatarContainer = styled.div`
   height: 3rem;
   box-shadow: ${(props) => props.theme.shadows[1]};
   border-radius: ${(props) => props.theme.radii.round};
-`;
-
-const Notification = styled.div`
-  width: 3rem;
-  height: 3rem;
-  border-radius: ${(props) => props.theme.radii.round};
-  border: ${(props) => props.theme.border.thin(props.theme.colors.gray)};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BellIconContainer = styled.div`
-  width: ${(props) => props.theme.space[7]}px;
-  height: ${(props) => props.theme.space[7]}px;
+  margin-right: ${(props) => props.theme.space[2]}px;
 `;
 
 const Greeting = styled.div`
@@ -84,19 +72,19 @@ const Greeting = styled.div`
   font-weight: ${(props) => props.theme.fontWeights.light};
   color: ${(props) => props.theme.colors.secondaryText};
   margin-bottom: ${(props) => props.theme.space[3]}px;
-  padding: 0 ${(props) => props.theme.space[5]}px;
+  padding: 0 ${(props) => props.theme.space[3]}px;
 `;
 
 const Username = styled.div`
   font-size: ${(props) => props.theme.fontSizes['4xl']};
   font-weight: ${(props) => props.theme.fontWeights.bold};
-  padding: 0 ${(props) => props.theme.space[5]}px;
+  padding: 0 ${(props) => props.theme.space[3]}px;
   margin-bottom: ${(props) => props.theme.space[3]}px;
 `;
 
 const Feed = styled.div`
   flex: 1;
-  padding: 0 ${(props) => props.theme.space[5]}px;
+  padding: 0 ${(props) => props.theme.space[3]}px;
 `;
 
 const ItemContainer = styled.div`
@@ -104,6 +92,10 @@ const ItemContainer = styled.div`
   border-bottom: ${(props) =>
     props.theme.border.thin(props.theme.colors.gray2)};
   padding: ${(props) => props.theme.space[4]}px 0;
+`;
+
+const Logo = styled(SvgLogo)`
+  height: 40px;
 `;
 
 export const HomePage: React.FC = memo(function HomePage() {
@@ -146,21 +138,17 @@ export const HomePage: React.FC = memo(function HomePage() {
       header={
         <Header hide={hideHeader}>
           <HeaderTop>
+            <Logo />
             <AvatarContainer>
-              {me.avatarCid ? (
-                <Avatar cid={me.avatarCid} />
-              ) : (
-                <DefaultUserAvatarIcon />
-              )}
+              <Link to="/profile">
+                {me.avatarCid ? (
+                  <Avatar cid={me.avatarCid} />
+                ) : (
+                  <DefaultUserAvatarIcon />
+                )}
+              </Link>
             </AvatarContainer>
-            <Notification>
-              <BellIconContainer>
-                <BellOutlineIcon />
-              </BellIconContainer>
-            </Notification>
           </HeaderTop>
-          <Greeting>Hello 😊</Greeting>
-          <Username>{username(me)}</Username>
         </Header>
       }
     >
@@ -172,7 +160,7 @@ export const HomePage: React.FC = memo(function HomePage() {
             Header: function Header() {
               return (
                 <Observer
-                  rootMargin="-100px 0px 0px 0px"
+                  rootMargin="-90px 0px 0px 0px"
                   onChange={({ isIntersecting }) =>
                     setHideHeader(!isIntersecting)
                   }
