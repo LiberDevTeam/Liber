@@ -1,9 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import Observer from '@researchgate/react-intersection-observer';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { ListOnItemsRenderedProps, VariableSizeList } from 'react-window';
-import styled from 'styled-components';
+import { Virtuoso } from 'react-virtuoso';
+import { VariableSizeList } from 'react-window';
+import styled, { css } from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
+import { username } from '~/helpers';
 import { useAppDispatch, useAppSelector } from '~/hooks';
 import { SvgBellOutline as BellOutlineIcon } from '~/icons/BellOutline';
 import { SvgDefaultUserAvatar as DefaultUserAvatarIcon } from '~/icons/DefaultUserAvatar';
@@ -14,15 +16,37 @@ import {
   selectFeed,
 } from '~/state/feed/feedSlice';
 import { selectMe } from '~/state/me/meSlice';
-import { theme } from '~/theme';
-import { username } from '../../helpers';
 import BaseLayout from '../../templates';
 import {
   FeedItemMessageDefault,
   FeedItemPlaceDefault,
 } from './components/feed-item';
 
-const Header = styled.div`
+const HEADER_HEIGHT = 240;
+
+const hideHeader = css`
+  transition-timing-function: ease;
+  transition: transform 0.6s;
+  transform: translate(0, -${HEADER_HEIGHT}px);
+`;
+
+const showHeader = css`
+  transition-timing-function: ease;
+  transition: transform 0.3s;
+  transform: translate(0, 0);
+`;
+
+const Header = styled.header<{ hide: boolean }>`
+  position: fixed;
+  z-index: ${(props) => props.theme.zIndex.front};
+  width: 100%;
+  padding-top: ${(props) => props.theme.space[15]}px;
+  background-color: ${(props) => props.theme.colors.white};
+
+  ${(props) => (props.hide ? hideHeader : showHeader)};
+`;
+
+const HeaderTop = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: ${(props) => props.theme.space[10]}px;
@@ -82,7 +106,6 @@ const ItemContainer = styled.div`
   padding: ${(props) => props.theme.space[4]}px 0;
 `;
 
-let loading = false;
 export const HomePage: React.FC = memo(function HomePage() {
   const dispatch = useAppDispatch();
   const me = useSelector(selectMe);
@@ -90,12 +113,13 @@ export const HomePage: React.FC = memo(function HomePage() {
   const hasNext = useAppSelector((state) => state.feed.hasNext);
   const items = useSelector(selectFeed);
   const itemHeights = useRef<{ [index: number]: number }>({});
+  const [hideHeader, setHideHeader] = useState(false);
 
   useEffect(() => {
     if (items.length === 0) {
       dispatch(fetchFeedItems());
     }
-  }, [dispatch]);
+  }, [dispatch, items.length]);
 
   const handleRenderRow = useCallback(
     (index: number, clientHeight: number) => {
@@ -111,63 +135,59 @@ export const HomePage: React.FC = memo(function HomePage() {
     [listRef]
   );
 
-  const handleItemRendered = async ({
-    visibleStopIndex,
-  }: ListOnItemsRenderedProps) => {
-    if (items.length === visibleStopIndex + 1 && loading === false && hasNext) {
-      loading = true;
-      await dispatch(
-        fetchFeedItems({ hash: items[items.length - 1].feedHash })
-      );
-      loading = false;
+  const handleEnterFooter = useCallback(() => {
+    if (hasNext && items.length > 0) {
+      dispatch(fetchFeedItems({ hash: items[items.length - 1].feedHash }));
     }
-  };
+  }, [hasNext, dispatch, items]);
 
   return (
-    <BaseLayout>
-      <Header>
-        <AvatarContainer>
-          {me.avatarCid ? (
-            <Avatar cid={me.avatarCid} />
-          ) : (
-            <DefaultUserAvatarIcon />
-          )}
-        </AvatarContainer>
-        <Notification>
-          <BellIconContainer>
-            <BellOutlineIcon />
-          </BellIconContainer>
-        </Notification>
-      </Header>
-      <Greeting>Hello 😊</Greeting>
-      <Username>{username(me)}</Username>
-      <Feed>
-        <AutoSizer>
-          {({ height, width }) => (
-            <VariableSizeList
-              height={height}
-              itemCount={items.length}
-              itemSize={(index) => {
-                return (
-                  itemHeights.current[index] + theme.space[8] || theme.space[14]
-                );
-              }}
-              onItemsRendered={handleItemRendered}
-              width={width}
-              ref={listRef}
-            >
-              {({ index, style }) => (
-                <ItemContainer key={items[index].id} style={style}>
-                  <Item
-                    index={index}
-                    item={items[index]}
-                    onRender={handleRenderRow}
-                  />
-                </ItemContainer>
+    <BaseLayout
+      header={
+        <Header hide={hideHeader}>
+          <HeaderTop>
+            <AvatarContainer>
+              {me.avatarCid ? (
+                <Avatar cid={me.avatarCid} />
+              ) : (
+                <DefaultUserAvatarIcon />
               )}
-            </VariableSizeList>
+            </AvatarContainer>
+            <Notification>
+              <BellIconContainer>
+                <BellOutlineIcon />
+              </BellIconContainer>
+            </Notification>
+          </HeaderTop>
+          <Greeting>Hello 😊</Greeting>
+          <Username>{username(me)}</Username>
+        </Header>
+      }
+    >
+      <Feed>
+        <Virtuoso
+          data={items}
+          endReached={handleEnterFooter}
+          components={{
+            Header: function Header() {
+              return (
+                <Observer
+                  rootMargin="-100px 0px 0px 0px"
+                  onChange={({ isIntersecting }) =>
+                    setHideHeader(!isIntersecting)
+                  }
+                >
+                  <div style={{ height: HEADER_HEIGHT }} />
+                </Observer>
+              );
+            },
+          }}
+          itemContent={(index, item) => (
+            <ItemContainer>
+              <Item item={item} onRender={handleRenderRow} index={index} />
+            </ItemContainer>
           )}
-        </AutoSizer>
+        />
       </Feed>
     </BaseLayout>
   );

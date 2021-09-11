@@ -15,13 +15,13 @@ const Root = styled.div`
   flex: 1;
   display: flex;
   flex-flow: column;
-  padding-top: ${(props) => props.theme.space[15]}px;
 `;
 
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
-  padding: 0 ${(props) => props.theme.space[5]}px;
+  padding: ${(props) =>
+    `${props.theme.space[15]}px ${props.theme.space[5]}px 0 ${props.theme.space[5]}px `};
 `;
 
 const Description = styled.div`
@@ -58,6 +58,7 @@ interface Props {
   backTo?: string;
   description?: string;
   headerRightItem?: React.ReactNode;
+  header?: React.ReactNode;
 }
 
 const BaseLayout: React.FC<Props> = ({
@@ -66,18 +67,23 @@ const BaseLayout: React.FC<Props> = ({
   title,
   description,
   headerRightItem,
+  header,
 }) => {
   return (
     <>
       <Root>
-        <Header>
-          <div>
-            {backTo && <BackLink backTo={backTo} />}
-            {title && <PageTitle>{title}</PageTitle>}
-            {description && <Description>{description}</Description>}
-          </div>
-          <div>{headerRightItem}</div>
-        </Header>
+        {header ? (
+          header
+        ) : (
+          <Header>
+            <div>
+              {backTo && <BackLink backTo={backTo} />}
+              {title && <PageTitle>{title}</PageTitle>}
+              {description && <Description>{description}</Description>}
+            </div>
+            <div>{headerRightItem}</div>
+          </Header>
+        )}
         <Main>{children}</Main>
       </Root>
       {!backTo && (
