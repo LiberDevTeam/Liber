@@ -95,7 +95,7 @@ const ItemContainer = styled.div`
 `;
 
 const Logo = styled(SvgLogo)`
-  height: 40px;
+  height: 32px;
 `;
 
 export const HomePage: React.FC = memo(function HomePage() {
