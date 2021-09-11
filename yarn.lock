@@ -27490,7 +27490,7 @@ react-virtualized-auto-sizer@1.0.6:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.6.tgz#66c5b1c9278064c5ef1699ed40a29c11518f97ca"
   integrity sha512-7tQ0BmZqfVF6YYEWcIGuoR3OdYe8I/ZFbNclFlGOC3pMqunkYF/oL30NCjSGl9sMEb17AnzixDz98Kqc3N76HQ==
 
-react-virtuoso@^2.0.4:
+react-virtuoso@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.0.4.tgz#b21df27383d604ce3dcc0fd9106308004e43ed58"
   integrity sha512-IOoeosrQARTKU8EbF2plvEj8/VHOdDpKoRUSid3tjLyqBzt3KKWKc5C9Q+QiUJ796Y2jeSqckp9h3qg3pr0T4A==
