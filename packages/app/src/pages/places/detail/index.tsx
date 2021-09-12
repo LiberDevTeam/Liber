@@ -165,7 +165,6 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
             onInviteClick={() => {
               setOpen(true);
             }}
-            memberCount={23}
             description={place.description}
             onLeave={() => {
               dispatch(removePlace({ placeId: place.id }));

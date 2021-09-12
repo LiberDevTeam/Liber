@@ -72,11 +72,6 @@ const Title = styled.h2`
   font-weight: ${(props) => props.theme.fontWeights.medium};
 `;
 
-const MemberCount = styled.span`
-  color: ${(props) => props.theme.colors.secondaryText};
-  font-size: ${(props) => props.theme.fontSizes.xs};
-`;
-
 const Actions = styled.div`
   position: absolute;
   right: ${(props) => props.theme.space[1]}px;
@@ -121,7 +116,6 @@ export interface PlaceDetailHeaderProps {
   address: string;
   name: string;
   avatarCid: string;
-  memberCount: number;
   description: string;
   onInviteClick: () => void;
   onLeave: () => void;
@@ -134,7 +128,6 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     address,
     name,
     avatarCid,
-    memberCount,
     description,
     onInviteClick,
     onLeave,
@@ -171,7 +164,6 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
           <Avatar cid={avatarCid} fallbackComponent={<AvatarPlaceholder />} />
           <TitleBox>
             <Title>{name}</Title>
-            <MemberCount>{memberCount} Members</MemberCount>
           </TitleBox>
           <Actions>
             <IconButton
@@ -238,7 +230,6 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
               />
               <TitleBox>
                 <Title>{name}</Title>
-                <MemberCount>{memberCount} Members</MemberCount>
               </TitleBox>
             </PlaceInfoHeader>
             <Description>{description}</Description>
