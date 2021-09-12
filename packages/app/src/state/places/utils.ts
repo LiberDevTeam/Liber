@@ -77,7 +77,7 @@ export const parseText = ({
 }): MessageContent => {
   const result: MessageContent = [];
   const mentionTarget: Array<Bot | User> = [...bots, ...users];
-  const words = text.split(' ');
+  const words = text.trim().split(' ');
   words.forEach((word) => {
     if (mentionRegex.test(word)) {
       const username = word.slice(1);
