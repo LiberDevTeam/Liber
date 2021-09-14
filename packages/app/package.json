@@ -50,7 +50,7 @@
     "dotenv": "10.0.0",
     "dotenv-expand": "5.1.0",
     "emoji-mart": "3.0.1",
-    "emoji-regex": "^9.2.2",
+    "emoji-regex": "9.2.2",
     "end-of-stream": "1.4.4",
     "file-loader": "6.2.0",
     "file-type": "16.5.3",
