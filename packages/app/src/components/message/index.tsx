@@ -1,3 +1,4 @@
+import emojiRegexRGI from 'emoji-regex/RGI_Emoji';
 import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
@@ -7,6 +8,8 @@ import { MessageContent, StickerItem } from '~/state/places/type';
 import { isURLText } from '~/state/places/utils';
 import { MessageTimestamp } from '../message-timestamp';
 
+const emojiRegex = emojiRegexRGI();
+
 const Text = styled.div<{ mine: boolean }>`
   padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
   border-radius: ${(props) =>
@@ -15,12 +18,16 @@ const Text = styled.div<{ mine: boolean }>`
       : `0 ${props.theme.space[2]}px ${props.theme.space[2]}px ${props.theme.space[2]}px`};
   font-weight: ${(props) => props.theme.fontWeights.normal};
   font-size: ${(props) => props.theme.fontSizes.md};
-  line-height: ${(props) => props.theme.fontSizes['2xl']};
   color: ${(props) => props.theme.colors.primaryText};
   display: flex;
   flex-direction: column;
   background: ${(props) =>
     props.mine ? props.theme.colors.bgGray : props.theme.colors.bgBlue};
+`;
+
+const DecaMoji = styled.div<{ mine: boolean }>`
+  font-size: ${(props) => props.theme.fontSizes['6xl']};
+  text-align: center;
 `;
 
 const Link = styled.a`
@@ -41,6 +48,20 @@ interface Props {
   sticker?: StickerItem;
 }
 
+function isEmojiOnly(contents: MessageContent): boolean {
+  if (contents.length !== 1) {
+    return false;
+  }
+
+  const content = contents[0];
+
+  return (
+    typeof content === 'string' &&
+    content.match(/./gu)?.length === 1 &&
+    Boolean(content.match(emojiRegex))
+  );
+}
+
 export const Message: React.FC<Props> = React.memo(function Message({
   mine,
   contents,
@@ -48,6 +69,17 @@ export const Message: React.FC<Props> = React.memo(function Message({
   sticker,
   className,
 }) {
+  if (isEmojiOnly(contents)) {
+    return (
+      <Text mine={mine} className={className}>
+        <DecaMoji mine={mine} data-testid="decamoji">
+          {contents[0]}
+        </DecaMoji>
+        <MessageTimestamp timestamp={timestamp} />
+      </Text>
+    );
+  }
+
   return (
     <Text mine={mine} className={className}>
       {sticker && <StickerView cid={sticker.cid} />}
