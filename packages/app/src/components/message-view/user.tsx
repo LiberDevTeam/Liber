@@ -1,10 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { IpfsContent } from '~/components/ipfs-content';
 import { UserAvatar } from '~/components/user-avatar';
 import { useAppSelector } from '~/hooks';
-import { Loading } from '~/icons/loading';
 import { selectMe } from '~/state/me/meSlice';
 import {
   selectMessageById,
@@ -14,6 +12,7 @@ import { NormalMessage } from '~/state/places/type';
 import { setSelectedUser } from '~/state/selected-user';
 import { Message } from '../message';
 import { MessageTimestamp } from '../message-timestamp';
+import { Attachments } from './attachments';
 import { Reactions } from './reactions';
 import { MessageViewProps } from './type';
 
@@ -35,14 +34,6 @@ const AvatarWrapper = styled.div`
   grid-row: 1 / 4;
 `;
 
-const AttachmentLoadingWrapper = styled.div`
-  width: 100px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const UserName = styled.span`
   display: flex;
   color: ${(props) => props.theme.colors.primaryText};
@@ -56,15 +47,6 @@ const UserName = styled.span`
 const Body = styled.div`
   overflow-wrap: break-word;
   justify-self: start;
-`;
-
-const Attachment = styled(IpfsContent)`
-  max-height: 100px;
-`;
-
-const Attachments = styled.div`
-  display: flex;
-  justify-content: flex-start;
 `;
 
 const StyledReactions = styled(Reactions)`
@@ -110,21 +92,7 @@ export const UserMessageView: React.FC<MessageViewProps> = ({
           />
         ) : null}
       </Body>
-      {message.attachmentCidList && message.attachmentCidList.length > 0 ? (
-        <Attachments>
-          {message.attachmentCidList.map((cid) => (
-            <Attachment
-              key={`${id}-${cid}`}
-              cid={cid}
-              fallbackComponent={
-                <AttachmentLoadingWrapper>
-                  <Loading width={56} height={56} />
-                </AttachmentLoadingWrapper>
-              }
-            />
-          ))}
-        </Attachments>
-      ) : null}
+      <Attachments attachments={message.attachmentCidList} />
 
       {hasTextContent ? null : (
         <>

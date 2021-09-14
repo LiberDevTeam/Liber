@@ -14,6 +14,7 @@ interface IpfsContentProps {
   style?: CSSProperties;
   fallbackComponent?: ReactElement;
   onLoad?: () => void;
+  onImageClick?: (cid: string) => void;
 }
 
 const Image = styled.img`
@@ -38,7 +39,14 @@ function resolveVideoType(mimeType: string): string {
 }
 
 export const IpfsContent: React.FC<IpfsContentProps> = memo(
-  function IpfsContent({ className, cid, style, fallbackComponent, onLoad }) {
+  function IpfsContent({
+    className,
+    cid,
+    style,
+    fallbackComponent,
+    onLoad,
+    onImageClick,
+  }) {
     const ref = useRef<HTMLImageElement>(null);
     const [mimeType, setMimeType] = useState<string | null>(null);
     const url = `/view/${cid}`;
@@ -75,6 +83,7 @@ export const IpfsContent: React.FC<IpfsContentProps> = memo(
             style={style}
             ref={ref}
             onLoad={onLoad}
+            onClick={() => onImageClick && onImageClick(cid)}
           />
         );
     }
