@@ -134,7 +134,6 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
     onEditClick,
   }) {
     const [openInfo, setOpenInfo] = useState(false);
-    const [openMenu, setOpenMenu] = useState(false);
     const { t } = useTranslation('chat');
     const [goingUp, setGoingUp] = useState(false);
 
@@ -173,8 +172,8 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
             />
 
             <Dropdown
-              visible={openMenu}
-              onOverlayClick={() => setOpenMenu(false)}
+              trigger={['click']}
+              onVisibleChange={console.log}
               overlay={() => (
                 <Menu>
                   <MenuButton
@@ -215,7 +214,6 @@ export const PlaceDetailHeader: React.FC<PlaceDetailHeaderProps> = React.memo(
               <IconButton
                 icon={<MenuIcon width={24} height={24} />}
                 title="Open menu"
-                onClick={() => setOpenMenu(!openMenu)}
               />
             </Dropdown>
           </Actions>
