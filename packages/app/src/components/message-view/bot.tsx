@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IpfsContent } from '~/components/ipfs-content';
 import { useAppSelector } from '~/hooks';
 import { selectBotById } from '~/state/bots/botsSlice';
 import { Bot } from '~/state/bots/types';
 import { selectMessageById } from '~/state/places/messagesSlice';
 import { NormalMessage } from '~/state/places/type';
 import { Message } from '../message';
+import { Attachments } from './attachments';
 
 const TextGroup = styled.div`
   display: flex;
@@ -34,16 +34,6 @@ const Body = styled.div`
   max-width: 80%;
   overflow-wrap: break-word;
   padding-left: ${(props) => props.theme.space[2]}px;
-`;
-
-const Attachment = styled(IpfsContent)`
-  max-height: 100px;
-`;
-
-const Attachments = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-left: ${(props) => props.theme.space[6]}px;
 `;
 
 export interface BotMessageViewProps {
@@ -81,13 +71,7 @@ export const BotMessageView: React.FC<BotMessageViewProps> = React.memo(
             />
           </Body>
         </TextGroup>
-        {message.attachmentCidList && message.attachmentCidList.length > 0 ? (
-          <Attachments>
-            {message.attachmentCidList.map((cid) => (
-              <Attachment key={`${id}-${cid}`} cid={cid} />
-            ))}
-          </Attachments>
-        ) : null}
+        <Attachments attachments={message.attachmentCidList} />
       </>
     );
   }

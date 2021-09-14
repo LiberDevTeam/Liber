@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 import { useAppSelector } from '~/hooks';
-import { Loading } from '~/icons/loading';
 import { selectMe } from '~/state/me/meSlice';
 import {
   selectMessageById,
@@ -11,6 +10,7 @@ import {
 import { NormalMessage } from '~/state/places/type';
 import { Message } from '../message';
 import { MessageTimestamp } from '../message-timestamp';
+import { Attachments } from './attachments';
 import { Reactions } from './reactions';
 import { MessageViewProps } from './type';
 
@@ -42,11 +42,6 @@ const Body = styled.div`
 
 const Attachment = styled(IpfsContent)`
   max-height: 100px;
-`;
-
-const Attachments = styled.div`
-  display: flex;
-  justify-content: flex-end;
 `;
 
 const StyledReactions = styled(Reactions)`
@@ -81,21 +76,7 @@ export const MyMessageView: React.FC<MessageViewProps> = ({
           />
         ) : null}
       </Body>
-      {message.attachmentCidList && message.attachmentCidList.length > 0 ? (
-        <Attachments>
-          {message.attachmentCidList.map((cid) => (
-            <Attachment
-              key={`${id}-${cid}`}
-              cid={cid}
-              fallbackComponent={
-                <AttachmentLoadingWrapper>
-                  <Loading width={56} height={56} />
-                </AttachmentLoadingWrapper>
-              }
-            />
-          ))}
-        </Attachments>
-      ) : null}
+      <Attachments attachments={message.attachmentCidList} />
       {hasTextContent ? null : (
         <StyledTimestamp timestamp={message.timestamp} />
       )}
