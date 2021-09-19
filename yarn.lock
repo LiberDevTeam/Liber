@@ -27483,10 +27483,10 @@ react-virtualized-auto-sizer@1.0.6:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.6.tgz#66c5b1c9278064c5ef1699ed40a29c11518f97ca"
   integrity sha512-7tQ0BmZqfVF6YYEWcIGuoR3OdYe8I/ZFbNclFlGOC3pMqunkYF/oL30NCjSGl9sMEb17AnzixDz98Kqc3N76HQ==
 
-react-virtuoso@2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.0.5.tgz#efc90c3c22171dba0e8d44056eebc24c8c59283a"
-  integrity sha512-lua8m1WOCTF22bi/upm0ATbUXWKkBjorhng5kZGpUeMVkfieOPEJHxHHcoPOFv6Ff3Sh6gnAIHd2xJkQUmHqAA==
+react-virtuoso@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.1.0.tgz#2e9cae28a4488ca9d17c937a7dddc7d1d5f16d43"
+  integrity sha512-75JkwSsKd4W222g/Xd7xh9tuyUmv01O3ngl5lUYXVC4BAPN834G92/78t78AOdZGT169vbat7nxn/COh+ksQHA==
   dependencies:
     "@virtuoso.dev/react-urx" "^0.2.5"
     "@virtuoso.dev/urx" "^0.2.5"
