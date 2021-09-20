@@ -20993,7 +20993,23 @@ libp2p-floodsub@^0.27.0:
     time-cache "^0.3.0"
     uint8arrays "^2.1.5"
 
-libp2p-gossipsub@0.11.3, libp2p-gossipsub@^0.11.1:
+libp2p-gossipsub@0.11.4:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.11.4.tgz#e655c50282e95ba9788e20e74dd1cd5f09210157"
+  integrity sha512-CqI+VgB2k+rVr+OKRPLj8g7EekMM5PciIOWFnG8R1z38/it5JyvyZCVtXcaMO5EaSPwlRiiXpi4kPmxQdntIUg==
+  dependencies:
+    "@types/debug" "^4.1.5"
+    debug "^4.3.1"
+    denque "^1.5.0"
+    err-code "^3.0.1"
+    it-pipe "^1.1.0"
+    libp2p-interfaces "^1.1.0"
+    peer-id "^0.15.3"
+    protobufjs "^6.11.2"
+    time-cache "^0.3.0"
+    uint8arrays "^3.0.0"
+
+libp2p-gossipsub@^0.11.1:
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.11.3.tgz#353f81c6c7cbf2b7da98524151ec246b8f2f5497"
   integrity sha512-5Ol2OGYEcRb1wAv7QVhNVxSywLj8a+wB+bQayyS3zLfuQyB5dL3tJk7iubvk+ucG/pUzI0xjnunJabst2l4e1Q==
