@@ -73,7 +73,7 @@
     "jest-resolve": "27.2.0",
     "jest-watch-typeahead": "0.6.4",
     "libp2p": "0.32.4",
-    "libp2p-gossipsub": "0.11.3",
+    "libp2p-gossipsub": "0.11.4",
     "libp2p-mplex": "0.10.4",
     "libp2p-webrtc-star": "0.23.0",
     "libp2p-websockets": "0.16.1",
