@@ -13503,6 +13503,11 @@ es6-promisify@^6.1.1:
   resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.1.1.tgz#46837651b7b06bf6fff893d03f29393668d01621"
   integrity sha512-HBL8I3mIki5C1Cc9QjKUenHtnG0A5/xA8Q/AllRcfiwl2CZFXGK7ddBiCoRwAix4i2KxcQfjtIVcrVbB3vbmwg==
 
+es6-promisify@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-7.0.0.tgz#9a710008dd6a4ab75a89e280bad787bfb749927b"
+  integrity sha512-ginqzK3J90Rd4/Yz7qRrqUeIpe3TwSXTPPZtPne7tGBPeAaQiU8qt4fpKApnxHcq1AwtUdHVg5P77x/yrggG8Q==
+
 es6-set@~0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
@@ -21210,21 +21215,22 @@ libp2p-websockets@0.16.1, libp2p-websockets@^0.16.1:
     p-defer "^3.0.0"
     p-timeout "^4.1.0"
 
-libp2p@0.32.4:
-  version "0.32.4"
-  resolved "https://registry.yarnpkg.com/libp2p/-/libp2p-0.32.4.tgz#999f31d8dad7cd51364ae21573dfaf879678970c"
-  integrity sha512-GSImpWJmjFqjXrv9sgJfwaWhMF+J07nNZJknobvgWXXki9W/1a5UsNVyw/1Z2licvsc+aUmCxDgV92lbUvTeSw==
+libp2p@0.32.5:
+  version "0.32.5"
+  resolved "https://registry.yarnpkg.com/libp2p/-/libp2p-0.32.5.tgz#e5ecf4d82d3b90683f4b1ef5e2374b044c85dda1"
+  integrity sha512-G21yQUdq4LaGDvjMi3ySmcx1cESl8ZsTG1BAfjzjx65DsZJKQ5GPZlamcv+Rwppk3OIplWoRnCu6gam/fI//bw==
   dependencies:
     "@motrix/nat-api" "^0.3.1"
     "@vascosantos/moving-average" "^1.1.0"
     abort-controller "^3.0.0"
+    abortable-iterator "^3.0.0"
     aggregate-error "^3.1.0"
     any-signal "^2.1.1"
     bignumber.js "^9.0.1"
     class-is "^1.1.0"
     debug "^4.3.1"
     err-code "^3.0.0"
-    es6-promisify "^6.1.1"
+    es6-promisify "^7.0.0"
     events "^3.3.0"
     hashlru "^2.3.0"
     interface-datastore "^5.1.1"
