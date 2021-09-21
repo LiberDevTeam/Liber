@@ -142,7 +142,7 @@
     "@types/bn.js": "5.1.0",
     "@types/chai": "4.2.22",
     "@types/color-hash": "1.0.1",
-    "@types/emoji-mart": "3.0.5",
+    "@types/emoji-mart": "3.0.6",
     "@types/faker": "5.5.8",
     "@types/gtag.js": "0.0.7",
     "@types/jest": "27.0.2",
