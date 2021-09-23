@@ -18,7 +18,8 @@ import { AppDispatch, RootState, ThunkExtra } from '~/state/store';
 import { digestMessage } from '~/utils/digest-message';
 import { addIpfsContent } from '../p2p/ipfsContentsSlice';
 import { selectMessageById } from './messagesSlice';
-import { Message, PartialForUpdate, Place } from './type';
+import { Message, NormalMessage, PartialForUpdate, Place } from './type';
+import { isNormalMessage } from './utils';
 
 const MODULE_NAME = 'places';
 
@@ -335,6 +336,28 @@ export const selectPlaceMessagesByPlaceId =
     return place.messageIds
       .map((id) => selectMessageById(state.placeMessages, id))
       .filter(Boolean) as Message[];
+  };
+
+export const selectPlaceLastMessageByPlaceId =
+  (placeId: string) =>
+  (state: RootState): NormalMessage | undefined => {
+    const place = selectors.selectById(state.places, placeId);
+
+    if (!place) {
+      return undefined;
+    }
+
+    const messages = place.messageIds
+      .map((id) => selectMessageById(state.placeMessages, id))
+      .filter((message) =>
+        message ? isNormalMessage(message) : false
+      ) as NormalMessage[];
+
+    if (messages.length === 0) {
+      return undefined;
+    }
+
+    return messages[messages.length - 1];
   };
 
 export const { clearUnreadMessages, setHash, removePlace, updateOne } =
