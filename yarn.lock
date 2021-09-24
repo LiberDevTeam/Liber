@@ -17385,6 +17385,15 @@ interface-datastore@^5.2.0:
     nanoid "^3.0.2"
     uint8arrays "^3.0.0"
 
+interface-datastore@^6.0.2:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/interface-datastore/-/interface-datastore-6.0.3.tgz#f42163e4bfaea9e2fcde82e45d4bf2849e1fbbf5"
+  integrity sha512-61eOyzh7zH1ks/56hPudW6pbqsOdoHSYMVjuqlIlZGjyg0svR6DHlCcaeSJfWW8t6dsPl1n7qKBdk8ZqPzXuLA==
+  dependencies:
+    interface-store "^2.0.1"
+    nanoid "^3.0.2"
+    uint8arrays "^3.0.0"
+
 interface-store@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/interface-store/-/interface-store-0.1.1.tgz#c7e115ec16e683911f02428826359ae287d19e16"
@@ -17394,6 +17403,11 @@ interface-store@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/interface-store/-/interface-store-1.0.2.tgz#1ebd6cbbae387039a3a2de0cae665da52474800f"
   integrity sha512-rUBLYsgoWwxuUpnQoSUr+DR/3dH3reVeIu5aOHFZK31lAexmb++kR6ZECNRgrx6WvoaM3Akdo0A7TDrqgCzZaQ==
+
+interface-store@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/interface-store/-/interface-store-2.0.1.tgz#b944573b9d27190bca9be576c97bfde907931dee"
+  integrity sha512-TfjYMdk4RlaGPA0VGk8fVPM+xhFbjiA2mTv1AqhiFh3N+ZEwoJnmDu/EBdKXzl80nyd0pvKui3RTC3zFgHMjTA==
 
 internal-ip@^4.3.0:
   version "4.3.0"
@@ -21313,10 +21327,10 @@ libp2p-websockets@0.16.1, libp2p-websockets@^0.16.1:
     p-defer "^3.0.0"
     p-timeout "^4.1.0"
 
-libp2p@0.32.5:
-  version "0.32.5"
-  resolved "https://registry.yarnpkg.com/libp2p/-/libp2p-0.32.5.tgz#e5ecf4d82d3b90683f4b1ef5e2374b044c85dda1"
-  integrity sha512-G21yQUdq4LaGDvjMi3ySmcx1cESl8ZsTG1BAfjzjx65DsZJKQ5GPZlamcv+Rwppk3OIplWoRnCu6gam/fI//bw==
+libp2p@0.33.0:
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/libp2p/-/libp2p-0.33.0.tgz#d05dd5715bfca7c596a17b2d30f604325bc25108"
+  integrity sha512-ZNcxWJWNBmlLa9STcYbZyS3so/JEpI7kNLjIUIhIdntjJC9z+OMbGiqfPFcaMejMpjb/j+qpsqsiayjG0p9qIA==
   dependencies:
     "@motrix/nat-api" "^0.3.1"
     "@vascosantos/moving-average" "^1.1.0"
@@ -21331,7 +21345,7 @@ libp2p@0.32.5:
     es6-promisify "^7.0.0"
     events "^3.3.0"
     hashlru "^2.3.0"
-    interface-datastore "^5.1.1"
+    interface-datastore "^6.0.2"
     it-all "^1.0.4"
     it-buffer "^0.1.2"
     it-drain "^1.0.3"
