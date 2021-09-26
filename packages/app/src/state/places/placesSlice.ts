@@ -333,9 +333,11 @@ export const selectPlaceMessagesByPlaceId =
       return [];
     }
 
-    return place.messageIds
-      .map((id) => selectMessageById(state.placeMessages, id))
-      .filter(Boolean) as Message[];
+    return (
+      place.messageIds
+        .map((id) => selectMessageById(state.placeMessages, id))
+        .filter(Boolean) as Message[]
+    ).sort((a, b) => a.timestamp - b.timestamp);
   };
 
 export const selectPlaceLastMessageByPlaceId =
