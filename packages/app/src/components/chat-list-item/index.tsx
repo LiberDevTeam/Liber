@@ -6,7 +6,9 @@ import {
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAppSelector } from '~/hooks';
 import { useFnsLocale } from '~/state/hooks/fnsLocale';
+import { selectPlaceLastMessageByPlaceId } from '~/state/places/placesSlice';
 import { Place } from '~/state/places/type';
 
 const activeClassName = 'selected-place';
@@ -78,7 +80,7 @@ const Title = styled.div`
   font-size: ${(props) => props.theme.fontSizes.md};
   font-weight: ${(props) => props.theme.fontWeights.medium};
 `;
-const Description = styled.div`
+const LastMessage = styled.div`
   color: ${(props) => props.theme.colors.primaryText};
   font-size: ${(props) => props.theme.fontSizes.sm};
   font-weight: ${(props) => props.theme.fontWeights.normal};
@@ -140,6 +142,10 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
       ];
     }, [place.timestamp, locale]);
 
+    const lastMessage = useAppSelector(
+      selectPlaceLastMessageByPlaceId(place.id)
+    );
+
     return (
       <Root
         to={`/places/${place.keyValAddress}/${place.id}`}
@@ -151,7 +157,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
         </LeftContainer>
         <CenterContainer>
           <Title>{place.name}</Title>
-          <Description>{place.description}</Description>
+          <LastMessage>{lastMessage?.text}</LastMessage>
         </CenterContainer>
         <RightContainer>
           <Time>{time}</Time>
