@@ -181,13 +181,13 @@ export const messagesSlice = createSlice({
 });
 
 export const selectMessageById = messagesAdapter.getSelectors().selectById;
-export const selectMessageReactionsByMessage = (
-  message: Message | undefined
-) => (state: RootState): Reaction[] => {
-  if (!message) {
-    return [];
-  }
-  return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
-};
+export const selectMessageReactionsByMessage =
+  (message: Message | undefined) =>
+  (state: RootState): Reaction[] => {
+    if (!message) {
+      return [];
+    }
+    return state.places.entities[message.placeId]?.reactions[message.id] ?? [];
+  };
 
 export default messagesSlice.reducer;

@@ -89,15 +89,20 @@ export enum SystemMessageType {
   OTHER,
 }
 
-interface MessageBase {
+export interface MessageBase {
   id: string; // UUID
   timestamp: number;
   placeId: string;
   placeAddress: string;
 }
 
+export interface UserJoinMessage extends MessageBase {
+  type: SystemMessageType.JOIN;
+  uid: string;
+}
+
 export type SystemMessage =
-  | (MessageBase & { type: SystemMessageType.JOIN; uid: string })
+  | UserJoinMessage
   | (MessageBase & { type: SystemMessageType.OTHER });
 
 export interface NormalMessage extends MessageBase {

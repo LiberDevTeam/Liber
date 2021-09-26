@@ -24,6 +24,7 @@ export const sendJoinedMessage = createAsyncThunk<
     type: SystemMessageType.JOIN,
     uid,
     id: uuidv4(),
+    placeId,
     timestamp: getUnixTime(new Date()),
   });
 });
