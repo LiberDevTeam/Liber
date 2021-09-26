@@ -121,10 +121,9 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
 }) {
   const dispatch = useDispatch();
   const { t } = useTranslation('chat');
+  const selectedUserId = useAppSelector((state) => state.selectedUser);
   const user = useAppSelector((state) =>
-    state.selectedUser
-      ? selectUserById(state.users, state.selectedUser)
-      : undefined
+    selectedUserId ? selectUserById(state.users, selectedUserId) : undefined
   );
 
   const handleIdCopy = useCallback(() => {
@@ -156,7 +155,7 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
     [onBan, user, dispatch]
   );
 
-  if (!user) {
+  if (!selectedUserId) {
     return null;
   }
 
@@ -164,10 +163,10 @@ export const UserMenu: React.FC<UserMenuProps> = React.memo(function UserMenu({
     <ReactModal isOpen onRequestClose={handleCloseRequest} style={modalStyle}>
       <Handle />
       <Header>
-        <UserAvatar userId={user.id} size={54} />
+        <UserAvatar userId={selectedUserId} size={54} />
         <div>
-          <UserName>{user.name}</UserName>
-          <UserId>#{user.id.slice(0, 6)}</UserId>
+          <UserName>{user ? user.name : 'Loading'}</UserName>
+          <UserId>#{selectedUserId.slice(0, 6)}</UserId>
         </div>
         <CopyButton
           type="button"

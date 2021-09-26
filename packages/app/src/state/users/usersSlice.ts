@@ -9,7 +9,7 @@ import { User } from './type';
 
 const usersAdapter = createEntityAdapter<User>();
 
-export const fetchUserData = async (
+export const connectUserDB = async (
   userId: string,
   db: AppDB
 ): Promise<User> => {
@@ -23,7 +23,7 @@ export const loadUsers = createAsyncThunk<
   { extra: ThunkExtra }
 >('users/load', async ({ userIds }, { extra }) => {
   return (
-    await Promise.all(userIds.map((userId) => fetchUserData(userId, extra.db)))
+    await Promise.all(userIds.map((userId) => connectUserDB(userId, extra.db)))
   ).filter(Boolean);
 });
 
@@ -32,7 +32,7 @@ export const loadUser = createAsyncThunk<
   { uid: string },
   { extra: ThunkExtra }
 >('users/loadOne', async ({ uid }, { extra }) => {
-  return fetchUserData(uid, extra.db);
+  return connectUserDB(uid, extra.db);
 });
 
 export const usersSlice = createSlice({
