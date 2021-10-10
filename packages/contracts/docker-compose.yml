@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   compiler:
-    image: ethereum/solc:0.8.7
+    image: ethereum/solc:0.8.9
     profiles:
       - runner
   remix:
