@@ -21817,7 +21817,27 @@ libp2p-webrtc-peer@^10.0.1:
     randombytes "^2.0.3"
     readable-stream "^3.4.0"
 
-libp2p-webrtc-star@0.23.0, libp2p-webrtc-star@^0.23.0:
+libp2p-webrtc-star@0.24.0, libp2p-webrtc-star@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.24.0.tgz#e567fe2d9a97e36143466728f031700fc39b0f3f"
+  integrity sha512-DvWflJF6QOsP+jqFQf8Z8cZgb6+dS8WCXFlDbROYEWXRiz2K7Dl3adCt2Z0Nqo/UTE4IVhzEttQY109rPPSTsA==
+  dependencies:
+    abortable-iterator "^3.0.0"
+    class-is "^1.1.0"
+    debug "^4.2.0"
+    err-code "^3.0.1"
+    ipfs-utils "^9.0.1"
+    it-pipe "^1.1.0"
+    libp2p-utils "^0.4.0"
+    libp2p-webrtc-peer "^10.0.1"
+    mafmt "^10.0.0"
+    multiaddr "^10.0.0"
+    p-defer "^3.0.0"
+    peer-id "^0.15.0"
+    socket.io-client "^4.1.2"
+    stream-to-it "^0.2.2"
+
+libp2p-webrtc-star@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.23.0.tgz#4882e5e3e211f266ddf0384ba017a6c983570399"
   integrity sha512-0dLuSFMBQug/Y08kwV6/aOgh2Sn1Nq3GBY6h0o0eQXvVtKFOL+HkbFmcC4jkkaabVvu8JUaYRV2JHlUxJJru9A==
@@ -21843,26 +21863,6 @@ libp2p-webrtc-star@0.23.0, libp2p-webrtc-star@^0.23.0:
     socket.io-client "^4.1.2"
     stream-to-it "^0.2.2"
     streaming-iterables "^6.0.0"
-
-libp2p-webrtc-star@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.24.0.tgz#e567fe2d9a97e36143466728f031700fc39b0f3f"
-  integrity sha512-DvWflJF6QOsP+jqFQf8Z8cZgb6+dS8WCXFlDbROYEWXRiz2K7Dl3adCt2Z0Nqo/UTE4IVhzEttQY109rPPSTsA==
-  dependencies:
-    abortable-iterator "^3.0.0"
-    class-is "^1.1.0"
-    debug "^4.2.0"
-    err-code "^3.0.1"
-    ipfs-utils "^9.0.1"
-    it-pipe "^1.1.0"
-    libp2p-utils "^0.4.0"
-    libp2p-webrtc-peer "^10.0.1"
-    mafmt "^10.0.0"
-    multiaddr "^10.0.0"
-    p-defer "^3.0.0"
-    peer-id "^0.15.0"
-    socket.io-client "^4.1.2"
-    stream-to-it "^0.2.2"
 
 libp2p-websockets@0.16.2, libp2p-websockets@^0.16.2:
   version "0.16.2"
