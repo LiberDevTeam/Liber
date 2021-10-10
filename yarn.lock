@@ -18158,7 +18158,24 @@ ipfs-http-gateway@^0.6.5:
     uint8arrays "^3.0.0"
     uri-to-multiaddr "^6.0.0"
 
-ipfs-http-response@1.0.1, ipfs-http-response@^1.0.1:
+ipfs-http-response@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-1.0.2.tgz#7f8c22676794578a8063c021241e9bbba0d296af"
+  integrity sha512-F10io6gqG3zy/253bQE71SesWCz8hzJ8w9595RZrRsZMbU5p2F45vAJtCjKlcBZIoM3ymvLuJji58hEvLwNXvA==
+  dependencies:
+    debug "^4.3.1"
+    ejs "^3.1.6"
+    file-type "^16.0.0"
+    filesize "^8.0.0"
+    it-buffer "^0.1.1"
+    it-concat "^2.0.0"
+    it-reader "^3.0.0"
+    it-to-stream "^1.0.0"
+    mime-types "^2.1.30"
+    multiformats "^9.4.1"
+    p-try-each "^1.0.1"
+
+ipfs-http-response@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ipfs-http-response/-/ipfs-http-response-1.0.1.tgz#0f709917c69dc527ff7c75d025d54f9ee010ef3f"
   integrity sha512-rRKcN84uRSNd+Sr+yHrGL1xcBTCP0ovqrChw6b2b72Jp1JrbqgPd2fZEFs33TNbcl5Um5tnDG+AkKB/hkcxfWw==
