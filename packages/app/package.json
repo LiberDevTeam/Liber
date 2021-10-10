@@ -71,7 +71,7 @@
     "jest": "27.2.5",
     "jest-circus": "27.2.5",
     "jest-resolve": "27.2.5",
-    "jest-watch-typeahead": "0.6.4",
+    "jest-watch-typeahead": "0.6.5",
     "libp2p": "0.33.0",
     "libp2p-gossipsub": "0.11.4",
     "libp2p-mplex": "0.10.4",
