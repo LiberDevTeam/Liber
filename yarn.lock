@@ -17733,10 +17733,10 @@ ipfs-cli@^0.8.8:
     uint8arrays "^3.0.0"
     yargs "^16.0.3"
 
-ipfs-core-config@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/ipfs-core-config/-/ipfs-core-config-0.1.0.tgz#fc7500fea6117008f8c3a166e06a798c3e73b90c"
-  integrity sha512-qRLKcLOLm7HQ2rDIoaArSGTe3FvvQ6Bx9/p+KlmWnvMvimzazzXgcIko3BGkGxNsH6Sz2mbnaJkUuFLawKrcdg==
+ipfs-core-config@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ipfs-core-config/-/ipfs-core-config-0.1.1.tgz#e933b4633cc9436fa48b233ad89315b7e268f7af"
+  integrity sha512-AF96rTDRhtDm8fR1KNj/9LhWtc8JG8LKr9GvTAi2EReUHcEFp+kigS0sty9lFnBZDKDRFmMWyUcwO2uGiYyazA==
   dependencies:
     "@chainsafe/libp2p-noise" "^4.0.0"
     blockstore-datastore-adapter "^2.0.2"
@@ -17747,7 +17747,7 @@ ipfs-core-config@^0.1.0:
     err-code "^3.0.1"
     hashlru "^2.3.0"
     ipfs-repo "^13.0.4"
-    ipfs-utils "^9.0.1"
+    ipfs-utils "^9.0.2"
     ipns "^0.15.0"
     is-ipfs "^6.0.1"
     it-all "^1.0.4"
@@ -17758,8 +17758,8 @@ ipfs-core-config@^0.1.0:
     libp2p-mdns "^0.17.0"
     libp2p-mplex "^0.10.2"
     libp2p-tcp "^0.17.1"
-    libp2p-webrtc-star "^0.23.0"
-    libp2p-websockets "^0.16.1"
+    libp2p-webrtc-star "^0.24.0"
+    libp2p-websockets "^0.16.2"
     p-queue "^6.6.1"
     uint8arrays "^3.0.0"
 
@@ -17781,10 +17781,10 @@ ipfs-core-types@^0.7.3:
     multiaddr "^10.0.0"
     multiformats "^9.4.1"
 
-ipfs-core-types@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/ipfs-core-types/-/ipfs-core-types-0.8.0.tgz#5399e3d3bbc532e4a124904ad1d28c026609cf4e"
-  integrity sha512-eZppEEOOT01KwvgNT46Npf+wO0b1dF8j+/Gux8CZ2rgqmoXi74CAARgCUeG+e8JEYgoO0i2OzcE40eFs+NjNLA==
+ipfs-core-types@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/ipfs-core-types/-/ipfs-core-types-0.8.1.tgz#381dec9a05612691ee708faee1561666cfd5c482"
+  integrity sha512-9pfHaPGbl8EWeQZTSodN/y+lBQ9vyh6RYvpmw6Ik0ksy5QLj7soEkH4msHO78t5ZMeChpPIYpZS/oo1bOld1cw==
   dependencies:
     interface-datastore "^6.0.2"
     multiaddr "^10.0.0"
@@ -17812,19 +17812,19 @@ ipfs-core-utils@^0.10.5:
     timeout-abort-controller "^1.1.1"
     uint8arrays "^3.0.0"
 
-ipfs-core-utils@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/ipfs-core-utils/-/ipfs-core-utils-0.11.0.tgz#6b3d3b469b7c45f142ef4716746bcb0bbeb3ab23"
-  integrity sha512-6ecUNsjdmdGZSrAgcp/lClenN+FlQZXyh92NyiZAWQjJV7J7MUHMSCqkZIgJBAZGQWzfVVAd4nyUHpXXNpgt8w==
+ipfs-core-utils@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/ipfs-core-utils/-/ipfs-core-utils-0.11.1.tgz#4ac2143f2d89917f0823c9b8104e5ed489383ecb"
+  integrity sha512-SYBTeESuLgjYeDh8meCgttHV/LlES8FbljIDCySp+DpgPxYJA4EyC4GhywBaneQc/X3GWvHEzvW5b7ADluFcAw==
   dependencies:
     any-signal "^2.1.2"
     blob-to-it "^1.0.1"
     browser-readablestream-to-it "^1.0.1"
     debug "^4.1.1"
     err-code "^3.0.1"
-    ipfs-core-types "^0.8.0"
+    ipfs-core-types "^0.8.1"
     ipfs-unixfs "^6.0.3"
-    ipfs-utils "^9.0.1"
+    ipfs-utils "^9.0.2"
     it-all "^1.0.4"
     it-map "^1.0.4"
     it-peekable "^1.0.2"
@@ -17859,10 +17859,10 @@ ipfs-core-utils@^0.6.1:
     timeout-abort-controller "^1.1.1"
     uint8arrays "^1.1.0"
 
-ipfs-core@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/ipfs-core/-/ipfs-core-0.11.0.tgz#421202ca92882f004db723fd0c9ab0b1d105a05b"
-  integrity sha512-URt7K9FXPA1S+AayBJ6LMP/Ch4UatqiCE8VN/WszXkVECEib/KAunyEub+4IkA+WgQBnc3dZgOjWcfFX4hi8tw==
+ipfs-core@0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/ipfs-core/-/ipfs-core-0.11.1.tgz#54f22162c89164b3028115af1e332c47f87c1882"
+  integrity sha512-V9eP1K0Gr3MHqbWzLNQrMoVm4Pi58o0hVWutjbaLxv67sOgQBVY0qcMBs+EdEwsANrVPUktUBfoeykkClh3gwQ==
   dependencies:
     "@chainsafe/libp2p-noise" "^4.0.0"
     "@ipld/car" "^3.1.0"
@@ -17883,15 +17883,15 @@ ipfs-core@0.11.0:
     interface-blockstore "^2.0.2"
     interface-datastore "^6.0.2"
     ipfs-bitswap "^7.0.0"
-    ipfs-core-config "^0.1.0"
-    ipfs-core-types "^0.8.0"
-    ipfs-core-utils "^0.11.0"
-    ipfs-http-client "^53.0.0"
+    ipfs-core-config "^0.1.1"
+    ipfs-core-types "^0.8.1"
+    ipfs-core-utils "^0.11.1"
+    ipfs-http-client "^53.0.1"
     ipfs-repo "^13.0.4"
     ipfs-unixfs "^6.0.3"
     ipfs-unixfs-exporter "^7.0.3"
     ipfs-unixfs-importer "^9.0.3"
-    ipfs-utils "^8.1.4"
+    ipfs-utils "^9.0.2"
     ipns "^0.15.0"
     is-domain-name "^1.0.1"
     is-ipfs "^6.0.1"
@@ -18114,10 +18114,10 @@ ipfs-http-client@^52.0.5:
     stream-to-it "^0.2.2"
     uint8arrays "^3.0.0"
 
-ipfs-http-client@^53.0.0:
-  version "53.0.0"
-  resolved "https://registry.yarnpkg.com/ipfs-http-client/-/ipfs-http-client-53.0.0.tgz#4964beabce9b37556716eb0a4da2438249ff6d9b"
-  integrity sha512-h8NJYTyd+RrrBtYO1+e/+U1YMivbclGdUno4lEE56REqjYDYrw3mDp8hc+cdd4ZDFbcj/EMoiehnTTBLOMKQtQ==
+ipfs-http-client@^53.0.1:
+  version "53.0.1"
+  resolved "https://registry.yarnpkg.com/ipfs-http-client/-/ipfs-http-client-53.0.1.tgz#1ae5afce607c87cec285429c7de665e341a3ec7d"
+  integrity sha512-0hmm5esSxoArEtVE9jeLwLw3pJm6rJA1kWKW+3Nqs2O8TQVSot8u1nzopF/yJ2IJGd5PHJc2JxqtEdVzV+p7nQ==
   dependencies:
     "@ipld/dag-cbor" "^6.0.5"
     "@ipld/dag-pb" "^2.1.3"
@@ -18125,9 +18125,9 @@ ipfs-http-client@^53.0.0:
     any-signal "^2.1.2"
     debug "^4.1.1"
     err-code "^3.0.1"
-    ipfs-core-types "^0.8.0"
-    ipfs-core-utils "^0.11.0"
-    ipfs-utils "^9.0.1"
+    ipfs-core-types "^0.8.1"
+    ipfs-core-utils "^0.11.1"
+    ipfs-utils "^9.0.2"
     it-first "^1.0.6"
     it-last "^1.0.4"
     merge-options "^3.0.4"
@@ -18445,6 +18445,28 @@ ipfs-utils@^9.0.1:
     is-electron "^2.2.0"
     iso-url "^1.1.5"
     it-glob "~0.0.11"
+    it-to-stream "^1.0.0"
+    merge-options "^3.0.4"
+    nanoid "^3.1.20"
+    native-abort-controller "^1.0.3"
+    native-fetch "^3.0.0"
+    node-fetch "https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz"
+    react-native-fetch-api "^2.0.0"
+    stream-to-it "^0.2.2"
+
+ipfs-utils@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/ipfs-utils/-/ipfs-utils-9.0.2.tgz#7e816a863753c5af1187464839a6b46aa8764e5b"
+  integrity sha512-o0DjVfd1kcr09fAYMkSnZ56ZkfoAzZhFWkizG3/tL7svukZpqyGyRxNlF58F+hsrn/oL8ouAP9x+4Hdf8XM+hg==
+  dependencies:
+    abort-controller "^3.0.0"
+    any-signal "^2.1.0"
+    buffer "^6.0.1"
+    electron-fetch "^1.7.2"
+    err-code "^3.0.1"
+    is-electron "^2.2.0"
+    iso-url "^1.1.5"
+    it-glob "^1.0.1"
     it-to-stream "^1.0.0"
     merge-options "^3.0.4"
     nanoid "^3.1.20"
@@ -21797,6 +21819,26 @@ libp2p-webrtc-star@0.23.0, libp2p-webrtc-star@^0.23.0:
     stream-to-it "^0.2.2"
     streaming-iterables "^6.0.0"
 
+libp2p-webrtc-star@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/libp2p-webrtc-star/-/libp2p-webrtc-star-0.24.0.tgz#e567fe2d9a97e36143466728f031700fc39b0f3f"
+  integrity sha512-DvWflJF6QOsP+jqFQf8Z8cZgb6+dS8WCXFlDbROYEWXRiz2K7Dl3adCt2Z0Nqo/UTE4IVhzEttQY109rPPSTsA==
+  dependencies:
+    abortable-iterator "^3.0.0"
+    class-is "^1.1.0"
+    debug "^4.2.0"
+    err-code "^3.0.1"
+    ipfs-utils "^9.0.1"
+    it-pipe "^1.1.0"
+    libp2p-utils "^0.4.0"
+    libp2p-webrtc-peer "^10.0.1"
+    mafmt "^10.0.0"
+    multiaddr "^10.0.0"
+    p-defer "^3.0.0"
+    peer-id "^0.15.0"
+    socket.io-client "^4.1.2"
+    stream-to-it "^0.2.2"
+
 libp2p-websockets@0.16.1, libp2p-websockets@^0.16.1:
   version "0.16.1"
   resolved "https://registry.yarnpkg.com/libp2p-websockets/-/libp2p-websockets-0.16.1.tgz#1138fc0bf4328f521b3cf5dbcf0148a8ea20303a"
@@ -21807,6 +21849,24 @@ libp2p-websockets@0.16.1, libp2p-websockets@^0.16.1:
     debug "^4.3.1"
     err-code "^3.0.1"
     ipfs-utils "^8.1.2"
+    it-ws "^4.0.0"
+    libp2p-utils "^0.4.0"
+    mafmt "^10.0.0"
+    multiaddr "^10.0.0"
+    multiaddr-to-uri "^8.0.0"
+    p-defer "^3.0.0"
+    p-timeout "^4.1.0"
+
+libp2p-websockets@^0.16.2:
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/libp2p-websockets/-/libp2p-websockets-0.16.2.tgz#4eca653b3ae9593d3dd5dd467a58aed03cc92e3a"
+  integrity sha512-QGfo8jX1Ks16yi8C67CCyMW7k9cfCYiQ0lzKVJBud0fV3ymbMO2L8gzU6iXUUZTHILo8ka26zKhwQ4lmUMI+nA==
+  dependencies:
+    abortable-iterator "^3.0.0"
+    class-is "^1.1.0"
+    debug "^4.3.1"
+    err-code "^3.0.1"
+    ipfs-utils "^9.0.1"
     it-ws "^4.0.0"
     libp2p-utils "^0.4.0"
     mafmt "^10.0.0"
