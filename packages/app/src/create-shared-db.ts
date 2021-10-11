@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import dotenv from 'dotenv';
-import IPFS from 'ipfs';
+import IPFS from 'ipfs-core';
 import OrbitDB from 'orbit-db';
 import AccessControllers from './lib/db/access-controllers';
 dotenv.config();

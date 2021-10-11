@@ -1,5 +1,5 @@
 declare module 'prettier-bytes';
 declare module 'ipfs-http-response' {
-  import { IPFS } from 'ipfs';
+  import * as IPFS from 'ipfs-core';
   export function getResponse(ipfsNode: IPFS, ipfsPath: string): Response;
 }
