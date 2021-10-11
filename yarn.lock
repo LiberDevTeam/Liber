@@ -4242,11 +4242,6 @@
   resolved "https://registry.yarnpkg.com/@open-draft/until/-/until-1.0.3.tgz#db9cc719191a62e7d9200f6e7bab21c5b848adca"
   integrity sha512-Aq58f5HiWdyDlFffbbSjAlv596h/cOnt2DO1w3DOC7OJ5EHs0hd/nycJfiu9RJbT6Yk6F1knnRRXNSpxoIVZ9Q==
 
-"@openzeppelin/contracts@4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.3.2.tgz#ff80affd6d352dbe1bbc5b4e1833c41afd6283b6"
-  integrity sha512-AybF1cesONZStg5kWf6ao9OlqTZuPqddvprc0ky7lrUVOjXeKpmQ2Y9FK+6ygxasb+4aic4O5pneFBfwVsRRRg==
-
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3", "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
@@ -8139,11 +8134,6 @@
   resolved "https://registry.yarnpkg.com/@zxing/text-encoding/-/text-encoding-0.9.0.tgz#fb50ffabc6c7c66a0c96b4c03e3d9be74864b70b"
   integrity sha512-U/4aVJ2mxI0aDNI8Uq0wEhMgY+u4CNtEb0om3+y3+niDAsoTCOB33UF0sxpzqzdqXLqmvc+vZyAt4O8pPdfkwA==
 
-JSV@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/JSV/-/JSV-3.5.0.tgz#f017ec75629e8c89b8359dc79a2ceee92ef9471e"
-  integrity sha1-8BfsdWKejIm4NZ3Hmizu6S75Rx4=
-
 abab@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -11531,14 +11521,6 @@ content-type@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
-
-contracts@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/contracts/-/contracts-0.4.0.tgz#32788d79ee1ac482e5fa7aa7fc29704b8709060f"
-  integrity sha1-MniNee4axILl+nqn/ClwS4cJBg8=
-  dependencies:
-    JSV "3.5.0"
-    validator "0.2.9"
 
 convert-source-map@1.7.0:
   version "1.7.0"
@@ -24245,7 +24227,6 @@ node-fetch@2.6.1, node-fetch@^2.6.0, node-fetch@^2.6.1:
 
 "node-fetch@https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz":
   version "2.6.7"
-  uid "1b5d62978f2ed07b99444f64f0df39f960a6d34d"
   resolved "https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz#1b5d62978f2ed07b99444f64f0df39f960a6d34d"
 
 "node-fetch@npm:@achingbrain/node-fetch@^2.6.4":
@@ -32826,11 +32807,6 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
-
-validator@0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-0.2.9.tgz#be1fd17861625e6ad0c7b8fc25a3842b639b1273"
-  integrity sha1-vh/ReGFiXmrQx7j8JaOEK2ObEnM=
 
 value-equal@^1.0.1:
   version "1.0.1"
