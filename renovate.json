@@ -1,5 +1,5 @@
 {
-  "extends": ["config:base", "schedule:weekends"],
+  "extends": ["config:base", "schedule:weekends", "group:allNonMajor"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
