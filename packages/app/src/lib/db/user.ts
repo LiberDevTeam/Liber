@@ -6,6 +6,7 @@ const userDB: Record<string, KeyValueStore<User>> = {};
 
 export const createUserDB = async (): Promise<KeyValueStore<User>> => {
   const orbitDB = await getOrbitDB();
+
   const db = await orbitDB.keyvalue<User>('user');
   userDB[db.address.root] = db;
   await db.load();

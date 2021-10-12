@@ -1,6 +1,7 @@
 import { Mutex } from 'async-mutex';
 import FileType from 'file-type/browser';
-import IPFS, { IPFS as IPFSType } from 'ipfs';
+import type { IPFS as IPFSType } from 'ipfs-core';
+import * as IPFS from 'ipfs-core';
 import { CacheableResponse } from 'workbox-cacheable-response';
 import { clientsClaim } from 'workbox-core';
 import { registerRoute } from 'workbox-routing';

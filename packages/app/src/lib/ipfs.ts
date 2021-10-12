@@ -1,5 +1,6 @@
 import { Mutex } from 'async-mutex';
-import Ipfs, { IPFS as IPFSType } from 'ipfs';
+import type { IPFS as IPFSType } from 'ipfs-core';
+import * as IPFS from 'ipfs-core';
 
 let ipfsNode: IPFSType | null;
 const ipfsMutex = new Mutex();
@@ -7,7 +8,7 @@ const ipfsMutex = new Mutex();
 export const getIpfsNode = async (): Promise<IPFSType> => {
   return await ipfsMutex.runExclusive<IPFSType>(async () => {
     if (!ipfsNode) {
-      ipfsNode = await Ipfs.create({
+      ipfsNode = await IPFS.create({
         repo: '/liber',
         start: true,
         preload: {
