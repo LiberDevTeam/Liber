@@ -174,7 +174,7 @@
     "esbuild": "0.13.7",
     "faker": "5.5.3",
     "jest-environment-jsdom": "27.2.5",
-    "jest-node-exports-resolver": "^1.1.2",
+    "jest-node-exports-resolver": "1.1.2",
     "msw": "0.35.0",
     "redux-logger": "3.0.6",
     "redux-mock-store": "1.5.4",
