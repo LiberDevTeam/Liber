@@ -138,11 +138,11 @@ export const createNewPlace = createAsyncThunk<
     await Promise.all(
       Object.keys(place).map((key) => {
         if (key === 'hash') {
-          Promise.resolve(); // Do not add hash to the place db.
+          return Promise.resolve(''); // Do not add hash to the place db.
         }
         const v = place[key as keyof Place];
         if (v === undefined || v === null) {
-          return Promise.resolve();
+          return Promise.resolve('');
         }
         return placeKeyValue.put(key, v);
       })

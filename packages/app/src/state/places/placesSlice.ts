@@ -177,7 +177,7 @@ export const updatePlace = createAsyncThunk<
       Object.keys(partial).map((key) => {
         const v = partial[key as keyof PartialForUpdate];
         if (v === undefined) {
-          return Promise.resolve();
+          return Promise.resolve('');
         }
         return placeKeyValue.put(key, v);
       })
