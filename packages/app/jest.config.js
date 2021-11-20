@@ -31,9 +31,8 @@ module.exports = {
     'jsx',
     'node',
   ],
-  watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-  ],
+  watchPlugins: ['typeahead/filename', 'typeahead/testname'],
   resetMocks: true,
+  // remove after updated jest to v28 (supported exports field)
+  resolver: 'jest-node-exports-resolver',
 };

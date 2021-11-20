@@ -1,4 +1,4 @@
-import emojiRegexRGI from 'emoji-regex/RGI_Emoji';
+import createEmojiRegex from 'emoji-regex';
 import React from 'react';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
@@ -8,7 +8,7 @@ import { MessageContent, StickerItem } from '~/state/places/type';
 import { isURLText } from '~/state/places/utils';
 import { MessageTimestamp } from '../message-timestamp';
 
-const emojiRegex = emojiRegexRGI();
+const emojiRegex = createEmojiRegex();
 
 const Text = styled.div<{ mine: boolean }>`
   padding: ${(props) => `${props.theme.space[2]}px ${props.theme.space[3]}px`};
