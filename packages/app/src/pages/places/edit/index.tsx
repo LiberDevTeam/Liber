@@ -61,8 +61,7 @@ const validationSchema = yup.object({
 
 export const PlaceEdit: React.FC = React.memo(function EditPlace() {
   const dispatch = useDispatch();
-  const { placeId, address } =
-    useParams<{ placeId: string; address: string }>();
+  const { placeId, address } = useParams();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { t } = useTranslation(['editPlaces', 'categories']);
   const place = useSelector(selectPlaceById(placeId));
@@ -75,7 +74,7 @@ export const PlaceEdit: React.FC = React.memo(function EditPlace() {
     },
     validationSchema,
     async onSubmit({ avatar, category, name, description }) {
-      if (avatar && category) {
+      if (avatar && category && placeId && address) {
         dispatch(
           await updatePlace({
             placeId,

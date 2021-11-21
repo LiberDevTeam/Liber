@@ -96,19 +96,21 @@ const ButtonSection = styled(Section)`
 
 export const BotDetailPage: React.FC = memo(function BotDetailPage() {
   const dispatch = useDispatch();
-  const { botId, address } = useParams<{ botId: string; address: string }>();
+  const { botId, address } = useParams();
   const me = useSelector(selectMe);
   const bot = useSelector(selectBotById(botId));
   const { t } = useTranslation(['selectOptions']);
 
   useEffect(() => {
-    if (!bot) {
+    if (!bot && botId && address) {
       dispatch(fetchBot({ botId, address }));
     }
-  }, [botId]);
+  }, [dispatch, botId, address, bot]);
 
   // TODO loading;
-  if (!bot) return null;
+  if (!bot || !botId || !address) {
+    return null;
+  }
 
   const purchased = me.purchasedBots.includes({ botId, address });
   const mine = bot.uid === me.id;

@@ -19,10 +19,7 @@ const List = styled.ul`
 
 export const BannedUsers: React.FC = React.memo(function Places() {
   const { t } = useTranslation('chat');
-  const { placeId, address } = useParams<{
-    placeId: string;
-    address: string;
-  }>();
+  const { placeId, address } = useParams();
   const userIds = useAppSelector((state) => {
     const place = selectPlaceById(placeId)(state);
     return place ? place.bannedUsers : [];
@@ -31,7 +28,9 @@ export const BannedUsers: React.FC = React.memo(function Places() {
 
   const handleRemoveUser = useCallback(
     (userId: string) => {
-      dispatch(unbanUser({ placeId: placeId, userId }));
+      if (placeId) {
+        dispatch(unbanUser({ placeId: placeId, userId }));
+      }
     },
     [dispatch, placeId]
   );

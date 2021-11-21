@@ -155,7 +155,7 @@ const validationSchema = yup.object({
 });
 
 export const BotEditPage: React.FC = React.memo(function BotEditPage() {
-  const { botId, address } = useParams<{ botId: string; address: string }>();
+  const { botId, address } = useParams();
   const dispatch = useDispatch();
   const bot = useSelector(selectBotById(botId));
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -182,7 +182,7 @@ export const BotEditPage: React.FC = React.memo(function BotEditPage() {
       sourceCode,
       examples,
     }) {
-      if (avatar && price) {
+      if (avatar && price && botId && address) {
         dispatch(
           updateBot({
             botId,
@@ -203,10 +203,10 @@ export const BotEditPage: React.FC = React.memo(function BotEditPage() {
   });
 
   useEffect(() => {
-    if (!bot) {
+    if (!bot && botId && address) {
       dispatch(fetchBot({ botId, address }));
     }
-  }, [botId]);
+  }, [dispatch, botId, address, bot]);
 
   useEffect(() => {
     if (bot) {

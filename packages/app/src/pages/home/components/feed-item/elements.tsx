@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IpfsContent } from '~/components/ipfs-content';
 
-export const Root = styled.div`
+export const Root = styled(Link)`
   /* display: flex; */
   display: block;
   width: 100%;
