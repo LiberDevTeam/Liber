@@ -5,15 +5,16 @@ const fs = require('fs');
 const { commonConfig } = require('./config');
 
 const PORT = 3000;
+const HTTP_PORT = PORT + 1;
 
 require('esbuild')
   .serve(
-    { servedir: path.join(__dirname, '../public'), port: PORT + 1 },
+    { servedir: path.join(__dirname, '../public'), port: HTTP_PORT },
     { ...commonConfig, sourcemap: true }
   )
   .then((result) => {
     console.log(`Run server at https://localhost:${PORT}`);
-    console.log(`Run server at http://localhost:${PORT + 1}`);
+    console.log(`Run server at http://localhost:${HTTP_PORT}`);
     console.log(result);
 
     // The result tells us where esbuild's local server is
@@ -23,35 +24,39 @@ require('esbuild')
       cert: fs.readFileSync(path.join(__dirname, 'server_cert.pem')),
     };
 
-    // Then start a proxy server on port 3000
-    https
-      .createServer(options, (req, res) => {
+    const listener = (req, res) => {
+      const forwardRequest = (path) => {
         const options = {
           hostname: host,
-          port: port,
-          path: req.url,
+          port,
+          path,
           method: req.method,
           headers: req.headers,
         };
 
-        // Forward each incoming request to esbuild
         const proxyReq = http.request(options, (proxyRes) => {
-          // If esbuild returns "not found", send a custom 404 page
+          console.log(proxyRes.statusCode, path);
           if (proxyRes.statusCode === 404) {
-            res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.end('<h1>A custom 404 page</h1>');
-            return;
+            // If esbuild 404s the request, assume it's a route needing to
+            // be handled by the JS bundle, so forward a second attempt to `/`.
+            return forwardRequest('/');
           }
 
-          // Otherwise, forward the response from esbuild to the client
+          // Otherwise esbuild handled it like a champ, so proxy the response back.
           res.writeHead(proxyRes.statusCode, proxyRes.headers);
           proxyRes.pipe(res, { end: true });
         });
 
-        // Forward the body of the request to esbuild
         req.pipe(proxyReq, { end: true });
-      })
-      .listen(PORT);
+      };
+
+      // When we're called pass the request right through to esbuild.
+      forwardRequest(req.url);
+    };
+
+    // Then start a proxy server on port 3000
+    https.createServer(options, listener).listen(PORT);
+    http.createServer(options, listener).listen(HTTP_PORT);
   })
   .catch((e) => {
     console.error(e);
