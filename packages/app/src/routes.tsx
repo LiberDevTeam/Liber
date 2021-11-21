@@ -1,9 +1,8 @@
 import React, { memo, useEffect } from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ManageBotsPage } from '~/pages/places/manage-bots';
 import { initMe } from '~/state/me/meSlice';
 import { initApp } from '~/state/p2p/p2pSlice';
-import { history } from './history';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { NotFoundPage } from './pages/404';
 import { BotDetailPage } from './pages/bots/detail';
@@ -28,7 +27,7 @@ import { StickerEditPage } from './pages/stickers/edit';
 import { StickersPage } from './pages/stickers/index';
 import { StickerNewPage } from './pages/stickers/new';
 
-export const Routes: React.FC = memo(function Routes() {
+export const AppRoutes: React.FC = memo(function AppRoutes() {
   const dispatch = useAppDispatch();
   const isInitialized = useAppSelector((state) => state.isInitialized);
 
@@ -43,83 +42,59 @@ export const Routes: React.FC = memo(function Routes() {
   }
 
   return (
-    <Router history={history}>
-      {/* your usual react-router-dom v4/v5 routing */}
-      <Switch>
-        <Route exact path="/" render={() => <HomePage />} />
+    <Routes>
+      <Route path="/" element={<HomePage />} />
 
-        <Route exact path="/places/new" render={() => <NewPlace />} />
-        <Route exact path="/places" render={() => <Places />} />
-        <Route
-          exact
-          path="/places/:address/:placeId/banned-users"
-          render={() => <BannedUsers />}
-        />
+      <Route path="places">
+        <Route path="new" element={<NewPlace />} />
+        <Route index element={<Places />} />
+      </Route>
 
-        <Route
-          exact
-          path="/places/:address/:placeId/manage-bots"
-          render={() => <ManageBotsPage />}
-        />
-        <Route
-          exact
-          path="/places/:address/:placeId/edit"
-          render={() => <PlaceEdit />}
-        />
-        <Route
-          exact
-          path="/places/:address/:placeId/:swarmKey?"
-          render={() => <ChatDetail />}
-        />
+      <Route path="places/:address/:placeId">
+        <Route index element={<ChatDetail />} />
+        <Route path="banned-users" element={<BannedUsers />} />
+        <Route path="manage-bots" element={<ManageBotsPage />} />
+        <Route path="edit" element={<PlaceEdit />} />
+      </Route>
 
-        <Route exact path="/explore" render={() => <Explore />} />
+      <Route path="explore" element={<Explore />} />
 
-        <Route exact path="/profile" render={() => <ProfilePage />} />
-        <Route exact path="/profile/edit" render={() => <ProfileEditPage />} />
+      <Route path="profile">
+        <Route index element={<ProfilePage />} />
+        <Route path="edit" element={<ProfileEditPage />} />
+      </Route>
 
-        <Route
-          exact
-          path="/marketplace/:type?"
-          render={() => <MarketplacePage />}
-        />
+      <Route path="marketplace" element={<MarketplacePage />}>
+        <Route index element={<MarketplacePage />} />
+        <Route path=":type" element={<MarketplacePage />} />
+      </Route>
 
-        <Route exact path="/bots" render={() => <Bots />} />
-        <Route exact path="/bots/new" render={() => <BotNewPage />} />
-        <Route
-          exact
-          path="/bots/:address/:botId/edit"
-          render={() => <BotEditPage />}
-        />
-        <Route
-          exact
-          path="/bots/:address/:botId"
-          render={() => <BotDetailPage />}
-        />
+      <Route path="bots">
+        <Route index element={<Bots />} />
+        <Route path="new" element={<BotNewPage />} />
+        <Route path=":address/:botId">
+          <Route index element={<BotDetailPage />} />
+          <Route path="edit" element={<BotEditPage />} />
+        </Route>
+      </Route>
 
-        <Route exact path="/stickers/new" render={() => <StickerNewPage />} />
-        <Route
-          exact
-          path="/stickers/:address/:stickerId"
-          render={() => <StickerDetailPage />}
-        />
-        <Route
-          exact
-          path="/stickers/:address/:stickerId/edit"
-          render={() => <StickerEditPage />}
-        />
-        <Route exact path="/stickers" render={() => <StickersPage />} />
+      <Route path="stickers/new" element={<StickerNewPage />} />
+      <Route
+        path="stickers/:address/:stickerId"
+        element={<StickerDetailPage />}
+      />
+      <Route
+        path="stickers/:address/:stickerId/edit"
+        element={<StickerEditPage />}
+      />
+      <Route path="stickers" element={<StickersPage />} />
 
-        <Route exact path="/settings" render={() => <SettingsPage />} />
+      <Route path="settings" element={<SettingsPage />} />
 
-        <Route
-          exact
-          path="/notifications"
-          render={() => <NotificationsPage />}
-        />
+      <Route path="notifications" element={<NotificationsPage />} />
 
-        <Route exact path="/404" render={() => <NotFoundPage />} />
-        <Route render={() => <NotFoundPage />} />
-      </Switch>
-    </Router>
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route element={<NotFoundPage />} />
+    </Routes>
   );
 });

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -41,18 +41,11 @@ export interface BottomNavLinkProps {
 
 export const BottomNavLink: React.FC<BottomNavLinkProps> = React.memo(
   function SideNavLink({ to, icon, children, exact = false }) {
-    const isActive = useCallback((match, location) => {
-      if (to === '/') {
-        return !!match;
-      }
-      return location.pathname.startsWith(to);
-    }, []);
     return (
       <StyledNavLink
-        exact={exact}
+        end={exact}
         to={to}
-        activeClassName={activeClassName}
-        isActive={isActive}
+        className={({ isActive }) => (isActive ? activeClassName : '')}
       >
         {icon}
         <LinkText>{children}</LinkText>

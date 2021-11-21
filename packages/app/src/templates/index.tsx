@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { memo } from 'react';
+import { useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { BackLink as BaseBackLink } from '~/components/back-link';
 import { BottomNavigation } from '../components/bottom-navigation';
@@ -61,14 +61,16 @@ interface Props {
   header?: React.ReactNode;
 }
 
-const BaseLayout: React.FC<Props> = ({
+const BaseLayout: React.FC<Props> = memo(function BaseLayout({
   children,
   backTo,
   title,
   description,
   headerRightItem,
   header,
-}) => {
+}) {
+  const match = useMatch('places/:id/*');
+
   return (
     <>
       <Root>
@@ -86,21 +88,14 @@ const BaseLayout: React.FC<Props> = ({
         )}
         <Main>{children}</Main>
       </Root>
-      {!backTo && (
-        <Switch>
-          <Route path="/places/*" component={() => null} />
-          <Route
-            path="*"
-            component={() => (
-              <SpNavigation>
-                <BottomNavigation />
-              </SpNavigation>
-            )}
-          />
-        </Switch>
+
+      {match ? null : (
+        <SpNavigation>
+          <BottomNavigation />
+        </SpNavigation>
       )}
     </>
   );
-};
+});
 
 export default BaseLayout;

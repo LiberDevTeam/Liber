@@ -149,7 +149,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = React.memo(
     return (
       <Root
         to={`/places/${place.keyValAddress}/${place.id}`}
-        activeClassName={activeClassName}
+        className={({ isActive }) => (isActive ? activeClassName : '')}
       >
         <LeftContainer>
           <Image src={`/view/${place.avatarCid}`} />
