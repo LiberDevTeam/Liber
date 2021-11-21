@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { omitText } from '~/helpers';
 import { dummyPlace } from '~/mocks/place';
 import { initApp } from '~/state/p2p/p2pSlice';
@@ -33,9 +33,9 @@ test('loading place', async () => {
   const store = createStore({}, { place: createMockKVAccessor(place) });
   render(
     <MemoryRouter initialEntries={[`/places/place-address/${place.id}`]}>
-      <Route path="/places/:address/:placeId/:swarmKey?">
-        <ChatDetail />
-      </Route>
+      <Routes>
+        <Route path="/places/:address/:placeId" element={<ChatDetail />} />
+      </Routes>
     </MemoryRouter>,
     { store }
   );
@@ -61,9 +61,9 @@ test('send message', async () => {
   store.dispatch(initApp());
   render(
     <MemoryRouter initialEntries={[`/places/place-address/${place.id}`]}>
-      <Route path="/places/:address/:placeId/:swarmKey?">
-        <ChatDetail />
-      </Route>
+      <Routes>
+        <Route path="/places/:address/:placeId" element={<ChatDetail />} />
+      </Routes>
     </MemoryRouter>,
     { store }
   );
