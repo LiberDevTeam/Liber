@@ -67,21 +67,6 @@ const AvatarContainer = styled.div`
   margin-right: ${(props) => props.theme.space[2]}px;
 `;
 
-const Greeting = styled.div`
-  font-size: ${(props) => props.theme.fontSizes['2xl']};
-  font-weight: ${(props) => props.theme.fontWeights.light};
-  color: ${(props) => props.theme.colors.secondaryText};
-  margin-bottom: ${(props) => props.theme.space[3]}px;
-  padding: 0 ${(props) => props.theme.space[3]}px;
-`;
-
-const Username = styled.div`
-  font-size: ${(props) => props.theme.fontSizes['4xl']};
-  font-weight: ${(props) => props.theme.fontWeights.bold};
-  padding: 0 ${(props) => props.theme.space[3]}px;
-  margin-bottom: ${(props) => props.theme.space[3]}px;
-`;
-
 const Feed = styled.div`
   flex: 1;
   padding: 0 ${(props) => props.theme.space[3]}px;

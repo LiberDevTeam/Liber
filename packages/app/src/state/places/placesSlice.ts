@@ -314,9 +314,9 @@ export const placesSlice = createSlice({
 
 const selectors = placesAdapter.getSelectors();
 export const selectPlaceById =
-  (id: string) =>
+  (id: string | undefined) =>
   (state: RootState): Place | undefined =>
-    selectors.selectById(state.places, id);
+    id ? selectors.selectById(state.places, id) : undefined;
 
 export const selectAllPlaces = (state: RootState): Place[] =>
   selectors.selectAll(state.places);
@@ -325,8 +325,12 @@ export const selectPlaceIds = (state: RootState): EntityId[] =>
   selectors.selectIds(state.places);
 
 export const selectPlaceMessagesByPlaceId =
-  (placeId: string) =>
+  (placeId: string | undefined) =>
   (state: RootState): Message[] => {
+    if (placeId === undefined) {
+      return [];
+    }
+
     const place = selectors.selectById(state.places, placeId);
 
     if (!place) {

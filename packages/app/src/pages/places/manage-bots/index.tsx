@@ -6,10 +6,7 @@ import BaseLayout from '~/templates';
 
 export const ManageBotsPage: React.FC = React.memo(function ManageBotsPage() {
   const { t } = useTranslation('chat');
-  const { placeId, address } = useParams<{
-    placeId: string;
-    address: string;
-  }>();
+  const { placeId, address } = useParams();
 
   return (
     <BaseLayout
@@ -17,7 +14,7 @@ export const ManageBotsPage: React.FC = React.memo(function ManageBotsPage() {
       description={t('Manage your banned user list')}
       backTo={`/places/${address}/${placeId}`}
     >
-      <ManageBots placeId={placeId} />
+      {placeId ? <ManageBots placeId={placeId} /> : null}
     </BaseLayout>
   );
 });

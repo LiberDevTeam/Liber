@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { SvgArrowIosBack as BackIcon } from '~/icons/ArrowIosBack';
 
@@ -19,9 +19,9 @@ export const BackLink: React.FC<BackLinkProps> = React.memo(function BackLink({
   backTo,
   className,
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleClick = () =>
-    backTo === 'previous' ? history.goBack() : history.replace(backTo);
+    backTo === 'previous' ? navigate(-1) : navigate(backTo);
   return (
     <Root onClick={handleClick} className={className}>
       <BackIcon width={26} height={26} />

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
@@ -75,18 +74,14 @@ export const SearchMessageResult: React.FC<SearchMessageResultProps> =
               ref={listRef}
             >
               {({ index, style }) => (
-                <Link
-                  to={`/places/${result[index].placeAddress}/${result[index].placeId}`}
-                >
-                  <ItemContainer key={result[index].id} style={style}>
-                    <FeedItemMessageDefault
-                      message={result[index]}
-                      onRender={(clientHeight) => {
-                        handleRenderRow(index, clientHeight);
-                      }}
-                    />
-                  </ItemContainer>
-                </Link>
+                <ItemContainer key={result[index].id} style={style}>
+                  <FeedItemMessageDefault
+                    message={result[index]}
+                    onRender={(clientHeight) => {
+                      handleRenderRow(index, clientHeight);
+                    }}
+                  />
+                </ItemContainer>
               )}
             </VariableSizeList>
           )}

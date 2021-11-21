@@ -18,7 +18,7 @@ const Contents = styled.div`
 
 const CircleImage = styled.img`
   height: 44px;
-  weight: 44px;
+  width: 44px;
   margin-right: ${(props) => props.theme.space[3]}px;
 `;
 
@@ -54,11 +54,11 @@ const types = ['bots', 'stickers'];
 const tabTitles = ['Ranking', 'New'];
 
 export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
-  const { type = types[0] } = useParams<{
-    type?: string;
-  }>();
+  const { type } = useParams();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchText, setSearchText] = useState('');
+
+  const marketType = type || types[0];
 
   const handleSearchTextChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,14 +78,14 @@ export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
         />
         <SelectorGroup>
           <StyledLink
-            active={(type === types[0]).toString()}
+            active={(marketType === types[0]).toString()}
             to={`/marketplace/${types[0]}`}
           >
             <CircleImage src="/img/marketplace/bots_icon.png" />
             <SelectorTitle>Bots</SelectorTitle>
           </StyledLink>
           <StyledLink
-            active={(type === types[1]).toString()}
+            active={(marketType === types[1]).toString()}
             to={`/marketplace/${types[1]}`}
           >
             <CircleImage src="/img/marketplace/stickers_icon.png" />
@@ -101,12 +101,12 @@ export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
           >
             <TabPanels>
               <TabPanel>
-                {type === types[0] && <BotRanking />}
-                {type === types[1] && <StickerRanking />}
+                {marketType === types[0] && <BotRanking />}
+                {marketType === types[1] && <StickerRanking />}
               </TabPanel>
               <TabPanel>
-                {type === types[0] && <BotNew />}
-                {type === types[1] && <StickerNew />}
+                {marketType === types[0] && <BotNew />}
+                {marketType === types[1] && <StickerNew />}
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -114,8 +114,10 @@ export const MarketplacePage: React.FC = React.memo(function MarketplacePage() {
 
         {searchText.length !== 0 && (
           <>
-            {type === types[0] && <SearchBotResult searchText={searchText} />}
-            {type === types[1] && (
+            {marketType === types[0] && (
+              <SearchBotResult searchText={searchText} />
+            )}
+            {marketType === types[1] && (
               <SearchStickerResult searchText={searchText} />
             )}
           </>

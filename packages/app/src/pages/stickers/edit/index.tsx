@@ -112,10 +112,7 @@ const validationSchema = yup.object({
 });
 
 export const StickerEditPage: React.FC = memo(function StickerNewPage() {
-  const { stickerId, address } = useParams<{
-    stickerId: string;
-    address: string;
-  }>();
+  const { stickerId, address } = useParams();
   const dispatch = useDispatch();
   const sticker = useSelector(selectStickerById(stickerId));
   const [contentPreview, setContentPreview] = useState<string[]>([]);
@@ -147,10 +144,10 @@ export const StickerEditPage: React.FC = memo(function StickerNewPage() {
   });
 
   useEffect(() => {
-    if (!sticker) {
+    if (!sticker && stickerId && address) {
       dispatch(fetchSticker({ stickerId, address }));
     }
-  }, [stickerId, address]);
+  }, [dispatch, stickerId, address, sticker]);
 
   useEffect(() => {
     if (sticker) {

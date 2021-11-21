@@ -72,10 +72,7 @@ export interface FormValues {
 const RENDER_CHUNK_SIZE = 10;
 
 export const ChatDetail: React.FC = React.memo(function ChatDetail() {
-  const { placeId, address } = useParams<{
-    placeId: string;
-    address: string;
-  }>();
+  const { placeId, address } = useParams();
 
   const place = useSelector(selectPlaceById(placeId));
   const messages = useSelector(selectPlaceMessagesByPlaceId(placeId));
@@ -89,8 +86,9 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   const messagesBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const pk = { placeId, address };
-    dispatch(joinPlace(pk));
+    if (placeId && address) {
+      dispatch(joinPlace({ placeId, address }));
+    }
   }, [dispatch, placeId, address]);
 
   useEffect(() => {
@@ -109,7 +107,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   const handleIntersection = useCallback(
     (e) => {
-      if (e.isIntersecting && place?.unreadMessages) {
+      if (e.isIntersecting && place?.unreadMessages && placeId) {
         dispatch(clearUnreadMessages(placeId));
       }
     },
@@ -126,7 +124,7 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
   );
 
   const handleClearUnread = useCallback(() => {
-    if (place?.unreadMessages) {
+    if (place?.unreadMessages && placeId) {
       dispatch(clearUnreadMessages(placeId));
     }
   }, [dispatch, place?.unreadMessages, placeId]);
@@ -151,6 +149,10 @@ export const ChatDetail: React.FC = React.memo(function ChatDetail() {
 
   if (!place) {
     return <LoadingPage text="Connecting to place..." />;
+  }
+
+  if (placeId === undefined) {
+    return null;
   }
 
   return (

@@ -3,10 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import '~/lib/i18n';
-import { Routes } from './routes';
+import { AppRoutes } from './routes';
 import * as serviceWorker from './serviceWorker';
 import { store } from './state/store';
 import { GlobalStyles, theme } from './theme';
@@ -31,7 +32,9 @@ async function run() {
         <ThemeProvider theme={theme}>
           <Normalize />
           <GlobalStyles />
-          <Routes />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
         </ThemeProvider>
       </Provider>
     </React.StrictMode>,

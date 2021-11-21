@@ -251,9 +251,9 @@ export const { addStickers, addSticker, updateOne } = stickersSlice.actions;
 
 const selectors = stickersAdapter.getSelectors();
 export const selectStickerById =
-  (id: string) =>
+  (id: string | undefined) =>
   (state: RootState): Sticker | undefined =>
-    selectors.selectById(state.stickers, id);
+    id ? selectors.selectById(state.stickers, id) : undefined;
 export const selectStickersByIds =
   (ids: string[]) =>
   (state: RootState): Sticker[] =>
