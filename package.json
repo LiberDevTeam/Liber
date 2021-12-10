@@ -18,8 +18,8 @@
     "orbit-db-store": "^4.1.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.4.0",
-    "@typescript-eslint/parser": "5.4.0",
+    "@typescript-eslint/eslint-plugin": "5.6.0",
+    "@typescript-eslint/parser": "5.6.0",
     "cross-env": "7.0.3",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
@@ -30,14 +30,14 @@
     "eslint-plugin-jsx-a11y": "6.5.1",
     "eslint-plugin-react": "7.27.1",
     "eslint-plugin-react-hooks": "4.3.0",
-    "eslint-plugin-testing-library": "5.0.0",
+    "eslint-plugin-testing-library": "5.0.1",
     "husky": "7.0.4",
-    "lint-staged": "12.0.3",
+    "lint-staged": "12.1.2",
     "npm-run-all": "4.1.5",
-    "prettier": "2.4.1",
+    "prettier": "2.5.1",
     "prettier-plugin-organize-imports": "2.3.4",
-    "typescript": "4.5.2",
-    "typescript-styled-plugin": "0.18.1"
+    "typescript": "4.5.3",
+    "typescript-styled-plugin": "0.18.2"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
