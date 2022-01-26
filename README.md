@@ -1,10 +1,8 @@
 # LiBer
 
-LiBer empowers people to hold their own opinions and to express them in freedom.
-
-## Concept
-
 [Website](https://ipfs.infura.io/ipfs/QmSAi8KwQkcngjACeJ9GMXm26a2NjqS5EPw2smq9S6i6KW)
+
+LiBer empowers people to hold their own opinions and to express them in freedom.
 
 ## Notice
 
