@@ -10,5 +10,6 @@ LiBer empowers people to hold their own opinions and to express them in freedom.
 
 This project is currently work in progress.
 
-We always welcome you to contribute to this project!
-Just create a pull request ❤️
+We always welcome you to contribute to this project ❤️
+
+Please open PRs 👍
