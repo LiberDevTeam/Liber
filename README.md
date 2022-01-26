@@ -1,6 +1,6 @@
 # LiBer
 
-[Website](https://ipfs.infura.io/ipfs/QmSAi8KwQkcngjACeJ9GMXm26a2NjqS5EPw2smq9S6i6KW)
+[Website](https://ipfs.infura.io/ipfs/QmZYUaumpLZCn6q5ay1bfZ6c291UVuaf5KCtkV3J2r25GS)
 
 LiBer empowers people to hold their own opinions and to express them in freedom.
 
