@@ -1,4 +1,4 @@
-# LiBer is Freedom
+# LiBer
 
 LiBer empowers people to hold their own opinions and to express them in freedom.
 
