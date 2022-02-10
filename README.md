@@ -11,3 +11,7 @@ This project is currently work in progress.
 We always welcome you to contribute to this project ❤️
 
 Please open PRs 👍
+
+## Load environment variable file
+
+Normally, when developing, the environment variable file is named .env.development, but it will not be read, so please name it .env.
