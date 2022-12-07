@@ -70,7 +70,7 @@
     "jest-circus": "27.4.4",
     "jest-resolve": "27.4.4",
     "jest-watch-typeahead": "1.0.0",
-    "libp2p": "0.35.2",
+    "libp2p": "0.38.0",
     "libp2p-gossipsub": "0.12.1",
     "libp2p-mplex": "0.10.5",
     "libp2p-webrtc-star": "0.25.0",
