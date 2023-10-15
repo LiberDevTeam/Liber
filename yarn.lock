@@ -7709,10 +7709,10 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
-"@typechain/truffle-v5@7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@typechain/truffle-v5/-/truffle-v5-7.0.0.tgz#f7ab68186de8b2ef0a3f932837f6380a6c481360"
-  integrity sha512-TeK3EjbWzRyvR7Ags6I05UmDnWDGOxZnfUkFEJf9e5bheipDqvaoMYThcw3AObVfYaC6VA6UdelwPRtK6BC8lg==
+"@typechain/truffle-v5@8.0.7":
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/@typechain/truffle-v5/-/truffle-v5-8.0.7.tgz#8a9c79d31ccd8a036a4d847444123663a9c80600"
+  integrity sha512-zdc71/G8Zs3RZCmUCKDAXlUUGbom/GZFCgjXX8e0LEh1/eFWtdMSgiK5bluLEpLoP+rKUcJuQtCO68IQ6dboQg==
   dependencies:
     lodash "^4.17.15"
 
